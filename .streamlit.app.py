@@ -10,12 +10,13 @@ uploaded_file = "Use Cases.xlsx"
 
 # Load both sheets
 df_use_cases = pd.read_excel(uploaded_file, sheet_name="IBM SPSS Statistics")
-df_morph = pd.read_excel(uploaded_file, sheet_name=1)
+df_morph_raw = pd.read_excel(uploaded_file, sheet_name=1)
 
-# Extract morphological box display structure
-morph_display = df_morph.iloc[0:8, 1:]  # skip row with 'Impact', 'Technology', etc.
-morph_display.columns = df_morph.iloc[0, 1:]  # column headers: Impact, Technology, Place
-morph_display = morph_display.dropna(how='all')
+# Fix headers and extract morphological box
+df_morph_raw.columns = df_morph_raw.iloc[1]  # Set row 1 as header (Impact, Technology, Place)
+df_morph = df_morph_raw[2:].reset_index(drop=True)  # Skip first 2 rows
+
+morph_display = df_morph.copy()
 
 # Get list of Impact elements (non-NaN from Impact column)
 impact_elements = morph_display['Impact'].dropna().tolist()
