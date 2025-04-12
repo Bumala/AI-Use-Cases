@@ -1,7 +1,6 @@
 import streamlit as st
 import pandas as pd
 from openpyxl import load_workbook
-from io import BytesIO
 
 # Load the Excel file
 uploaded_file = "Use Cases.xlsx"
@@ -29,6 +28,10 @@ for row in sheet.iter_rows():
         row_styles.append(cell_style)
     data.append(row_data)
     styles.append(row_styles)
+
+# Remove the first 3 rows and last 7 rows
+data = data[3:-7]
+styles = styles[3:-7]
 
 # Convert data to a DataFrame
 df = pd.DataFrame(data)
