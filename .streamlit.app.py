@@ -45,7 +45,7 @@ st.markdown("""
             color: white;
         }
         .block-container {
-            background-image: url('https://i.imgur.com/vjPGJbi.jpeg');
+            background-image: url('https://www.evanshalshaw.com/-/media/evanshalshaw/car-buying-guides/2023/ev-electric-cars-guide/ev-electric-cars-guide-banner.ashx');
             background-size: cover;
             background-position: center;
             padding: 2rem;
@@ -78,23 +78,10 @@ if selected_impacts:
     top_index = df_use_cases["Total Score"].idxmax()
     selected_row = df_use_cases.loc[top_index]
 
-    for i, row in highlight_display.iterrows():
-        dim = row["Dimension"]
-        for col in highlight_display.columns[:-1]:  # ignore Dimension column
-            val = row[col]
-            if pd.isna(val):
-                continue
-            if selected_row.get(val, 0) == 2:
-                highlight_display.at[i, col] = f"<span style='background-color:#33ccff; color:black; padding:4px; border-radius:6px'>{val}</span>"
-            elif selected_row.get(val, 0) == 1:
-                highlight_display.at[i, col] = f"<span style='background-color:#6666ff; color:white; padding:4px; border-radius:6px'>{val}</span>"
-
-    # Show the morphological box with HTML formatting
+    # Display the morphological box
     st.markdown("---")
     st.markdown("### Full Morphological Box")
-    st.markdown("""<div style='display: flex; justify-content: center;'>""", unsafe_allow_html=True)
-    st.markdown(highlight_display.drop(columns="Dimension").to_html(escape=False, index=False), unsafe_allow_html=True)
-    st.markdown("</div>", unsafe_allow_html=True)
+    st.table(morph_display)
 
     st.markdown("---")
     st.markdown("### \U0001F91D Similar Use Cases")
