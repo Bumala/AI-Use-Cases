@@ -1,60 +1,52 @@
 import streamlit as st
 import pandas as pd
 
-# Data definition (as per your example)
+# Data definition
 data = [
     ["Impact (What)", "Benefits", "Quality/Scope/Knowledge", "Time Efficiency", "Cost"],
-    [None, "Row 2, Col 2", "Row 2, Col 3", "Row 2, Col 4", None],
-    [None, "Row 3, Col 2", "Row 3, Col 3", "Row 3, Col 4", None],
-    [None, "Row 4, Col 2", "Row 4, Col 3", "Row 4, Col 4", None],
-    [None, "Row 5, Col 2", "Row 5, Col 3", "Row 5, Col 4", None],
-    ["Technology (How)", "Row 6, Col 2", "Row 6, Col 3", "Row 6, Col 4", None],
-    [None, "Row 7, Col 2", "Row 7, Col 3", "Row 7, Col 4", None],
-    [None, "Row 8, Col 2", "Row 8, Col 3", "Row 8, Col 4", None],
-    [None, "Row 9, Col 2", "Row 9, Col 3", "Row 9, Col 4", None],
-    [None, "Row 10, Col 2", "Row 10, Col 3", "Row 10, Col 4", None],
-    ["Place (Where)", "Row 11, Col 2", "Row 11, Col 3", "Row 11, Col 4", None],
-    [None, "Row 12, Col 2", "Row 12, Col 3", "Row 12, Col 4", None],
+    [None, "Row 2, Col 2", "Row 2, Col 3", "Row 2, Col 4"],
+    [None, "Row 3, Col 2", "Row 3, Col 3"],
+    [None, "Row 4, Col 2"],
+    [None],
+    ["Technology (How)", "Row 6, Col 2", "Row 6, Col 3", "Row 6, Col 4"],
+    [None, "Row 7, Col 2", "Row 7, Col 3"],
+    [None, "Row 8, Col 2"],
+    [None],
+    ["Place (Where)", "Row 11, Col 2", "Row 11, Col 3", "Row 11, Col 4"],
+    [None, "Row 12, Col 2", "Row 12, Col 3"],
 ]
 
 df = pd.DataFrame(data)
 
 # Style generator for table cells
-def cell_style(col_index):
-    style = "text-align: left; padding: 5px; border: 1px solid #ddd;"
-    if col_index in [0, 1]:
-        style += " font-weight: bold;"
-    return style
+def cell_style():
+    return "text-align: left; padding: 10px; border: 1px solid #ddd;"
 
 # Generate HTML table
 def generate_html_table(df):
-    html = "<table style='border-collapse: collapse; width: 100%;'>"
+    # Find the maximum number of columns in any row
+    max_columns = max(len(row.dropna()) for _, row in df.iterrows())
+
+    # Start the table with styling
+    html = "<table style='border-spacing: 2px; width: 100%; border: 1px solid black;'>"
+
+    # Generate rows dynamically
     for i, row in df.iterrows():
         html += "<tr>"
+        filled_columns = 0  # Track the number of columns filled in the current row
+
         for j, val in enumerate(row):
-            style = cell_style(j)
-            
-            # Handling row spans for categories (Impact, Technology, Place)
-            if j == 0:  # Merged cells
-                if i == 0 and val == "Impact (What)":
-                    html += f"<td rowspan='5' style='{style}'>{val}</td>"
-                elif i == 5 and val == "Technology (How)":
-                    html += f"<td rowspan='5' style='{style}'>{val}</td>"
-                elif i == 10 and val == "Place (Where)":
-                    html += f"<td rowspan='2' style='{style}'>{val}</td>"
-                elif val is not None:
-                    html += f"<td style='{style}'>{val}</td>"
-            elif j >= 2:  # Handle columns 3 and onward
-                if val is not None:
-                    colspan = 1
-                    rowspan = 1
-                    # Dynamically adjusting for longer cells in third and subsequent columns
-                    if pd.isna(df.iloc[i, j + 1]) and pd.isna(df.iloc[i + 1, j]): 
-                        colspan = 2  # If there's no value to the right, merge to the right
-                    html += f"<td colspan='{colspan}' rowspan='{rowspan}' style='{style}'>{val}</td>"
-                else:
-                    html += f"<td style='{cell_style(j)}'></td>"
+            if pd.notna(val):  # Check if the cell is not empty (not NaN)
+                html += f"<td style='{cell_style()}'>{val}</td>"
+                filled_columns += 1
+
+        # If there are fewer columns in the current row, span the remaining columns
+        if filled_columns < max_columns:
+            colspan = max_columns - filled_columns
+            html += f"<td colspan='{colspan}' style='{cell_style()}'></td>"
+
         html += "</tr>"
+
     html += "</table>"
     return html
 
