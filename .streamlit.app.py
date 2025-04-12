@@ -33,34 +33,38 @@ for row in sheet.iter_rows():
 data = data[3:-7]
 styles = styles[3:-7]
 
-# Add a merged cell for "Impact (What)" in the first column
-for row in styles[:5]:
-    for cell in row:
-        cell["background_color"] = "FFDDDD"  # Example background color for merged area
-        cell["font_color"] = "000000"  # Black text
-        cell["bold"] = True
-        cell["italic"] = False
-
-data[0][0] = "Impact (What)"  # Set value for merged cell
+# Modify the first column to simulate a merged cell
+data[0][0] = "Impact (What)"  # Set the merged cell value
 for i in range(1, 5):
-    data[i][0] = None  # Clear subsequent rows in the merged column
+    data[i][0] = None  # Clear the subsequent rows in the first column
 
 # Convert data to a DataFrame
 df = pd.DataFrame(data)
 
-# Generate styled HTML table
-def generate_html_table(df, styles):
+# Generate styled HTML table with rowspan for merged cells
+def generate_html_table_with_rowspan(df, styles):
     html = "<table style='border-collapse: collapse; width: 100%;'>"
     for i, row in df.iterrows():
         html += "<tr>"
         for j, value in row.items():
-            style = styles[i][j]
-            background_color = f"background-color: #{style['background_color'][:6]};" if style['background_color'] else ""
-            font_color = f"color: #{style['font_color'][:6]};" if style['font_color'] else ""
-            font_weight = "font-weight: bold;" if style["bold"] else ""
-            font_style = "font-style: italic;" if style["italic"] else ""
-            cell_style = f"{background_color} {font_color} {font_weight} {font_style} padding: 5px; border: 1px solid #ddd;"
-            html += f"<td style='{cell_style}'>{value if value is not None else ''}</td>"
+            if j == 0 and i == 0:  # Add rowspan for the first column
+                style = styles[i][j]
+                background_color = f"background-color: #{style['background_color'][:6]};" if style['background_color'] else ""
+                font_color = f"color: #{style['font_color'][:6]};" if style['font_color'] else ""
+                font_weight = "font-weight: bold;" if style["bold"] else ""
+                font_style = "font-style: italic;" if style["italic"] else ""
+                cell_style = f"{background_color} {font_color} {font_weight} {font_style} padding: 5px; border: 1px solid #ddd;"
+                html += f"<td rowspan='5' style='{cell_style}'>{value if value is not None else ''}</td>"
+            elif j == 0:  # Skip subsequent rows for the first column
+                continue
+            else:  # Other cells
+                style = styles[i][j]
+                background_color = f"background-color: #{style['background_color'][:6]};" if style['background_color'] else ""
+                font_color = f"color: #{style['font_color'][:6]};" if style['font_color'] else ""
+                font_weight = "font-weight: bold;" if style["bold"] else ""
+                font_style = "font-style: italic;" if style["italic"] else ""
+                cell_style = f"{background_color} {font_color} {font_weight} {font_style} padding: 5px; border: 1px solid #ddd;"
+                html += f"<td style='{cell_style}'>{value if value is not None else ''}</td>"
         html += "</tr>"
     html += "</table>"
     return html
@@ -71,7 +75,7 @@ st.title("Morphological Box Viewer")
 
 # Display the styled morphological box
 st.markdown("### Morphological Box")
-html_table = generate_html_table(df, styles)
+html_table = generate_html_table_with_rowspan(df, styles)
 st.markdown(html_table, unsafe_allow_html=True)
 
 st.markdown("---")
