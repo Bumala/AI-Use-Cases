@@ -35,7 +35,7 @@ def generate_html_table_with_rowspans(df):
 
 
 
-```python
+
                 elif i == 4 and value == "Row 6, Col 2":
                     html += f"<td rowspan='5' style='font-weight: bold; border: 1px solid black; padding: 8px;'>{value}</td>"
                 elif i == 9 and value == "Row 11, Col 2":
