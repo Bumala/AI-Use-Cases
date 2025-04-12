@@ -41,6 +41,10 @@ def generate_html_table(data):
         if i == 0:
             row = [val for val in row if val is not None]
         
+        # If the row has no data (empty row), skip it
+        if not any(row):
+            continue
+        
         # Calculate the column width for each row dynamically based on its length
         col_width = 100 / len(row)
         
