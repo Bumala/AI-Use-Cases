@@ -41,6 +41,16 @@ def generate_html_table(df):
                 filled_columns += 1
             elif j == 0 and i < 5:  # Skip adding cells for rows 2 to 5 in the first column
                 continue
+            elif j == 0 and i == 5:  # Merge rows 6 to 10 in the first column
+                html += f"<td rowspan='5' style='{cell_style()}'>{val}</td>"
+                filled_columns += 1
+            elif j == 0 and 5 < i < 10:  # Skip adding cells for rows 7 to 10 in the first column
+                continue
+            elif j == 0 and i == 10:  # Merge rows 11 and 12 in the first column
+                html += f"<td rowspan='2' style='{cell_style()}'>{val}</td>"
+                filled_columns += 1
+            elif j == 0 and i == 11:  # Skip adding the cell for row 12 in the first column
+                continue
             elif pd.notna(val):  # Check if the cell is not empty (not NaN)
                 html += f"<td style='{cell_style()}'>{val}</td>"
                 filled_columns += 1
