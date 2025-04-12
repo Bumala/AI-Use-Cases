@@ -3,18 +3,18 @@ import pandas as pd
 
 # Defining Data
 data = [
-    ["Impact (What)", "Benefits", "Quality/Scope/Knowledge ", "Time Efficiency"],  
-    [None, "Row 2, Col 2", "Row 2, Col 3", "Row 2, Col 4"],
-    [None, "Row 3, Col 2", "Row 3, Col 3", "Row 3, Col 4"],
-    [None, "Row 4, Col 2", "Row 4, Col 3", "Row 4, Col 4"],
-    [None, "Row 5, Col 2", "Row 5, Col 3", "Row 5, Col 4"],
-    ["Technology (How)", "Row 6, Col 2", "Row 6, Col 3", "Row 6, Col 4"],  # Merged rows 6-10 for "Technology (How)"
-    [None, "Row 7, Col 2", "Row 7, Col 3", "Row 7, Col 4"],
-    [None, "Row 8, Col 2", "Row 8, Col 3", "Row 8, Col 4"],
-    [None, "Row 9, Col 2", "Row 9, Col 3", "Row 9, Col 4"],
-    [None, "Row 10, Col 2", "Row 10, Col 3", "Row 10, Col 4"],
-    ["Place (Where)", "Row 11, Col 2", "Row 11, Col 3", "Row 11, Col 4"],  # Merged rows 11-12 for "Place (Where)"
-    [None, "Row 12, Col 2", "Row 12, Col 3", "Row 12, Col 4"],
+    ["Impact (What)", "Benefits", "Quality/Scope/Knowledge ", "Time Efficiency", "Cost" ],  Merge row 1-5
+    [None, "Row 2, Col 2", "Row 2, Col 3", "Row 2, Col 4", None],
+    [None, "Row 3, Col 2", "Row 3, Col 3", "Row 3, Col 4",None ],
+    [None, "Row 4, Col 2", "Row 4, Col 3", "Row 4, Col 4", None],
+    [None, "Row 5, Col 2", "Row 5, Col 3", "Row 5, Col 4", None],
+    ["Technology (How)", "Row 6, Col 2", "Row 6, Col 3", "Row 6, Col 4", None],  # Merge rows 6-10
+    [None, "Row 7, Col 2", "Row 7, Col 3", "Row 7, Col 4", None],
+    [None, "Row 8, Col 2", "Row 8, Col 3", "Row 8, Col 4", None],
+    [None, "Row 9, Col 2", "Row 9, Col 3", "Row 9, Col 4", None],
+    [None, "Row 10, Col 2", "Row 10, Col 3", "Row 10, Col 4", None],
+    ["Place (Where)", "Row 11, Col 2", "Row 11, Col 3", "Row 11, Col 4", None],  # Merge rows 11-12 
+    [None, "Row 12, Col 2", "Row 12, Col 3", "Row 12, Col 4",None],
 ]
 
 # Define the styles directly
