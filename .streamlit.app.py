@@ -20,21 +20,32 @@ data = [
 df = pd.DataFrame(data)
 
 # Style generator for table cells
+def cell_style(col_index):
+    style = "text-align: left; padding: 5px; border: 1px solid #ddd;"
+    if col_index in [0, 1]:
+        style += " font-weight: bold;"
+    return style
+
+# Generate HTML table
 def generate_html_table(df):
     html = "<table style='border-collapse: collapse; width: 100%;'>"
+    
     for i, row in df.iterrows():
         html += "<tr>"
+        
+        # Special handling for first row
+        if i == 0:
+            for j in range(1, len(row)):
+                val = row[j]
+                style = cell_style(j) + " width: 20%;"
+                html += f"<td style='{style}'>{val}</td>"
+            html += "</tr>"
+            continue
+        
         for j, val in enumerate(row):
-            # Skip the first cell in the first row if it's not a real value
-            if i == 0 and j == 0:
-                continue
-
             style = cell_style(j)
-
-            # Distribute header row cells evenly from column 1 onward
-            if i == 0 and j > 0:
-                html += f"<td style='{style}; width: 20%;'>{val}</td>"
-            elif j == 0:
+            
+            if j == 0:
                 if i == 1 and val == "Impact (What)":
                     html += f"<td rowspan='5' style='{style}'>{val}</td>"
                 elif i == 5 and val == "Technology (How)":
@@ -46,7 +57,12 @@ def generate_html_table(df):
             elif val is not None:
                 html += f"<td style='{style}'>{val}</td>"
             else:
-                html += f"<td style='{cell_style(j)}'></td>"
+                html += f"<td style='{style}'></td>"
+        
         html += "</tr>"
+    
     html += "</table>"
     return html
+
+# Display table in Streamlit
+st.write(generate_html_table(df), unsafe_allow_html=True)
