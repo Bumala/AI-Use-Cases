@@ -36,7 +36,12 @@ def generate_html_table(df):
         filled_columns = 0  # Track the number of columns filled in the current row
 
         for j, val in enumerate(row):
-            if pd.notna(val):  # Check if the cell is not empty (not NaN)
+            if j == 0 and i == 0:  # Merge rows 1 to 5 in the first column
+                html += f"<td rowspan='5' style='{cell_style()}'>{val}</td>"
+                filled_columns += 1
+            elif j == 0 and i < 5:  # Skip adding cells for rows 2 to 5 in the first column
+                continue
+            elif pd.notna(val):  # Check if the cell is not empty (not NaN)
                 html += f"<td style='{cell_style()}'>{val}</td>"
                 filled_columns += 1
 
