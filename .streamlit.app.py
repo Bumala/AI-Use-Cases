@@ -4,7 +4,7 @@ import pandas as pd
 # Data definition
 data = [
     ["Impact (What)", "Benefits", "Quality/Scope/Knowledge", "Time Efficiency", "Cost"],
-    [None, "Focus within Business Model Navigator ", "Customer Segments", "Value proposition ", "Value Chain", "Revenue Model"],
+    [None, "Row 2, Col 2", "Row 2, Col 3", "Row 2, Col 4", None],
     [None, "Row 3, Col 2", "Row 3, Col 3", "Row 3, Col 4", None],
     [None, "Row 4, Col 2", "Row 4, Col 3", "Row 4, Col 4", None],
     [None, "Row 5, Col 2", "Row 5, Col 3", "Row 5, Col 4", None],
@@ -29,24 +29,13 @@ def cell_style(col_index):
 # Generate HTML table
 def generate_html_table(df):
     html = "<table style='border-collapse: collapse; width: 100%;'>"
-    
     for i, row in df.iterrows():
         html += "<tr>"
-        
-        # Special handling for first row
-        if i == 0:
-            for j in range(1, len(row)):
-                val = row[j]
-                style = cell_style(j) + " width: 20%;"
-                html += f"<td style='{style}'>{val}</td>"
-            html += "</tr>"
-            continue
-        
         for j, val in enumerate(row):
             style = cell_style(j)
-            
-            if j == 0:
-                if i == 1 and val == "Impact (What)":
+
+            if j == 0:  # Handle merged cells
+                if i == 0 and val == "Impact (What)":
                     html += f"<td rowspan='5' style='{style}'>{val}</td>"
                 elif i == 5 and val == "Technology (How)":
                     html += f"<td rowspan='5' style='{style}'>{val}</td>"
@@ -57,10 +46,8 @@ def generate_html_table(df):
             elif val is not None:
                 html += f"<td style='{style}'>{val}</td>"
             else:
-                html += f"<td style='{style}'></td>"
-        
+                html += f"<td style='{cell_style(j)}'></td>"
         html += "</tr>"
-    
     html += "</table>"
     return html
 
