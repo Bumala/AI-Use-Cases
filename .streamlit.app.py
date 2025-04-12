@@ -19,18 +19,18 @@ data = [
 
 # Define the styles directly
 styles = [
-    [{"background_color": None, "font_color": "#000000", "bold": True, "italic": False}] * 4,
-    [{"background_color": None, "font_color": "#000000", "bold": False, "italic": False}] * 4,
-    [{"background_color": None, "font_color": "#000000", "bold": False, "italic": False}] * 4,
-    [{"background_color": None, "font_color": "#000000", "bold": False, "italic": False}] * 4,
-    [{"background_color": None, "font_color": "#000000", "bold": False, "italic": False}] * 4,
-    [{"background_color": None, "font_color": "#000000", "bold": True, "italic": False}] * 4,
-    [{"background_color": None, "font_color": "#000000", "bold": False, "italic": False}] * 4,
-    [{"background_color": None, "font_color": "#000000", "bold": False, "italic": False}] * 4,
-    [{"background_color": None, "font_color": "#000000", "bold": False, "italic": False}] * 4,
-    [{"background_color": None, "font_color": "#000000", "bold": False, "italic": False}] * 4,
-    [{"background_color": None, "font_color": "#000000", "bold": True, "italic": False}] * 4,
-    [{"background_color": None, "font_color": "#000000", "bold": False, "italic": False}] * 4,
+    [{"background_color": None, "font_color": "#000000", "bold": True, "italic": False}] * 5,
+    [{"background_color": None, "font_color": "#000000", "bold": False, "italic": False}] * 5,
+    [{"background_color": None, "font_color": "#000000", "bold": False, "italic": False}] * 5,
+    [{"background_color": None, "font_color": "#000000", "bold": False, "italic": False}] * 5,
+    [{"background_color": None, "font_color": "#000000", "bold": False, "italic": False}] * 5,
+    [{"background_color": None, "font_color": "#000000", "bold": True, "italic": False}] * 5,
+    [{"background_color": None, "font_color": "#000000", "bold": False, "italic": False}] * 5,
+    [{"background_color": None, "font_color": "#000000", "bold": False, "italic": False}] * 5,
+    [{"background_color": None, "font_color": "#000000", "bold": False, "italic": False}] * 5,
+    [{"background_color": None, "font_color": "#000000", "bold": False, "italic": False}] * 5,
+    [{"background_color": None, "font_color": "#000000", "bold": True, "italic": False}] * 5,
+    [{"background_color": None, "font_color": "#000000", "bold": False, "italic": False}] * 5,
 ]
 
 # Convert data to a DataFrame
