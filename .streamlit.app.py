@@ -4,7 +4,7 @@ import pandas as pd
 # Updated Data definition
 data = [
     ["Impact (What)", "Benefits", "Quality/Scope/Knowledge", "Time Efficiency", "Cost"],
-    ["", "Row 2, Col 2", "Row 2, Col 3", "Row 2, Col 4", ""],
+    ["", "Row 2, Col 2", "Row 2, Col 3", "Row 2, Col 4", "hhhh", "bbbbb", "cccccccc"],
     ["", "Row 3, Col 2", "Row 3, Col 3", "Row 3, Col 4", ""],
     ["", "Row 4, Col 2", "Row 4, Col 3", "Row 4, Col 4", ""],
     ["", "Row 5, Col 2", "Row 5, Col 3", "Row 5, Col 4", ""],
