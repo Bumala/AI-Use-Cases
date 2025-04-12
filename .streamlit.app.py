@@ -23,16 +23,18 @@ morph_display.reset_index(drop=True, inplace=True)
 # Assign dimension labels based on row indices
 dimension_labels = []
 for idx in range(len(morph_display)):
-    if 3 <= idx + 3 <= 8:   # Excel rows 4–8
+    if 4 <= idx + 4 <= 8:   # Excel rows 4–8
         dimension_labels.append("Impact (What)")
-    elif 9 <= idx + 3 <= 13:  # Excel rows 9–13
+    elif 9 <= idx + 4 <= 13:  # Excel rows 9–13
         dimension_labels.append("Technology (How)")
     else:  # Excel rows 14–15
         dimension_labels.append("Place (Where)")
 morph_display["Dimension"] = dimension_labels
 
-# Extract selectable impact elements
-impact_elements = morph_display[morph_display["Dimension"] == "Impact (What)"]["Impact (What)"].dropna().tolist()
+# Extract selectable impact elements from all columns except 'Dimension' in rows 4–8
+impact_rows = morph_display[morph_display["Dimension"] == "Impact (What)"].drop(columns=["Dimension"])
+impact_elements = impact_rows.values.flatten().tolist()
+impact_elements = [el for el in impact_elements if pd.notna(el)]
 
 # Configure page aesthetics
 st.set_page_config(layout="wide", page_title="AI Use Case Morphological Box")
