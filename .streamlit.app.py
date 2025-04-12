@@ -37,7 +37,7 @@ def generate_html_table(data):
     
     # Iterate over each row in data
     for i, row in enumerate(data):
-        # Remove None values from the first row
+        # Remove None values from the first row to eliminate empty cells
         if i == 0:
             row = [val for val in row if val is not None]
         
