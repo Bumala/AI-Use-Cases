@@ -4,15 +4,15 @@ import pandas as pd
 # Data definition
 data = [
     ["Impact (What)", "Benefits", "Quality/Scope/Knowledge", "Time Efficiency", "Cost"],
-    [None, "Row 2, Col 2", "Row 2, Col 3", "Row 2, Col 4", None],
-    [None, "Row 3, Col 2", "Row 3, Col 3", None],
+    [None, "Row 2, Col 2", "Row 2, Col 3", "Row 2, Col 4"],
+    [None, "Row 3, Col 2", "Row 3, Col 3"],
     [None, "Row 4, Col 2"],
     [None],
-    ["Technology (How)", "Row 6, Col 2", "Row 6, Col 3", "Row 6, Col 4", None],
-    [None, "Row 7, Col 2", "Row 7, Col 3", None],
+    ["Technology (How)", "Row 6, Col 2", "Row 6, Col 3", "Row 6, Col 4"],
+    [None, "Row 7, Col 2", "Row 7, Col 3"],
     [None, "Row 8, Col 2"],
     [None],
-    ["Place (Where)", "Row 11, Col 2", "Row 11, Col 3", "Row 11, Col 4", None],
+    ["Place (Where)", "Row 11, Col 2", "Row 11, Col 3", "Row 11, Col 4"],
     [None, "Row 12, Col 2", "Row 12, Col 3"],
 ]
 
@@ -21,7 +21,7 @@ df = pd.DataFrame(data)
 
 # Style generator for table cells
 def cell_style():
-    return "text-align: left; padding: 5px; border: 1px solid #ddd;"
+    return "text-align: left; padding: 10px; border: 1px solid #ddd;"
 
 # Generate HTML table
 def generate_html_table(df):
@@ -43,7 +43,7 @@ def generate_html_table(df):
                 html += f"<td style='{style}'>{val}</td>"
                 filled_columns += 1
 
-        # Fill remaining columns with a single cell spanning the remaining space
+        # If there are fewer columns, span the remaining space with `colspan`
         if filled_columns < max_columns:
             colspan = max_columns - filled_columns
             html += f"<td colspan='{colspan}' style='{cell_style()}'></td>"
