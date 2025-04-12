@@ -1,28 +1,21 @@
 import streamlit as st
 import pandas as pd
 
-# Updated Data definition
+# Data definition with potential for variable column counts
 data = [
     ["Impact (What)", "Benefits", "Quality/Scope/Knowledge", "Time Efficiency", "Cost"],
-    ["", "Row 2, Col 2", "Row 2, Col 3", "Row 2, Col 4", "hhhh", "bbbbb", "cccccccc"],
-    ["", "Row 3, Col 2", "Row 3, Col 3", "Row 3, Col 4", ""],
-    ["", "Row 4, Col 2", "Row 4, Col 3", "Row 4, Col 4", ""],
-    ["", "Row 5, Col 2", "Row 5, Col 3", "Row 5, Col 4", ""],
-    ["Technology (How)", "Row 6, Col 2", "Row 6, Col 3", "Row 6, Col 4", ""],
-    ["", "Row 7, Col 2", "Row 7, Col 3", "Row 7, Col 4", ""],
-    ["", "Row 8, Col 2", "Row 8, Col 3", "Row 8, Col 4", ""],
-    ["", "Row 9, Col 2", "Row 9, Col 3", "Row 9, Col 4", ""],
-    ["", "Row 10, Col 2", "Row 10, Col 3", "Row 10, Col 4", ""],
-    ["Place (Where)", "Row 11, Col 2", "Row 11, Col 3", "Row 11, Col 4", ""],
-    ["", "Row 12, Col 2", "Row 12, Col 3", "Row 12, Col 4", ""],
+    [None, "Row 2, Col 2", "Row 2, Col 3", "Row 2, Col 4", None, "Additional Col 1", "Additional Col 2"],
+    [None, "Row 3, Col 2", "Row 3, Col 3", "Row 3, Col 4", None],
+    ["Technology (How)", "Row 6, Col 2", "Row 6, Col 3", "Row 6, Col 4", None],
 ]
 
-# Dynamically process the data to adjust layout and remove empty cells
+# Dynamically process the data to pad rows with empty strings
 def process_data(data):
-    processed_data = []
-    for row in data:
-        processed_row = [cell if cell else "" for cell in row]  # Replace None with empty strings
-        processed_data.append(processed_row)
+    # Find the maximum number of columns in any row
+    max_columns = max(len(row) for row in data)
+    
+    # Pad each row with empty strings to match the maximum column count
+    processed_data = [row + [""] * (max_columns - len(row)) for row in data]
     return processed_data
 
 # Convert processed data to a DataFrame
@@ -47,11 +40,9 @@ def generate_html_table(df):
             style = cell_style(j)
             if j == 0:  # Handle merged cells for the first column
                 if i == 0 and val == "Impact (What)":
-                    html += f"<td rowspan='5' style='{style}'>{val}</td>"
-                elif i == 5 and val == "Technology (How)":
-                    html += f"<td rowspan='5' style='{style}'>{val}</td>"
-                elif i == 10 and val == "Place (Where)":
                     html += f"<td rowspan='2' style='{style}'>{val}</td>"
+                elif i == 3 and val == "Technology (How)":
+                    html += f"<td rowspan='1' style='{style}'>{val}</td>"
                 elif val:
                     html += f"<td style='{style}'>{val}</td>"
             else:
