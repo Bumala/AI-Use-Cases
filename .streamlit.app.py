@@ -10,16 +10,29 @@ uploaded_file = "Use Cases.xlsx"
 
 # Load both sheets
 df_use_cases = pd.read_excel(uploaded_file, sheet_name="IBM SPSS Statistics")
-df_morph_raw = pd.read_excel(uploaded_file, sheet_name=1)
+df_morph = pd.read_excel(uploaded_file, sheet_name=1, header=None)
 
-# Fix headers and extract morphological box
-df_morph_raw.columns = df_morph_raw.iloc[1]  # Set row 1 as header (Impact, Technology, Place)
-df_morph = df_morph_raw[2:].reset_index(drop=True)  # Skip first 2 rows
+# Extract headers from Excel row 3 (index 2)
+headers = df_morph.iloc[2, 1:].tolist()
 
-morph_display = df_morph.copy()
+# Extract morphological box data from Excel rows 4 to 15 (indices 3 to 14)
+morph_display = df_morph.iloc[3:15, 1:]
+morph_display.columns = headers
+morph_display.reset_index(drop=True, inplace=True)
 
-# Get list of Impact elements (non-NaN from Impact column)
-impact_elements = morph_display['Impact'].dropna().tolist()
+# Assign dimension labels based on row indices
+dimension_labels = []
+for idx in range(len(morph_display)):
+    if 3 <= idx + 3 <= 8:   # Excel rows 4–8
+        dimension_labels.append("Impact (What)")
+    elif 9 <= idx + 3 <= 13:  # Excel rows 9–13
+        dimension_labels.append("Technology (How)")
+    else:  # Excel rows 14–15
+        dimension_labels.append("Place (Where)")
+morph_display["Dimension"] = dimension_labels
+
+# Extract selectable impact elements
+impact_elements = morph_display[morph_display["Dimension"] == "Impact (What)"]["Impact (What)"].dropna().tolist()
 
 # Configure page aesthetics
 st.set_page_config(layout="wide", page_title="AI Use Case Morphological Box")
@@ -59,24 +72,26 @@ if selected_impacts:
     st.success(f"**{top_use_case.iloc[0]}** with a total relevance score of **{top_use_case['Total Score']}**")
 
     # Highlight Technology and Place dimensions
-    tech_place_data = morph_display.copy()
+    highlight_display = morph_display.copy()
     top_index = df_use_cases["Total Score"].idxmax()
     selected_row = df_use_cases.loc[top_index]
 
-    for col in ["Technology", "Place"]:
-        for idx, val in tech_place_data[col].items():
+    for i, row in highlight_display.iterrows():
+        dim = row["Dimension"]
+        for col in highlight_display.columns[:-1]:  # ignore Dimension column
+            val = row[col]
             if pd.isna(val):
                 continue
             if selected_row.get(val, 0) == 2:
-                tech_place_data.at[idx, col] = f"<span style='background-color:#33ccff; color:black; padding:4px; border-radius:6px'>{val}</span>"
+                highlight_display.at[i, col] = f"<span style='background-color:#33ccff; color:black; padding:4px; border-radius:6px'>{val}</span>"
             elif selected_row.get(val, 0) == 1:
-                tech_place_data.at[idx, col] = f"<span style='background-color:#6666ff; color:white; padding:4px; border-radius:6px'>{val}</span>"
+                highlight_display.at[i, col] = f"<span style='background-color:#6666ff; color:white; padding:4px; border-radius:6px'>{val}</span>"
 
     # Show the morphological box with HTML formatting
     st.markdown("---")
     st.markdown("### Full Morphological Box")
     st.markdown("""<div style='display: flex; justify-content: center;'>""", unsafe_allow_html=True)
-    st.markdown(tech_place_data.to_html(escape=False, index=False), unsafe_allow_html=True)
+    st.markdown(highlight_display.drop(columns="Dimension").to_html(escape=False, index=False), unsafe_allow_html=True)
     st.markdown("</div>", unsafe_allow_html=True)
 
     st.markdown("---")
