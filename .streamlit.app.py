@@ -3,7 +3,7 @@ import pandas as pd
 
 # Defining Data
 data = [
-    ["Impact (What)", "Benefits", "Quality/Scope/Knowledge ", "Time Efficiency", "Cost"],  
+    ["Impact (What)", "Benefits", "Quality/Scope/Knowledge ", "Time Efficiency"],  
     [None, "Row 2, Col 2", "Row 2, Col 3", "Row 2, Col 4"],
     [None, "Row 3, Col 2", "Row 3, Col 3", "Row 3, Col 4"],
     [None, "Row 4, Col 2", "Row 4, Col 3", "Row 4, Col 4"],
