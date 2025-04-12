@@ -4,9 +4,9 @@ import pandas as pd
 # Data definition
 data = [
     ["Impact (What)", "Benefits", "Quality/Scope/Knowledge", "Time Efficiency", "Cost"],
-    [None, "Row 2, Col 2", "Row 2, Col 3", "Row 2, Col 4", None],
-    [None, "Row 3, Col 2", "Row 3, Col 3", "Row 3, Col 4", None],
-    [None, "Row 4, Col 2", "Row 4, Col 3", "Row 4, Col 4", None],
+    [None, "Focus within Business Model Navigator", "Value Proposition", "Value Chain", "Revenue Model"],
+    [None, "Innovation Type", "Incremental", "Radical","Sustaining", "Disruptive"],
+    [None, "Aim", "Row 4, Col 3", "Row 4, Col 4", None],
     [None, "Row 5, Col 2", "Row 5, Col 3", "Row 5, Col 4", None],
     ["Technology (How)", "Row 6, Col 2", "Row 6, Col 3", "Row 6, Col 4", None],
     [None, "Row 7, Col 2", "Row 7, Col 3", "Row 7, Col 4", None],
