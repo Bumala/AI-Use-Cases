@@ -1,11 +1,11 @@
 import streamlit as st
 import pandas as pd
 
-# Data definition
+# Updated Data: first row has only 5 entries, matching the other rows
 data = [
     ["Impact (What)", "Benefits", "Quality/Scope/Knowledge", "Time Efficiency", "Cost"],
     [None, "Focus within Business Model Navigator", "Value Proposition", "Value Chain", "Revenue Model"],
-    [None, "Innovation Type", "Incremental", "Radical","Sustaining", "Disruptive"],
+    [None, "Innovation Type", "Incremental", "Radical", "Sustaining"],
     [None, "Aim", "Row 4, Col 3", "Row 4, Col 4", None],
     [None, "Row 5, Col 2", "Row 5, Col 3", "Row 5, Col 4", None],
     ["Technology (How)", "Row 6, Col 2", "Row 6, Col 3", "Row 6, Col 4", None],
@@ -19,22 +19,24 @@ data = [
 
 df = pd.DataFrame(data)
 
-# Style generator for table cells
-def cell_style(col_index):
-    style = "text-align: left; padding: 5px; border: 1px solid #ddd;"
-    if col_index in [0, 1]:
-        style += " font-weight: bold;"
-    return style
+# Bold style for first and second columns
+def cell_style(j):
+    base = "text-align: left; padding: 6px; border: 1px solid #ddd;"
+    if j == 0 or j == 1:
+        return base + " font-weight: bold;"
+    return base
 
-# Generate HTML table
+# HTML table generator
 def generate_html_table(df):
-    html = "<table style='border-collapse: collapse; width: 100%;'>"
+    html = "<table style='border-collapse: collapse; width: 100%; table-layout: fixed;'>"
+
     for i, row in df.iterrows():
         html += "<tr>"
+
         for j, val in enumerate(row):
             style = cell_style(j)
 
-            if j == 0:  # Handle merged cells
+            if j == 0:
                 if i == 0 and val == "Impact (What)":
                     html += f"<td rowspan='5' style='{style}'>{val}</td>"
                 elif i == 5 and val == "Technology (How)":
@@ -46,10 +48,12 @@ def generate_html_table(df):
             elif val is not None:
                 html += f"<td style='{style}'>{val}</td>"
             else:
-                html += f"<td style='{cell_style(j)}'></td>"
+                html += f"<td style='{style}'></td>"
+
         html += "</tr>"
+
     html += "</table>"
     return html
 
-# Display table in Streamlit
+# Show table in Streamlit
 st.write(generate_html_table(df), unsafe_allow_html=True)
