@@ -7,7 +7,7 @@ data = [
     [None, "Row 2, Col 2", "Row 2, Col 3", "Row 2, Col 4"],
     [None, "Row 3, Col 2", "Row 3, Col 3"],
     [None, "Row 4, Col 2"],
-    [None],
+    [None, "bbbbb"],
     ["Technology (How)", "Row 6, Col 2", "Row 6, Col 3", "Row 6, Col 4"],
     [None, "Row 7, Col 2", "Row 7, Col 3"],
     [None, "Row 8, Col 2"],
