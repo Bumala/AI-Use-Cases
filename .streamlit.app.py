@@ -1,3 +1,8 @@
+import streamlit as st
+import pandas as pd
+from openpyxl import load_workbook
+from io import BytesIO
+
 # Load the Excel file
 uploaded_file = "Use Cases.xlsx"
 
@@ -53,3 +58,6 @@ st.title("Morphological Box Viewer")
 st.markdown("### Morphological Box")
 html_table = generate_html_table(df, styles)
 st.markdown(html_table, unsafe_allow_html=True)
+
+st.markdown("---")
+st.info("This morphological box is displayed with the formatting extracted from the Excel file.")
