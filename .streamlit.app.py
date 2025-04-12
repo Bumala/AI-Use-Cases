@@ -1,20 +1,63 @@
-# Web app using Streamlit to display a morphological box from an Excel file
 import streamlit as st
 import pandas as pd
+from openpyxl import load_workbook
+from io import BytesIO
 
-# Load data from the Excel file
+# Load the Excel file
 uploaded_file = "Use Cases.xlsx"
 
-# Load the second sheet (morphological box)
-df_morph = pd.read_excel(uploaded_file, sheet_name=1, header=None)
+# Load workbook using openpyxl
+wb = load_workbook(uploaded_file, data_only=True)
+sheet = wb.worksheets[1]  # Load the second sheet (0-based index)
 
-# Streamlit page configuration
+# Extract the data and formatting
+data = []
+styles = []
+
+# Iterate through rows and columns to extract values and styles
+for row in sheet.iter_rows():
+    row_data = []
+    row_styles = []
+    for cell in row:
+        row_data.append(cell.value)
+        cell_style = {
+            "background_color": cell.fill.fgColor.rgb if cell.fill.fgColor.type == "rgb" else None,
+            "font_color": cell.font.color.rgb if cell.font.color and cell.font.color.type == "rgb" else "#000000",
+            "bold": cell.font.bold,
+            "italic": cell.font.italic,
+        }
+        row_styles.append(cell_style)
+    data.append(row_data)
+    styles.append(row_styles)
+
+# Convert data to a DataFrame
+df = pd.DataFrame(data)
+
+# Generate styled HTML table
+def generate_html_table(df, styles):
+    html = "<table style='border-collapse: collapse; width: 100%;'>"
+    for i, row in df.iterrows():
+        html += "<tr>"
+        for j, value in row.items():
+            style = styles[i][j]
+            background_color = f"background-color: #{style['background_color'][:6]};" if style['background_color'] else ""
+            font_color = f"color: #{style['font_color'][:6]};" if style['font_color'] else ""
+            font_weight = "font-weight: bold;" if style["bold"] else ""
+            font_style = "font-style: italic;" if style["italic"] else ""
+            cell_style = f"{background_color} {font_color} {font_weight} {font_style} padding: 5px; border: 1px solid #ddd;"
+            html += f"<td style='{cell_style}'>{value if value is not None else ''}</td>"
+        html += "</tr>"
+    html += "</table>"
+    return html
+
+# Streamlit app
 st.set_page_config(layout="wide", page_title="Morphological Box Viewer")
 st.title("Morphological Box Viewer")
 
-# Display the morphological box exactly as it appears in the Excel file
+# Display the styled morphological box
 st.markdown("### Morphological Box")
-st.dataframe(df_morph, height=600)
+html_table = generate_html_table(df, styles)
+st.markdown(html_table, unsafe_allow_html=True)
 
 st.markdown("---")
-st.info("This morphological box is displayed exactly as it appears in the Excel file.")
+st.info("This morphological box is displayed with the formatting extracted from the Excel file.")
