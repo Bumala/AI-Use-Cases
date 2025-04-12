@@ -1,42 +1,40 @@
 import streamlit as st
 import pandas as pd
 
-# Data definition
+# Updated Data definition
 data = [
     ["Impact (What)", "Benefits", "Quality/Scope/Knowledge", "Time Efficiency", "Cost"],
-    [None, "Row 2, Col 2", "Row 2, Col 3", "Row 2, Col 4", None],
-    [None, "Row 3, Col 2", "Row 3, Col 3", "Row 3, Col 4", None],
-    [None, "Row 4, Col 2", "Row 4, Col 3", "Row 4, Col 4", None],
-    [None, "Row 5, Col 2", "Row 5, Col 3", "Row 5, Col 4", None],
-    ["Technology (How)", "Row 6, Col 2", "Row 6, Col 3", "Row 6, Col 4", None],
-    [None, "Row 7, Col 2", "Row 7, Col 3", "Row 7, Col 4", None],
-    [None, "Row 8, Col 2", "Row 8, Col 3", "Row 8, Col 4", None],
-    [None, "Row 9, Col 2", "Row 9, Col 3", "Row 9, Col 4", None],
-    [None, "Row 10, Col 2", "Row 10, Col 3", "Row 10, Col 4", None],
-    ["Place (Where)", "Row 11, Col 2", "Row 11, Col 3", "Row 11, Col 4", None],
-    [None, "Row 12, Col 2", "Row 12, Col 3", "Row 12, Col 4", None],
+    ["", "Row 2, Col 2", "Row 2, Col 3", "Row 2, Col 4", ""],
+    ["", "Row 3, Col 2", "Row 3, Col 3", "Row 3, Col 4", ""],
+    ["", "Row 4, Col 2", "Row 4, Col 3", "Row 4, Col 4", ""],
+    ["", "Row 5, Col 2", "Row 5, Col 3", "Row 5, Col 4", ""],
+    ["Technology (How)", "Row 6, Col 2", "Row 6, Col 3", "Row 6, Col 4", ""],
+    ["", "Row 7, Col 2", "Row 7, Col 3", "Row 7, Col 4", ""],
+    ["", "Row 8, Col 2", "Row 8, Col 3", "Row 8, Col 4", ""],
+    ["", "Row 9, Col 2", "Row 9, Col 3", "Row 9, Col 4", ""],
+    ["", "Row 10, Col 2", "Row 10, Col 3", "Row 10, Col 4", ""],
+    ["Place (Where)", "Row 11, Col 2", "Row 11, Col 3", "Row 11, Col 4", ""],
+    ["", "Row 12, Col 2", "Row 12, Col 3", "Row 12, Col 4", ""],
 ]
 
-# Dynamically process the data to remove empty cells and adjust layout
+# Dynamically process the data to adjust layout and remove empty cells
 def process_data(data):
     processed_data = []
     for row in data:
-        # Remove `None` values and append only rows with content
-        processed_row = [cell for cell in row if cell is not None]
-        if processed_row:
-            processed_data.append(processed_row)
+        processed_row = [cell if cell else "" for cell in row]  # Replace None with empty strings
+        processed_data.append(processed_row)
     return processed_data
 
-# Convert processed data to DataFrame
+# Convert processed data to a DataFrame
 processed_data = process_data(data)
 df = pd.DataFrame(processed_data)
 
 # Style generator for table cells
 def cell_style(col_index):
     style = "text-align: left; padding: 5px; border: 1px solid #ddd;"
-    if col_index == 0:  # For the first column
+    if col_index == 0:  # First column (merged cells)
         style += " font-weight: bold; background-color: #f0f0f0;"
-    elif col_index == 1:  # For the second column
+    elif col_index == 1:  # Second column
         style += " font-weight: bold;"
     return style
 
@@ -54,7 +52,7 @@ def generate_html_table(df):
                     html += f"<td rowspan='5' style='{style}'>{val}</td>"
                 elif i == 10 and val == "Place (Where)":
                     html += f"<td rowspan='2' style='{style}'>{val}</td>"
-                else:
+                elif val:
                     html += f"<td style='{style}'>{val}</td>"
             else:
                 html += f"<td style='{style}'>{val}</td>"
