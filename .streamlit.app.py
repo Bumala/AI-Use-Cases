@@ -21,14 +21,18 @@ data = [
 df = pd.DataFrame(data)
 
 # Function to apply bold styling only to the first and second columns
-def highlight_first_two_columns(val, col_index):
-    if col_index == 0 or col_index == 1:
-        return "font-weight: bold;"  # Bold font
-    return ""  # Default style for other columns
-
-# Use Pandas Styler to apply styles dynamically
 def style_dataframe(df):
-    return df.style.applymap_index(lambda _, col: highlight_first_two_columns(_, col), axis=1)
+    def highlight(val, col_index):
+        if col_index == 0 or col_index == 1:  # Bold only for first and second columns
+            return f"font-weight: bold;"
+        return ""  # Default for other columns
+
+    # Apply styles to the DataFrame
+    styled_df = df.style.applymap(lambda val: highlight(val, col_index), axis=1)
+    return styled_df
+
+# Generate styled DataFrame
+styled_table = style_dataframe(df)
 
 # Display the styled table in Streamlit
-streamlit.write(style_renderer)
+st.write(styled_table)
