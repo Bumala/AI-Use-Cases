@@ -3,7 +3,7 @@ import pandas as pd
 
 # Define the data directly (with content and merged cells)
 data = [
-    ["Impact (What)", "Column 2", "Column 3", "Column 4"],  # Merged rows 1-5 for "Impact (What)"
+    ["Impact (What)", "Benefits", "Column 3", "Column 4"],  # Merged rows 1-5 for "Impact (What)"
     [None, "Row 2, Col 2", "Row 2, Col 3", "Row 2, Col 4"],
     [None, "Row 3, Col 2", "Row 3, Col 3", "Row 3, Col 4"],
     [None, "Row 4, Col 2", "Row 4, Col 3", "Row 4, Col 4"],
