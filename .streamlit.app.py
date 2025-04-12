@@ -33,6 +33,18 @@ for row in sheet.iter_rows():
 data = data[3:-7]
 styles = styles[3:-7]
 
+# Add a merged cell for "Impact (What)" in the first column
+for row in styles[:5]:
+    for cell in row:
+        cell["background_color"] = "FFDDDD"  # Example background color for merged area
+        cell["font_color"] = "000000"  # Black text
+        cell["bold"] = True
+        cell["italic"] = False
+
+data[0][0] = "Impact (What)"  # Set value for merged cell
+for i in range(1, 5):
+    data[i][0] = None  # Clear subsequent rows in the merged column
+
 # Convert data to a DataFrame
 df = pd.DataFrame(data)
 
