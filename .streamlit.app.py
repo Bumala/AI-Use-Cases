@@ -37,13 +37,14 @@ styles = styles[3:-7]
 df = pd.DataFrame(data)
 
 # Generate styled HTML table with rowspan for merged cells
-def generate_html_table_with_rowspan(df, styles):
+def generate_html_table_with_rowspans(df, styles):
     html = "<table style='border-collapse: collapse; width: 100%;'>"
     for i, row in df.iterrows():
         html += "<tr>"
         for j, value in row.items():
             if j == 0:  # First column
-                if i == 0:  # Add rowspan for the first cell in the first column
+                # Merge rows 1-5 for "Impact (What)"
+                if i == 0:
                     style = styles[i][j]
                     background_color = f"background-color: #{style['background_color'][:6]};" if style['background_color'] else ""
                     font_color = f"color: #{style['font_color'][:6]};" if style['font_color'] else ""
@@ -51,9 +52,23 @@ def generate_html_table_with_rowspan(df, styles):
                     font_style = "font-style: italic;" if style["italic"] else ""
                     cell_style = f"{background_color} {font_color} {font_weight} {font_style} padding: 5px; border: 1px solid #ddd;"
                     html += f"<td rowspan='5' style='{cell_style}'>Impact (What)</td>"
-                elif i < 5:  # Skip rows 1 to 4 in the first column
-                    continue
-                else:  # Render remaining cells in the first column
+                elif i < 5:
+                    continue  # Skip rows 2 to 5
+
+                # Merge rows 6-10 for "Technology (How)"
+                elif i == 5:
+                    style = styles[i][j]
+                    background_color = f"background-color: #{style['background_color'][:6]};" if style['background_color'] else ""
+                    font_color = f"color: #{style['font_color'][:6]};" if style['font_color'] else ""
+                    font_weight = "font-weight: bold;" if style["bold"] else ""
+                    font_style = "font-style: italic;" if style["italic"] else ""
+                    cell_style = f"{background_color} {font_color} {font_weight} {font_style} padding: 5px; border: 1px solid #ddd;"
+                    html += f"<td rowspan='5' style='{cell_style}'>Technology (How)</td>"
+                elif 5 < i < 10:
+                    continue  # Skip rows 7 to 10
+
+                # Render remaining cells in the first column
+                else:
                     style = styles[i][j]
                     background_color = f"background-color: #{style['background_color'][:6]};" if style['background_color'] else ""
                     font_color = f"color: #{style['font_color'][:6]};" if style['font_color'] else ""
@@ -79,7 +94,7 @@ st.title("Morphological Box Viewer")
 
 # Display the styled morphological box
 st.markdown("### Morphological Box")
-html_table = generate_html_table_with_rowspan(df, styles)
+html_table = generate_html_table_with_rowspans(df, styles)
 st.markdown(html_table, unsafe_allow_html=True)
 
 st.markdown("---")
