@@ -17,24 +17,40 @@ data = [
     [None, "Row 12, Col 2", "Row 12, Col 3", "Row 12, Col 4", None],
 ]
 
+# Remove the first row and first column
+data = [row[1:] for row in data[1:]]
+
 # Convert data to a DataFrame
 df = pd.DataFrame(data)
 
-# Apply styling to bold the first and second columns
-def highlight_columns(val, col_index):
-    if col_index == 0 or col_index == 1:  # Bold only for first and second columns
-        return "font-weight: bold;"
-    return ""
+# Generate styled HTML table with rowspan for merged cells
+def generate_html_table_with_rowspans(df):
+    html = "<table style='border-collapse: collapse; width: 100%;'>"
+    for i, row in df.iterrows():
+        html += "<tr>"
+        for j, value in row.items():
+            if j == 0:  # Handle merged cells for the first column
+                if i == 0 and value == "Benefits":
+                    html += f"<td rowspan='4' style='font-weight: bold; border: 1px solid black; padding: 8px;'>{value}</td>"
 
-# Build the styled DataFrame
-def style_dataframe(df):
-    styled_table = df.style.applymap(
-        lambda val: "font-weight: bold;" if pd.notna(val) else "", subset=[0, 1]
-    )
-    return styled_table
+Here is the rest of the corrected implementation:
 
-# Generate the styled DataFrame
-styled_table = style_dataframe(df)
+```python
+                elif i == 4 and value == "Row 6, Col 2":
+                    html += f"<td rowspan='5' style='font-weight: bold; border: 1px solid black; padding: 8px;'>{value}</td>"
+                elif i == 9 and value == "Row 11, Col 2":
+                    html += f"<td rowspan='2' style='font-weight: bold; border: 1px solid black; padding: 8px;'>{value}</td>"
+                elif value is not None:
+                    html += f"<td style='font-weight: bold; border: 1px solid black; padding: 8px;'>{value}</td>"
+            else:  # Handle other columns
+                style = "font-weight: bold;" if j == 1 else ""  # Bold only for second column
+                html += f"<td style='{style} border: 1px solid black; padding: 8px;'>{value if value is not None else ''}</td>"
+        html += "</tr>"
+    html += "</table>"
+    return html
 
-# Display the styled table in Streamlit
-st.write(styled_table.to_html(), unsafe_allow_html=True)
+# Generate the HTML table
+html_table = generate_html_table_with_rowspans(df)
+
+# Display in Streamlit
+st.write(html_table, unsafe_allow_html=True)
