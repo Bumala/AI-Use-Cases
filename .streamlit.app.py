@@ -4,7 +4,7 @@ import pandas as pd
 # Updated Data: first row has only 5 entries, matching the other rows
 data = [
     ["Impact (What)", "Benefits", "Quality/Scope/Knowledge", "Time Efficiency", "Cost"],
-    [None, "Focus within Business Model Navigator", "Value Proposition", "Value Chain", "Revenue Model"],
+    [None, "Focus within Business Model Navigator","Customer Segments", "Value Proposition", "Value Chain", "Revenue Model"],
     [None, "Innovation Type", "Incremental", "Radical", "Sustaining"],
     [None, "Aim", "Row 4, Col 3", "Row 4, Col 4", None],
     [None, "Row 5, Col 2", "Row 5, Col 3", "Row 5, Col 4", None],
