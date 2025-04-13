@@ -25,8 +25,9 @@ data = [
 
 df = pd.DataFrame(data)
 
-def generate_morphological_box_html(df):
-    html = "<table style='border-collapse: collapse; width: 100%;'>"
+def generate_square_morphological_box_html(df):
+    html = f"<div style='width: 600px; aspect-ratio: 1 / 1; border: 1px solid #ccc; display: flex; align-items: center; justify-content: center;'>"
+    html += "<table style='border-collapse: collapse; width: 100%; height: 100%;'>"
     for i in range(len(df)):
         html += "<tr>"
         for j in range(len(df.columns)):
@@ -35,27 +36,14 @@ def generate_morphological_box_html(df):
             rowspan = 1
             colspan = 1
 
-            # Manual Spanning Logic based on visual interpretation
-            if i == 0 and j == 0:
-                rowspan = 5
-                style += "vertical-align: middle;"
-            elif i in [1, 2, 3, 4] and j == 0:
-                continue
-            elif i == 5 and j == 0:
-                rowspan = 4
-                style += "vertical-align: middle;"
-            elif i in [6, 7, 8] and j == 0:
-                continue
-            elif i == 9 and j == 0:
-                rowspan = 3
-                style += "vertical-align: middle;"
-            elif i in [10, 11] and j == 0:
-                continue
-            elif i == 12 and j == 0:
-                rowspan = 7
-                style += "vertical-align: middle;"
-            elif i in [13, 14, 15, 16, 17, 18] and j == 0:
-                continue
+            if i == 0 and j == 0: rowspan = 5; style += "vertical-align: middle;"
+            elif i in [1, 2, 3, 4] and j == 0: continue
+            elif i == 5 and j == 0: rowspan = 4; style += "vertical-align: middle;"
+            elif i in [6, 7, 8] and j == 0: continue
+            elif i == 9 and j == 0: rowspan = 3; style += "vertical-align: middle;"
+            elif i in [10, 11] and j == 0: continue
+            elif i == 12 and j == 0: rowspan = 7; style += "vertical-align: middle;"
+            elif i in [13, 14, 15, 16, 17, 18] and j == 0: continue
 
             if i == 0 and j == 1: colspan = 5
             elif i == 1 and j == 1: colspan = 7
@@ -77,9 +65,10 @@ def generate_morphological_box_html(df):
             elif i == 18 and j == 1: colspan = 3
 
             if pd.notna(value) and value != "":
-                html += f"<td style='{style}' rowspan='{rowspan}' colspan='{colspan}'>{value}</td>"
+                html += f"<td style='{style}; width: auto !important; height: auto !important;' rowspan='{rowspan}' colspan='{colspan}'>{value}</td>"
         html += "</tr>"
     html += "</table>"
+    html += "</div>"
     return html
 
-st.write(generate_morphological_box_html(df), unsafe_allow_html=True)
+st.write(generate_square_morphological_box_html(df), unsafe_allow_html=True)
