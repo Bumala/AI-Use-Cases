@@ -57,12 +57,6 @@ def generate_html_table(df):
 
                     
 
-                #elif i == 1 and j == 2:  # Make the fourth column in the first row wider
-                    html += f"<td colspan='2' style='text-align: left; padding: 10px;'>{val}</td>"
-                    
-                #elif i == 1 and j == 3:  # Make the fourth column in the first row wider
-                    html += f"<td colspan='2' style='text-align: left; padding: 10px;'>{val}</td>"
-
                 elif i == 1 and j == 4:  # Make the fourth column in the first row wider
                     html += f"<td colspan='2' style='text-align: left; padding: 10px;'>{val}</td>"
 
@@ -70,12 +64,6 @@ def generate_html_table(df):
                     html += f"<td colspan='2' style='text-align: left; padding: 10px;'>{val}</td>"
 
                     
-
-                #elif i == 2 and j == 2:  # Make the fourth column in the first row wider
-                    html += f"<td colspan='2' style='text-align: left; padding: 10px;'>{val}</td>"
-                    
-                #elif i == 2 and j == 3:  # Make the fourth column in the first row wider
-                    html += f"<td colspan='2' style='text-align: left; padding: 10px;'>{val}</td>"
 
                 elif i == 2 and j == 4:  # Make the fourth column in the first row wider
                     html += f"<td colspan='2' style='text-align: left; padding: 10px;'>{val}</td>"
@@ -102,8 +90,6 @@ def generate_html_table(df):
                 elif i == 4 and j == 3:  # Make the fourth column in the first row wider
                     html += f"<td colspan='3' style='text-align: left; padding: 10px;'>{val}</td>"
 
-
-                
 
                 elif i == 5 and j == 2:  # Make the fourth column in the first row wider
                     html += f"<td colspan='2' style='text-align: left; padding: 10px;'>{val}</td>"
