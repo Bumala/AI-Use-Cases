@@ -1,27 +1,3 @@
-import streamlit as st
-import pandas as pd
-
-# Set the page layout to "wide"
-st.set_page_config(layout="wide")
-
-# Data definition
-data = [
-    ["Impact (What)", "Benefits", "Quality/Scope/Knowledge", "Time Efficiency", "Cost"],
-    [None, "Focus within Business Model Navigator", "Customer Segments", "Value Proposition", "Value Chain", "Revenue Model"],
-    [None, "Innovation Type", "Incremental", "Radical", "Sustaining", "Disruptive"],
-    [None, "Aim", "Product Innovation", "Process Innovation", "Business Model Innovation"],
-    [None, "Ambidexterity", "Exploration", "Exploitation"],
-    ["Technology (How)", "AI Role", "Automaton", "Assistant", "Partner"],
-    [None, "AI Concepts", "Machine Learning", "Deep Learning", "Artificial Neural Networks", "Natural Language Processing", "Computer Vision", "Robotics"],
-    [None, "Analytics Focus", "Descriptive", "Diagnostic", "Predictive", "Prescriptive"],
-    [None, "Analytics Problem", "Description/ Summary", "Clustering", "Classification", "Dependency Analysis", "Regression"],
-    [None, "Data Type", "Customer Data", "Machine Data", "Business Data (Internal Data)", "Market Data", "Public & Regulatory Data", "Synthetic Data"],
-    ["Place (Where)", "Innovation Phase", "Front End", "Development", "Market Introduction"],
-    [None, "R&D", "Manufacturing", "Marketing & Sales", "Customer Service"],
-]
-
-df = pd.DataFrame(data)
-
 # Function to generate the HTML table
 def generate_html_table(df):
     # Define consistent widths
@@ -30,8 +6,9 @@ def generate_html_table(df):
     base_cell_width = 150
     cell_height = 50
 
-    def style(width):
-        return f"text-align: left; padding: 10px; border: 1px solid #ccc; width: {width}px; height: {cell_height}px;"
+    def style(width, bold=False):
+        bold_style = "font-weight: bold;" if bold else ""
+        return f"text-align: center; padding: 10px; border: 1px solid #ccc; width: {width}px; height: {cell_height}px; {bold_style}"
 
     # Define colspans
     colspan_2 = {
@@ -60,15 +37,15 @@ def generate_html_table(df):
 
             if j == 0:
                 if i == 0:
-                    html += f"<td rowspan='5' style='{style(first_col_width)}'>{val}</td>"
+                    html += f"<td rowspan='5' style='{style(first_col_width, bold=True)}'>{val}</td>"
                 elif i == 5:
-                    html += f"<td rowspan='5' style='{style(first_col_width)}'>{val}</td>"
+                    html += f"<td rowspan='5' style='{style(first_col_width, bold=True)}'>{val}</td>"
                 elif i == 10:
-                    html += f"<td rowspan='2' style='{style(first_col_width)}'>{val}</td>"
+                    html += f"<td rowspan='2' style='{style(first_col_width, bold=True)}'>{val}</td>"
                 else:
                     continue
             elif j == 1:
-                html += f"<td style='{style(second_col_width)}'>{val}</td>"
+                html += f"<td style='{style(second_col_width, bold=True)}'>{val}</td>"
             elif (i, j) in colspan_3:
                 html += f"<td colspan='3' style='{style(base_cell_width * 3)}'>{val}</td>"
             elif (i, j) in colspan_2:
