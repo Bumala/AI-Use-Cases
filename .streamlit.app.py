@@ -30,7 +30,9 @@ def generate_html_table(df):
         html += "<tr>"
         for j, val in enumerate(row):
             if pd.notna(val):  # Only add non-empty cells
-                if j == 0 and i == 0:  # Merge rows 1 to 5 in the first column
+                if i == 0 and j == 3:  # Change the specific cell in the first row, fourth column
+                    html += f"<td style='text-align: left; padding: 10px; border: 1px solid #ddd; width: 400px;'>{val}</td>"
+                elif j == 0 and i == 0:  # Merge rows 1 to 5 in the first column
                     html += f"<td rowspan='5' style='text-align: left; padding: 10px; border: 1px solid #ddd;'>{val}</td>"
                 elif j == 0 and i == 5:  # Merge rows 6 to 10 in the first column
                     html += f"<td rowspan='5' style='text-align: left; padding: 10px; border: 1px solid #ddd;'>{val}</td>"
