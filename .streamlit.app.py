@@ -1,64 +1,119 @@
 import streamlit as st
 import pandas as pd
 
-# Data definition
+# Data for the Morphological Box (as closely mapped from the image)
 data = [
-    ["Impact (What)", "Benefits", "Quality/Scope/Knowledge", "Time Efficiency", "Cost"],
-    [None, "Focus within Business Model Navigator", "Customer Segments", "Value Proposition", "Value Chain", "Revenue Model"],
-    [None, "Innovation Type", "Incremental", "Radical", "Sustaining", "Disruptive"],
-    [None, "Aim", "Product Innovation", "Process Innovation", "Business Model Innovation"],
-    [None, "Ambidexterity", "Exploration", "Exploitation"],
-    ["Technology (How)", "AI Role", "Automaton", "Assistant", "Partner"],
-    [None, "AI Concepts", "Machine Learning", "Deep Learning", "Artificial Neural Networks", "Natural Language Processing", "Computer Vision", "Robotics"],
-    [None, "Analytics Focus", "Descriptive", "Diagnostic", "Predictive", "Prescriptive"],
-    [None, "Analytics Problem", "Description/Summary", "Clustering", "Classification", "Dependency Analysis", "Regression"],
-    [None, "Data Type", "Customer Data", "Machine Data", "Business Data (Internal Data)", "Market Data", "Public & Regulatory Data", "Synthetic Data"],
-    ["Place (Where)", "Innovation Phase", "Front End", "Development", "Market Introduction"],
-    [None, "R&D", "Manufacturing", "Marketing & Sales", "Customer Service"],
+    ["Teaching Method", "Knowledge", "Factual", "Conceptual", "Procedural", "Metacognitive"],
+    [None, "Cognitive processes", "Remembering", "Understanding", "Applying", "Analyzing", "Evaluating", "Creating"],
+    [None, "Content presentation", "Expository", None, None, "Explorative"],
+    [None, "Knowledge acquisition", "Cumulative", None, None, "Cyclic"],
+    [None, "Level", "Undergraduate", "Master", "MBA"],
+    ["Course setting", "Course format", "Lecture", "Tutorial", "Workshop", "Project", "Hackathon", "Innovation lab", "Innovation contest"],
+    [None, "Participation as", "Individual", None, None, "Team"],
+    [None, "Team composition", "Monodisciplinary", None, None, "Interdisciplinary"],
+    [None, "Third party involvement", "Involved", None, None, "No involved"],
+    ["Course Content", "Data value chain", "Data generation", "Data acquisition", "Data processing", "Data aggregation", "Data Analytics", "Visualization"],
+    [None, "Analytics perspective", "Descriptive", "Predictive", "Prescriptive"],
+    [None, "Analytics technologies", "(Big) Data analytics", "Text analytics", "Network analytics", "Streaming analytics", "Web analytics"],
+    ["Innovation Approach", "Innovation method", "Grounded in innovation mgt.", None, None, "Grounded in analytics"],
+    [None, "Creativity technique", "Intuitive", "Discursive", "Mixed"],
+    [None, "Ideation approach", "Data first", "Business first"],
+    [None, "Innovation level", "Conceptual", "Metadata", "Data"],
+    [None, "Data origin", "Open data", "Company", "Teacher", "Self-generation"],
+    [None, "Tools", "Given", "Self-selected"],
+    [None, "Degree of elaboration", "Concept", "Prototype", "Full-fledged service"],
 ]
 
-# Create the DataFrame
 df = pd.DataFrame(data)
 
-# Generate HTML table with flexible row lengths and adjusted column widths, removing grids from the third column onwards
-def generate_html_table(df):
-    html = f"<table style='border-spacing: 2px; width: 100%; border-collapse: collapse; border: 1px solid black; aspect-ratio: 1 / 1;'>"
-    for i, row in df.iterrows():
-        non_empty_cells = row.dropna().size
+def generate_complex_html_table(df):
+    html = "<table style='border-collapse: collapse; width: 100%;'>"
+    for i in range(len(df)):
         html += "<tr>"
-        for j, val in enumerate(row):
-            if pd.notna(val):
-                style = f"text-align: left; padding: 10px; border: 1px solid #ddd;"
-                if j == 0:
-                    rowspan = 1
-                    if i in [0, 5, 10]:
-                        rowspan_count = 0
-                        for k in range(i, len(df)):
-                            if pd.isna(df.iloc[k, 0]) or k == i:
-                                rowspan_count += 1
-                            else:
-                                break
-                        rowspan = rowspan_count
-                    html += f"<td rowspan='{rowspan}' style='{style}'>{val}</td>"
-                elif pd.notna(df.iloc[i, j-1]) or j == 1:
-                    num_cols_in_row = row.notna().sum()
-                    first_col_merged = (i > 0 and pd.isna(df.iloc[i-1, 0]) and i < 5) or \
-                                       (i > 5 and pd.isna(df.iloc[i-1, 0]) and i < 10) or \
-                                       (i > 10 and pd.isna(df.iloc[i-1, 0]) and i < 12)
+        for j in range(len(df.columns)):
+            value = df.iloc[i, j]
+            style = "border: 1px solid black; padding: 8px; text-align: center;"
 
-                    width_percent = f'{100 / (num_cols_in_row - (1 if first_col_merged else 0)) if num_cols_in_row > 1 else 100}%'
-                    colspan = 1
-                    if num_cols_in_row == 2:
-                        colspan = 1
+            # Specific row/column spans based on the image structure
+            rowspan = 1
+            colspan = 1
 
-                    if j >= 2:
-                        style = f"text-align: left; padding: 10px;" # Removed border for columns 3 onwards
-                    html += f"<td style='{style} width: {width_percent};' colspan='{colspan}'>{val}</td>"
-            elif non_empty_cells > 0 and j > 0 and pd.isna(df.iloc[i, j-1]):
-                pass # Don't add empty cells if the previous was a value in a shorter row
+            if i == 0 and j == 0:
+                rowspan = 5
+            elif i in [1, 2, 3, 4] and j == 0:
+                continue
+            elif i == 5 and j == 0:
+                rowspan = 4
+            elif i in [6, 7, 8] and j == 0:
+                continue
+            elif i == 9 and j == 0:
+                rowspan = 3
+            elif i in [10, 11] and j == 0:
+                continue
+            elif i == 12 and j == 0:
+                rowspan = 7
+            elif i in [13, 14, 15, 16, 17, 18] and j == 0:
+                continue
+
+            if i == 0 and j == 1:
+                colspan = 5
+                style += "text-align: center;"
+            elif i == 1 and j == 1:
+                colspan = 7
+                style += "text-align: center;"
+            elif i == 2 and j == 1:
+                colspan = 3
+                style += "text-align: center;"
+            elif i == 3 and j == 1:
+                colspan = 3
+                style += "text-align: center;"
+            elif i == 5 and j == 1:
+                colspan = 7
+                style += "text-align: center;"
+            elif i == 6 and j == 1:
+                colspan = 5
+                style += "text-align: center;"
+            elif i == 7 and j == 1:
+                colspan = 5
+                style += "text-align: center;"
+            elif i == 8 and j == 1:
+                colspan = 5
+                style += "text-align: center;"
+            elif i == 9 and j == 1:
+                colspan = 6
+                style += "text-align: center;"
+            elif i == 10 and j == 1:
+                colspan = 3
+                style += "text-align: center;"
+            elif i == 11 and j == 1:
+                colspan = 5
+                style += "text-align: center;"
+            elif i == 12 and j == 1:
+                colspan = 5
+                style += "text-align: center;"
+            elif i == 13 and j == 1:
+                colspan = 3
+                style += "text-align: center;"
+            elif i == 14 and j == 1:
+                colspan = 2
+                style += "text-align: center;"
+            elif i == 15 and j == 1:
+                colspan = 3
+                style += "text-align: center;"
+            elif i == 16 and j == 1:
+                colspan = 4
+                style += "text-align: center;"
+            elif i == 17 and j == 1:
+                colspan = 2
+                style += "text-align: center;"
+            elif i == 18 and j == 1:
+                colspan = 3
+                style += "text-align: center;"
+
+            if pd.notna(value):
+                html += f"<td style='{style}' rowspan='{rowspan}' colspan='{colspan}'>{value}</td>"
         html += "</tr>"
     html += "</table>"
     return html
 
-# Display the table in Streamlit
-st.write(generate_html_table(df), unsafe_allow_html=True)
+st.write(generate_complex_html_table(df), unsafe_allow_html=True)
