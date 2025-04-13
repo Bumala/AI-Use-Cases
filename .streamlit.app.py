@@ -1,7 +1,7 @@
 import streamlit as st
 import pandas as pd
 
-# Data
+# Data definition
 data = [
     ["Impact (What)", "Benefits", "Quality/Scope/Knowledge", "Time Efficiency", "Cost"],
     [None, "Focus within Business Model Navigator", "Customer Segments", "Value Proposition", "Value Chain", "Revenue Model"],
@@ -10,68 +10,62 @@ data = [
     [None, "Ambidexterity", "Exploration", "Exploitation"],
     ["Technology (How)", "AI Role", "Automaton", "Assistant", "Partner"],
     [None, "AI Concepts", "Machine Learning", "Deep Learning", "Artificial Neural Networks", "Natural Language Processing", "Computer Vision", "Robotics"],
-    [None, "Analytics Focus", "Descriptive", "Diagnostic", "Predictive", "Prescriptive"],
-    [None, "Analytics Problem", "Description/Summary", "Clustering", "Classification", "Dependency Analysis", "Regression"],
-    [None, "Data Type", "Customer Data", "Machine Data", "Business Data (Internal Data)", "Market Data", "Public & Regulatory Data", "Synthetic Data"],
+    [None, "Analytics Focus", "Descriptive", "Diagnostic", "Predictive", "Prescriptive" ],
+    [None,"Analytics Problem", "Description/Summary", "Clustering", "Classification", "Dependency Analysis", "Regression"],
+    [None,"Data Type", "Customer Data", "Machine Data", "Business Data (Internal Data)", "Market Data", "Public & Regulatory Data", "Synthetic Data"],
     ["Place (Where)", "Innovation Phase", "Front End", "Development", "Market Introduction"],
     [None, "R&D", "Manufacturing", "Marketing & Sales", "Customer Service"],
+  
 ]
 
 df = pd.DataFrame(data)
 
-# CSS styling to simulate morphological box using flex
-st.markdown("""
-    <style>
-    .morph-box { border: 1px solid black; border-collapse: collapse; width: 100%; }
-    .morph-row { display: flex; border-bottom: 1px solid #ddd; }
-    .morph-cell {
-        padding: 10px;
-        border-right: 1px solid #ddd;
-        flex: 1;
-        text-align: left;
-        font-size: 14px;
-        background-color: #f9f9f9;
-    }
-    .morph-label {
-        background-color: #e6f0ff;
-        font-weight: bold;
-        min-width: 150px;
-        text-align: center;
-        flex: 0 0 150px;
-    }
-    </style>
-""", unsafe_allow_html=True)
+# Style generator for table cells
+def cell_style():
+    return "text-align: left; padding: 10px; border: 1px solid #ddd;"
 
-# Render morphological box
-def render_morphological_box(df):
-    html = "<div class='morph-box'>"
+# Generate HTML table
+def generate_html_table(df):
+    # Find the maximum number of columns in any row
+    max_columns = max(len(row.dropna()) for _, row in df.iterrows())
 
+    # Start the table with styling
+    html = "<table style='border-spacing: 2px; width: 100%; border: 1px solid black;'>"
+
+    # Generate rows dynamically
     for i, row in df.iterrows():
-        cells = row.dropna().tolist()
+        html += "<tr>"
+        filled_columns = 0  # Track the number of columns filled in the current row
 
-        # Skip continuation rows for merged vertical labels
-        if i in [1, 2, 3, 4, 6, 7, 8, 9, 11]:
-            continue
+        for j, val in enumerate(row):
+            if j == 0 and i == 0:  # Merge rows 1 to 5 in the first column
+                html += f"<td rowspan='5' style='{cell_style()}'>{val}</td>"
+                filled_columns += 1
+            elif j == 0 and i < 5:  # Skip adding cells for rows 2 to 5 in the first column
+                continue
+            elif j == 0 and i == 5:  # Merge rows 6 to 10 in the first column
+                html += f"<td rowspan='5' style='{cell_style()}'>{val}</td>"
+                filled_columns += 1
+            elif j == 0 and 5 < i < 10:  # Skip adding cells for rows 7 to 10 in the first column
+                continue
+            elif j == 0 and i == 10:  # Merge rows 11 and 12 in the first column
+                html += f"<td rowspan='2' style='{cell_style()}'>{val}</td>"
+                filled_columns += 1
+            elif j == 0 and i == 11:  # Skip adding the cell for row 12 in the first column
+                continue
+            elif pd.notna(val):  # Check if the cell is not empty (not NaN)
+                html += f"<td style='{cell_style()}'>{val}</td>"
+                filled_columns += 1
 
-        html += "<div class='morph-row'>"
+        # If there are fewer columns in the current row, span the remaining columns
+        if filled_columns < max_columns:
+            colspan = max_columns - filled_columns
+            html += f"<td colspan='{colspan}' style='{cell_style()}'></td>"
 
-        # Left label (merged vertically)
-        if i == 0:
-            html += f"<div class='morph-label' style='height: 200px;'>Impact (What)</div>"
-        elif i == 5:
-            html += f"<div class='morph-label' style='height: 200px;'>Technology (How)</div>"
-        elif i == 10:
-            html += f"<div class='morph-label' style='height: 100px;'>Place (Where)</div>"
+        html += "</tr>"
 
-        # Content cells (equally spaced)
-        for val in cells[1:]:
-            html += f"<div class='morph-cell'>{val}</div>"
-
-        html += "</div>"
-
-    html += "</div>"
+    html += "</table>"
     return html
 
-# Display the result
-st.markdown("### Morphological Box", unsafe_allow_html=True)
-st.markdown(render_morphological_box(df), unsafe_allow_html=True)
+# Display table in Streamlit
+st.write(generate_html_table(df), unsafe_allow_html=True)
