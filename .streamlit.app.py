@@ -25,31 +25,23 @@ data = [
 
 df = pd.DataFrame(data)
 
-def render_morphological_box_with_columns(df):
+def render_morphological_box_with_refined_grid(df):
     num_rows = len(df)
     num_cols = df.shape[1]
 
-    # Determine relative widths based on the longest row
-    max_cols = df.apply(lambda row: row.astype(bool).sum(), axis=1).max()
-    col_widths = [1] * num_cols  # Default equal widths
-
-    # Adjust widths based on the structure (very rough approximation)
-    col_widths[0] = 2  # Make the category column wider
-    col_widths[1] = 2  # Make the dimension column wider
-
+    col_widths = [1, 1.5, 1, 1, 1, 1, 1, 1, 1]  # Adjust based on visual proportions
     row_heights = [1] * num_rows
 
-    # Create a container for the square aspect ratio (visual guide - might not be perfect)
     with st.container():
         st.markdown(
             f"""
             <style>
                 .square-container {{
-                    width: 600px; /* Adjust as needed */
+                    width: 800px; /* Adjust for desired size */
                     aspect-ratio: 1 / 1;
                     border: 1px solid #ccc;
                     display: grid;
-                    grid-template-columns: {' '.join([f'{w}fr' for w in col_widths])};
+                    grid-template-columns: {' '.join([f'{w}fr' for w in col_widths[:df.shape[1]]])};
                     grid-template-rows: {' '.join([f'{h}fr' for h in row_heights])};
                 }}
                 .cell {{
@@ -60,18 +52,31 @@ def render_morphological_box_with_columns(df):
                     align-items: center;
                     justify-content: center;
                     word-break: break-word;
-                    min-height: 40px; /* Adjust as needed */
+                    min-height: 30px; /* Adjust as needed */
                 }}
-                .row-span-5 {{ grid-row: span 5; }}
-                .row-span-4 {{ grid-row: span 4; }}
-                .row-span-3 {{ grid-row: span 3; }}
-                .row-span-7 {{ grid-row: span 7; }}
-                .col-span-5 {{ grid-column: span 5; }}
-                .col-span-7 {{ grid-column: span 7; }}
-                .col-span-3 {{ grid-column: span 3; }}
-                .col-span-6 {{ grid-column: span 6; }}
-                .col-span-2 {{ grid-column: span 2; }}
-                .col-span-4 {{ grid-column: span 4; }}
+                .r-span-tm {{ grid-row: span 5; }}
+                .r-span-cs {{ grid-row: span 4; }}
+                .r-span-cc {{ grid-row: span 3; }}
+                .r-span-ia {{ grid-row: span 7; }}
+
+                .c-span-k {{ grid-column: span 5; }}
+                .c-span-cp {{ grid-column: span 7; }}
+                .c-span-cpres {{ grid-column: span 3; }}
+                .c-span-caq {{ grid-column: span 3; }}
+                .c-span-cf {{ grid-column: span 7; }}
+                .c-span-pa {{ grid-column: span 5; }}
+                .c-span-tc {{ grid-column: span 5; }}
+                .c-span-tpi {{ grid-column: span 5; }}
+                .c-span-dvc {{ grid-column: span 6; }}
+                .c-span-ap {{ grid-column: span 3; }}
+                .c-span-at {{ grid-column: span 5; }}
+                .c-span-im {{ grid-column: span 5; }}
+                .c-span-ct {{ grid-column: span 3; }}
+                .c-span-iapp {{ grid-column: span 2; }}
+                .c-span-il {{ grid-column: span 3; }}
+                .c-span-do {{ grid-column: span 4; }}
+                .c-span-to {{ grid-column: span 2; }}
+                .c-span-doe {{ grid-column: span 3; }}
             </style>
             """,
             unsafe_allow_html=True,
@@ -84,32 +89,34 @@ def render_morphological_box_with_columns(df):
                     row_span_class = ""
                     col_span_class = ""
 
-                    if i == 0 and j == 0: row_span_class = "row-span-5"
-                    elif i == 5 and j == 0: row_span_class = "row-span-4"
-                    elif i == 9 and j == 0: row_span_class = "row-span-3"
-                    elif i == 12 and j == 0: row_span_class = "row-span-7"
+                    # Row Spans
+                    if i == 0 and j == 0: row_span_class = "r-span-tm"
+                    elif i == 5 and j == 0: row_span_class = "r-span-cs"
+                    elif i == 9 and j == 0: row_span_class = "r-span-cc"
+                    elif i == 12 and j == 0: row_span_class = "r-span-ia"
 
-                    if i == 0 and j == 1: col_span_class = "col-span-5"
-                    elif i == 1 and j == 1: col_span_class = "col-span-7"
-                    elif i == 2 and j == 1: col_span_class = "col-span-3"
-                    elif i == 3 and j == 1: col_span_class = "col-span-3"
-                    elif i == 5 and j == 1: col_span_class = "col-span-7"
-                    elif i == 6 and j == 1: col_span_class = "col-span-5"
-                    elif i == 7 and j == 1: col_span_class = "col-span-5"
-                    elif i == 8 and j == 1: col_span_class = "col-span-5"
-                    elif i == 9 and j == 1: col_span_class = "col-span-6"
-                    elif i == 10 and j == 1: col_span_class = "col-span-3"
-                    elif i == 11 and j == 1: col_span_class = "col-span-5"
-                    elif i == 12 and j == 1: col_span_class = "col-span-5"
-                    elif i == 13 and j == 1: col_span_class = "col-span-3"
-                    elif i == 14 and j == 1: col_span_class = "col-span-2"
-                    elif i == 15 and j == 1: col_span_class = "col-span-3"
-                    elif i == 16 and j == 1: col_span_class = "col-span-4"
-                    elif i == 17 and j == 1: col_span_class = "col-span-2"
-                    elif i == 18 and j == 1: col_span_class = "col-span-3"
+                    # Column Spans
+                    if i == 0 and j == 1: col_span_class = "c-span-k"
+                    elif i == 1 and j == 1: col_span_class = "c-span-cp"
+                    elif i == 2 and j == 1: col_span_class = "c-span-cpres"
+                    elif i == 3 and j == 1: col_span_class = "c-span-caq"
+                    elif i == 5 and j == 1: col_span_class = "c-span-cf"
+                    elif i == 6 and j == 1: col_span_class = "c-span-pa"
+                    elif i == 7 and j == 1: col_span_class = "c-span-tc"
+                    elif i == 8 and j == 1: col_span_class = "c-span-tpi"
+                    elif i == 9 and j == 1: col_span_class = "c-span-dvc"
+                    elif i == 10 and j == 1: col_span_class = "c-span-ap"
+                    elif i == 11 and j == 1: col_span_class = "c-span-at"
+                    elif i == 12 and j == 1: col_span_class = "c-span-im"
+                    elif i == 13 and j == 1: col_span_class = "c-span-ct"
+                    elif i == 14 and j == 1: col_span_class = "c-span-iapp"
+                    elif i == 15 and j == 1: col_span_class = "c-span-il"
+                    elif i == 16 and j == 1: col_span_class = "c-span-do"
+                    elif i == 17 and j == 1: col_span_class = "c-span-to"
+                    elif i == 18 and j == 1: col_span_class = "c-span-doe"
 
                     html_grid += f"<div class='cell {row_span_class} {col_span_class}'>{value}</div>"
         html_grid += "</div>"
         st.markdown(html_grid, unsafe_allow_html=True)
 
-render_morphological_box_with_columns(df)
+render_morphological_box_with_refined_grid(df)
