@@ -20,41 +20,33 @@ data = [
 # Create the DataFrame
 df = pd.DataFrame(data)
 
-# Generate HTML table with flexible row lengths and square aspect ratio
+# Generate HTML table with flexible row lengths and adjusted column widths
 def generate_html_table(df):
     num_rows = len(df)
-    max_cols = df.apply(lambda row: row.notna().sum(), axis=1).max()
-
-    # Define a base width for the first two columns (as a percentage)
-    base_width_percent = 20
-    remaining_width_percent = 100 - 2 * base_width_percent
-
-    if max_cols > 2:
-        dynamic_col_width_percent = remaining_width_percent / (max_cols - 2)
-    else:
-        dynamic_col_width_percent = 0
-
     html = f"<table style='border-spacing: 2px; width: 100%; border-collapse: collapse; border: 1px solid black; aspect-ratio: 1 / 1;'>"
     for i, row in df.iterrows():
+        non_empty_cells = row.dropna().size
         html += "<tr>"
         for j, val in enumerate(row):
             if pd.notna(val):
                 style = f"text-align: left; padding: 10px; border: 1px solid #ddd;"
-                if j == 0:
-                    if i == 0:
-                        html += f"<td rowspan='5' style='{style} width: {base_width_percent}%;'>{val}</td>"
-                    elif i == 5:
-                        html += f"<td rowspan='5' style='{style} width: {base_width_percent}%;'>{val}</td>"
-                    elif i == 10:
-                        html += f"<td rowspan='2' style='{style} width: {base_width_percent}%;'>{val}</td>"
-                    elif i not in [0, 5, 10]:
-                        continue
-                elif j == 1:
-                    html += f"<td style='{style} width: {base_width_percent}%;'>{val}</td>"
-                elif j >= 2:
-                    html += f"<td style='{style} width: {dynamic_col_width_percent}%;'>{val}</td>"
-            elif j >= 2:
-                html += "<td style='border: 1px solid #ddd;'></td>" # Add empty cells for alignment
+                if non_empty_cells == 2:
+                    if j == 0:
+                        html += f"<td style='{style} width: 50%;' colspan='1'>{val}</td>"
+                    elif j == 1:
+                        html += f"<td style='{style} width: 50%;' colspan='{df.iloc[i].size - 1}'>{val}</td>"
+                elif non_empty_cells > 2:
+                    if j == 0:
+                        html += f"<td rowspan='{df.iloc[i].isnull().sum() + 1 if i in [0, 5, 10] else 1}' style='{style}'>{val}</td>"
+                    elif pd.notna(df.iloc[i, j-1]) or j == 1: # Ensure we don't add a new cell if the previous was merged
+                        # Calculate dynamic width for columns from the third onwards
+                        if j >= 1:
+                            num_remaining_cols = non_empty_cells - (1 if i not in [0, 5, 10] else 1) # Adjust for the first merged column
+                            if num_remaining_cols > 0:
+                                width_percent = 100 / non_empty_cells
+                                html += f"<td style='{style} width: {width_percent}%;'>{val}</td>"
+                elif non_empty_cells == 1:
+                    html += f"<td style='{style} width: 100%;' colspan='{df.iloc[i].size}'>{val}</td>"
         html += "</tr>"
     html += "</table>"
     return html
