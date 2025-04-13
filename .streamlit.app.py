@@ -41,7 +41,7 @@ def generate_html_table(df):
             width: 100%; /* Stretch smaller cells */
         }
         td.first-column {
-            width: 90%; /* Make the first column wider */
+            width: 70%; /* Make the first column wider */
         }
         td.second-column {
             width: auto; /* Keep the second column as they are */
