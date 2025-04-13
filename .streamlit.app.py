@@ -7,20 +7,7 @@ data = [
     [None, "Content presentation", "Expository", "", "", "Explorative"],
     [None, "Knowledge acquisition", "Cumulative", "", "", "Cyclic"],
     [None, "Level", "Undergraduate", "Master", "MBA", "", ""],
-    ["Course setting", "Course format", "Lecture", "Tutorial", "Workshop", "Project", "Hackathon", "Innovation lab", "Innovation contest"],
-    [None, "Participation as", "Individual", "", "", "Team"],
-    [None, "Team composition", "Monodisciplinary", "", "", "Interdisciplinary"],
-    [None, "Third party involvement", "Involved", "", "", "No involved"],
-    ["Course Content", "Data value chain", "Data generation", "Data acquisition", "Data processing", "Data aggregation", "Data Analytics", "Visualization"],
-    [None, "Analytics perspective", "Descriptive", "Predictive", "Prescriptive", "", ""],
-    [None, "Analytics technologies", "(Big) Data analytics", "Text analytics", "Network analytics", "Streaming analytics", "Web analytics"],
-    ["Innovation Approach", "Innovation method", "Grounded in innovation mgt.", "", "", "Grounded in analytics"],
-    [None, "Creativity technique", "Intuitive", "Discursive", "Mixed", "", ""],
-    [None, "Ideation approach", "Data first", "Business first", "", "", ""],
-    [None, "Innovation level", "Conceptual", "Metadata", "Data", "", ""],
-    [None, "Data origin", "Open data", "Company", "Teacher", "Self-generation", ""],
-    [None, "Tools", "Given", "Self-selected", "", "", ""],
-    [None, "Degree of elaboration", "Concept", "Prototype", "Full-fledged service", "", ""],
+  
 ]
 
 df = pd.DataFrame(data)
