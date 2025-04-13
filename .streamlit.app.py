@@ -46,6 +46,12 @@ def generate_html_table(df):
                     continue
                 elif i == 0 and j == 3:  # Make the fourth column in the first row wider
                     html += f"<td colspan='2' style='text-align: left; padding: 10px;'>{val}</td>"
+
+elif i == 0 and j == 4:  # Make the fourth column in the first row wider
+                    html += f"<td colspan='1.5' style='text-align: left; padding: 10px;'>{val}</td>"
+
+
+                
                 else:  # Regular cells
                     html += f"<td style='text-align: left; padding: 10px;'>{val}</td>"
         html += "</tr>"
