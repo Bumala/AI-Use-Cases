@@ -19,6 +19,7 @@ data = [
 
 df = pd.DataFrame(data)
 
+# Function to generate the HTML table
 def generate_html_table(df):
     # Define consistent widths
     first_col_width = 160
@@ -76,5 +77,18 @@ def generate_html_table(df):
     html += "</table>"
     return html
 
-# Render in Streamlit
-st.markdown(generate_html_table(df), unsafe_allow_html=True)
+# Apply CSS to center the table
+st.markdown("""
+    <style>
+        .center-table {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            height: 100%;
+        }
+    </style>
+""", unsafe_allow_html=True)
+
+# Render the table in Streamlit within the centered container
+st.markdown('<div class="center-table">' + generate_html_table(df) + '</div>', unsafe_allow_html=True)
