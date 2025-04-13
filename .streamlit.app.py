@@ -30,13 +30,26 @@ def generate_html_table(df):
             if pd.notna(val):
                 style = f"text-align: left; padding: 10px; border: 1px solid #ddd;"
                 if j == 0:
-                    rowspan = df.iloc[i:].apply(lambda r: r.iloc[0] is None).take_while(lambda x: x).size + 1 if i in [0, 5, 10] else 1
+                    rowspan = 1
+                    if i in [0, 5, 10]:
+                        rowspan_count = 0
+                        for k in range(i, len(df)):
+                            if pd.isna(df.iloc[k, 0]) or k == i:
+                                rowspan_count += 1
+                            else:
+                                break
+                        rowspan = rowspan_count
                     html += f"<td rowspan='{rowspan}' style='{style}'>{val}</td>"
                 elif pd.notna(df.iloc[i, j-1]) or j == 1:
-                    width_percent = f'{100 / (non_empty_cells - (1 if i not in [0, 5, 10] and j > 0 else 0)) if non_empty_cells > 1 else 100}%'
+                    num_cols_in_row = row.notna().sum()
+                    first_col_merged = (i > 0 and pd.isna(df.iloc[i-1, 0]) and i < 5) or \
+                                       (i > 5 and pd.isna(df.iloc[i-1, 0]) and i < 10) or \
+                                       (i > 10 and pd.isna(df.iloc[i-1, 0]) and i < 12)
+
+                    width_percent = f'{100 / (num_cols_in_row - (1 if first_col_merged else 0)) if num_cols_in_row > 1 else 100}%'
                     colspan = 1
-                    if non_empty_cells == 2:
-                        colspan = df.iloc[i].notna().sum() -1 if j == 1 else 1
+                    if num_cols_in_row == 2:
+                        colspan = 1
 
                     html += f"<td style='{style} width: {width_percent};' colspan='{colspan}'>{val}</td>"
             elif non_empty_cells > 0 and j > 0 and pd.isna(df.iloc[i, j-1]):
