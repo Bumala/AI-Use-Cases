@@ -23,7 +23,9 @@ df = pd.DataFrame(data)
 # Generate HTML table without gridlines
 def generate_html_table(df):
     # Start the table with updated styling (no borders)
-    html = "<table style='border-spacing: 2px; width: 100%; border-collapse: collapse;'>"
+    html = """
+    <table style='border-spacing: 0; width: 100%; border-collapse: collapse;'>
+    """
 
     # Generate rows dynamically
     for i, row in df.iterrows():
