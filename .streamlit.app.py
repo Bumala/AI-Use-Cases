@@ -20,16 +20,18 @@ data = [
 # Create the DataFrame
 df = pd.DataFrame(data)
 
-# Generate HTML table with flexible row lengths
+# Generate HTML table without grid-like structure
 def generate_html_table(df):
     # Start the table with styling
-    html = "<table style='border-spacing: 2px; width: 100%; border-collapse: collapse; border: 1px solid black;'>"
+    html = """
+    <table style='border-collapse: collapse; width: 100%; table-layout: auto;'>
+    """
 
     # Generate rows dynamically
     for i, row in df.iterrows():
         html += "<tr>"
         for j, val in enumerate(row):
-            if pd.notna(val):  # Only add non-empty cells
+            if pd.notna(val):  # Add only non-empty cells
                 if j == 0 and i == 0:  # Merge rows 1 to 5 in the first column
                     html += f"<td rowspan='5' style='text-align: left; padding: 10px; border: 1px solid #ddd;'>{val}</td>"
                 elif j == 0 and i == 5:  # Merge rows 6 to 10 in the first column
@@ -42,7 +44,8 @@ def generate_html_table(df):
                     continue
                 elif j == 0 and i == 11:  # Skip row 12 in the first column
                     continue
-                else:  # Regular cells
+                else:
+                    # Allow alternating widths for columns
                     html += f"<td style='text-align: left; padding: 10px; border: 1px solid #ddd;'>{val}</td>"
         html += "</tr>"
 
