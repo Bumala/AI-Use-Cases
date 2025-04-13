@@ -1,6 +1,9 @@
 import streamlit as st
 import pandas as pd
 
+# Set the page layout to "wide"
+st.set_page_config(layout="wide")
+
 # Data definition
 data = [
     ["Impact (What)", "Benefits", "Quality/Scope/Knowledge", "Time Efficiency", "Cost"],
@@ -77,19 +80,21 @@ def generate_html_table(df):
     html += "</table>"
     return html
 
-# Apply CSS to center the table and make it responsive
+# Apply CSS to center the table with zoom and a slight left margin for better alignment
 st.markdown("""
     <style>
         .center-table {
             display: flex;
             justify-content: center;
             align-items: center;
-            overflow-x: auto; /* Add horizontal scrolling if needed */
-            max-width: 100%; /* Prevent the table from exceeding the container's width */
-            margin: 0 auto; /* Center the table */
+            width: 100%;
+            height: 100%;
+            margin: 0 auto;
+            transform: scale(0.9); /* Zoom out slightly to fit the table on the screen */
+            transform-origin: top center;
         }
         table {
-            width: auto; /* Use auto width instead of 100% for better responsiveness */
+            width: 100%;
         }
     </style>
 """, unsafe_allow_html=True)
