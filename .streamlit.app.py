@@ -3,7 +3,7 @@ import pandas as pd
 
 # Data definition
 data = [
-       ["Impact (What)", "Benefits", "Quality/Scope/Knowledge", "Time Efficiency", "Cost"],
+    ["Impact (What)", "Benefits", "Quality/Scope/Knowledge", "Time Efficiency", "Cost"],
     [None, "Focus within Business Model Navigator", "Customer Segments", "Value Proposition", "Value Chain", "Revenue Model"],
     [None, "Innovation Type", "Incremental", "Radical", "Sustaining", "Disruptive"],
     [None, "Aim", "Product Innovation", "Process Innovation", "Business Model Innovation"],
@@ -15,7 +15,6 @@ data = [
     [None,"Data Type", "Customer Data", "Machine Data", "Business Data (Internal Data)", "Market Data", "Public & Regulatory Data", "Synthetic Data"],
     ["Place (Where)", "Innovation Phase", "Front End", "Development", "Market Introduction"],
     [None, "R&D", "Manufacturing", "Marketing & Sales", "Customer Service"],
-
   
 ]
 
