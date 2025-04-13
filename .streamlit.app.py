@@ -37,12 +37,17 @@ def generate_html_table(df):
     colspan_2 = {
         (0, 2), (0, 3), (0, 4),
         (1, 4), (1, 5),
+        (2, 4), (2, 5),
         (3, 2), (3, 3), (3, 4),
         (5, 2), (5, 3), (5, 4),
         (7, 4), (7, 5),
         (8, 6),
         (10, 2), (10, 3), (10, 4),
         (11, 2), (11, 3), (11, 4)
+    }
+
+    colspan_3 = {
+        (4, 2), (4, 3)
     }
 
     html = "<table style='border-spacing: 0; width: 100%; border-collapse: collapse; table-layout: fixed;'>"
@@ -64,10 +69,8 @@ def generate_html_table(df):
                     continue
             elif j == 1:
                 html += f"<td style='{style(second_col_width)}'>{val}</td>"
-            elif (i, j) == (2, 4):  # Simulate colspan of 1.5 by using CSS
-                html += f"<td style='{style(base_cell_width * 1.5)}' colspan='1'>{val}</td>"
-            elif (i, j) == (2, 5):  # Occupy the remaining space for the second cell
-                html += f"<td style='{style(base_cell_width * 0.5)}'>{val}</td>"
+            elif (i, j) in colspan_3:
+                html += f"<td colspan='3' style='{style(base_cell_width * 3)}'>{val}</td>"
             elif (i, j) in colspan_2:
                 html += f"<td colspan='2' style='{style(base_cell_width * 2)}'>{val}</td>"
             else:
