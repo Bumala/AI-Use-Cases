@@ -38,8 +38,11 @@ def generate_html_table(df):
         td.stretch {
             width: 100%; /* Stretch smaller cells */
         }
-        td.first-column, td.second-column {
-            width: auto; /* Keep first and second columns as they are */
+        td.first-column {
+            width: 20%; /* Make the first column wider */
+        }
+        td.second-column {
+            width: auto; /* Keep the second column as they are */
         }
     </style>
     <table>
