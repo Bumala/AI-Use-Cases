@@ -10,13 +10,14 @@ data = [
     [None, "Ambidexterity", "Exploration", "Exploitation"],
     ["Technology (How)", "AI Role", "Automaton", "Assistant", "Partner"],
     [None, "AI Concepts", "Machine Learning", "Deep Learning", "Artificial Neural Networks", "Natural Language Processing", "Computer Vision", "Robotics"],
-    [None, "Analytics Focus", "Descriptive", "Diagnostic", "Predictive", "Prescriptive" ],
+    [None, "Analytics Focus", "Descriptive", "Diagnostic", "Predictive", "Prescriptive"],
     [None, "Analytics Problem", "Description/Summary", "Clustering", "Classification", "Dependency Analysis", "Regression"],
     [None, "Data Type", "Customer Data", "Machine Data", "Business Data (Internal Data)", "Market Data", "Public & Regulatory Data", "Synthetic Data"],
     ["Place (Where)", "Innovation Phase", "Front End", "Development", "Market Introduction"],
     [None, "R&D", "Manufacturing", "Marketing & Sales", "Customer Service"],
 ]
 
+# Create the DataFrame
 df = pd.DataFrame(data)
 
 # Style generator for table cells
@@ -26,22 +27,28 @@ def cell_style():
 # Generate HTML table
 def generate_html_table(df):
     # Start the table with styling
-    html = "<table style='border-spacing: 2px; width: 100%; border: 1px solid black;'>"
+    html = "<table style='border-spacing: 0; width: 100%; border-collapse: collapse; border: 1px solid black;'>"
 
     # Generate rows dynamically
     for i, row in df.iterrows():
         html += "<tr>"
+
         for j, val in enumerate(row):
-            if j == 0:  # First column logic
-                if i == 0:  # Merge rows 1 to 5 in the first column
-                    html += f"<td rowspan='5' style='{cell_style()}'>{val}</td>"
-                elif i == 5:  # Merge rows 6 to 10 in the first column
-                    html += f"<td rowspan='5' style='{cell_style()}'>{val}</td>"
-                elif i == 10:  # Merge rows 11 and 12 in the first column
-                    html += f"<td rowspan='2' style='{cell_style()}'>{val}</td>"
-            elif pd.notna(val):  # Handle other cells dynamically
+            if j == 0 and i == 0:  # Merge rows 1 to 5 in the first column
+                html += f"<td rowspan='5' style='{cell_style()}'>{val}</td>"
+            elif j == 0 and i < 5:  # Skip adding cells for rows 2 to 5 in the first column
+                continue
+            elif j == 0 and i == 5:  # Merge rows 6 to 10 in the first column
+                html += f"<td rowspan='5' style='{cell_style()}'>{val}</td>"
+            elif j == 0 and 5 < i < 10:  # Skip adding cells for rows 7 to 10 in the first column
+                continue
+            elif j == 0 and i == 10:  # Merge rows 11 and 12 in the first column
+                html += f"<td rowspan='2' style='{cell_style()}'>{val}</td>"
+            elif j == 0 and i == 11:  # Skip adding the cell for row 12 in the first column
+                continue
+            elif pd.notna(val):  # Only add non-empty cells
                 html += f"<td style='{cell_style()}'>{val}</td>"
-        
+
         html += "</tr>"
 
     html += "</table>"
