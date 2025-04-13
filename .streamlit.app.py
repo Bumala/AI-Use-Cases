@@ -1,5 +1,6 @@
 import streamlit as st
 import pandas as pd
+from st_aggrid import AgGrid, GridOptionsBuilder
 
 # Data definition
 data = [
@@ -17,41 +18,22 @@ data = [
     [None, "R&D", "Manufacturing", "Marketing & Sales", "Customer Service"],
 ]
 
-# Create the DataFrame
+# Create a DataFrame
 df = pd.DataFrame(data)
 
-# Generate HTML table with flexible column widths
-def generate_html_table(df):
-    # Start the table with styling
-    html = """
-    <table style='border-collapse: collapse; width: 100%;'>
-    """
+# Build AgGrid options
+options_builder = GridOptionsBuilder.from_dataframe(df)
+options_builder.configure_column("0", pinned="left")  # Pin the first column for better navigation
+options_builder.configure_default_column(resizable=True, wrapText=True, autoHeight=True)
 
-    # Generate rows dynamically
-    for i, row in df.iterrows():
-        html += "<tr>"
-        for j, val in enumerate(row):
-            if pd.notna(val):  # Add only non-empty cells
-                if j == 0 and i == 0:  # Merge rows 1 to 5 in the first column
-                    html += f"<td rowspan='5' style='padding: 10px; border: 1px solid #ddd;'>{val}</td>"
-                elif j == 0 and i == 5:  # Merge rows 6 to 10 in the first column
-                    html += f"<td rowspan='5' style='padding: 10px; border: 1px solid #ddd;'>{val}</td>"
-                elif j == 0 and i == 10:  # Merge rows 11 and 12 in the first column
-                    html += f"<td rowspan='2' style='padding: 10px; border: 1px solid #ddd;'>{val}</td>"
-                elif j == 0 and i < 5:  # Skip rows 2 to 5 in the first column
-                    continue
-                elif j == 0 and 5 < i < 10:  # Skip rows 7 to 10 in the first column
-                    continue
-                elif j == 0 and i == 11:  # Skip row 12 in the first column
-                    continue
-                else:
-                    # Apply dynamic width for columns from the third onward
-                    width = f"{80 + j * 20}px"  # Alternating widths
-                    html += f"<td style='padding: 10px; border: 1px solid #ddd; width: {width};'>{val}</td>"
-        html += "</tr>"
+grid_options = options_builder.build()
 
-    html += "</table>"
-    return html
-
-# Display the table in Streamlit
-st.write(generate_html_table(df), unsafe_allow_html=True)
+# Display the table using AgGrid
+st.write("### Dynamic Table with Streamlit AgGrid")
+AgGrid(
+    df,
+    gridOptions=grid_options,
+    height=500,
+    fit_columns_on_grid_load=True,
+    enable_enterprise_modules=False,
+)
