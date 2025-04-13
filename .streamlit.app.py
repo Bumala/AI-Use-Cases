@@ -20,35 +20,10 @@ data = [
 # Create the DataFrame
 df = pd.DataFrame(data)
 
-# Generate HTML table with flexible row lengths and CSS
+# Generate HTML table with flexible row lengths
 def generate_html_table(df):
     # Start the table with styling
-    html = """
-    <style>
-        table {
-    border-spacing: 0;
-    width: 100%;
-    border: 1px solid black;
-    table-layout: fixed; /* Enforce fixed column widths */
-
-        }
-        td {
-            text-align: left;
-            padding: 10px;
-            border: 1px solid black; /* Inner borders for closed-box appearance */
-        }
-        td.stretch {
-            width: 100%; /* Stretch smaller cells */
-        }
-        td.first-column {
-            width: 70%; /* Make the first column wider */
-        }
-        td.second-column {
-            width: auto; /* Keep the second column as they are */
-        }
-    </style>
-    <table>
-    """
+    html = "<table style='border-spacing: 2px; width: 100%; border-collapse: separate; border: 3px solid black;'>"
 
     # Generate rows dynamically
     for i, row in df.iterrows():
@@ -56,21 +31,21 @@ def generate_html_table(df):
         for j, val in enumerate(row):
             if pd.notna(val):  # Only add non-empty cells
                 if j == 0 and i == 0:  # Merge rows 1 to 5 in the first column
-                    html += f"<td rowspan='5' class='first-column'>{val}</td>"
+                    html += f"<td rowspan='5' style='text-align: left; padding: 10px; border: 1px solid #ddd;'>{val}</td>"
                 elif j == 0 and i == 5:  # Merge rows 6 to 10 in the first column
-                    html += f"<td rowspan='5' class='first-column'>{val}</td>"
+                    html += f"<td rowspan='5' style='text-align: left; padding: 10px; border: 1px solid #ddd;'>{val}</td>"
                 elif j == 0 and i == 10:  # Merge rows 11 and 12 in the first column
-                    html += f"<td rowspan='2' class='first-column'>{val}</td>"
+                    html += f"<td rowspan='2' style='text-align: left; padding: 10px; border: 1px solid #ddd;'>{val}</td>"
                 elif j == 0 and i < 5:  # Skip rows 2 to 5 in the first column
                     continue
                 elif j == 0 and 5 < i < 10:  # Skip rows 7 to 10 in the first column
                     continue
                 elif j == 0 and i == 11:  # Skip row 12 in the first column
                     continue
-                elif j == 1:  # Keep the second column as is
-                    html += f"<td class='second-column'>{val}</td>"
+                elif i == 0 and j == 3:  # Make the fourth column in the first row wider
+                    html += f"<td colspan='2' style='text-align: left; padding: 10px; border: 1px solid #ddd;'>{val}</td>"
                 else:  # Regular cells
-                    html += f"<td class='stretch'>{val}</td>"
+                    html += f"<td style='text-align: left; padding: 10px; border: 1px solid #ddd;'>{val}</td>"
         html += "</tr>"
 
     html += "</table>"
