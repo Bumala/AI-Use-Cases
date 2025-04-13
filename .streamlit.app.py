@@ -1,7 +1,7 @@
 import streamlit as st
 import pandas as pd
 
-# Data definition
+# Morphological Box Data
 data = [
     ["Impact (What)", "Benefits", "Quality/Scope/Knowledge", "Time Efficiency", "Cost"],
     [None, "Focus within Business Model Navigator", "Customer Segments", "Value Proposition", "Value Chain", "Revenue Model"],
@@ -19,46 +19,79 @@ data = [
 
 df = pd.DataFrame(data)
 
-# Cell style function
-def cell_style():
-    return "padding: 10px; border: 1px solid #ccc; text-align: left;"
+# Add CSS for grid-based styling
+st.markdown("""
+    <style>
+    .box-container {
+        display: flex;
+        flex-direction: column;
+        border: 2px solid #000;
+        border-radius: 6px;
+        overflow: hidden;
+        font-family: sans-serif;
+    }
+    .box-row {
+        display: grid;
+        grid-auto-columns: 1fr;
+        border-top: 1px solid #ccc;
+        min-height: 50px;
+    }
+    .box-label {
+        background: #e6f0ff;
+        font-weight: bold;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 10px;
+        border-right: 1px solid #ccc;
+        min-width: 160px;
+    }
+    .box-cell {
+        background: #f9f9f9;
+        padding: 10px;
+        border-right: 1px solid #eee;
+        display: flex;
+        align-items: center;
+    }
+    .box-row:last-child {
+        border-bottom: none;
+    }
+    </style>
+""", unsafe_allow_html=True)
 
-# Generate the HTML table
-def generate_html_table(df):
-    html = "<table style='width: 100%; border-collapse: collapse;'>"
-    
+# Function to generate grid rows with dynamic column count
+def generate_morphological_box(df):
+    html = "<div class='box-container'>"
+
+    label_map = {
+        0: ("Impact (What)", 5),
+        5: ("Technology (How)", 5),
+        10: ("Place (Where)", 2),
+    }
+
     for i, row in df.iterrows():
-        html += "<tr>"
-
-        # Handle merged left-column labels
-        if i == 0:
-            html += f"<td rowspan='5' style='{cell_style()} width: 10%; background-color: #e6f0ff; font-weight: bold;'>{row[0]}</td>"
-            cells = row[1:]
-        elif i == 5:
-            html += f"<td rowspan='5' style='{cell_style()} width: 10%; background-color: #e6f0ff; font-weight: bold;'>{row[0]}</td>"
-            cells = row[1:]
-        elif i == 10:
-            html += f"<td rowspan='2' style='{cell_style()} width: 10%; background-color: #e6f0ff; font-weight: bold;'>{row[0]}</td>"
-            cells = row[1:]
+        if i in label_map:
+            label, rowspan = label_map[i]
+            label_html = f"<div class='box-label' style='grid-row: span {rowspan};'>{label}</div>"
         elif row[0] is None:
-            cells = row[1:]
+            label_html = ""
         else:
-            cells = row
+            label_html = f"<div class='box-label'>{row[0]}</div>"
 
-        # Count how many actual content cells (non-None)
-        content_cells = [c for c in cells if pd.notna(c)]
+        cells = [str(cell) for cell in row[1:] if pd.notna(cell)]
+        num_cells = len(cells)
+        grid_template = f"grid-template-columns: {('1fr ' * (num_cells + (1 if label_html else 0))).strip()};"
 
-        # Compute colspan so that cells stretch across the rest of the row
-        colspan = int(90 / len(content_cells))  # 90% of width split evenly
+        html += f"<div class='box-row' style='{grid_template}'>"
+        if label_html:
+            html += label_html
+        for cell in cells:
+            html += f"<div class='box-cell'>{cell}</div>"
+        html += "</div>"
 
-        for val in content_cells:
-            html += f"<td style='{cell_style()} width: {colspan}%;'>{val}</td>"
-
-        html += "</tr>"
-
-    html += "</table>"
+    html += "</div>"
     return html
 
-# Render in Streamlit
-st.markdown("### Morphological Box", unsafe_allow_html=True)
-st.write(generate_html_table(df), unsafe_allow_html=True)
+# Show in Streamlit
+st.markdown("### Adaptive Morphological Box", unsafe_allow_html=True)
+st.markdown(generate_morphological_box(df), unsafe_allow_html=True)
