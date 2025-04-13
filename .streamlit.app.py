@@ -1,6 +1,7 @@
 import streamlit as st
+import pandas as pd
 
-# Define the table data
+# Data definition
 data = [
     ["Impact (What)", "Benefits", "Quality/Scope/Knowledge", "Time Efficiency", "Cost"],
     [None, "Focus within Business Model Navigator", "Customer Segments", "Value Proposition", "Value Chain", "Revenue Model"],
@@ -16,56 +17,37 @@ data = [
     [None, "R&D", "Manufacturing", "Marketing & Sales", "Customer Service"],
 ]
 
-# Start building the HTML table
-html = """
-<style>
-    table {
-        border-collapse: collapse;
-        width: 100%;
-        table-layout: fixed;
-    }
-    td, th {
-        border: 1px solid #ddd;
-        text-align: left;
-        padding: 10px;
-    }
-    th {
-        background-color: #f4f4f4;
-    }
-    td[rowspan] {
-        background-color: #e8f4f8;
-        font-weight: bold;
-    }
-    .variable-width {
-        width: auto;
-    }
-    .fixed-width {
-        width: 20%;
-    }
-</style>
-<table>
-"""
+# Create the DataFrame
+df = pd.DataFrame(data)
 
-# Loop through the data to populate rows
-for i, row in enumerate(data):
-    html += "<tr>"
-    for j, cell in enumerate(row):
-        if j == 0:  # Handle the first column with row spans
-            if i == 0:
-                html += f"<td rowspan='5'>{cell}</td>"
-            elif i == 5:
-                html += f"<td rowspan='5'>{cell}</td>"
-            elif i == 10:
-                html += f"<td rowspan='2'>{cell}</td>"
-        elif cell is not None:
-            # Add alternating widths for other columns
-            if j > 1:  # From the third column onward
-                html += f"<td class='variable-width'>{cell}</td>"
-            else:  # Second column
-                html += f"<td class='fixed-width'>{cell}</td>"
-    html += "</tr>"
+# Generate HTML table with flexible row lengths
+def generate_html_table(df):
+    # Start the table with styling
+    html = "<table style='border-spacing: 2px; width: 100%; border-collapse: collapse; border: 1px solid black;'>"
 
-html += "</table>"
+    # Generate rows dynamically
+    for i, row in df.iterrows():
+        html += "<tr>"
+        for j, val in enumerate(row):
+            if pd.notna(val):  # Only add non-empty cells
+                if j == 0 and i == 0:  # Merge rows 1 to 5 in the first column
+                    html += f"<td rowspan='5' style='text-align: left; padding: 10px; border: 1px solid #ddd;'>{val}</td>"
+                elif j == 0 and i == 5:  # Merge rows 6 to 10 in the first column
+                    html += f"<td rowspan='5' style='text-align: left; padding: 10px; border: 1px solid #ddd;'>{val}</td>"
+                elif j == 0 and i == 10:  # Merge rows 11 and 12 in the first column
+                    html += f"<td rowspan='2' style='text-align: left; padding: 10px; border: 1px solid #ddd;'>{val}</td>"
+                elif j == 0 and i < 5:  # Skip rows 2 to 5 in the first column
+                    continue
+                elif j == 0 and 5 < i < 10:  # Skip rows 7 to 10 in the first column
+                    continue
+                elif j == 0 and i == 11:  # Skip row 12 in the first column
+                    continue
+                else:  # Regular cells
+                    html += f"<td style='text-align: left; padding: 10px; border: 1px solid #ddd;'>{val}</td>"
+        html += "</tr>"
 
-# Render the HTML in Streamlit
-st.write(html, unsafe_allow_html=True)
+    html += "</table>"
+    return html
+
+# Display the table in Streamlit
+st.write(generate_html_table(df), unsafe_allow_html=True)
