@@ -1,4 +1,4 @@
-import streamlit as st
+import streamlit as st 
 import pandas as pd
 
 # Data definition
@@ -15,7 +15,6 @@ data = [
     [None,"Data Type", "Customer Data", "Machine Data", "Business Data (Internal Data)", "Market Data", "Public & Regulatory Data", "Synthetic Data"],
     ["Place (Where)", "Innovation Phase", "Front End", "Development", "Market Introduction"],
     [None, "R&D", "Manufacturing", "Marketing & Sales", "Customer Service"],
-  
 ]
 
 df = pd.DataFrame(data)
@@ -24,43 +23,42 @@ df = pd.DataFrame(data)
 def cell_style():
     return "text-align: left; padding: 10px; border: 1px solid #ddd;"
 
-# Generate HTML table
+# Generate HTML table with dynamic colspan logic
 def generate_html_table(df):
-    # Find the maximum number of columns in any row
     max_columns = max(len(row.dropna()) for _, row in df.iterrows())
-
-    # Start the table with styling
     html = "<table style='border-spacing: 2px; width: 100%; border: 1px solid black;'>"
 
-    # Generate rows dynamically
     for i, row in df.iterrows():
         html += "<tr>"
-        filled_columns = 0  # Track the number of columns filled in the current row
+        cells = row.dropna().tolist()
 
-        for j, val in enumerate(row):
-            if j == 0 and i == 0:  # Merge rows 1 to 5 in the first column
-                html += f"<td rowspan='5' style='{cell_style()}'>{val}</td>"
-                filled_columns += 1
-            elif j == 0 and i < 5:  # Skip adding cells for rows 2 to 5 in the first column
-                continue
-            elif j == 0 and i == 5:  # Merge rows 6 to 10 in the first column
-                html += f"<td rowspan='5' style='{cell_style()}'>{val}</td>"
-                filled_columns += 1
-            elif j == 0 and 5 < i < 10:  # Skip adding cells for rows 7 to 10 in the first column
-                continue
-            elif j == 0 and i == 10:  # Merge rows 11 and 12 in the first column
-                html += f"<td rowspan='2' style='{cell_style()}'>{val}</td>"
-                filled_columns += 1
-            elif j == 0 and i == 11:  # Skip adding the cell for row 12 in the first column
-                continue
-            elif pd.notna(val):  # Check if the cell is not empty (not NaN)
-                html += f"<td style='{cell_style()}'>{val}</td>"
-                filled_columns += 1
+        # Determine if the first cell is a merged vertical label
+        first_cell_merged = False
+        if i == 0:
+            html += f"<td rowspan='5' style='{cell_style()}'>{cells[0]}</td>"
+            cells = cells[1:]
+            first_cell_merged = True
+        elif i == 5:
+            html += f"<td rowspan='5' style='{cell_style()}'>{cells[0]}</td>"
+            cells = cells[1:]
+            first_cell_merged = True
+        elif i == 10:
+            html += f"<td rowspan='2' style='{cell_style()}'>{cells[0]}</td>"
+            cells = cells[1:]
+            first_cell_merged = True
+        elif (i < 5 or (5 < i < 10) or i == 11):
+            # These are skipped rows for merged cells
+            continue
 
-        # If there are fewer columns in the current row, span the remaining columns
-        if filled_columns < max_columns:
-            colspan = max_columns - filled_columns
-            html += f"<td colspan='{colspan}' style='{cell_style()}'></td>"
+        # Calculate how many columns are available for the remaining cells
+        num_cells = len(cells)
+        span = max_columns - (1 if first_cell_merged else 0)
+        base_colspan = span // num_cells if num_cells > 0 else 1
+        extra_cols = span % num_cells
+
+        for idx, val in enumerate(cells):
+            colspan = base_colspan + (1 if idx < extra_cols else 0)
+            html += f"<td colspan='{colspan}' style='{cell_style()}'>{val}</td>"
 
         html += "</tr>"
 
