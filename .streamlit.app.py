@@ -26,9 +26,11 @@ def generate_html_table(df):
     html = """
     <style>
         table {
-            border-spacing: 0; /* Remove spacing between cells */
-            width: 100%;
-            border: 1px solid black; /* Closed box border */
+    border-spacing: 0;
+    width: 100%;
+    border: 1px solid black;
+    table-layout: fixed; /* Enforce fixed column widths */
+
         }
         td {
             text-align: left;
