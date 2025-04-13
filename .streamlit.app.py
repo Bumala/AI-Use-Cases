@@ -20,35 +20,57 @@ data = [
 # Create the DataFrame
 df = pd.DataFrame(data)
 
-# Generate HTML table with flexible row lengths
+# Generate HTML table with flexible row lengths and square aspect ratio
 def generate_html_table(df):
-    # Start the table with styling
-    html = """
-    <table style='border-spacing: 2px; width: 100%; border-collapse: collapse; table-layout: auto;'>
-    """
+    num_rows = len(df)
+    max_cols = df.apply(lambda row: row.notna().sum(), axis=1).max()
 
-    # Generate rows dynamically
+    # Calculate a rough cell width based on the number of columns to aim for a square
+    # Adjust the base_width as needed to control the overall size
+    base_width = 100  # Base width for the first two columns
+    dynamic_width_percentage = (100 - 2 * (base_width / (base_width + (max_cols - 2) * (base_width / 2)))) if max_cols > 2 else 100
+    if max_cols > 2:
+        dynamic_cell_width_percentage = dynamic_width_percentage / (max_cols - 2)
+    else:
+        dynamic_cell_width_percentage = 0
+
+    html = "<table style='border-spacing: 2px; width: 100%; border-collapse: collapse; border: 1px solid black; aspect-ratio: 1 / 1;'>"
     for i, row in df.iterrows():
         html += "<tr>"
         for j, val in enumerate(row):
-            if pd.notna(val):  # Only add non-empty cells
-                if i == 0 and j == 3:  # Change the specific cell in the first row, fourth column
-                    html += f"<td style='text-align: left; padding: 10px; border: 1px solid #ddd; width: 800px; min-width: 300px; max-width: 300px;'>{val}</td>"
-                elif j == 0 and i == 0:  # Merge rows 1 to 5 in the first column
-                    html += f"<td rowspan='5' style='text-align: left; padding: 10px; border: 1px solid #ddd;'>{val}</td>"
-                elif j == 0 and i == 5:  # Merge rows 6 to 10 in the first column
-                    html += f"<td rowspan='5' style='text-align: left; padding: 10px; border: 1px solid #ddd;'>{val}</td>"
-                elif j == 0 and i == 10:  # Merge rows 11 and 12 in the first column
-                    html += f"<td rowspan='2' style='text-align: left; padding: 10px; border: 1px solid #ddd;'>{val}</td>"
-                elif j == 0 and i < 5:  # Skip rows 2 to 5 in the first column
-                    continue
-                elif j == 0 and 5 < i < 10:  # Skip rows 7 to 10 in the first column
-                    continue
-                elif j == 0 and i == 11:  # Skip row 12 in the first column
-                    continue
-                else:  # Regular cells
-                    html += f"<td style='text-align: left; padding: 10px; border: 1px solid #ddd;'>{val}</td>"
+            if pd.notna(val):
+                style = f"text-align: left; padding: 10px; border: 1px solid #ddd;"
+                if j == 0:
+                    if i == 0:
+                        html += f"<td rowspan='5' style='{style} width: {base_width / (base_width + (max_cols - 2) * (base_width / 2)) * 100}%;'>{val}</td>"
+                    elif i == 5:
+                        html += f"<td rowspan='5' style='{style} width: {base_width / (base_width + (max_cols - 2) * (base_width / 2)) * 100}%;'>{val}</td>"
+                    elif i == 10:
+                        html += f"<td rowspan='2' style='{style} width: {base_width / (base_width + (max_cols - 2) * (base_width / 2)) * 100}%;'>{val}</td>"
+                    elif i not in [0, 5, 10]:
+                        continue
+                elif j == 1:
+                    html += f"<td style='{style} width: {base_width / (base_width + (max_cols - 2) * (base_width / 2)) * 100}%;'>{val}</td>"
+                elif j >= 2:
+                    html += f"<td style='{style} width: {dynamic_cell_width_percentage}%;'>{val}</td>"
+            elif j >= 2:
+                html += "<td style='border: 1px solid #ddd;'></td>" # Add empty cells for alignment
         html += "</tr>"
+
+    # Fill remaining cells in shorter rows for a more square look
+    for i in range(len(df)):
+        row_length = df.iloc[i].notna().sum()
+        if row_length < max_cols:
+            html += "<tr>"
+            # Skip the first two columns as they are already present or merged
+            for j in range(max_cols):
+                if j < 2 and df.iloc[i, j] is None:
+                    continue
+                elif j >= 2 and (j >= row_length or pd.isna(df.iloc[i, j])):
+                    html += "<td style='border: 1px solid #ddd;'></td>"
+            html += "</tr>"
+            # Remove the extra closing </tr> and opening <tr> from the next iteration
+            # as we are manually adding cells within the current row
 
     html += "</table>"
     return html
