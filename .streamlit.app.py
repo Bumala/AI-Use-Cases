@@ -20,7 +20,7 @@ data = [
 # Create the DataFrame
 df = pd.DataFrame(data)
 
-# Generate HTML table with flexible row lengths and adjusted column widths
+# Generate HTML table with flexible row lengths and adjusted column widths, removing grids from the third column onwards
 def generate_html_table(df):
     html = f"<table style='border-spacing: 2px; width: 100%; border-collapse: collapse; border: 1px solid black; aspect-ratio: 1 / 1;'>"
     for i, row in df.iterrows():
@@ -51,6 +51,8 @@ def generate_html_table(df):
                     if num_cols_in_row == 2:
                         colspan = 1
 
+                    if j >= 2:
+                        style = f"text-align: left; padding: 10px;" # Removed border for columns 3 onwards
                     html += f"<td style='{style} width: {width_percent};' colspan='{colspan}'>{val}</td>"
             elif non_empty_cells > 0 and j > 0 and pd.isna(df.iloc[i, j-1]):
                 pass # Don't add empty cells if the previous was a value in a shorter row
