@@ -77,7 +77,7 @@ def generate_html_table(df):
     html += "</table>"
     return html
 
-# Apply CSS to center the table and ensure it takes full width
+# Apply CSS to center the table, zoom out slightly, and ensure it fits the screen
 st.markdown("""
     <style>
         .center-table {
@@ -86,7 +86,9 @@ st.markdown("""
             align-items: center;
             width: 100%;
             height: 100%;
-            margin: 0 auto; /* Ensures the table is centered within the available space */
+            margin: 0 auto;
+            transform: scale(0.9); /* Zoom out slightly to fit the table on the screen */
+            transform-origin: top center;
         }
         table {
             width: 100%;
