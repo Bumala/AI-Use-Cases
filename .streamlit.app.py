@@ -1,6 +1,5 @@
 import streamlit as st
 import pandas as pd
-from st_aggrid import AgGrid, GridOptionsBuilder
 
 # Data definition
 data = [
@@ -18,22 +17,9 @@ data = [
     [None, "R&D", "Manufacturing", "Marketing & Sales", "Customer Service"],
 ]
 
-# Create a DataFrame
+# Convert to DataFrame
 df = pd.DataFrame(data)
 
-# Build AgGrid options
-options_builder = GridOptionsBuilder.from_dataframe(df)
-options_builder.configure_column("0", pinned="left")  # Pin the first column for better navigation
-options_builder.configure_default_column(resizable=True, wrapText=True, autoHeight=True)
-
-grid_options = options_builder.build()
-
-# Display the table using AgGrid
-st.write("### Dynamic Table with Streamlit AgGrid")
-AgGrid(
-    df,
-    gridOptions=grid_options,
-    height=500,
-    fit_columns_on_grid_load=True,
-    enable_enterprise_modules=False,
-)
+# Display table
+st.write("### Simple Table with Streamlit")
+st.table(df)
