@@ -28,8 +28,8 @@ def generate_html_table(df):
     """
 
     # Define cell dimensions
-    cell_width = "2000px"  # Set a universal width
-    cell_height = "100px"  # Set a universal height
+    cell_width = "10000px"  # Set a universal width
+    cell_height = "1000px"  # Set a universal height
 
     # Generate rows dynamically
     for i, row in df.iterrows():
