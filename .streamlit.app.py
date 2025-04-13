@@ -81,7 +81,7 @@ def generate_html_table(df):
     html += "</table>"
     return html
 
-# Apply CSS to center the table with zoom and a slight left margin for better alignment
+# Apply CSS to center the table with zoom and ensure proper alignment
 st.markdown("""
     <style>
         .center-table {
