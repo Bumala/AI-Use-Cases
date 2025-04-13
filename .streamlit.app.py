@@ -17,40 +17,33 @@ data = [
     [None, "R&D", "Manufacturing", "Marketing & Sales", "Customer Service"],
 ]
 
-# Create the DataFrame
 df = pd.DataFrame(data)
 
-# Generate HTML table without gridlines
+# Generate HTML table
 def generate_html_table(df):
-    # Start the table with fixed layout
-    html = """
-    <table style='border-spacing: 0; width: 100%; border-collapse: collapse; table-layout: fixed;'>
-    """
+    # Set universal dimensions
+    cell_width = 150  # in px
+    cell_height = "50px"
 
-    # Define cell dimensions
-    cell_width = "150px"  # Universal width
-    cell_height = "50px"  # Universal height
+    html = "<table style='border-spacing: 0; width: 100%; border-collapse: collapse; table-layout: fixed;'>"
 
-    # Generate rows dynamically
     for i, row in df.iterrows():
         html += "<tr>"
         for j, val in enumerate(row):
-            if pd.notna(val):  # Only add non-empty cells
-                if j == 0 and i == 0:  # Merge rows 1 to 5 in the first column
-                    html += f"<td rowspan='5' style='text-align: left; padding: 10px; width: {cell_width}; height: {cell_height};'>{val}</td>"
-                elif j == 0 and i == 5:  # Merge rows 6 to 10 in the first column
-                    html += f"<td rowspan='5' style='text-align: left; padding: 10px; width: {cell_width}; height: {cell_height};'>{val}</td>"
-                elif j == 0 and i == 10:  # Merge rows 11 and 12 in the first column
-                    html += f"<td rowspan='2' style='text-align: left; padding: 10px; width: {cell_width}; height: {cell_height};'>{val}</td>"
-                elif j == 0 and i < 5:  # Skip rows 2 to 5 in the first column
-                    continue
-                elif j == 0 and 5 < i < 10:  # Skip rows 7 to 10 in the first column
-                    continue
-                elif j == 0 and i == 11:  # Skip row 12 in the first column
+            if pd.notna(val):
+
+                # Merge logic
+                if j == 0 and i == 0:
+                    html += f"<td rowspan='5' style='text-align: left; padding: 10px; width: {cell_width}px; height: {cell_height}; border: 1px solid #ccc;'>{val}</td>"
+                elif j == 0 and i == 5:
+                    html += f"<td rowspan='5' style='text-align: left; padding: 10px; width: {cell_width}px; height: {cell_height}; border: 1px solid #ccc;'>{val}</td>"
+                elif j == 0 and i == 10:
+                    html += f"<td rowspan='2' style='text-align: left; padding: 10px; width: {cell_width}px; height: {cell_height}; border: 1px solid #ccc;'>{val}</td>"
+                elif j == 0 and (i < 5 or (5 < i < 10) or i == 11):
                     continue
 
-                # Define sets for cells with specific colspan requirements
-                colspan_2_cells = {
+                # Colspan rules
+                colspan_2 = {
                     (0, 2), (0, 3), (0, 4),
                     (1, 4), (1, 5),
                     (2, 4), (2, 5),
@@ -62,18 +55,21 @@ def generate_html_table(df):
                     (11, 2), (11, 3), (11, 4)
                 }
 
-                colspan_3_cells = {
+                colspan_3 = {
                     (4, 2), (4, 3)
                 }
 
-                # Iterate and build the table
-                if (i, j) in colspan_2_cells:
-                    html += f"<td colspan='2' style='text-align: left; padding: 10px; width: {cell_width}; height: {cell_height};'>{val}</td>"
-                elif (i, j) in colspan_3_cells:
-                    html += f"<td colspan='3' style='text-align: left; padding: 10px; width: {cell_width}; height: {cell_height};'>{val}</td>"
-                else:  # Regular cells
-                    html += f"<td style='text-align: left; padding: 10px; width: {cell_width}; height: {cell_height};'>{val}</td>"
+                if (i, j) in colspan_2:
+                    html += f"<td colspan='2' style='text-align: left; padding: 10px; width: {cell_width*2}px; height: {cell_height}; border: 1px solid #ccc;'>{val}</td>"
+                elif (i, j) in colspan_3:
+                    html += f"<td colspan='3' style='text-align: left; padding: 10px; width: {cell_width*3}px; height: {cell_height}; border: 1px solid #ccc;'>{val}</td>"
+                else:
+                    html += f"<td style='text-align: left; padding: 10px; width: {cell_width}px; height: {cell_height}; border: 1px solid #ccc;'>{val}</td>"
         html += "</tr>"
 
     html += "</table>"
     return html
+
+# Display in Streamlit
+st.markdown("### Morphological Box with Fixed Cell Size")
+st.markdown(generate_html_table(df), unsafe_allow_html=True)
