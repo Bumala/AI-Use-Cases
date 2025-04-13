@@ -45,6 +45,7 @@ def generate_html_table(df):
                 elif j == 0 and i == 11:  # Skip row 12 in the first column
                     continue
 
+                #making a table of equal size
                 elif i == 0 and j == 2:  # Make the fourth column in the first row wider
                     html += f"<td colspan='2' style='text-align: left; padding: 10px;'>{val}</td>"
                     
@@ -54,7 +55,95 @@ def generate_html_table(df):
                 elif i == 0 and j == 4:  # Make the fourth column in the first row wider
                     html += f"<td colspan='2' style='text-align: left; padding: 10px;'>{val}</td>"
 
+                    
 
+                #elif i == 1 and j == 2:  # Make the fourth column in the first row wider
+                    html += f"<td colspan='2' style='text-align: left; padding: 10px;'>{val}</td>"
+                    
+                #elif i == 1 and j == 3:  # Make the fourth column in the first row wider
+                    html += f"<td colspan='2' style='text-align: left; padding: 10px;'>{val}</td>"
+
+                elif i == 1 and j == 4:  # Make the fourth column in the first row wider
+                    html += f"<td colspan='2' style='text-align: left; padding: 10px;'>{val}</td>"
+
+                elif i == 1 and j == 5:  # Make the fourth column in the first row wider
+                    html += f"<td colspan='2' style='text-align: left; padding: 10px;'>{val}</td>"
+
+                    
+
+                #elif i == 2 and j == 2:  # Make the fourth column in the first row wider
+                    html += f"<td colspan='2' style='text-align: left; padding: 10px;'>{val}</td>"
+                    
+                #elif i == 2 and j == 3:  # Make the fourth column in the first row wider
+                    html += f"<td colspan='2' style='text-align: left; padding: 10px;'>{val}</td>"
+
+                elif i == 2 and j == 4:  # Make the fourth column in the first row wider
+                    html += f"<td colspan='2' style='text-align: left; padding: 10px;'>{val}</td>"
+
+                elif i == 2 and j == 5:  # Make the fourth column in the first row wider
+                    html += f"<td colspan='2' style='text-align: left; padding: 10px;'>{val}</td>"
+
+                
+
+                elif i == 3 and j == 2:  # Make the fourth column in the first row wider
+                    html += f"<td colspan='2' style='text-align: left; padding: 10px;'>{val}</td>"
+                    
+                elif i == 3 and j == 3:  # Make the fourth column in the first row wider
+                    html += f"<td colspan='2' style='text-align: left; padding: 10px;'>{val}</td>"
+
+                elif i == 3 and j == 4:  # Make the fourth column in the first row wider
+                    html += f"<td colspan='2' style='text-align: left; padding: 10px;'>{val}</td>"
+
+                
+
+                elif i == 4 and j == 2:  # Make the fourth column in the first row wider
+                    html += f"<td colspan='3' style='text-align: left; padding: 10px;'>{val}</td>"
+                    
+                elif i == 4 and j == 3:  # Make the fourth column in the first row wider
+                    html += f"<td colspan='3' style='text-align: left; padding: 10px;'>{val}</td>"
+
+
+                
+
+                elif i == 5 and j == 2:  # Make the fourth column in the first row wider
+                    html += f"<td colspan='2' style='text-align: left; padding: 10px;'>{val}</td>"
+                    
+                elif i == 5 and j == 3:  # Make the fourth column in the first row wider
+                    html += f"<td colspan='2' style='text-align: left; padding: 10px;'>{val}</td>"
+
+                elif i == 5 and j == 4:  # Make the fourth column in the first row wider
+                    html += f"<td colspan='2' style='text-align: left; padding: 10px;'>{val}</td>"
+
+                
+
+                elif i == 7 and j == 4:  # Make the fourth column in the first row wider
+                    html += f"<td colspan='2' style='text-align: left; padding: 10px;'>{val}</td>"
+                    
+                elif i == 7 and j == 5:  # Make the fourth column in the first row wider
+                    html += f"<td colspan='2' style='text-align: left; padding: 10px;'>{val}</td>"
+
+
+                
+                elif i == 8 and j == 6:  # Make the fourth column in the first row wider
+                    html += f"<td colspan='2' style='text-align: left; padding: 10px;'>{val}</td>"
+                    
+               
+
+                elif i == 10 and j == 4:  # Make the fourth column in the first row wider
+                    html += f"<td colspan='2' style='text-align: left; padding: 10px;'>{val}</td>"
+                    
+                elif i == 10 and j == 5:  # Make the fourth column in the first row wider
+                    html += f"<td colspan='2' style='text-align: left; padding: 10px;'>{val}</td>"
+
+                
+
+                elif i == 11 and j == 4:  # Make the fourth column in the first row wider
+                    html += f"<td colspan='2' style='text-align: left; padding: 10px;'>{val}</td>"
+
+                elif i == 11 and j == 5:  # Make the fourth column in the first row wider
+                    html += f"<td colspan='2' style='text-align: left; padding: 10px;'>{val}</td>"
+                    
+    
                 
                 else:  # Regular cells
                     html += f"<td style='text-align: left; padding: 10px;'>{val}</td>"
