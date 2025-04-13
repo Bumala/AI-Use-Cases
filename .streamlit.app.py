@@ -25,13 +25,9 @@ data = [
 
 df = pd.DataFrame(data)
 
-def render_morphological_box_with_layout(df):
+def render_morphological_box_flexible(df):
     num_rows = len(df)
     num_cols = df.shape[1]
-
-    # Adjusted column widths to approximate visual proportions
-    col_widths = [1.2, 1.8, 1, 1, 1, 1, 1, 1, 1]
-    row_heights = [1] * num_rows
 
     with st.container():
         st.markdown(
@@ -39,9 +35,9 @@ def render_morphological_box_with_layout(df):
             <style>
                 .morph-box {{
                     display: grid;
-                    grid-template-columns: {' '.join([f'{w}fr' for w in col_widths[:df.shape[1]]])};
-                    grid-template-rows: repeat({num_rows}, auto); /* Let rows auto-size */
-                    gap: 5px; /* Add some spacing between cells */
+                    grid-template-columns: repeat({num_cols}, auto); /* Columns auto-sized */
+                    grid-template-rows: repeat({num_rows}, auto);
+                    gap: 5px;
                     border: 1px solid #000;
                     width: 900px; /* Adjust as needed */
                 }}
@@ -53,6 +49,7 @@ def render_morphological_box_with_layout(df):
                     align-items: center;
                     justify-content: center;
                     word-break: break-word;
+                    min-width: 80px; /* Minimum width for most cells */
                 }}
 
                 /* Category Spans */
@@ -61,26 +58,26 @@ def render_morphological_box_with_layout(df):
                 .cc {{ grid-row: 10 / span 3; grid-column: 1; }}
                 .ia {{ grid-row: 13 / span 7; grid-column: 1; }}
 
-                /* Dimension Positioning */
-                .dim-k {{ grid-column: 2; grid-row: 1; grid-column-span: 5; }}
-                .dim-cp {{ grid-column: 2; grid-row: 2; grid-column-span: 7; }}
-                .dim-cpres {{ grid-column: 2; grid-row: 3; grid-column-span: 3; }}
-                .dim-ka {{ grid-column: 2; grid-row: 4; grid-column-span: 3; }}
-                .dim-l {{ grid-column: 2; grid-row: 5; grid-column-span: 3; }}
-                .dim-cf {{ grid-column: 2; grid-row: 6; grid-column-span: 7; }}
-                .dim-pa {{ grid-column: 2; grid-row: 7; grid-column-span: 5; }}
-                .dim-tc {{ grid-column: 2; grid-row: 8; grid-column-span: 5; }}
-                .dim-tpi {{ grid-column: 2; grid-row: 9; grid-column-span: 5; }}
-                .dim-dvc {{ grid-column: 2; grid-row: 10; grid-column-span: 6; }}
-                .dim-ap {{ grid-column: 2; grid-row: 11; grid-column-span: 3; }}
-                .dim-at {{ grid-column: 2; grid-row: 12; grid-column-span: 5; }}
-                .dim-im {{ grid-column: 2; grid-row: 13; grid-column-span: 5; }}
-                .dim-ct {{ grid-column: 2; grid-row: 14; grid-column-span: 3; }}
-                .dim-iapp {{ grid-column: 2; grid-row: 15; grid-column-span: 2; }}
-                .dim-il {{ grid-column: 2; grid-row: 16; grid-column-span: 3; }}
-                .dim-do {{ grid-column: 2; grid-row: 17; grid-column-span: 4; }}
-                .dim-to {{ grid-column: 2; grid-row: 18; grid-column-span: 2; }}
-                .dim-doe {{ grid-column: 2; grid-row: 19; grid-column-span: 3; }}
+                /* Dimension Positioning and Widths */
+                .dim-k {{ grid-column: 2; grid-row: 1; grid-column-span: 5; min-width: 120px; }}
+                .dim-cp {{ grid-column: 2; grid-row: 2; grid-column-span: 7; min-width: 120px; }}
+                .dim-cpres {{ grid-column: 2; grid-row: 3; grid-column-span: 3; min-width: 100px; }}
+                .dim-ka {{ grid-column: 2; grid-row: 4; grid-column-span: 3; min-width: 100px; }}
+                .dim-l {{ grid-column: 2; grid-row: 5; grid-column-span: 3; min-width: 100px; }}
+                .dim-cf {{ grid-column: 2; grid-row: 6; grid-column-span: 7; min-width: 120px; }}
+                .dim-pa {{ grid-column: 2; grid-row: 7; grid-column-span: 5; min-width: 120px; }}
+                .dim-tc {{ grid-column: 2; grid-row: 8; grid-column-span: 5; min-width: 120px; }}
+                .dim-tpi {{ grid-column: 2; grid-row: 9; grid-column-span: 5; min-width: 120px; }}
+                .dim-dvc {{ grid-column: 2; grid-row: 10; grid-column-span: 6; min-width: 120px; }}
+                .dim-ap {{ grid-column: 2; grid-row: 11; grid-column-span: 3; min-width: 100px; }}
+                .dim-at {{ grid-column: 2; grid-row: 12; grid-column-span: 5; min-width: 120px; }}
+                .dim-im {{ grid-column: 2; grid-row: 13; grid-column-span: 5; min-width: 120px; }}
+                .dim-ct {{ grid-column: 2; grid-row: 14; grid-column-span: 3; min-width: 100px; }}
+                .dim-iapp {{ grid-column: 2; grid-row: 15; grid-column-span: 2; min-width: 90px; }}
+                .dim-il {{ grid-column: 2; grid-row: 16; grid-column-span: 3; min-width: 100px; }}
+                .dim-do {{ grid-column: 2; grid-row: 17; grid-column-span: 4; min-width: 110px; }}
+                .dim-to {{ grid-column: 2; grid-row: 18; grid-column-span: 2; min-width: 90px; }}
+                .dim-doe {{ grid-column: 2; grid-row: 19; grid-column-span: 3; min-width: 100px; }}
 
             </style>
             """,
@@ -126,4 +123,4 @@ def render_morphological_box_with_layout(df):
         html_grid += "</div>"
         st.markdown(html_grid, unsafe_allow_html=True)
 
-render_morphological_box_with_layout(df)
+render_morphological_box_flexible(df)
