@@ -1,121 +1,63 @@
 import streamlit as st
+import pandas as pd
 
-def render_powerpoint_table_v3():
-    html = """
-    <div style="width: 100%; overflow-x: auto;">
-        <div style="display: flex; font-weight: bold;">
-            <div class="cell header" style="width: 100px;">What ?</div>
-            <div class="cell header" style="width: 200px;">How ?</div>
-            <div class="cell header" style="width: 150px;">When ?</div>
-            <div class="cell header" style="flex: 1;">Contribution</div>
-            <div class="cell header" style="flex: 1;">Technology</div>
-            <div class="cell header" style="flex: 1;">Data</div>
-            <div class="cell header" style="flex: 1;">Process</div>
-            <div class="cell header" style="flex: 1;">Innovation Process</div>
-        </div>
-        <div style="display: flex;">
-            <div class="cell" style="width: 100px;">Contribution</div>
-            <div class="cell" style="width: 200px;">Decision-maker</div>
-            <div class="cell" style="width: 150px;">Innovation Process</div>
-            <div class="cell" style="flex: 1;">Efficiency and productivity</div>
-            <div class="cell" style="flex: 1;">Machine</div>
-            <div class="cell" style="flex: 1;">Financial Data</div>
-            <div class="cell" style="flex: 1;">Front End</div>
-            <div class="empty-cell" style="flex: 1; display: none;"></div>
-        </div>
-        <div style="display: flex;">
-            <div class="empty-cell" style="width: 100px; display: none;"></div>
-            <div class="empty-cell" style="width: 200px; display: none;"></div>
-            <div class="empty-cell" style="width: 150px; display: none;"></div>
-            <div class="cell" style="flex: 1;">Cost saving</div>
-            <div class="cell" style="flex: 1;">Human-Machine</div>
-            <div class="cell" style="flex: 1;">Market Data</div>
-            <div class="cell" style="flex: 1;">Development</div>
-             <div class="empty-cell" style="flex: 1; display: none;"></div>
-        </div>
-        <div style="display: flex;">
-            <div class="empty-cell" style="width: 100px; display: none;"></div>
-            <div class="empty-cell" style="width: 200px; display: none;"></div>
-            <div class="empty-cell" style="width: 150px; display: none;"></div>
-            <div class="cell" style="flex: 1;">Product performance enhancement</div>
-            <div class="cell" style="flex: 1;">AI Component</div>
-            <div class="cell" style="flex: 1;">Product Data</div>
-            <div class="empty-cell" style="flex: 1; display: none;"></div>
-             <div class="empty-cell" style="flex: 1; display: none;"></div>
-        </div>
-         <div style="display: flex;">
-            <div class="empty-cell" style="width: 100px; display: none;"></div>
-            <div class="empty-cell" style="width: 200px; display: none;"></div>
-            <div class="empty-cell" style="width: 150px; display: none;"></div>
-            <div class="cell" style="flex: 1;">Produkt performance enhancement</div>
-            <div class="cell" style="flex: 1;">Machine Learning</div>
-            <div class="cell" style="flex: 1;">Customer Data</div>
-            <div class="empty-cell" style="flex: 1; display: none;"></div>
-             <div class="empty-cell" style="flex: 1; display: none;"></div>
-        </div>
-         <div style="display: flex;">
-            <div class="empty-cell" style="width: 100px; display: none;"></div>
-            <div class="empty-cell" style="width: 200px; display: none;"></div>
-            <div class="empty-cell" style="width: 150px; display: none;"></div>
-            <div class="cell" style="flex: 1;">Enhanced creativity</div>
-            <div class="cell" style="flex: 1;">Natural Language Processing</div>
-            <div class="cell" style="flex: 1;">Operational Data</div>
-             <div class="empty-cell" style="flex: 1; display: none;"></div>
-             <div class="empty-cell" style="flex: 1; display: none;"></div>
-        </div>
-         <div style="display: flex;">
-            <div class="empty-cell" style="width: 100px; display: none;"></div>
-            <div class="empty-cell" style="width: 200px; display: none;"></div>
-            <div class="empty-cell" style="width: 150px; display: none;"></div>
-            <div class="cell" style="flex: 1;">Security</div>
-            <div class="cell" style="flex: 1;">Computer Vision</div>
-            <div class="cell" style="flex: 1;">Organizational Data</div>
-             <div class="empty-cell" style="flex: 1; display: none;"></div>
-             <div class="empty-cell" style="flex: 1; display: none;"></div>
-        </div>
-         <div style="display: flex;">
-            <div class="empty-cell" style="width: 100px; display: none;"></div>
-            <div class="empty-cell" style="width: 200px; display: none;"></div>
-            <div class="empty-cell" style="width: 150px; display: none;"></div>
-            <div class="cell" style="flex: 1;">Work Quality</div>
-            <div class="cell" style="flex: 1;">Robotics</div>
-            <div class="cell" style="flex: 1;"></div>
-             <div class="empty-cell" style="flex: 1; display: none;"></div>
-             <div class="empty-cell" style="flex: 1; display: none;"></div>
-        </div>
-         <div style="display: flex;">
-            <div class="empty-cell" style="width: 100px; display: none;"></div>
-            <div class="empty-cell" style="width: 200px; display: none;"></div>
-            <div class="empty-cell" style="width: 150px; display: none;"></div>
-            <div class="empty-cell" style="flex: 1; display: none;"></div>
-            <div class="cell" style="flex: 1;">Automation</div>
-            <div class="empty-cell" style="flex: 1; display: none;"></div>
-             <div class="empty-cell" style="flex: 1; display: none;"></div>
-             <div class="empty-cell" style="flex: 1; display: none;"></div>
-        </div>
-         <div style="display: flex;">
-            <div class="empty-cell" style="width: 100px; display: none;"></div>
-            <div class="empty-cell" style="width: 200px; display: none;"></div>
-            <div class="empty-cell" style="width: 150px; display: none;"></div>
-            <div class="empty-cell" style="flex: 1; display: none;"></div>
-            <div class="cell" style="flex: 1;">Speech Recognition</div>
-            <div class="empty-cell" style="flex: 1; display: none;"></div>
-             <div class="empty-cell" style="flex: 1; display: none;"></div>
-             <div class="empty-cell" style="flex: 1; display: none;"></div>
-        </div>
-          <div style="display: flex;">
-            <div class="empty-cell" style="width: 100px; display: none;"></div>
-            <div class="empty-cell" style="width: 200px; display: none;"></div>
-            <div class="empty-cell" style="width: 150px; display: none;"></div>
-            <div class="empty-cell" style="flex: 1; display: none;"></div>
-            <div class="cell" style="flex: 1;">Reinforcement Learning</div>
-            <div class="empty-cell" style="flex: 1; display: none;"></div>
-             <div class="empty-cell" style="flex: 1; display: none;"></div>
-             <div class="empty-cell" style="flex: 1; display: none;"></div>
-        </div>
+# Data definition
+data = [
+    ["Impact (What)", "Benefits", "Quality/Scope/Knowledge", "Time Efficiency", "Cost"],
+    [None, "Focus within Business Model Navigator", "Customer Segments", "Value Proposition", "Value Chain", "Revenue Model"],
+    [None, "Innovation Type", "Incremental", "Radical", "Sustaining", "Disruptive"],
+    [None, "Aim", "Product Innovation", "Process Innovation", "Business Model Innovation"],
+    [None, "Ambidexterity", "Exploration", "Exploitation"],
+    ["Technology (How)", "AI Role", "Automaton", "Assistant", "Partner"],
+    [None, "AI Concepts", "Machine Learning", "Deep Learning", "Artificial Neural Networks", "Natural Language Processing", "Computer Vision", "Robotics"],
+    [None, "Analytics Focus", "Descriptive", "Diagnostic", "Predictive", "Prescriptive"],
+    [None, "Analytics Problem", "Description/Summary", "Clustering", "Classification", "Dependency Analysis", "Regression"],
+    [None, "Data Type", "Customer Data", "Machine Data", "Business Data (Internal Data)", "Market Data", "Public & Regulatory Data", "Synthetic Data"],
+    ["Place (Where)", "Innovation Phase", "Front End", "Development", "Market Introduction"],
+    [None, "R&D", "Manufacturing", "Marketing & Sales", "Customer Service"],
+]
 
-    </div>
-    """
-    st.components.v1.html(html, height=600)
+# Create the DataFrame
+df = pd.DataFrame(data)
 
-render_powerpoint_table_v3()
+# Generate HTML table with flexible row lengths and square aspect ratio
+def generate_html_table(df):
+    num_rows = len(df)
+    max_cols = df.apply(lambda row: row.notna().sum(), axis=1).max()
+
+    # Define a base width for the first two columns (as a percentage)
+    base_width_percent = 20
+    remaining_width_percent = 100 - 2 * base_width_percent
+
+    if max_cols > 2:
+        dynamic_col_width_percent = remaining_width_percent / (max_cols - 2)
+    else:
+        dynamic_col_width_percent = 0
+
+    html = f"<table style='border-spacing: 2px; width: 100%; border-collapse: collapse; border: 1px solid black; aspect-ratio: 1 / 1;'>"
+    for i, row in df.iterrows():
+        html += "<tr>"
+        for j, val in enumerate(row):
+            if pd.notna(val):
+                style = f"text-align: left; padding: 10px; border: 1px solid #ddd;"
+                if j == 0:
+                    if i == 0:
+                        html += f"<td rowspan='5' style='{style} width: {base_width_percent}%;'>{val}</td>"
+                    elif i == 5:
+                        html += f"<td rowspan='5' style='{style} width: {base_width_percent}%;'>{val}</td>"
+                    elif i == 10:
+                        html += f"<td rowspan='2' style='{style} width: {base_width_percent}%;'>{val}</td>"
+                    elif i not in [0, 5, 10]:
+                        continue
+                elif j == 1:
+                    html += f"<td style='{style} width: {base_width_percent}%;'>{val}</td>"
+                elif j >= 2:
+                    html += f"<td style='{style} width: {dynamic_col_width_percent}%;'>{val}</td>"
+            elif j >= 2:
+                html += "<td style='border: 1px solid #ddd;'></td>" # Add empty cells for alignment
+        html += "</tr>"
+    html += "</table>"
+    return html
+
+# Display the table in Streamlit
+st.write(generate_html_table(df), unsafe_allow_html=True)
