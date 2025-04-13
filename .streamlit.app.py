@@ -43,7 +43,7 @@ def generate_html_table(df):
                 elif j == 0 and i == 11:  # Skip row 12 in the first column
                     continue
                 elif i == 0 and j in [3, 4]:  # Make the fourth and fifth columns in the first row equally wide
-                    html += f"<td style='text-align: left; padding: 10px; width: 20%; border: none;'>{val}</td>"
+                    html += f"<td style='text-align: left; padding: 10px; width: 50%; border: none;'>{val}</td>"
                 else:  # Regular cells
                     html += f"<td style='text-align: left; padding: 10px; border: 1px solid #ddd;'>{val}</td>"
         html += "</tr>"
