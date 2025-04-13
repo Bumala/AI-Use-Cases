@@ -26,15 +26,14 @@ def generate_html_table(df):
     html = """
     <style>
         table {
-            border-spacing: 2px;
+            border-spacing: 0; /* Remove spacing between cells */
             width: 100%;
-            border-collapse: collapse;
-            border: 1px solid black;
+            border: 1px solid black; /* Closed box border */
         }
         td {
             text-align: left;
             padding: 10px;
-            border: 1px solid #ddd;
+            border: 1px solid black; /* Inner borders for closed-box appearance */
         }
         td.stretch {
             width: 100%; /* Stretch smaller cells */
