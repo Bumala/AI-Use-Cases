@@ -115,10 +115,13 @@ def generate_html_table(df):
                     
                
 
-                elif i == 10 and j == 4:  # Make the fourth column in the first row wider
+                elif i == 10 and j == 2:  # Make the fourth column in the first row wider
                     html += f"<td colspan='2' style='text-align: left; padding: 10px;'>{val}</td>"
                     
-                elif i == 10 and j == 5:  # Make the fourth column in the first row wider
+                elif i == 10 and j == 3:  # Make the fourth column in the first row wider
+                    html += f"<td colspan='2' style='text-align: left; padding: 10px;'>{val}</td>"
+
+                elif i == 10 and j == 4:  # Make the fourth column in the first row wider
                     html += f"<td colspan='2' style='text-align: left; padding: 10px;'>{val}</td>"
 
                 
