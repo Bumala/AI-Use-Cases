@@ -23,7 +23,7 @@ df = pd.DataFrame(data)
 # Generate HTML table with flexible row lengths
 def generate_html_table(df):
     # Start the table with styling
-    html = "<table style='border-spacing: 2px; width: 100%; border: 1px solid black;'>"
+    html = "<table style='border-spacing: 2px; width: 100%; border: 1px solid red;'>"
 
     # Generate rows dynamically
     for i, row in df.iterrows():
