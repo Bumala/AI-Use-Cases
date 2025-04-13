@@ -15,57 +15,50 @@ data = [
     [None,"Data Type", "Customer Data", "Machine Data", "Business Data (Internal Data)", "Market Data", "Public & Regulatory Data", "Synthetic Data"],
     ["Place (Where)", "Innovation Phase", "Front End", "Development", "Market Introduction"],
     [None, "R&D", "Manufacturing", "Marketing & Sales", "Customer Service"],
-  
 ]
 
 df = pd.DataFrame(data)
 
-# Style generator for table cells
+# Cell style function
 def cell_style():
-    return "text-align: left; padding: 10px; border: 1px solid #ddd;"
+    return "padding: 10px; border: 1px solid #ccc; text-align: left;"
 
-# Generate HTML table
+# Generate the HTML table
 def generate_html_table(df):
-    # Find the maximum number of columns in any row
-    max_columns = max(len(row.dropna()) for _, row in df.iterrows())
-
-    # Start the table with styling
-    html = "<table style='border-spacing: 2px; width: 100%; border: 1px solid black;'>"
-
-    # Generate rows dynamically
+    html = "<table style='width: 100%; border-collapse: collapse;'>"
+    
     for i, row in df.iterrows():
         html += "<tr>"
-        filled_columns = 0  # Track the number of columns filled in the current row
 
-        for j, val in enumerate(row):
-            if j == 0 and i == 0:  # Merge rows 1 to 5 in the first column
-                html += f"<td rowspan='5' style='{cell_style()}'>{val}</td>"
-                filled_columns += 1
-            elif j == 0 and i < 5:  # Skip adding cells for rows 2 to 5 in the first column
-                continue
-            elif j == 0 and i == 5:  # Merge rows 6 to 10 in the first column
-                html += f"<td rowspan='5' style='{cell_style()}'>{val}</td>"
-                filled_columns += 1
-            elif j == 0 and 5 < i < 10:  # Skip adding cells for rows 7 to 10 in the first column
-                continue
-            elif j == 0 and i == 10:  # Merge rows 11 and 12 in the first column
-                html += f"<td rowspan='2' style='{cell_style()}'>{val}</td>"
-                filled_columns += 1
-            elif j == 0 and i == 11:  # Skip adding the cell for row 12 in the first column
-                continue
-            elif pd.notna(val):  # Check if the cell is not empty (not NaN)
-                html += f"<td style='{cell_style()}'>{val}</td>"
-                filled_columns += 1
+        # Handle merged left-column labels
+        if i == 0:
+            html += f"<td rowspan='5' style='{cell_style()} width: 10%; background-color: #e6f0ff; font-weight: bold;'>{row[0]}</td>"
+            cells = row[1:]
+        elif i == 5:
+            html += f"<td rowspan='5' style='{cell_style()} width: 10%; background-color: #e6f0ff; font-weight: bold;'>{row[0]}</td>"
+            cells = row[1:]
+        elif i == 10:
+            html += f"<td rowspan='2' style='{cell_style()} width: 10%; background-color: #e6f0ff; font-weight: bold;'>{row[0]}</td>"
+            cells = row[1:]
+        elif row[0] is None:
+            cells = row[1:]
+        else:
+            cells = row
 
-        # If there are fewer columns in the current row, span the remaining columns
-        if filled_columns < max_columns:
-            colspan = max_columns - filled_columns
-            html += f"<td colspan='{colspan}' style='{cell_style()}'></td>"
+        # Count how many actual content cells (non-None)
+        content_cells = [c for c in cells if pd.notna(c)]
+
+        # Compute colspan so that cells stretch across the rest of the row
+        colspan = int(90 / len(content_cells))  # 90% of width split evenly
+
+        for val in content_cells:
+            html += f"<td style='{cell_style()} width: {colspan}%;'>{val}</td>"
 
         html += "</tr>"
 
     html += "</table>"
     return html
 
-# Display table in Streamlit
+# Render in Streamlit
+st.markdown("### Morphological Box", unsafe_allow_html=True)
 st.write(generate_html_table(df), unsafe_allow_html=True)
