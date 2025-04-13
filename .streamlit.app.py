@@ -19,79 +19,99 @@ data = [
 
 df = pd.DataFrame(data)
 
-# Add CSS for grid-based styling
+# Inject CSS
 st.markdown("""
-    <style>
-    .box-container {
-        display: flex;
-        flex-direction: column;
-        border: 2px solid #000;
-        border-radius: 6px;
-        overflow: hidden;
-        font-family: sans-serif;
-    }
-    .box-row {
-        display: grid;
-        grid-auto-columns: 1fr;
-        border-top: 1px solid #ccc;
-        min-height: 50px;
-    }
-    .box-label {
-        background: #e6f0ff;
-        font-weight: bold;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        padding: 10px;
-        border-right: 1px solid #ccc;
-        min-width: 160px;
-    }
-    .box-cell {
-        background: #f9f9f9;
-        padding: 10px;
-        border-right: 1px solid #eee;
-        display: flex;
-        align-items: center;
-    }
-    .box-row:last-child {
-        border-bottom: none;
-    }
-    </style>
+<style>
+.morph-box {
+    display: flex;
+    flex-direction: column;
+    border: 2px solid black;
+    border-radius: 6px;
+    overflow: hidden;
+    font-family: sans-serif;
+}
+.morph-row {
+    display: grid;
+    grid-template-columns: 180px 220px auto;
+    border-top: 1px solid #ccc;
+    min-height: 50px;
+}
+.morph-label {
+    background: #e6f0ff;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px;
+    border-right: 1px solid #ccc;
+    border-bottom: 1px solid #ccc;
+}
+.morph-cell-second {
+    background: #f2f2f2;
+    padding: 10px;
+    border-right: 1px solid #ccc;
+    border-bottom: 1px solid #ccc;
+    display: flex;
+    align-items: center;
+}
+.morph-flexcells {
+    display: flex;
+    flex-grow: 1;
+    border-bottom: 1px solid #ccc;
+}
+.morph-flexcell {
+    flex: 1;
+    padding: 10px;
+    border-right: 1px solid #eee;
+    display: flex;
+    align-items: center;
+    background: #f9f9f9;
+}
+</style>
 """, unsafe_allow_html=True)
 
-# Function to generate grid rows with dynamic column count
-def generate_morphological_box(df):
-    html = "<div class='box-container'>"
+# Generate the layout
+def render_box(df):
+    html = "<div class='morph-box'>"
 
+    # First column merge map
     label_map = {
         0: ("Impact (What)", 5),
         5: ("Technology (How)", 5),
         10: ("Place (Where)", 2),
     }
 
+    rowspan_tracker = {}  # to track which row to print label
+
     for i, row in df.iterrows():
+        html += "<div class='morph-row'>"
+
+        # First column: merged labels
         if i in label_map:
-            label, rowspan = label_map[i]
-            label_html = f"<div class='box-label' style='grid-row: span {rowspan};'>{label}</div>"
-        elif row[0] is None:
-            label_html = ""
+            label, span = label_map[i]
+            rowspan_tracker[i] = span
+            html += f"<div class='morph-label' style='grid-row: span {span};'>{label}</div>"
+        elif any(i >= k and i < k + v for k, v in label_map.items()):
+            pass  # skip cell, since it's merged
         else:
-            label_html = f"<div class='box-label'>{row[0]}</div>"
+            html += "<div></div>"  # fallback
 
-        cells = [str(cell) for cell in row[1:] if pd.notna(cell)]
-        num_cells = len(cells)
-        grid_template = f"grid-template-columns: {('1fr ' * (num_cells + (1 if label_html else 0))).strip()};"
+        # Second column (always present)
+        second_col = row[1] if pd.notna(row[1]) else ""
+        html += f"<div class='morph-cell-second'>{second_col}</div>"
 
-        html += f"<div class='box-row' style='{grid_template}'>"
-        if label_html:
-            html += label_html
-        for cell in cells:
-            html += f"<div class='box-cell'>{cell}</div>"
+        # Third column onwards — flexible
+        flex_cells = [c for c in row[2:] if pd.notna(c)]
+        html += "<div class='morph-flexcells'>"
+        for cell in flex_cells:
+            html += f"<div class='morph-flexcell'>{cell}</div>"
         html += "</div>"
+
+        html += "</div>"  # end of row
 
     html += "</div>"
     return html
 
-# Show in Streamlit
-st.markdown("### Adaptive Morphological Box", unsafe_allow_html=True)
-st.markdown(generate_morphological_box(df), unsafe_allow_html=True)
+# Render it
+st.markdown("### Final Morphological Box", unsafe_allow_html=True)
+st.markdown(render_box(df), unsafe_allow_html=True)
