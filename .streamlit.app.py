@@ -10,9 +10,9 @@ data = [
     [None, "Ambidexterity", "Exploration", "Exploitation"],
     ["Technology (How)", "AI Role", "Automaton", "Assistant", "Partner"],
     [None, "AI Concepts", "Machine Learning", "Deep Learning", "Artificial Neural Networks", "Natural Language Processing", "Computer Vision", "Robotics"],
-    [None, "Analytics Focus", "Descriptive", "Diagnostic", "Predictive", "Prescriptive" ],
-    [None,"Analytics Problem", "Description/Summary", "Clustering", "Classification", "Dependency Analysis", "Regression"],
-    [None,"Data Type", "Customer Data", "Machine Data", "Business Data (Internal Data)", "Market Data", "Public & Regulatory Data", "Synthetic Data"],
+    [None, "Analytics Focus", "Descriptive", "Diagnostic", "Predictive", "Prescriptive"],
+    [None, "Analytics Problem", "Description/Summary", "Clustering", "Classification", "Dependency Analysis", "Regression"],
+    [None, "Data Type", "Customer Data", "Machine Data", "Business Data (Internal Data)", "Market Data", "Public & Regulatory Data", "Synthetic Data"],
     ["Place (Where)", "Innovation Phase", "Front End", "Development", "Market Introduction"],
     [None, "R&D", "Manufacturing", "Marketing & Sales", "Customer Service"],
 ]
@@ -81,33 +81,30 @@ def render_box(df):
         10: ("Place (Where)", 2),
     }
 
-    rowspan_tracker = {}  # to track which row to print label
-
     for i, row in df.iterrows():
         html += "<div class='morph-row'>"
 
         # First column: merged labels
         if i in label_map:
             label, span = label_map[i]
-            rowspan_tracker[i] = span
             html += f"<div class='morph-label' style='grid-row: span {span};'>{label}</div>"
-        elif any(i >= k and i < k + v for k, v in label_map.items()):
-            pass  # skip cell, since it's merged
+        elif any(i >= k and i < k + span for k, (label, span) in label_map.items()):
+            pass  # skip, label is already merged
         else:
-            html += "<div></div>"  # fallback
+            html += "<div></div>"  # fallback if needed
 
-        # Second column (always present)
+        # Second column (always shown)
         second_col = row[1] if pd.notna(row[1]) else ""
         html += f"<div class='morph-cell-second'>{second_col}</div>"
 
-        # Third column onwards — flexible
+        # Third+ columns (flex layout)
         flex_cells = [c for c in row[2:] if pd.notna(c)]
         html += "<div class='morph-flexcells'>"
         for cell in flex_cells:
             html += f"<div class='morph-flexcell'>{cell}</div>"
         html += "</div>"
 
-        html += "</div>"  # end of row
+        html += "</div>"  # end row
 
     html += "</div>"
     return html
