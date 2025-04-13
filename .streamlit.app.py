@@ -20,30 +20,36 @@ data = [
 # Create the DataFrame
 df = pd.DataFrame(data)
 
-# Generate HTML boxes with flexible row lengths
-def generate_html_boxes(df):
-    # Start the container for boxes
-    html = "<div style='display: flex; flex-wrap: wrap; gap: 10px;'>"
+# Generate HTML table without gridlines
+def generate_html_table(df):
+    # Start the table with updated styling (no borders)
+    html = "<table style='border-spacing: 2px; width: 100%; border-collapse: collapse;'>"
 
-    # Generate boxes dynamically
+    # Generate rows dynamically
     for i, row in df.iterrows():
+        html += "<tr>"
         for j, val in enumerate(row):
             if pd.notna(val):  # Only add non-empty cells
-                html += f"""
-                <div style='
-                    display: inline-block;
-                    padding: 10px;
-                    margin: 5px;
-                    border: 1px solid #ddd;
-                    border-radius: 5px;
-                    background-color: #f9f9f9;
-                    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
-                '>
-                    {val}
-                </div>
-                """
-    html += "</div>"
+                if j == 0 and i == 0:  # Merge rows 1 to 5 in the first column
+                    html += f"<td rowspan='5' style='text-align: left; padding: 10px;'>{val}</td>"
+                elif j == 0 and i == 5:  # Merge rows 6 to 10 in the first column
+                    html += f"<td rowspan='5' style='text-align: left; padding: 10px;'>{val}</td>"
+                elif j == 0 and i == 10:  # Merge rows 11 and 12 in the first column
+                    html += f"<td rowspan='2' style='text-align: left; padding: 10px;'>{val}</td>"
+                elif j == 0 and i < 5:  # Skip rows 2 to 5 in the first column
+                    continue
+                elif j == 0 and 5 < i < 10:  # Skip rows 7 to 10 in the first column
+                    continue
+                elif j == 0 and i == 11:  # Skip row 12 in the first column
+                    continue
+                elif i == 0 and j == 3:  # Make the fourth column in the first row wider
+                    html += f"<td colspan='2' style='text-align: left; padding: 10px;'>{val}</td>"
+                else:  # Regular cells
+                    html += f"<td style='text-align: left; padding: 10px;'>{val}</td>"
+        html += "</tr>"
+
+    html += "</table>"
     return html
 
-# Display the boxes in Streamlit
-st.write(generate_html_boxes(df), unsafe_allow_html=True)
+# Display the table in Streamlit
+st.write(generate_html_table(df), unsafe_allow_html=True)
