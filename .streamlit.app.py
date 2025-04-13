@@ -28,8 +28,8 @@ def generate_html_table(df):
     """
 
     # Define cell dimensions
-    cell_width = "10000px"  # Set a universal width
-    cell_height = "1000px"  # Set a universal height
+    cell_width = "2000px"  # Set a universal width
+    cell_height = "100px"  # Set a universal height
 
     # Generate rows dynamically
     for i, row in df.iterrows():
@@ -37,11 +37,11 @@ def generate_html_table(df):
         for j, val in enumerate(row):
             if pd.notna(val):  # Only add non-empty cells
                 if j == 0 and i == 0:  # Merge rows 1 to 5 in the first column
-                    html += f"<td rowspan='5' style='text-align: left; padding: 10px; width: {cell_width}; height: {cell_height};'>{val}</td>"
+                    html += f"<td rowspan='5' style='text-align: left; padding: 10px; width: 2000px ; height: {cell_height};'>{val}</td>"
                 elif j == 0 and i == 5:  # Merge rows 6 to 10 in the first column
-                    html += f"<td rowspan='5' style='text-align: left; padding: 10px; width: {cell_width}; height: {cell_height};'>{val}</td>"
+                    html += f"<td rowspan='5' style='text-align: left; padding: 10px; width: 2000px ; height: {cell_height};'>{val}</td>"
                 elif j == 0 and i == 10:  # Merge rows 11 and 12 in the first column
-                    html += f"<td rowspan='2' style='text-align: left; padding: 10px; width: {cell_width}; height: {cell_height};'>{val}</td>"
+                    html += f"<td rowspan='2' style='text-align: left; padding: 10px; width: 2000px ; height: {cell_height};'>{val}</td>"
                 elif j == 0 and i < 5:  # Skip rows 2 to 5 in the first column
                     continue
                 elif j == 0 and 5 < i < 10:  # Skip rows 7 to 10 in the first column
