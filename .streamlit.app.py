@@ -23,7 +23,9 @@ df = pd.DataFrame(data)
 # Generate HTML table with flexible row lengths
 def generate_html_table(df):
     # Start the table with styling
-    html = "<table style='border-spacing: 2px; width: 100%; border-collapse: collapse; border: 1px solid black;'>"
+    html = """
+    <table style='border-spacing: 2px; width: 100%; border-collapse: collapse; table-layout: auto;'>
+    """
 
     # Generate rows dynamically
     for i, row in df.iterrows():
@@ -31,7 +33,7 @@ def generate_html_table(df):
         for j, val in enumerate(row):
             if pd.notna(val):  # Only add non-empty cells
                 if i == 0 and j == 3:  # Change the specific cell in the first row, fourth column
-                    html += f"<td style='text-align: left; padding: 10px; border: 1px solid #ddd; width: 400px;'>{val}</td>"
+                    html += f"<td style='text-align: left; padding: 10px; border: 1px solid #ddd; width: 300px; min-width: 300px; max-width: 300px;'>{val}</td>"
                 elif j == 0 and i == 0:  # Merge rows 1 to 5 in the first column
                     html += f"<td rowspan='5' style='text-align: left; padding: 10px; border: 1px solid #ddd;'>{val}</td>"
                 elif j == 0 and i == 5:  # Merge rows 6 to 10 in the first column
