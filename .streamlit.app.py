@@ -58,6 +58,14 @@ def generate_html_table(df):
         for j, val in enumerate(row):
             if pd.isna(val):
                 continue
+
+
+     # Check for specific styling for row 9, columns 1 to 7
+            if i == 9 and 1 <= j <= 7:
+                custom_style = f"{style(base_cell_width)} border-bottom: 3px solid #000000;"
+            else:
+                custom_style = style(base_cell_width)
+
   
             if j == 0:
                 if i == 0:
