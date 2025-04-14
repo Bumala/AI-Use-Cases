@@ -85,6 +85,9 @@ def generate_html_table(df):
             elif i == 9 and j == 4:  
                 html += f"<td style='{style(base_cell_width)} background-color: #f1fbfe; border: 1px solid #000000; border-bottom: 3px solid #000000;'>{val}</td>"
 
+            elif i == 9 and j == 6:  
+                html += f"<td style='{style(base_cell_width)} background-color: #f1fbfe; border: 1px solid #000000; border-bottom: 3px solid #000000;'>{val}</td>"
+
 
             
             elif j == 1:
