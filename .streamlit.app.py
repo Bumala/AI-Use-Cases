@@ -51,13 +51,10 @@ def generate_html_table(df):
         (4, 2), (4, 3)
     }
 
-    colspan_1_5 = {
-    (1, 2), (1, 3), (1, 4), (1, 5)
-}
 
     html = "<table style='border-spacing: 0; width: 100%; border-collapse: collapse; table-layout: fixed;'>"
 
- # Update the rendering logic in the loop
+# Update the render logic in the loop
 for i, row in df.iterrows():
     html += "<tr>"
     for j, val in enumerate(row):
@@ -79,8 +76,8 @@ for i, row in df.iterrows():
             html += f"<td colspan='3' style='{style(base_cell_width * 3)}'>{val}</td>"
         elif (i, j) in colspan_2:
             html += f"<td colspan='2' style='{style(base_cell_width * 2)}'>{val}</td>"
-        elif (i, j) in colspan_1_5:
-            html += f"<td colspan='2' style='{style(base_cell_width * 1.5)}'>{val}</td>"  # Approximation
+        elif (i, j) in {(1, 2), (1, 3), (1, 4), (1, 5)}:  # Directly handle your special rows
+            html += f"<td colspan='2' style='{style(base_cell_width * 1.5)}; width: {base_cell_width * 1.5}px; padding-right: 20px;'>{val}</td>"
         else:
             html += f"<td style='{style(base_cell_width)}'>{val}</td>"
     html += "</tr>"
