@@ -26,7 +26,7 @@ df = pd.DataFrame(data)
 def generate_html_table(df):
     # Define consistent widths
     first_col_width = 160
-    second_col_width = 200
+    second_col_width = 220
     base_cell_width = 150
     cell_height = 50
 
@@ -51,6 +51,7 @@ def generate_html_table(df):
         (4, 2), (4, 3)
     }
 
+    # Add a thicker outer border for the table
     html = "<table style='border-spacing: 0; width: 100%; border-collapse: collapse; table-layout: fixed; border: 3px solid #000000;'>"
 
     for i, row in df.iterrows():
@@ -58,24 +59,28 @@ def generate_html_table(df):
         for j, val in enumerate(row):
             if pd.isna(val):
                 continue
-  
-            if j == 0:
-                if i == 0:
+
+            if j == 0:  # Handle the first column (merged rows)
+                if i == 0:  # Apply the thick bottom border to the merged cell
                     html += f"<td rowspan='5' style='{style(first_col_width, bold=True)} background-color: #61cbf3; border-bottom: 3px solid #000000;'>{val}</td>"
-                elif i == 5:
-                    html += f"<td rowspan='5' style='{style(first_col_width, bold=True)} background-color: #61cbf3;'>{val}</td>"
-                elif i == 10:
-                    html += f"<td rowspan='2' style='{style(first_col_width, bold=True)} background-color: #61cbf3;'>{val}</td>"
-                else:
+                elif i > 0:  # Skip subsequent rows since column 0 is merged
                     continue
             elif j == 1:
+                # Apply the color #94dcf8 for column 1
                 html += f"<td style='{style(second_col_width, bold=True)} background-color: #94dcf8;'>{val}</td>"
             elif (i, j) in colspan_3:
-                html += f"<td colspan='3' style='{style(base_cell_width * 3)} background-color: #f1fbfe; border: 1px solid #000000;'>{val}</td>"
+                # Handle cells with colspan=3
+                html += f"<td colspan='3' style='{style(base_cell_width * 3)} background-color: #F1FBFE;'>{val}</td>"
             elif (i, j) in colspan_2:
-                html += f"<td colspan='2' style='{style(base_cell_width * 2)} background-color: #f1fbfe; border: 1px solid #000000;'>{val}</td>"
+                # Handle cells with colspan=2
+                html += f"<td colspan='2' style='{style(base_cell_width * 2)} background-color: #F1FBFE;'>{val}</td>"
             else:
-                html += f"<td style='{style(base_cell_width)} background-color: #f1fbfe;'>{val}</td>"
+                # Default styling for other cells
+                if i == 4:  # Apply a thicker bottom border for row 4
+                    custom_style = f"{style(base_cell_width)} border-bottom: 3px solid #000000;"
+                else:
+                    custom_style = style(base_cell_width)
+                html += f"<td style='{custom_style} background-color: #F1FBFE;'>{val}</td>"
         html += "</tr>"
 
     html += "</table>"
