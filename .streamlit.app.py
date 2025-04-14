@@ -74,16 +74,6 @@ def generate_html_table(df):
                 html += f"<td colspan='3' style='{style(base_cell_width * 3)}'>{val}</td>"
             elif (i, j) in colspan_2:
                 html += f"<td colspan='2' style='{style(base_cell_width * 2)}'>{val}</td>"
-
-
-            elif (i, j) in {(1, 2), (1, 3), (1, 4), (1, 5)}:
-    # Splitting into two table cells to simulate colspan=1.5
-    html += f"""
-    <td style='{style(base_cell_width)}; width: {base_cell_width}px; text-align: center;'>{val}</td>
-    <td style='{style(base_cell_width * 0.5)}; width: {base_cell_width * 0.5}px;'></td>
-    """
-
-
             else:
                 html += f"<td style='{style(base_cell_width)}'>{val}</td>"
         html += "</tr>"
