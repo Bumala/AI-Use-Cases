@@ -8,7 +8,6 @@ st.set_page_config(layout="wide")
 data = [
     ["Impact (What)", "Benefits", "Quality/Scope/Knowledge", "Time Efficiency", "Cost"],
     [None, "Focus within Business Model Navigator", "Customer Segments", "Value Proposition", "Value Chain", "Revenue Model"],
-    [None, "Innovation Type", "Incremental", "Radical", "Sustaining", "Disruptive"],
     [None, "Aim", "Product Innovation", "Process Innovation", "Business Model Innovation"],
     [None, "Ambidexterity", "Exploration", "Exploitation"],
     ["Technology (How)", "AI Role", "Automaton", "Assistant", "Partner"],
@@ -38,7 +37,6 @@ def generate_html_table(df):
     colspan_2 = {
         (0, 2), (0, 3), (0, 4),
         (1, 2), (1, 5),
-        (2, 2), (2, 5),
         (3, 2), (3, 3), (3, 4),
         (5, 2), (5, 3), (5, 4),
         (7, 2), (7, 5),
@@ -63,29 +61,29 @@ def generate_html_table(df):
             #first column format, column 0
             if j == 0:
                 if i == 0:
+                    html += f"<td rowspan='4' style='{style(first_col_width, bold=True)} background-color: #61cbf3; border-bottom: 3px solid #000000;'>{val}</td>"
+                elif i == 4:
                     html += f"<td rowspan='5' style='{style(first_col_width, bold=True)} background-color: #61cbf3; border-bottom: 3px solid #000000;'>{val}</td>"
-                elif i == 5:
-                    html += f"<td rowspan='5' style='{style(first_col_width, bold=True)} background-color: #61cbf3; border-bottom: 3px solid #000000;'>{val}</td>"
-                elif i == 10:
+                elif i == 9:
                     html += f"<td rowspan='2' style='{style(first_col_width, bold=True)} background-color: #61cbf3;'>{val}</td>"
                 else:
                     continue
 
 
             #making inner thick border boundaries
-            elif i == 4 and j == 1:  
+            elif i == 3 and j == 1:  
                 html += f"<td style='{style(base_cell_width, bold=True)} background-color: #94dcf8; border-bottom: 3px solid #000000;'>{val}</td>"
             
-            elif i == 9 and j == 1:  
+            elif i == 8 and j == 1:  
                 html += f"<td style='{style(base_cell_width, bold=True)} background-color: #94dcf8; border-bottom: 3px solid #000000;'>{val}</td>"
 
-            elif i == 9 and j == 2:  
+            elif i == 8 and j == 2:  
                 html += f"<td style='{style(base_cell_width)} background-color: #f1fbfe; border: 1px solid #000000; border-bottom: 3px solid #000000;'>{val}</td>"
 
-            elif i == 9 and j == 4:  
+            elif i == 8 and j == 4:  
                 html += f"<td style='{style(base_cell_width)} background-color: #f1fbfe; border: 1px solid #000000; border-bottom: 3px solid #000000;'>{val}</td>"
 
-            elif i == 9 and j == 6:  
+            elif i == 8 and j == 6:  
                 html += f"<td style='{style(base_cell_width)} background-color: #f1fbfe; border: 1px solid #000000; border-bottom: 3px solid #000000;'>{val}</td>"
 
 
@@ -148,11 +146,6 @@ analysis_table_data = {
 "Value Proposition": [],
 "Value Chain": [],
 "Revenue Model": [],
-
-"Incremental": [],
-"Radical": [],
-"Sustaining": [],
-"Disruptive": [],
 
 "Product Innovation": [],
 "Process Innovation": [],
