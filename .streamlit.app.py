@@ -17,7 +17,7 @@ data = [
     [None, "Analytics Problem", "Description/ Summary", "Clustering", "Classification", "Dependency Analysis", "Regression"],
     [None, "Data Type", "Customer Data", "Machine Data", "Business Data (Internal Data)", "Market Data", "Public & Regulatory Data", "Synthetic Data"],
     ["Place (Where)", "Innovation Phase", "Front End", "Development", "Market Introduction"],
-    [None, "R&D", "Manufacturing", "Marketing & Sales", "Customer Service"],
+    [None, "Department", "R&D", "Manufacturing", "Marketing & Sales", "Customer Service"],
 ]
 
 df = pd.DataFrame(data)
@@ -44,7 +44,7 @@ def generate_html_table(df):
         (7, 4), (7, 5),
         (8, 6),
         (10, 2), (10, 3), (10, 4),
-        (11, 2), (11, 3), (11, 4)
+        (11, 4), (11, 5), 
     }
 
     colspan_3 = {
