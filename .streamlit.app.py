@@ -78,7 +78,7 @@ for i, row in df.iterrows():
             # Simulate colspan=1.5 via CSS width adjustment
             html += f"<td style='{style(base_cell_width * 1.5)}; width: {base_cell_width * 1.5}px; text-align: center;'>{val}</td>"
         else:
-            html += f"<td style='{style(base_cell_width)}'>{val}</td>'
+            html += f"<td style='{style(base_cell_width)}'>{val}</td>"
     html += "</tr>"
 
     
