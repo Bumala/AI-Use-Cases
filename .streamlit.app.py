@@ -126,3 +126,84 @@ st.markdown("""
 
 # Render the table in Streamlit within the centered container
 st.markdown('<div class="center-table">' + generate_html_table(df) + '</div>', unsafe_allow_html=True)
+
+
+# Create the new analysis table below your existing code
+analysis_table_data = {
+    "Use Case": ["AI-infused experiments in R&D", "AI-powered manufacturing planning in smart factories", "AI-driven Human-Machine Collaboration in ideation",
+                 "AI-enabled idea generation in the Metaverse", "AI-optimized patent analysis", "AI-powered forecasting of the technology life cycle of EVs (S-Curve)",
+                "AI-enabled bionic digital twin production planning", "AI-infused Human-Robot Collaboration planning", "AI-powered material flow planning",
+                "AI-assisted ideation", "AI-driven interactive collaborative innovation", "AI-based digital twin for lithium-ion battery development", 
+                 "AI- and Genetic Algorithms-based vehicle design", "AI-augmented visual inspections", "AI-optimized scenario engineering", "AI-driven design process", 
+                 "AI- and Bio-inspired Design", "AI-assisted quality control of the bumper warpage", "AI-enabled predictive maintenance", "AI-optimized braking system test", 
+                 "AI-based identification of consumer adoption stage", "AI-powered marketing campaign", "AI-driven relationship marketing", "AI-assisted customer service in after-sales", 
+                 "AI-enabled battery monitoring", "AI-assisted staff training", "AI-driven predictive quality models for customer defects", "AI-powered customer satisfaction analysis", 
+                 "AI-driven competition analysis", "AI-driven vehicles sales prediction"
+],
+"Quality/Scope/Knowledge": [],
+"Time Efficiency": [],
+"Cost": [],
+
+"Customer Segments": [],
+"Value Proposition": [],
+"Value Chain": [],
+"Revenue Model": [],
+
+"Incremental": [],
+"Radical": [],
+"Sustaining": [],
+"Disruptive": [],
+
+"Product Innovation": [],
+"Process Innovation": [],
+"Business Model Innovation": [],
+
+"Exploration": [],
+"Exploitation": [],
+
+"Automaton": [],
+"Assistant": [],
+"Partner": [],
+
+"Machine Learning": [],
+"Deep Learning": [],
+"Artificial Neural Networks": [],
+"Natural Language Processing": [],
+"Computer Vision": [],
+"Robotics": [],
+
+"Descriptive": [],
+"Diagnostic": [],
+"Predictive": [],
+"Prescriptive": [],
+
+"Description/ Summary": [],
+"Clustering": [],
+"Classification": [],
+"Dependency Analysis": [],
+"Regression": [],
+
+"Customer Data": [],
+"Machine Data": [],
+"Business Data (Internal Data)": [],
+"Market Data": [],
+"Public & Regulatory Data": [],
+"Synthetic Data": [],
+
+"Front End": [],
+"Development": [],
+"Market Introduction": [],
+
+"R&D": [],
+"Manufacturing": [],
+"Marketing & Sales": [],
+"Customer Service": [],
+
+}
+
+analysis_table = pd.DataFrame(analysis_table_data)
+
+# Perform analysis or other operations with the table
+
+
+
