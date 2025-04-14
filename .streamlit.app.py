@@ -72,14 +72,6 @@ def generate_html_table(df):
                     continue
 
 
-
-if i == 9 and j >= 1 and j <= 7:
-    custom_style = f"{style(base_cell_width)} border-bottom: 3px solid #000000;"
-else:
-    custom_style = style(base_cell_width)
-
-
-
             
             elif j == 1:
                 html += f"<td style='{style(second_col_width, bold=True)} background-color: #94dcf8;'>{val}</td>"
