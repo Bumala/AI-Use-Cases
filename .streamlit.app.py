@@ -37,6 +37,7 @@ def generate_html_table(df):
     # Define colspans
     colspan_2 = {
         (0, 2), (0, 3), (0, 4),
+        (1, 4), (1, 5),
         (2, 4), (2, 5),
         (3, 2), (3, 3), (3, 4),
         (5, 2), (5, 3), (5, 4),
@@ -73,24 +74,12 @@ def generate_html_table(df):
                 html += f"<td colspan='3' style='{style(base_cell_width * 3)}'>{val}</td>"
             elif (i, j) in colspan_2:
                 html += f"<td colspan='2' style='{style(base_cell_width * 2)}'>{val}</td>"
-
-            
-     elif (i, j) in {(1, 2), (1, 3), (1, 4), (1, 5)}:
-    html += f"""
-    <td style="padding: 0; border: 1px solid #ccc; text-align: center; width: {base_cell_width * 1.5}px;">
-        <div style="display: block; width: {base_cell_width * 1.5}px; text-align: center;">
-            {val}
-        </div>
-    </td>
-    """
-
-
             else:
                 html += f"<td style='{style(base_cell_width)}'>{val}</td>"
         html += "</tr>"
 
     html += "</table>"
-    return html  # Ensure this is properly indented
+    return html
 
 # Apply CSS to center the table with zoom and ensure proper alignment
 st.markdown("""
