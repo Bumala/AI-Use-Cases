@@ -52,8 +52,6 @@ def generate_html_table(df):
     }
 
 
-    html = "<table style='border-spacing: 0; width: 100%; border-collapse: collapse; table-layout: fixed;'>"
-
 # Update the render logic in the loop
 for i, row in df.iterrows():
     html += "<tr>"
@@ -82,6 +80,7 @@ for i, row in df.iterrows():
             html += f"<td style='{style(base_cell_width)}'>{val}</td>"
     html += "</tr>"
 
+    
     html += "</table>"
     return html
 
