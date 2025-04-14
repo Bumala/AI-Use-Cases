@@ -58,16 +58,10 @@ def generate_html_table(df):
         for j, val in enumerate(row):
             if pd.isna(val):
                 continue
-
-if i == 4:  # Apply a thicker bottom border for row 4
-            custom_style = f"{style(base_cell_width)} border-bottom: 3px solid #000000;"  # Thicker bottom border
-        else:
-            custom_style = style(base_cell_width)  # Default style
   
-
             if j == 0:
                 if i == 0:
-                    html += f"<td rowspan='5' style='{style(first_col_width, bold=True)} background-color: #61cbf3;'>{val}</td>"
+                    html += f"<td rowspan='5' style='{style(first_col_width, bold=True)} background-color: #61cbf3; border-bottom: 3px solid #000000;'>{val}</td>"
                 elif i == 5:
                     html += f"<td rowspan='5' style='{style(first_col_width, bold=True)} background-color: #61cbf3;'>{val}</td>"
                 elif i == 10:
