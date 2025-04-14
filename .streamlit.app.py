@@ -26,7 +26,7 @@ df = pd.DataFrame(data)
 def generate_html_table(df):
     # Define consistent widths
     first_col_width = 160
-    second_col_width = 220
+    second_col_width = 200
     base_cell_width = 150
     cell_height = 50
 
@@ -69,7 +69,7 @@ def generate_html_table(df):
                 else:
                     continue
             elif j == 1:
-                html += f"<td style='{style(second_col_width, bold=True)}'>{val}</td>"
+                html += f"<td style='{style(second_col_width, bold=True)} background-color: #94dcf8;'>{val}</td>"
             elif (i, j) in colspan_3:
                 html += f"<td colspan='3' style='{style(base_cell_width * 3)}'>{val}</td>"
             elif (i, j) in colspan_2:
