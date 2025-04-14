@@ -60,11 +60,6 @@ def generate_html_table(df):
                 continue
 
 
-        if i == 4:  # Apply a thicker bottom border for row 4
-            custom_style = f"{style(base_cell_width)} border-bottom: 3px solid #000000;"  # Thicker bottom border
-        else:
-            custom_style = style(base_cell_width)  # Default style
-
 
             if j == 0:
                 if i == 0:
