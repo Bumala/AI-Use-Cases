@@ -72,14 +72,17 @@ def generate_html_table(df):
                     continue
 
 
-
-            elif i == 4 and j == 1:  # Specific cell (4, 1) with black 3px bottom border
+            #making inner thick border boundaries
+            elif i == 4 and j == 1:  
                 html += f"<td style='{style(base_cell_width, bold=True)} background-color: #94dcf8; border-bottom: 3px solid #000000;'>{val}</td>"
             
-            elif i == 9 and j == 1:  # Specific cell (4, 1) with black 3px bottom border
+            elif i == 9 and j == 1:  
                 html += f"<td style='{style(base_cell_width, bold=True)} background-color: #94dcf8; border-bottom: 3px solid #000000;'>{val}</td>"
 
-            elif i == 9 and j == 2:  # Specific cell (4, 1) with black 3px bottom border
+            elif i == 9 and j == 2:  
+                html += f"<td style='{style(base_cell_width)} background-color: #f1fbfe; border: 1px solid #000000; border-bottom: 3px solid #000000;'>{val}</td>"
+
+            elif i == 9 and j == 3:  
                 html += f"<td style='{style(base_cell_width)} background-color: #f1fbfe; border: 1px solid #000000; border-bottom: 3px solid #000000;'>{val}</td>"
 
 
