@@ -76,10 +76,11 @@ def generate_html_table(df):
 
             
             elif (i, j) in {(1, 2), (1, 3), (1, 4), (1, 5)}:
+    # Simulating colspan=1.5 using CSS grid
     html += f"""
-    <td colspan='2' style="position: relative; border: 1px solid #ccc; text-align: center; padding: 0;">
-        <div style="width: {base_cell_width * 1.5}px; margin: auto; height: {cell_height}px; line-height: {cell_height}px;">
-            {val}
+    <td style="text-align: center; padding: 0; border: 1px solid #ccc;">
+        <div style="display: grid; grid-template-columns: {base_cell_width}px {base_cell_width * 0.5}px; width: {base_cell_width * 1.5}px;">
+            <span style="grid-column: span 2; text-align: center;">{val}</span>
         </div>
     </td>
     """
