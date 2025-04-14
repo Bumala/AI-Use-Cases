@@ -53,41 +53,30 @@ def generate_html_table(df):
 
     html = "<table style='border-spacing: 0; width: 100%; border-collapse: collapse; table-layout: fixed; border: 3px solid #000000;'>"
 
-for i, row in df.iterrows():
-    html += "<tr>"
-    for j, val in enumerate(row):
-        if pd.isna(val):
-            continue
-
-        if i == 4:  # Apply a thicker bottom border for row 4
-            custom_style = f"{style(base_cell_width)} border-bottom: 3px solid #000000;"  # Thicker bottom border
-        else:
-            custom_style = style(base_cell_width)  # Default style
-
-        if j == 0:
-            if i == 0:
-                html += f"<td rowspan='5' style='{style(first_col_width, bold=True)} background-color: #61cbf3;'>{val}</td>"
-            elif i == 5:
-                html += f"<td rowspan='5' style='{style(first_col_width, bold=True)} background-color: #61cbf3;'>{val}</td>"
-            elif i == 10:
-                html += f"<td rowspan='2' style='{style(first_col_width, bold=True)} background-color: #61cbf3;'>{val}</td>"
-            else:
+    for i, row in df.iterrows():
+        html += "<tr>"
+        for j, val in enumerate(row):
+            if pd.isna(val):
                 continue
-        elif j == 1:
-            html += f"<td style='{style(second_col_width, bold=True)} background-color: #94dcf8;'>{val}</td>"
-        elif (i, j) in colspan_3:
-            html += f"<td colspan='3' style='{custom_style} background-color: #F1FBFE;'>{val}</td>"
-        elif (i, j) in colspan_2:
-            html += f"<td colspan='2' style='{custom_style} background-color: #F1FBFE;'>{val}</td>"
-        else:
-            html += f"<td style='{custom_style} background-color: #F1FBFE;'>{val}</td>"
-    html += "</tr>"
 
-
-
-
-
-    
+            if j == 0:
+                if i == 0:
+                    html += f"<td rowspan='5' style='{style(first_col_width, bold=True)} background-color: #61cbf3;'>{val}</td>"
+                elif i == 5:
+                    html += f"<td rowspan='5' style='{style(first_col_width, bold=True)} background-color: #61cbf3;'>{val}</td>"
+                elif i == 10:
+                    html += f"<td rowspan='2' style='{style(first_col_width, bold=True)} background-color: #61cbf3;'>{val}</td>"
+                else:
+                    continue
+            elif j == 1:
+                html += f"<td style='{style(second_col_width, bold=True)} background-color: #94dcf8;'>{val}</td>"
+            elif (i, j) in colspan_3:
+                html += f"<td colspan='3' style='{style(base_cell_width * 3)} background-color: #f1fbfe; border: 1px solid #000000;'>{val}</td>"
+            elif (i, j) in colspan_2:
+                html += f"<td colspan='2' style='{style(base_cell_width * 2)} background-color: #f1fbfe; border: 1px solid #000000;'>{val}</td>"
+            else:
+                html += f"<td style='{style(base_cell_width)} background-color: #f1fbfe;'>{val}</td>"
+        html += "</tr>"
 
     html += "</table>"
     return html
