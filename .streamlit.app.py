@@ -61,11 +61,11 @@ def generate_html_table(df):
 
             if j == 0:
                 if i == 0:
-                    html += f"<td rowspan='5' style='{style(first_col_width, bold=True)} background-color: #F1FBFE;'>{val}</td>"
+                    html += f"<td rowspan='5' style='{style(first_col_width, bold=True)} background-color: #61cbf3;'>{val}</td>"
                 elif i == 5:
-                    html += f"<td rowspan='5' style='{style(first_col_width, bold=True)} background-color: #F1FBFE;'>{val}</td>"
+                    html += f"<td rowspan='5' style='{style(first_col_width, bold=True)} background-color: #61cbf3;'>{val}</td>"
                 elif i == 10:
-                    html += f"<td rowspan='2' style='{style(first_col_width, bold=True)} background-color: #F1FBFE;'>{val}</td>"
+                    html += f"<td rowspan='2' style='{style(first_col_width, bold=True)} background-color: #61cbf3;'>{val}</td>"
                 else:
                     continue
             elif j == 1:
