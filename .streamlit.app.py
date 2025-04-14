@@ -61,7 +61,7 @@ def generate_html_table(df):
 
             if j == 0:
                 if i == 0:
-                    html += f"<td rowspan='5' style='{style(first_col_width, bold=True)} background-color: #b0c4de;'>{val}</td>"
+                    html += f"<td rowspan='5' style='{style(first_col_width, bold=True)} background-color: #f1fbfe;'>{val}</td>"
                 elif i == 5:
                     html += f"<td rowspan='5' style='{style(first_col_width, bold=True)} background-color: #b0c4de;'>{val}</td>"
                 elif i == 10:
