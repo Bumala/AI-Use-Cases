@@ -51,7 +51,7 @@ def generate_html_table(df):
         (4, 2), (4, 3)
     }
 
-    html = "<table style='border-spacing: 0; width: 100%; border-collapse: collapse; table-layout: fixed;'>"
+    html = "<table style='border-spacing: 0; width: 100%; border-collapse: collapse; table-layout: fixed; border: 3px solid #000000;'>"
 
     for i, row in df.iterrows():
         html += "<tr>"
