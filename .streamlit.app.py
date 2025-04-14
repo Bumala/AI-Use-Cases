@@ -74,10 +74,11 @@ for i, row in df.iterrows():
             html += f"<td colspan='3' style='{style(base_cell_width * 3)}'>{val}</td>"
         elif (i, j) in colspan_2:
             html += f"<td colspan='2' style='{style(base_cell_width * 2)}'>{val}</td>"
-        elif (i, j) in {(1, 2), (1, 3), (1, 4), (1, 5)}:  # Directly handle your special rows
-            html += f"<td colspan='2' style='{style(base_cell_width * 1.5)}; width: {base_cell_width * 1.5}px; padding-right: 20px;'>{val}</td>"
+        elif (i, j) in {(1, 2), (1, 3), (1, 4), (1, 5)}:  # Handle your special rows explicitly
+            # Simulate colspan=1.5 via CSS width adjustment
+            html += f"<td style='{style(base_cell_width * 1.5)}; width: {base_cell_width * 1.5}px; text-align: center;'>{val}</td>"
         else:
-            html += f"<td style='{style(base_cell_width)}'>{val}</td>"
+            html += f"<td style='{style(base_cell_width)}'>{val}</td>'
     html += "</tr>"
 
     
