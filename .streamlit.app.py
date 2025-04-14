@@ -75,7 +75,7 @@ def generate_html_table(df):
             elif (i, j) in colspan_2:
                 html += f"<td colspan='2' style='{style(base_cell_width * 2)}'>{val}</td>"
             else:
-                html += f"<td style='{style(base_cell_width)}'>{val}</td>"
+                html += f"<td style='{style(base_cell_width)} background-color: #f1fbfe;'>{val}</td>"
         html += "</tr>"
 
     html += "</table>"
