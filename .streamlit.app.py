@@ -76,14 +76,14 @@ def generate_html_table(df):
 
             
             elif (i, j) in {(1, 2), (1, 3), (1, 4), (1, 5)}:
-    # Simulating colspan=1.5 using CSS alignment and width adjustments
     html += f"""
-    <td style="position: relative; text-align: center; width: {base_cell_width * 1.5}px; border: 1px solid #ccc;">
-        <div style="position: absolute; left: 0; right: 0; margin: auto; width: {base_cell_width * 1.5}px;">
+    <td colspan='2' style="position: relative; border: 1px solid #ccc; text-align: center; padding: 0;">
+        <div style="width: {base_cell_width * 1.5}px; margin: auto; height: {cell_height}px; line-height: {cell_height}px;">
             {val}
         </div>
     </td>
     """
+
 
             else:
                 html += f"<td style='{style(base_cell_width)}'>{val}</td>"
