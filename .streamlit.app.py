@@ -60,15 +60,14 @@ def generate_html_table(df):
                 continue
 
             elif j == 0:
-            if i == 0:
-            html += f"<td rowspan='5' style='{style(first_col_width, bold=True)} background-color: #add8e6;'>{val}</td>"
-            elif i == 5:
-            html += f"<td rowspan='5' style='{style(first_col_width, bold=True)} background-color: #add8e6;'>{val}</td>"
-            elif i == 10:
-            html += f"<td rowspan='2' style='{style(first_col_width, bold=True)} background-color: #add8e6;'>{val}</td>"
-            else:
-      
-                    continue
+    if i == 0:
+        html += f"<td rowspan='5' style='{style(first_col_width, bold=True)} background-color: #add8e6;'>{val}</td>"
+    elif i == 5:
+        html += f"<td rowspan='5' style='{style(first_col_width, bold=True)} background-color: #add8e6;'>{val}</td>"
+    elif i == 10:
+        html += f"<td rowspan='2' style='{style(first_col_width, bold=True)} background-color: #add8e6;'>{val}</td>"
+    else:
+        continue
             elif j == 1:
                 html += f"<td style='{style(second_col_width, bold=True)}'>{val}</td>"
             elif (i, j) in colspan_3:
