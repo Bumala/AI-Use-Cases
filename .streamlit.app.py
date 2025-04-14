@@ -15,7 +15,7 @@ data = [
     [None, "Analytics Focus", "Descriptive", "Diagnostic", "Predictive", "Prescriptive"],
     [None, "Analytics Problem", "Description/ Summary", "Clustering", "Classification", "Dependency Analysis", "Regression"],
     [None, "Data Type", "Customer Data", "Machine Data", "Business Data (Internal Data)", "Market Data", "Public & Regulatory Data", "Synthetic Data"],
-    ["Place (Where)", "Innovation Phase", "Front End", "Development", "Market Introduction"],
+    ["Context (Where/When)", "Innovation Phase", "Front End", "Development", "Market Introduction"],
     [None, "Department", "R&D", "Manufacturing", "Marketing & Sales", "Customer Service"],
 ]
 
@@ -37,16 +37,16 @@ def generate_html_table(df):
     colspan_2 = {
         (0, 2), (0, 3), (0, 4),
         (1, 2), (1, 5),
-        (3, 2), (3, 3), (3, 4),
-        (5, 2), (5, 3), (5, 4),
-        (7, 2), (7, 5),
-        (8, 4),
-        (10, 2), (10, 3), (10, 4),
-        (11, 2), (11, 5), 
+        (2, 2), (2, 3), (2, 4), 
+        (4, 2), (4, 3), (4, 4),
+        (6, 2), (6, 5),
+        (7, 4),
+        (9, 2), (9, 3), (9, 4),
+        (10, 2), (10, 5), 
     }
 
     colspan_3 = {
-        (4, 2), (4, 3)
+        (3, 2), (3, 3)
     }
 
     html = "<table style='border-spacing: 0; width: 100%; border-collapse: collapse; table-layout: fixed; border: 3px solid #000000;'>"
