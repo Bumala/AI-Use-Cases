@@ -79,9 +79,14 @@ def generate_html_table(df):
             elif i == 9 and j == 1:  # Specific cell (4, 1) with black 3px bottom border
                 html += f"<td style='{style(base_cell_width, bold=True)} background-color: #94dcf8; border-bottom: 3px solid #000000;'>{val}</td>"
 
-             elif i == 9 and 2 <= j <= 7:  
-                html += f"<td style='{style(base_cell_width, bold=True)} background-color: #f1fbfe; border: 1px solid #000000; border-bottom: 3px solid #000000;'>{val}</td>"
+             #elif i == 9 and 2 <= j <= 7:  
+                #html += f"<td style='{style(base_cell_width, bold=True)} background-color: #f1fbfe; border: 1px solid #000000; border-bottom: 3px solid #000000;'>{val}</td>"
 
+            elif i == 9 and 2 <= j <= 7:  # Apply black 3px bottom border to cells in row 9, columns 1 to 7
+    html += f"<td style='{style(base_cell_width, bold=True)} background-color: #f1fbfe; border: 1px solid #000000; border-bottom: 3px solid #000000;'>{val}</td>"
+
+
+            
 
             elif j == 1:
                 html += f"<td style='{style(second_col_width, bold=True)} background-color: #94dcf8;'>{val}</td>"
