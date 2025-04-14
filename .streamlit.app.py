@@ -32,7 +32,7 @@ def generate_html_table(df):
 
     def style(width, bold=False):
         bold_style = "font-weight: bold;" if bold else ""
-        return f"text-align: center; vertical-align: middle; padding: 10px; border: 1px solid #ccc; width: {width}px; height: {cell_height}px; {bold_style}"
+        return f"text-align: center; vertical-align: middle; padding: 10px; border: 1px solid #000000; width: {width}px; height: {cell_height}px; {bold_style}"
 
     # Define colspans
     colspan_2 = {
