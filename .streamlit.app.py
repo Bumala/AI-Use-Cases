@@ -60,7 +60,7 @@ def generate_html_table(df):
                 continue
 
 
-  
+            #first column format, column 0
             if j == 0:
                 if i == 0:
                     html += f"<td rowspan='5' style='{style(first_col_width, bold=True)} background-color: #61cbf3; border-bottom: 3px solid #000000;'>{val}</td>"
@@ -72,6 +72,10 @@ def generate_html_table(df):
                     continue
 
 
+
+            elif i == 4 and j == 1:  # Specific cell (1, 4) with black 3px bottom border
+                html += f"<td style='{style(base_cell_width)} background-color: #f1fbfe; border-bottom: 3px solid #000000;'>{val}</td>"
+            
             
             elif j == 1:
                 html += f"<td style='{style(second_col_width, bold=True)} background-color: #94dcf8;'>{val}</td>"
@@ -81,8 +85,7 @@ def generate_html_table(df):
                 html += f"<td colspan='2' style='{style(base_cell_width * 2)} background-color: #f1fbfe; border: 1px solid #000000;'>{val}</td>"
 
 
-            elif i == 4 and j == 1:  # Specific cell (1, 4) with black 3px bottom border
-                html += f"<td style='{style(base_cell_width)} background-color: #f1fbfe; border-bottom: 3px solid #000000;'>{val}</td>"
+
 
 
 
