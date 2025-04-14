@@ -51,32 +51,39 @@ def generate_html_table(df):
         (4, 2), (4, 3)
     }
 
+    colspan_1_5 = {
+    (1, 2), (1, 3), (1, 4), (1, 5)
+}
+
     html = "<table style='border-spacing: 0; width: 100%; border-collapse: collapse; table-layout: fixed;'>"
 
-    for i, row in df.iterrows():
-        html += "<tr>"
-        for j, val in enumerate(row):
-            if pd.isna(val):
-                continue
+ # Update the rendering logic in the loop
+for i, row in df.iterrows():
+    html += "<tr>"
+    for j, val in enumerate(row):
+        if pd.isna(val):
+            continue
 
-            if j == 0:
-                if i == 0:
-                    html += f"<td rowspan='5' style='{style(first_col_width, bold=True)}'>{val}</td>"
-                elif i == 5:
-                    html += f"<td rowspan='5' style='{style(first_col_width, bold=True)}'>{val}</td>"
-                elif i == 10:
-                    html += f"<td rowspan='2' style='{style(first_col_width, bold=True)}'>{val}</td>"
-                else:
-                    continue
-            elif j == 1:
-                html += f"<td style='{style(second_col_width, bold=True)}'>{val}</td>"
-            elif (i, j) in colspan_3:
-                html += f"<td colspan='3' style='{style(base_cell_width * 3)}'>{val}</td>"
-            elif (i, j) in colspan_2:
-                html += f"<td colspan='2' style='{style(base_cell_width * 2)}'>{val}</td>"
+        if j == 0:
+            if i == 0:
+                html += f"<td rowspan='5' style='{style(first_col_width, bold=True)}'>{val}</td>"
+            elif i == 5:
+                html += f"<td rowspan='5' style='{style(first_col_width, bold=True)}'>{val}</td>"
+            elif i == 10:
+                html += f"<td rowspan='2' style='{style(first_col_width, bold=True)}'>{val}</td>"
             else:
-                html += f"<td style='{style(base_cell_width)}'>{val}</td>"
-        html += "</tr>"
+                continue
+        elif j == 1:
+            html += f"<td style='{style(second_col_width, bold=True)}'>{val}</td>"
+        elif (i, j) in colspan_3:
+            html += f"<td colspan='3' style='{style(base_cell_width * 3)}'>{val}</td>"
+        elif (i, j) in colspan_2:
+            html += f"<td colspan='2' style='{style(base_cell_width * 2)}'>{val}</td>"
+        elif (i, j) in colspan_1_5:
+            html += f"<td colspan='2' style='{style(base_cell_width * 1.5)}'>{val}</td>"  # Approximation
+        else:
+            html += f"<td style='{style(base_cell_width)}'>{val}</td>"
+    html += "</tr>"
 
     html += "</table>"
     return html
