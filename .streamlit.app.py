@@ -27,11 +27,13 @@ max_cols = max(len(row) for row in data)
 # Pad shorter rows with None
 padded_data = [row + [None] * (max_cols - len(row)) for row in data]
 
-# Convert to DataFrame, using the first row as columns *only if there are rows*
+# Handle missing column names
 if padded_data:
-    df = pd.DataFrame(padded_data[1:], columns=padded_data[0])
+    # Replace None column names with a default string
+    column_names = [f"Column_{i}" if name is None else name for i, name in enumerate(padded_data[0])]
+    df = pd.DataFrame(padded_data[1:], columns=column_names)
 else:
-    df = pd.DataFrame() # Create an empty DataFrame if data is empty
+    df = pd.DataFrame()  # Create an empty DataFrame if data is empty
 
 
 # ========== ANALYSIS TABLE ==========
@@ -182,41 +184,4 @@ function(params) {
         streamlit.setComponentValue(JSON.stringify({ 'attribute': params.value }));
     }
 }
-""")
-
-# Display both tables
-col1, col2 = st.columns([2, 1])
-
-with col1:
-    st.header("Attribute Selection")
-    grid_response = AgGrid(
-        df,
-        gridOptions=gridOptions,
-        height=600,
-        fit_columns_on_grid_load=False,
-        allow_unsafe_jscode=True,
-        theme='streamlit',
-        key="attribute_grid"  # Add a key for the AgGrid component
-    )
-
-    if grid_response and grid_response['data'] and grid_response['column'] == 'Attributes' and grid_response['selected_rows']:
-        clicked_attr = grid_response['selected_rows'][0]['Attributes']
-        if clicked_attr in analysis_df.columns:
-            if clicked_attr in st.session_state.selected_attrs:
-                st.session_state.selected_attrs.remove(clicked_attr)
-            else:
-                st.session_state.selected_attrs.append(clicked_attr)
-            st.experimental_rerun()
-
-with col2:
-    st.header("Analysis Results")
-    if st.session_state.selected_attrs:
-        # Calculate scores
-        scores = analysis_df[st.session_state.selected_attrs].sum(axis=1)
-        top_use_case = scores.idxmax()
-
-        st.success(f"🚀 **Top Use Case:** {top_use_case}")
-        st.write("### Scores:")
-        st.dataframe(scores.sort_values(ascending=False))
-    else:
-        st.info("Select attributes to see recommendations")
+"
