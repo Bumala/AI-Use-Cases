@@ -6,7 +6,7 @@ st.set_page_config(layout="wide")
 
 # Data definition
 data = [
-    ["Category", "Dimension", "Attributes"],
+    ["Category", "Dimension", "Attributes", None],
     ["Impact (What)", "Benefits", "Quality/Scope/Knowledge", "Time Efficiency", "Cost"],
     [None, "Focus within Business Model Navigator", "Customer Segments", "Value Proposition", "Value Chain", "Revenue Model"],
     [None, "Aim", "Product Innovation", "Process Innovation", "Business Model Innovation"],
