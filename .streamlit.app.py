@@ -65,7 +65,7 @@ def generate_html_table(df):
                 continue
                 
            if i == 0:
-                html += f"<td style='{style(base_cell_width, bold=True)} background-color: #E8E8E8; border-bottom: 3px solid #000000;'>{val}</td>"
+            html += f"<td style='{style(base_cell_width, bold=True)} background-color: #E8E8E8; border-bottom: 3px solid #000000;'>{val}</td>"
             
             
             #row span within the first column, column 0
