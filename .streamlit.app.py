@@ -6,7 +6,7 @@ st.set_page_config(layout="wide")
 
 # Data definition
 data = [
-    ["Category", "Dimension", "Attributes"],
+    ["Category", "Dimension", "Attributes", None, None],
     ["Impact (What)", "Benefits", "Quality/Scope/Knowledge", "Time Efficiency", "Cost"],
     [None, "Focus within Business Model Navigator", "Customer Segments", "Value Proposition", "Value Chain", "Revenue Model"],
     [None, "Aim", "Product Innovation", "Process Innovation", "Business Model Innovation"],
@@ -68,7 +68,7 @@ def generate_html_table(df):
                 html += f"<td style='{style(first_col_width, bold=True)} background-color: #E8E8E8; border-bottom: 3px solid #000000;'>{val}</td>"
             
             
-            #first column format, column 0
+            #first column format with row span, column 0
             if j == 0:
                 if i == 1:
                     html += f"<td rowspan='4' style='{style(first_col_width, bold=True)} background-color: #61cbf3; border-bottom: 3px solid #000000;'>{val}</td>"
