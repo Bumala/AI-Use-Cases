@@ -75,6 +75,7 @@ def generate_interactive_html_table(df):
     <table>
     """
 
+    # Start processing rows from i >= 1 (ignore the header row for interactivity)
     for i, row in df.iterrows():
         html += "<tr>"
         for j, val in enumerate(row):
