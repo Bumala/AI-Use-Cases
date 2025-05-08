@@ -29,7 +29,8 @@ def generate_html_table(df):
     second_col_width = 200
     base_cell_width = 150
     cell_height = 50
-
+    
+    #format of the whole table
     def style(width, bold=False):
         bold_style = "font-weight: bold;" if bold else ""
         return f"text-align: center; vertical-align: middle; padding: 10px; border: 1px solid #000000; width: {width}px; height: {cell_height}px; {bold_style}"
@@ -64,12 +65,12 @@ def generate_html_table(df):
                 continue
                 
             #first row format, row 0
-            if i == 0 and j == 0:
+            if i == 0:
                 html += f"<td style='{style(first_col_width, bold=True)} background-color: #E8E8E8; border-bottom: 3px solid #000000;'>{val}</td>"
 
             
             
-            #first column format with row span, column 0
+            #row span within the first column, column 0
             if j == 0:
                 if i == 1:
                     html += f"<td rowspan='4' style='{style(first_col_width, bold=True)} background-color: #61cbf3; border-bottom: 3px solid #000000;'>{val}</td>"
