@@ -65,6 +65,9 @@ def generate_html_table(df):
             #first row format, row 0
             if i == 0:
                 html += f"<td style='{style(first_col_width, bold=True)} background-color: #E8E8E8; border-bottom: 3px solid #000000;'>{val}</td>"
+
+            elif i > 0 and j == 1:
+                html += f"<td style='{style(second_col_width, bold=True)} background-color: #94dcf8;'>{val}</td>"
             
             
             #first column format, column 0
@@ -96,9 +99,9 @@ def generate_html_table(df):
                 html += f"<td style='{style(base_cell_width)} background-color: #f1fbfe; border: 1px solid #000000; border-bottom: 3px solid #000000;'>{val}</td>"
 
 
+       
             
-            elif j == 1:
-                html += f"<td style='{style(second_col_width, bold=True)} background-color: #94dcf8;'>{val}</td>"
+          #column span format
             elif (i, j) in colspan_3:
                 html += f"<td colspan='3' style='{style(base_cell_width * 3)} background-color: #f1fbfe; border: 1px solid #000000; border-bottom: 3px solid #000000;'>{val}</td>"
             elif (i, j) in colspan_2:
@@ -164,7 +167,7 @@ analysis_table_data = {
 "Exploitation": [],
 
 "Automaton": [],
-"Assistant": [],
+"Helper": [],
 "Partner": [],
 
 "Machine Learning": [],
