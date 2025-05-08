@@ -10,7 +10,7 @@ data = [
     [None, "Focus within Business Model Navigator", "Customer Segments", "Value Proposition", "Value Chain", "Revenue Model"],
     [None, "Aim", "Product Innovation", "Process Innovation", "Business Model Innovation"],
     [None, "Ambidexterity", "Exploration", "Exploitation"],
-    ["Technology (How)", "AI Role", "Automaton", "Assistant", "Partner"],
+    ["Technology (How)", "AI Role", "Automaton", "Helper", "Partner"],
     [None, "AI Concepts", "Machine Learning", "Deep Learning", "Artificial Neural Networks", "Natural Language Processing", "Computer Vision", "Robotics"],
     [None, "Analytics Focus", "Descriptive", "Diagnostic", "Predictive", "Prescriptive"],
     [None, "Analytics Problem", "Description/ Summary", "Clustering", "Classification", "Dependency Analysis", "Regression"],
