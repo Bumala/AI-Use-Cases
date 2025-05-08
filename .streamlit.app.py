@@ -1,5 +1,6 @@
 import streamlit as st
 import pandas as pd
+from st_aggrid import AgGrid
 
 # Set the page layout to "wide"
 st.set_page_config(layout="wide")
@@ -157,6 +158,11 @@ analysis_table_data = {
 }
 
 analysis_table = pd.DataFrame(analysis_table_data)
+
+df = pd.DataFrame(data)
+
+# Render the interactive table using AgGrid
+AgGrid(df)
 
 # You can perform further analysis or display the analysis table here if needed
 # Example: st.dataframe(analysis_table)
