@@ -8,18 +8,16 @@ st.set_page_config(layout="wide")
 
 # Data definition
 data = [
-    ["Category", "Dimension", "Attributes"],
-    ["Impact (What)", "Benefits", "Quality/Scope/Knowledge", "Time Efficiency", "Cost"],
-    [None, "Focus within Business Model Navigator", "Customer Segments", "Value Proposition", "Value Chain", "Revenue Model"],
-    [None, "Aim", "Product Innovation", "Process Innovation", "Business Model Innovation"],
-    [None, "Ambidexterity", "Exploration", "Exploitation"],
-    ["Technology (How)", "AI Role", "Automaton", "Helper", "Partner"],
-    [None, "AI Concepts", "Machine Learning", "Deep Learning", "Artificial Neural Networks", "Natural Language Processing", "Computer Vision", "Robotics"],
-    [None, "Analytics Focus", "Descriptive", "Diagnostic", "Predictive", "Prescriptive"],
-    [None, "Analytics Problem", "Description/ Summary", "Clustering", "Classification", "Dependency Analysis", "Regression"],
-    [None, "Data Type", "Customer Data", "Machine Data", "Business Data (Internal Data)", "Market Data", "Public & Regulatory Data", "Synthetic Data"],
-    ["Context (Where/When)", "Innovation Phase", "Front End", "Development", "Market Introduction"],
-    [None, "Department", "R&D", "Manufacturing", "Marketing & Sales", "Customer Service"],
+    ["Category", "Dimension", "Quality/Scope/Knowledge", "Time Efficiency", "Cost", "Customer Segments",
+     "Value Proposition", "Value Chain", "Revenue Model", "Product Innovation", "Process Innovation",
+     "Business Model Innovation", "Exploration", "Exploitation", "Automaton", "Helper", "Partner",
+     "Machine Learning", "Deep Learning", "Artificial Neural Networks", "Natural Language Processing",
+     "Computer Vision", "Robotics", "Descriptive", "Diagnostic", "Predictive", "Prescriptive",
+     "Description/ Summary", "Clustering", "Classification", "Dependency Analysis", "Regression",
+     "Customer Data", "Machine Data", "Business Data (Internal Data)", "Market Data", "Public & Regulatory Data",
+     "Synthetic Data", "Front End", "Development", "Market Introduction", "R&D", "Manufacturing",
+     "Marketing & Sales", "Customer Service"],
+    # Add rows of data below as needed
 ]
 
 # Replace None values in the first row with default column names
@@ -32,19 +30,18 @@ df = pd.DataFrame(data[1:], columns=data[0])
 
 # Analysis table definition
 analysis_table_data = {
-    "Use Case": ["AI-infused experiments in R&D", "AI-powered manufacturing planning in smart factories", 
-                 "AI-driven Human-Machine Collaboration in ideation", "AI-enabled idea generation in the Metaverse", 
+    "Use Case": ["AI-infused experiments in R&D", "AI-powered manufacturing planning in smart factories",
+                 "AI-driven Human-Machine Collaboration in ideation", "AI-enabled idea generation in the Metaverse",
                  "AI-optimized patent analysis", "AI-powered forecasting of the technology life cycle of EVs (S-Curve)",
-                 "AI-enabled bionic digital twin production planning", "AI-infused Human-Robot Collaboration planning", 
-                 "AI-powered material flow planning", "AI-assisted ideation", "AI-driven interactive collaborative innovation", 
-                 "AI-based digital twin for lithium-ion battery development", "AI- and Genetic Algorithms-based vehicle design", 
-                 "AI-augmented visual inspections", "AI-optimized scenario engineering", "AI-driven design process", 
-                 "AI- and Bio-inspired Design", "AI-assisted quality control of the bumper warpage", "AI-enabled predictive maintenance", 
-                 "AI-optimized braking system test", "AI-based identification of consumer adoption stage", "AI-powered marketing campaign", 
-                 "AI-driven relationship marketing", "AI-assisted customer service in after-sales", "AI-enabled battery monitoring", 
-                 "AI-assisted staff training", "AI-driven predictive quality models for customer defects", "AI-powered customer satisfaction analysis", 
-                 "AI-driven competition analysis", "AI-driven vehicles sales prediction"
-],
+                 "AI-enabled bionic digital twin production planning", "AI-infused Human-Robot Collaboration planning",
+                 "AI-powered material flow planning", "AI-assisted ideation", "AI-driven interactive collaborative innovation",
+                 "AI-based digital twin for lithium-ion battery development", "AI- and Genetic Algorithms-based vehicle design",
+                 "AI-augmented visual inspections", "AI-optimized scenario engineering", "AI-driven design process",
+                 "AI- and Bio-inspired Design", "AI-assisted quality control of the bumper warpage", "AI-enabled predictive maintenance",
+                 "AI-optimized braking system test", "AI-based identification of consumer adoption stage", "AI-powered marketing campaign",
+                 "AI-driven relationship marketing", "AI-assisted customer service in after-sales", "AI-enabled battery monitoring",
+                 "AI-assisted staff training", "AI-driven predictive quality models for customer defects", "AI-powered customer satisfaction analysis",
+                 "AI-driven competition analysis", "AI-driven vehicles sales prediction"],
     "Quality/Scope/Knowledge": [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2],
     "Time Efficiency": [2, 2, 2, 0, 0, 0, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 0, 2, 0, 2, 0, 2, 2, 2, 0, 0],
     "Cost": [2, 2, 0, 0, 0, 0, 2, 1, 2, 2, 0, 2, 2, 0, 2, 0, 2, 0, 2, 2, 0, 2, 0, 2, 0, 2, 0, 0, 0, 0],
@@ -102,16 +99,29 @@ analysis_table_data = {
 
 analysis_table = pd.DataFrame(analysis_table_data)
 
-# Render the interactive table using AgGrid
-gb = GridOptionsBuilder.from_dataframe(df)
-gb.configure_pagination(paginationAutoPageSize=True)  # Enable pagination
-gb.configure_selection(selection_mode="multiple", use_checkbox=True)  # Allow multiple cell selections
-gb.configure_side_bar()  # Add a sidebar for customization
+# Render the relevant dimensions in the interactive table
+relevant_columns = ["Quality/Scope/Knowledge", "Time Efficiency", "Cost", "Customer Segments",
+                    "Value Proposition", "Value Chain", "Revenue Model", "Product Innovation",
+                    "Process Innovation", "Business Model Innovation", "Exploration", "Exploitation",
+                    "Automaton", "Helper", "Partner", "Machine Learning", "Deep Learning",
+                    "Artificial Neural Networks", "Natural Language Processing", "Computer Vision",
+                    "Robotics", "Descriptive", "Diagnostic", "Predictive", "Prescriptive",
+                    "Description/ Summary", "Clustering", "Classification", "Dependency Analysis",
+                    "Regression", "Customer Data", "Machine Data", "Business Data (Internal Data)",
+                    "Market Data", "Public & Regulatory Data", "Synthetic Data", "Front End",
+                    "Development", "Market Introduction", "R&D", "Manufacturing", "Marketing & Sales",
+                    "Customer Service"]
+
+filtered_df = df[relevant_columns]
+
+# Configure AgGrid
+gb = GridOptionsBuilder.from_dataframe(filtered_df)
+gb.configure_pagination(paginationAutoPageSize=True)
+gb.configure_selection(selection_mode="multiple", use_checkbox=True)
 grid_options = gb.build()
 
-# Display the table and allow cell selection
 grid_response = AgGrid(
-    df,
+    filtered_df,
     gridOptions=grid_options,
     enable_enterprise_modules=True,
     update_mode="SELECTION_CHANGED",
@@ -122,10 +132,10 @@ grid_response = AgGrid(
 # Get selected cells
 selected = grid_response["selected_rows"]
 
-# Calculate which use case has the highest sum of values across selected columns
+# Calculate the use case with the highest summed value across selected cells
 if selected:
-    st.write("Selected Cells:", selected)
-    max_use_case = analysis_table.iloc[selected].sum().idxmax()
-    st.write(f"Use Case with Highest Value: {max_use_case}")
+    selected_values = analysis_table.loc[:, relevant_columns].sum(axis=0)
+    max_use_case = selected_values.idxmax()
+    st.write(f"Use Case with Highest Overall Value: {max_use_case}")
 else:
     st.write("No cells selected.")
