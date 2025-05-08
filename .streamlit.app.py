@@ -64,10 +64,8 @@ def generate_html_table(df):
             if pd.isna(val):
                 continue
                 
-            #first row format, row 0
-            if i == 0 and j == 0:
-                html += f"<td style='{style(first_col_width, bold=True)} background-color: #E8E8E8; border-bottom: 3px solid #000000;'>{val}</td>"
-
+           if i == 0:
+                html += f"<td style='{style(base_cell_width, bold=True)} background-color: #E8E8E8; border-bottom: 3px solid #000000;'>{val}</td>"
             
             
             #row span within the first column, column 0
