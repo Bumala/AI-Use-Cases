@@ -1,5 +1,6 @@
 import streamlit as st
 import pandas as pd
+from st_aggrid import AgGrid, GridOptionsBuilder
 
 # Set Streamlit page layout
 st.set_page_config(layout="wide")
@@ -120,74 +121,127 @@ analysis_table_data = {  # keep your full data here
 
 
 
-
-
-    
-}
+    }
 
 analysis_table = pd.DataFrame(analysis_table_data)
 analysis_table.set_index("Use Case", inplace=True)
 
-# ---------- Selectable attribute list ----------
+# Initialize selected attributes in session state
+if 'selected_attributes' not in st.session_state:
+    st.session_state.selected_attributes = []
 
-attribute_columns = list(analysis_table.columns)
-selected_attributes = st.multiselect(
-    "Select attributes (these match the table cells you want to 'click'):",
-    attribute_columns,
+# Function to handle cell clicks
+def handle_cell_click(attr_name):
+    if attr_name in st.session_state.selected_attributes:
+        st.session_state.selected_attributes.remove(attr_name)
+    else:
+        st.session_state.selected_attributes.append(attr_name)
+
+# ---------- Create interactive table with clickable cells ----------
+
+# Build the grid options
+gb = GridOptionsBuilder.from_dataframe(df)
+
+# Configure grid options
+gb.configure_default_column(
+    resizable=True,
+    filterable=False,
+    sortable=False,
+    editable=False,
+    groupable=False,
+    min_column_width=150,
+    cellStyle={
+        'textAlign': 'center',
+        'verticalAlign': 'middle',
+        'border': '1px solid black',
+        'backgroundColor': '#f1fbfe',
+        'padding': '10px'
+    }
 )
+
+# Apply special styling to first two columns
+gb.configure_column("0", header_name="Category", cellStyle={'backgroundColor': '#61cbf3', 'fontWeight': 'bold'})
+gb.configure_column("1", header_name="Dimension", cellStyle={'backgroundColor': '#94dcf8', 'fontWeight': 'bold'})
+
+# Make header row bold
+gb.configure_grid_options(
+    headerHeight=50,
+    defaultColDef={
+        'cellStyle': {'fontWeight': 'bold', 'backgroundColor': '#E8E8E8'}
+    },
+    rowHeight=50
+)
+
+# Configure cell selection
+gb.configure_selection(
+    selection_mode='multiple',
+    use_checkbox=False,
+    groupSelectsChildren=False,
+    suppressRowDeselection=False,
+    suppressRowClickSelection=False,
+    pre_selected_rows=[],
+    header_checkbox=False
+)
+
+# Custom cell renderer to handle clicks
+def cell_renderer(params):
+    attr_name = str(params.value)
+    is_selected = attr_name in st.session_state.selected_attributes
+    bg_color = '#92D050' if is_selected else '#f1fbfe'
+    
+    # Special handling for first two columns
+    if params.colDef.field == '0':
+        bg_color = '#61cbf3'
+    elif params.colDef.field == '1':
+        bg_color = '#94dcf8'
+    
+    return f'<div style="width: 100%; height: 100%; display: flex; justify-content: center; align-items: center; background-color: {bg_color}; cursor: pointer;">{attr_name}</div>'
+
+# Apply cell renderer to all columns except first two
+for col in df.columns[2:]:
+    gb.configure_column(col, cellRenderer=cell_renderer)
+
+grid_options = gb.build()
+
+# Display the grid and handle cell clicks
+grid_response = AgGrid(
+    df,
+    gridOptions=grid_options,
+    height=600,
+    width='100%',
+    data_return_mode='FILTERED',
+    update_mode='MODEL_CHANGED',
+    fit_columns_on_grid_load=True,
+    allow_unsafe_jscode=True,
+    theme='streamlit'
+)
+
+# Check for cell clicks
+if grid_response['selected_rows']:
+    selected_cells = grid_response['selected_rows'][0]  # Get first selected row
+    for col, value in selected_cells.items():
+        if col not in ['0', '1'] and value is not None:  # Skip first two columns and None values
+            handle_cell_click(str(value))
+    # Clear selection after processing
+    grid_response['gridOptions']['api'].deselectAll()
+
+# ---------- Display selected attributes ----------
+st.write("Selected Attributes:", st.session_state.selected_attributes)
 
 # ---------- Calculate and show top use case ----------
-
-if selected_attributes:
-    summed = analysis_table[selected_attributes].sum(axis=1)
-    top_use_case = summed.idxmax()
-    st.success(f"🚀 **Top Use Case:** {top_use_case}")
+if st.session_state.selected_attributes:
+    valid_attributes = [attr for attr in st.session_state.selected_attributes if attr in analysis_table.columns]
+    if valid_attributes:
+        summed = analysis_table[valid_attributes].sum(axis=1)
+        top_use_case = summed.idxmax()
+        st.success(f"🚀 **Top Use Case:** {top_use_case}")
+    else:
+        st.warning("No valid attributes selected from the analysis table.")
 else:
-    st.info("👆 Select attributes above to see the top use case.")
+    st.info("👆 Click on attribute cells in the table above to select them and see the top use case.")
 
-# ---------- Generate styled HTML table ----------
 
-def generate_html_table(df):
-    first_col_width = 160
-    second_col_width = 200
-    base_cell_width = 150
-    cell_height = 50
 
-    def style(width, bold=False):
-        bold_style = "font-weight: bold;" if bold else ""
-        return f"text-align: center; vertical-align: middle; padding: 10px; border: 1px solid #000000; width: {width}px; height: {cell_height}px; {bold_style}"
 
-    html = "<table style='border-spacing: 0; width: 100%; border-collapse: collapse; table-layout: fixed; border: 3px solid #000000;'>"
-    for i, row in df.iterrows():
-        html += "<tr>"
-        for j, val in enumerate(row):
-            if pd.isna(val):
-                continue
-            width = first_col_width if j == 0 else (second_col_width if j == 1 else base_cell_width)
-            bg_color = "#E8E8E8" if i == 0 else "#61cbf3" if j == 0 else "#94dcf8" if j == 1 else "#f1fbfe"
-            bold = i == 0 or j <=1
-            attr_name = str(val)
-            highlight = "background-color: #92D050;" if attr_name in selected_attributes else f"background-color: {bg_color};"
-            html += f"<td style='{style(width, bold)} {highlight}'>{val}</td>"
-        html += "</tr>"
-    html += "</table>"
-    return html
 
-# ---------- Show HTML table ----------
 
-st.markdown(
-    """
-    <style>
-        .center-table {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            width: 100%;
-            margin: 0 auto;
-        }
-    </style>
-    """,
-    unsafe_allow_html=True,
-)
-
-st.markdown('<div class="center-table">' + generate_html_table(df) + '</div>', unsafe_allow_html=True)
