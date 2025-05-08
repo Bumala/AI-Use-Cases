@@ -67,6 +67,8 @@ def generate_html_table(df):
                     html += f"<td style='{style(second_col_width, bold=True)} background-color: #E8E8E8; border-bottom: 3px solid #000000;'>{val}</td>"
                 elif j == 2:
                     html += f"<td colspan='6' style='{style(base_cell_width * 6, bold=True)} background-color: #E8E8E8; border-bottom: 3px solid #000000;'>{val}</td>"
+
+            
             elif j == 0:
                 if i == 1:
                     html += f"<td rowspan='4' style='{style(first_col_width, bold=True)} background-color: #61cbf3; border-bottom: 3px solid #000000;'>{val}</td>"
@@ -74,6 +76,8 @@ def generate_html_table(df):
                     html += f"<td rowspan='5' style='{style(first_col_width, bold=True)} background-color: #61cbf3; border-bottom: 3px solid #000000;'>{val}</td>"
                 elif i == 10:
                     html += f"<td rowspan='2' style='{style(first_col_width, bold=True)} background-color: #61cbf3;'>{val}</td>"
+
+            
             elif i == 4 and j == 1:
                 html += f"<td style='{style(base_cell_width, bold=True)} background-color: #94dcf8; border-bottom: 3px solid #000000;'>{val}</td>"
             elif i == 9 and j == 1:
@@ -82,6 +86,8 @@ def generate_html_table(df):
                 html += f"<td style='{style(base_cell_width)} background-color: #f1fbfe; border: 1px solid #000000; border-bottom: 3px solid #000000;'>{val}</td>"
             elif i > 0 and j == 1:
                 html += f"<td style='{style(second_col_width, bold=True)} background-color: #94dcf8;'>{val}</td>"
+
+            
             elif (i, j) in colspan_3:
                 html += f"<td colspan='3' style='{style(base_cell_width * 3)} background-color: #f1fbfe; border: 1px solid #000000; border-bottom: 3px solid #000000;'>{val}</td>"
             elif (i, j) in colspan_2:
@@ -130,42 +136,52 @@ analysis_table_data = {
 "Quality/Scope/Knowledge": [],
 "Time Efficiency": [],
 "Cost": [],
+
 "Customer Segments": [],
 "Value Proposition": [],
 "Value Chain": [],
 "Revenue Model": [],
+    
 "Product Innovation": [],
 "Process Innovation": [],
 "Business Model Innovation": [],
+    
 "Exploration": [],
 "Exploitation": [],
+    
 "Automaton": [],
 "Helper": [],
 "Partner": [],
+    
 "Machine Learning": [],
 "Deep Learning": [],
 "Artificial Neural Networks": [],
 "Natural Language Processing": [],
 "Computer Vision": [],
 "Robotics": [],
+    
 "Descriptive": [],
 "Diagnostic": [],
 "Predictive": [],
 "Prescriptive": [],
+    
 "Description/ Summary": [],
 "Clustering": [],
 "Classification": [],
 "Dependency Analysis": [],
 "Regression": [],
+    
 "Customer Data": [],
 "Machine Data": [],
 "Business Data (Internal Data)": [],
 "Market Data": [],
 "Public & Regulatory Data": [],
 "Synthetic Data": [],
+    
 "Front End": [],
 "Development": [],
 "Market Introduction": [],
+    
 "R&D": [],
 "Manufacturing": [],
 "Marketing & Sales": [],
