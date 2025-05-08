@@ -1,10 +1,11 @@
 import streamlit as st
 import pandas as pd
 
-# ---------- STREAMLIT PAGE CONFIG ----------
+# Set Streamlit page layout
 st.set_page_config(layout="wide")
 
-# ---------- ORIGINAL TABLE DATA ----------
+# ---------- Data for the HTML table ----------
+
 data = [
     ["Category", "Dimension", "Attributes"],
     ["Impact (What)", "Benefits", "Quality/Scope/Knowledge", "Time Efficiency", "Cost"],
@@ -22,9 +23,43 @@ data = [
 
 df = pd.DataFrame(data)
 
-# ---------- ANALYSIS TABLE ----------
-# Replace this with your full analysis_table_data dictionary (for brevity I show only headers)
-analysis_table_data = {
+# ---------- Load analysis table ----------
+
+analysis_table_data = {  # keep your full data here
+    "Use Case": [
+        "AI-infused experiments in R&D",
+        "AI-powered manufacturing planning in smart factories",
+        "AI-driven Human-Machine Collaboration in ideation",
+        "AI-enabled idea generation in the Metaverse",
+        "AI-optimized patent analysis",
+        "AI-powered forecasting of the technology life cycle of EVs (S-Curve)",
+        "AI-enabled bionic digital twin production planning",
+        "AI-infused Human-Robot Collaboration planning",
+        "AI-powered material flow planning",
+        "AI-assisted ideation",
+        "AI-driven interactive collaborative innovation",
+        "AI-based digital twin for lithium-ion battery development",
+        "AI- and Genetic Algorithms-based vehicle design",
+        "AI-augmented visual inspections",
+        "AI-optimized scenario engineering",
+        "AI-driven design process",
+        "AI- and Bio-inspired Design",
+        "AI-assisted quality control of the bumper warpage",
+        "AI-enabled predictive maintenance",
+        "AI-optimized braking system test",
+        "AI-based identification of consumer adoption stage",
+        "AI-powered marketing campaign",
+        "AI-driven relationship marketing",
+        "AI-assisted customer service in after-sales",
+        "AI-enabled battery monitoring",
+        "AI-assisted staff training",
+        "AI-driven predictive quality models for customer defects",
+        "AI-powered customer satisfaction analysis",
+        "AI-driven competition analysis",
+        "AI-driven vehicles sales prediction"
+    ],
+
+
 
     "Quality/Scope/Knowledge": [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2],
     "Time Efficiency": [2, 2, 2, 0, 0, 0, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 0, 2, 0, 2, 0, 2, 2, 2, 0, 0],
@@ -78,78 +113,81 @@ analysis_table_data = {
     "R&D": [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 0, 1, 1, 0, 1, 1, 0, 0, 0, 1, 0, 1, 0, 0, 0, 1, 1, 1, 1],
     "Manufacturing": [0, 1, 0, 0, 0, 0, 1, 1, 1, 0, 2, 2, 2, 2, 2, 1, 2, 2, 2, 2, 0, 0, 1, 0, 1, 0, 2, 2, 0, 1],
     "Marketing & Sales": [0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 2, 0, 2, 2, 2, 0, 2, 2, 0, 0, 2, 2, 1, 0, 0, 0, 0, 0, 0, 1],
-    "Customer Service": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 1, 2, 2, 2, 2, 2, 2, 2],
+    "Customer Service": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 1, 2, 2, 2, 2, 2, 2, 2]
+
+
+
+
+
+
+
+
+    
 }
+
 analysis_table = pd.DataFrame(analysis_table_data)
 analysis_table.set_index("Use Case", inplace=True)
 
-# ---------- SESSION STATE ----------
-if "selected_attrs" not in st.session_state:
-    st.session_state.selected_attrs = set()
+# ---------- Selectable attribute list ----------
 
-# ---------- TABLE RENDERING FUNCTION ----------
-def generate_html_table(df, selected_attrs):
+attribute_columns = list(analysis_table.columns)
+selected_attributes = st.multiselect(
+    "Select attributes (these match the table cells you want to 'click'):",
+    attribute_columns,
+)
+
+# ---------- Calculate and show top use case ----------
+
+if selected_attributes:
+    summed = analysis_table[selected_attributes].sum(axis=1)
+    top_use_case = summed.idxmax()
+    st.success(f"🚀 **Top Use Case:** {top_use_case}")
+else:
+    st.info("👆 Select attributes above to see the top use case.")
+
+# ---------- Generate styled HTML table ----------
+
+def generate_html_table(df):
     first_col_width = 160
     second_col_width = 200
     base_cell_width = 150
     cell_height = 50
 
-    def style(width, bold=False, selected=False):
+    def style(width, bold=False):
         bold_style = "font-weight: bold;" if bold else ""
-        bg_color = "#92D050" if selected else "#f1fbfe"
-        return f"text-align: center; vertical-align: middle; padding: 10px; border: 1px solid #000; width: {width}px; height: {cell_height}px; {bold_style} background-color: {bg_color}; cursor: pointer;"
+        return f"text-align: center; vertical-align: middle; padding: 10px; border: 1px solid #000000; width: {width}px; height: {cell_height}px; {bold_style}"
 
-    html = "<table style='border-spacing: 0; width: 100%; border-collapse: collapse; table-layout: fixed; border: 3px solid #000;'>"
+    html = "<table style='border-spacing: 0; width: 100%; border-collapse: collapse; table-layout: fixed; border: 3px solid #000000;'>"
     for i, row in df.iterrows():
         html += "<tr>"
         for j, val in enumerate(row):
             if pd.isna(val):
                 continue
-            attr = str(val)
-            is_selected = attr in selected_attrs
-
-            # Header row
-            if i == 0:
-                width = [first_col_width, second_col_width, base_cell_width * 6][j]
-                html += f"<td style='font-weight: bold; background-color: #E8E8E8; border-bottom: 3px solid #000; width: {width}px'>{val}</td>"
-            # First column (category) with rowspan
-            elif j == 0:
-                rowspan = 1
-                if i == 1:
-                    rowspan = 4
-                elif i == 5:
-                    rowspan = 5
-                elif i == 10:
-                    rowspan = 2
-                html += f"<td rowspan='{rowspan}' style='font-weight: bold; background-color: #61cbf3; border-bottom: 3px solid #000; width: {first_col_width}px'>{val}</td>"
-            # Second column (dimension)
-            elif j == 1:
-                html += f"<td style='font-weight: bold; background-color: #94dcf8; width: {second_col_width}px'>{val}</td>"
-            # Clickable attribute cells
-            else:
-                html += f"<td onclick=\"fetch('/?attr={attr}')\" style='{style(base_cell_width, selected=is_selected)}'>{val}</td>"
+            width = first_col_width if j == 0 else (second_col_width if j == 1 else base_cell_width)
+            bg_color = "#E8E8E8" if i == 0 else "#61cbf3" if j == 0 else "#94dcf8" if j == 1 else "#f1fbfe"
+            bold = i == 0 or j <=1
+            attr_name = str(val)
+            highlight = "background-color: #92D050;" if attr_name in selected_attributes else f"background-color: {bg_color};"
+            html += f"<td style='{style(width, bold)} {highlight}'>{val}</td>"
         html += "</tr>"
     html += "</table>"
     return html
 
-# ---------- CAPTURE URL QUERY PARAM ----------
-attr_clicked = st.experimental_get_query_params().get("attr", [None])[0]
-if attr_clicked:
-    if attr_clicked in st.session_state.selected_attrs:
-        st.session_state.selected_attrs.remove(attr_clicked)
-    else:
-        st.session_state.selected_attrs.add(attr_clicked)
-    st.experimental_set_query_params()  # clear URL param after processing
+# ---------- Show HTML table ----------
 
-# ---------- DISPLAY MAIN TABLE ----------
-st.markdown("<h3 style='text-align: center;'>Interactive Innovation Table</h3>", unsafe_allow_html=True)
-st.markdown(generate_html_table(df, st.session_state.selected_attrs), unsafe_allow_html=True)
+st.markdown(
+    """
+    <style>
+        .center-table {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            margin: 0 auto;
+        }
+    </style>
+    """,
+    unsafe_allow_html=True,
+)
 
-# ---------- CALCULATE TOP USE CASE ----------
-if st.session_state.selected_attrs:
-    selected_cols = [col for col in st.session_state.selected_attrs if col in analysis_table.columns]
-    summed = analysis_table[selected_cols].sum(axis=1)
-    top_use_case = summed.idxmax()
-    st.markdown(f"<h4 style='text-align: center; color: green;'>🏆 Top Use Case: {top_use_case}</h4>", unsafe_allow_html=True)
-else:
-    st.markdown("<h4 style='text-align: center; color: gray;'>Select attributes to see top use case</h4>", unsafe_allow_html=True)
+st.markdown('<div class="center-table">' + generate_html_table(df) + '</div>', unsafe_allow_html=True)
