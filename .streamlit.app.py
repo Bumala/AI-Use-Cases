@@ -64,7 +64,7 @@ def generate_html_table(df):
                 if j == 0:
                     html += f"<td style='{style(first_col_width, bold=True)} background-color: #E8E8E8; border-bottom: 3px solid #000000;'>{val}</td>"
                 elif j == 1:
-                    html += f"<td colspan='2' style='{style(second_col_width * 2, bold=True)} background-color: #E8E8E8; border-bottom: 3px solid #000000;'>{val}</td>"
+                    html += f"<td style='{style(second_col_width, bold=True)} background-color: #E8E8E8; border-bottom: 3px solid #000000;'>{val}</td>"
                 elif j == 2:
                     html += f"<td colspan='6' style='{style(base_cell_width * 6, bold=True)} background-color: #E8E8E8; border-bottom: 3px solid #000000;'>{val}</td>"
             elif j == 0:
