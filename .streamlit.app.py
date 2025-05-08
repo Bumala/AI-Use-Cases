@@ -64,7 +64,8 @@ def generate_html_table(df):
                 
             #first row format, row 0
             if i == 0:
-                html += f"<td style='{style(first_col_width, bold=True)} background-color: #E8E8E8; border-bottom: 3px solid #000000;'>{val}</td>"
+    # Apply colspan to the first row
+    html += f"<td colspan='{len(row)}' style='{style(first_col_width * len(row), bold=True)} background-color: #E8E8E8; border-bottom: 3px solid #000000;'>{val}</td>"
             
             
             #first column format, column 0
