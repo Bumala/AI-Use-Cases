@@ -6,6 +6,7 @@ st.set_page_config(layout="wide")
 
 # Data definition
 data = [
+    ["Category", "Dimension", "Attributes"]
     ["Impact (What)", "Benefits", "Quality/Scope/Knowledge", "Time Efficiency", "Cost"],
     [None, "Focus within Business Model Navigator", "Customer Segments", "Value Proposition", "Value Chain", "Revenue Model"],
     [None, "Aim", "Product Innovation", "Process Innovation", "Business Model Innovation"],
@@ -35,18 +36,21 @@ def generate_html_table(df):
 
     # Define colspans
     colspan_2 = {
-        (0, 2), (0, 3), (0, 4),
-        (1, 2), (1, 5),
-        (2, 2), (2, 3), (2, 4), 
-        (4, 2), (4, 3), (4, 4),
-        (6, 2), (6, 5),
-        (7, 4),
-        (9, 2), (9, 3), (9, 4),
-        (10, 2), (10, 5), 
+        (1, 2), (1, 3), (1, 4),
+        (2, 2), (2, 5),
+        (3, 2), (3, 3), (3, 4), 
+        (5, 2), (5, 3), (5, 4),
+        (7, 2), (7, 5),
+        (8, 4),
+        (10, 2), (10, 3), (10, 4),
+        (11, 2), (11, 5), 
     }
 
     colspan_3 = {
-        (3, 2), (3, 3)
+        (4, 2), (4, 3)
+    }
+    colspan_6 = {
+        (0, 2)
     }
 
     html = "<table style='border-spacing: 0; width: 100%; border-collapse: collapse; table-layout: fixed; border: 3px solid #000000;'>"
@@ -60,30 +64,30 @@ def generate_html_table(df):
 
             #first column format, column 0
             if j == 0:
-                if i == 0:
+                if i == 1:
                     html += f"<td rowspan='4' style='{style(first_col_width, bold=True)} background-color: #61cbf3; border-bottom: 3px solid #000000;'>{val}</td>"
-                elif i == 4:
+                elif i == 5:
                     html += f"<td rowspan='5' style='{style(first_col_width, bold=True)} background-color: #61cbf3; border-bottom: 3px solid #000000;'>{val}</td>"
-                elif i == 9:
+                elif i == 10:
                     html += f"<td rowspan='2' style='{style(first_col_width, bold=True)} background-color: #61cbf3;'>{val}</td>"
                 else:
                     continue
 
 
             #making inner thick border boundaries
-            elif i == 3 and j == 1:  
+            elif i == 4 and j == 1:  
                 html += f"<td style='{style(base_cell_width, bold=True)} background-color: #94dcf8; border-bottom: 3px solid #000000;'>{val}</td>"
             
-            elif i == 8 and j == 1:  
+            elif i == 9 and j == 1:  
                 html += f"<td style='{style(base_cell_width, bold=True)} background-color: #94dcf8; border-bottom: 3px solid #000000;'>{val}</td>"
 
-            elif i == 8 and j == 2:  
+            elif i == 9 and j == 2:  
                 html += f"<td style='{style(base_cell_width)} background-color: #f1fbfe; border: 1px solid #000000; border-bottom: 3px solid #000000;'>{val}</td>"
 
-            elif i == 8 and j == 4:  
+            elif i == 9 and j == 4:  
                 html += f"<td style='{style(base_cell_width)} background-color: #f1fbfe; border: 1px solid #000000; border-bottom: 3px solid #000000;'>{val}</td>"
 
-            elif i == 8 and j == 6:  
+            elif i == 9 and j == 6:  
                 html += f"<td style='{style(base_cell_width)} background-color: #f1fbfe; border: 1px solid #000000; border-bottom: 3px solid #000000;'>{val}</td>"
 
 
