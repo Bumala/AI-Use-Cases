@@ -2,11 +2,10 @@ import streamlit as st
 import pandas as pd
 from st_aggrid import AgGrid, GridOptionsBuilder, JsCode
 
-# Set Streamlit page layout
+# Set page config
 st.set_page_config(layout="wide")
 
-# ---------- Data for the HTML table ----------
-# Create DataFrame with proper column names
+# ========== INTERACTIVE ATTRIBUTE TABLE ==========
 data = [
     ["Category", "Dimension", "Attributes"],
     ["Impact (What)", "Benefits", "Quality/Scope/Knowledge", "Time Efficiency", "Cost"],
@@ -22,12 +21,11 @@ data = [
     [None, "Department", "R&D", "Manufacturing", "Marketing & Sales", "Customer Service"],
 ]
 
-# Create DataFrame with string column names
-columns = [f"col_{i}" for i in range(len(data[0]))]
-df = pd.DataFrame(data, columns=columns)
+# Convert to DataFrame
+df = pd.DataFrame(data[1:], columns=data[0][:len(data[1])])
 
-# ---------- Load analysis table ----------
-analysis_table_data = {  # keep your full data here
+# ========== ANALYSIS TABLE ==========
+analysis_data = {  # keep your full data here
     "Use Case": [
         "AI-infused experiments in R&D",
         "AI-powered manufacturing planning in smart factories",
@@ -122,183 +120,106 @@ analysis_table_data = {  # keep your full data here
 
 
 
-    
- }
-
-analysis_table = pd.DataFrame(analysis_table_data)
-analysis_table.set_index("Use Case", inplace=True)
-
-# Initialize selected attributes in session state
-if 'selected_attributes' not in st.session_state:
-    st.session_state.selected_attributes = []
-
-# Function to handle cell clicks
-def handle_cell_click(attr_name):
-    if attr_name in st.session_state.selected_attributes:
-        st.session_state.selected_attributes.remove(attr_name)
-    else:
-        st.session_state.selected_attributes.append(attr_name)
-    st.experimental_rerun()
-
-# Custom JavaScript for cell clicks
-cell_click_js = JsCode("""
-function(params) {
-    const attribute = params.value;
-    if (attribute && !['Category', 'Dimension', 'Attributes', 'Impact (What)', 'Technology (How)', 'Context (Where/When)'].includes(attribute)) {
-        // Send the attribute name back to Python
-        const api = params.api;
-        api.applyTransactionAsync({remove: [params.data]});
-        api.applyTransactionAsync({add: [params.data]});
-        
-        // Create a custom event to send data to Streamlit
-        const json = {attribute: attribute};
-        const jsonString = JSON.stringify(json);
-        const element = document.createElement('div');
-        element.setAttribute('data-st-callback', 'true');
-        element.setAttribute('data-st-json', jsonString);
-        document.body.appendChild(element);
-        
-        // Create and dispatch the event
-        const event = new CustomEvent('ST_AGGRID_CELL_CLICK', {detail: element});
-        document.dispatchEvent(event);
-        
-        // Remove the element after a short delay
-        setTimeout(() => element.remove(), 100);
-    }
-    return '';
 }
+
+analysis_df = pd.DataFrame(analysis_data).set_index("Use Case")
+
+# ========== INTERACTIVE FUNCTIONALITY ==========
+if 'selected_attrs' not in st.session_state:
+    st.session_state.selected_attrs = []
+
+def handle_click(attr):
+    if attr in analysis_df.columns:  # Only allow valid attributes
+        if attr in st.session_state.selected_attrs:
+            st.session_state.selected_attrs.remove(attr)
+        else:
+            st.session_state.selected_attrs.append(attr)
+        st.experimental_rerun()
+
+# Custom cell renderer
+cell_renderer = JsCode(f"""
+function(params) {{
+    const value = params.value;
+    const isSelected = {st.session_state.selected_attrs}.includes(value);
+    const isAttrCol = params.colDef.headerName === 'Attributes';
+    
+    let color = '#f1fbfe';
+    if (params.node.rowPinned === 'top') {{
+        color = '#E8E8E8'; // Header
+    }} else if (params.colDef.headerName === 'Category') {{
+        color = '#61cbf3'; // First column
+    }} else if (params.colDef.headerName === 'Dimension') {{
+        color = '#94dcf8'; // Second column
+    }} else if (isSelected && isAttrCol) {{
+        color = '#92D050'; // Selected
+    }}
+    
+    return `<div style="
+        width: 100%; height: 100%;
+        display: flex; align-items: center; justify-content: center;
+        background-color: ${{color}};
+        border: 1px solid black;
+        padding: 10px;
+        cursor: ${{isAttrCol ? 'pointer' : 'default'}};
+        font-weight: ${{params.colDef.headerName !== 'Attributes' ? 'bold' : 'normal'}};
+    ">${{value}}</div>`;
+}}
 """)
 
-# Function to generate custom cell renderer
-def get_cell_style_renderer():
-    return JsCode(f"""
-    function(params) {{
-        const attribute = params.value;
-        const isSelected = {st.session_state.selected_attributes}.includes(attribute);
-        let backgroundColor = '#f1fbfe';
-        let fontWeight = 'normal';
-        let border = '1px solid #000000';
-        
-        // Handle special styling
-        if (params.colDef.field === 'col_0') {{
-            backgroundColor = '#61cbf3';
-            fontWeight = 'bold';
-        }} else if (params.colDef.field === 'col_1') {{
-            backgroundColor = '#94dcf8';
-            fontWeight = 'bold';
-        }} else if (isSelected) {{
-            backgroundColor = '#92D050';
-        }}
-        
-        // Handle header row
-        if (params.node.rowIndex === 0) {{
-            backgroundColor = '#E8E8E8';
-            fontWeight = 'bold';
-            border = '1px solid #000000';
-            if (params.colDef.field === 'col_0' || params.colDef.field === 'col_1') {{
-                borderBottom = '3px solid #000000';
-            }}
-        }}
-        
-        // Create the cell element
-        const cellElement = document.createElement('div');
-        cellElement.style.display = 'flex';
-        cellElement.style.justifyContent = 'center';
-        cellElement.style.alignItems = 'center';
-        cellElement.style.width = '100%';
-        cellElement.style.height = '100%';
-        cellElement.style.backgroundColor = backgroundColor;
-        cellElement.style.fontWeight = fontWeight;
-        cellElement.style.border = border;
-        cellElement.style.padding = '10px';
-        cellElement.style.cursor = 'pointer';
-        cellElement.textContent = attribute;
-        
-        return cellElement;
-    }}
-    """)
-
-# Build the grid options
+# Configure grid
 gb = GridOptionsBuilder.from_dataframe(df)
-
-# Configure default column settings
 gb.configure_default_column(
     resizable=False,
-    filterable=False,
-    sortable=False,
-    editable=False,
-    groupable=False,
-    suppressMovable=True,
-    cellStyle={'textAlign': 'center', 'verticalAlign': 'middle'},
+    cellStyle={'textAlign': 'center'},
     wrapText=True,
     autoHeight=True
 )
 
-# Configure specific columns
-gb.configure_column("col_0", header_name="Category", width=160, cellStyle={'fontWeight': 'bold', 'backgroundColor': '#61cbf3'})
-gb.configure_column("col_1", header_name="Dimension", width=200, cellStyle={'fontWeight': 'bold', 'backgroundColor': '#94dcf8'})
+# Set column widths and renderers
+gb.configure_column("Category", width=160, cellRenderer=cell_renderer)
+gb.configure_column("Dimension", width=200, cellRenderer=cell_renderer)
+gb.configure_column("Attributes", width=150, cellRenderer=cell_renderer)
 
-# Configure remaining attribute columns
-for col in df.columns[2:]:
-    gb.configure_column(col, width=150, cellRenderer=get_cell_style_renderer(), onCellClicked=cell_click_js)
+# Display both tables
+col1, col2 = st.columns([2, 1])
 
-# Configure grid options
-gb.configure_grid_options(
-    headerHeight=50,
-    rowHeight=50,
-    suppressRowClickSelection=True,
-    suppressCellSelection=True,
-    domLayout='normal',
-    ensureDomOrder=True,
-    suppressHorizontalScroll=False
-)
+with col1:
+    st.header("Attribute Selection")
+    grid = AgGrid(
+        df,
+        gridOptions=gb.build(),
+        height=600,
+        fit_columns_on_grid_load=False,
+        allow_unsafe_jscode=True,
+        theme='streamlit'
+    )
 
-# Handle cell click events
-if 'cell_click_data' in st.session_state:
-    handle_cell_click(st.session_state.cell_click_data['attribute'])
-    del st.session_state.cell_click_data
-
-# Display the grid
-grid_response = AgGrid(
-    df,
-    gridOptions=gb.build(),
-    height=600,
-    width='100%',
-    data_return_mode='FILTERED',
-    update_mode='MODEL_CHANGED',
-    fit_columns_on_grid_load=False,
-    allow_unsafe_jscode=True,
-    theme='streamlit',
-    custom_css={
-        ".ag-root-wrapper": {"border": "3px solid #000000", "font-family": "Arial, sans-serif"},
-        ".ag-header-cell": {"background-color": "#E8E8E8", "font-weight": "bold", "border-bottom": "3px solid #000000"},
-        ".ag-cell": {"border": "1px solid #000000", "padding": "10px"}
-    }
-)
-
-# Display selected attributes
-st.write("Selected Attributes:", st.session_state.selected_attributes)
-
-# Calculate and show top use case
-if st.session_state.selected_attributes:
-    valid_attributes = [attr for attr in st.session_state.selected_attributes if attr in analysis_table.columns]
-    if valid_attributes:
-        summed = analysis_table[valid_attributes].sum(axis=1)
-        top_use_case = summed.idxmax()
+with col2:
+    st.header("Analysis Results")
+    if st.session_state.selected_attrs:
+        # Calculate scores
+        scores = analysis_df[st.session_state.selected_attrs].sum(axis=1)
+        top_use_case = scores.idxmax()
+        
         st.success(f"🚀 **Top Use Case:** {top_use_case}")
+        st.write("### Scores:")
+        st.dataframe(scores.sort_values(ascending=False))
     else:
-        st.warning("No valid attributes selected from the analysis table.")
-else:
-    st.info("👆 Click on attribute cells in the table above to select them and see the top use case.")
+        st.info("Select attributes to see recommendations")
 
 # JavaScript to handle cell clicks
-st.components.v1.html("""
+st.components.v1.html(f"""
 <script>
-document.addEventListener('ST_AGGRID_CELL_CLICK', function(event) {
-    const data = JSON.parse(event.detail.getAttribute('data-st-json'));
-    const jsonData = JSON.stringify(data);
-    const code = `st.session_state.cell_click_data = ${jsonData}; st.experimental_rerun()`;
-    Streamlit.setComponentValue(code);
-});
+document.addEventListener('click', function(event) {{
+    if (event.target.classList.contains('ag-cell-value')) {{
+        const colDef = event.target.closest('[col-id]').getAttribute('col-id');
+        if (colDef === 'Attributes') {{
+            const value = event.target.textContent.trim();
+            const data = {{attribute: value}};
+            Streamlit.setComponentValue(JSON.stringify(data));
+        }}
+    }}
+}});
 </script>
 """, height=0)
+
