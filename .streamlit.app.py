@@ -65,13 +65,10 @@ def generate_html_table(df):
                 continue
                 
             #first row format, row 0
-            if i == 0 and j == 0:
+            if i == 0 and j > 0:
                 html += f"<td style='{style(first_col_width, bold=True)} background-color: #E8E8E8; border-bottom: 3px solid #000000;'>{val}</td>"
 
-            #first row format, row 0
-            if i == 0 and j == 1:
-                html += f"<td style='{style(first_col_width, bold=True)} background-color: #E8E8E8; border-bottom: 3px solid #000000;'>{val}</td>"
-
+            
             
             #row span within the first column, column 0
             if j == 0:
