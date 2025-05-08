@@ -6,6 +6,7 @@ from st_aggrid import AgGrid, GridOptionsBuilder, JsCode
 st.set_page_config(layout="wide")
 
 # ---------- Data for the HTML table ----------
+# Create DataFrame with proper column names
 data = [
     ["Category", "Dimension", "Attributes"],
     ["Impact (What)", "Benefits", "Quality/Scope/Knowledge", "Time Efficiency", "Cost"],
@@ -21,10 +22,11 @@ data = [
     [None, "Department", "R&D", "Manufacturing", "Marketing & Sales", "Customer Service"],
 ]
 
-df = pd.DataFrame(data)
+# Create DataFrame with string column names
+columns = [f"col_{i}" for i in range(len(data[0]))]
+df = pd.DataFrame(data, columns=columns)
 
 # ---------- Load analysis table ----------
-
 analysis_table_data = {  # keep your full data here
     "Use Case": [
         "AI-infused experiments in R&D",
@@ -121,7 +123,7 @@ analysis_table_data = {  # keep your full data here
 
 
     
-  }
+ }
 
 analysis_table = pd.DataFrame(analysis_table_data)
 analysis_table.set_index("Use Case", inplace=True)
@@ -169,34 +171,34 @@ function(params) {
 
 # Function to generate custom cell renderer
 def get_cell_style_renderer():
-    return JsCode("""
-    function(params) {
+    return JsCode(f"""
+    function(params) {{
         const attribute = params.value;
-        const isSelected = %s.includes(attribute);
+        const isSelected = {st.session_state.selected_attributes}.includes(attribute);
         let backgroundColor = '#f1fbfe';
         let fontWeight = 'normal';
         let border = '1px solid #000000';
         
         // Handle special styling
-        if (params.colDef.field === '0') {
+        if (params.colDef.field === 'col_0') {{
             backgroundColor = '#61cbf3';
             fontWeight = 'bold';
-        } else if (params.colDef.field === '1') {
+        }} else if (params.colDef.field === 'col_1') {{
             backgroundColor = '#94dcf8';
             fontWeight = 'bold';
-        } else if (isSelected) {
+        }} else if (isSelected) {{
             backgroundColor = '#92D050';
-        }
+        }}
         
         // Handle header row
-        if (params.node.rowIndex === 0) {
+        if (params.node.rowIndex === 0) {{
             backgroundColor = '#E8E8E8';
             fontWeight = 'bold';
             border = '1px solid #000000';
-            if (params.colDef.field === '0' || params.colDef.field === '1') {
+            if (params.colDef.field === 'col_0' || params.colDef.field === 'col_1') {{
                 borderBottom = '3px solid #000000';
-            }
-        }
+            }}
+        }}
         
         // Create the cell element
         const cellElement = document.createElement('div');
@@ -213,8 +215,8 @@ def get_cell_style_renderer():
         cellElement.textContent = attribute;
         
         return cellElement;
-    }
-    """ % str(st.session_state.selected_attributes))
+    }}
+    """)
 
 # Build the grid options
 gb = GridOptionsBuilder.from_dataframe(df)
@@ -233,8 +235,8 @@ gb.configure_default_column(
 )
 
 # Configure specific columns
-gb.configure_column("0", header_name="Category", width=160, cellStyle={'fontWeight': 'bold', 'backgroundColor': '#61cbf3'})
-gb.configure_column("1", header_name="Dimension", width=200, cellStyle={'fontWeight': 'bold', 'backgroundColor': '#94dcf8'})
+gb.configure_column("col_0", header_name="Category", width=160, cellStyle={'fontWeight': 'bold', 'backgroundColor': '#61cbf3'})
+gb.configure_column("col_1", header_name="Dimension", width=200, cellStyle={'fontWeight': 'bold', 'backgroundColor': '#94dcf8'})
 
 # Configure remaining attribute columns
 for col in df.columns[2:]:
@@ -300,7 +302,3 @@ document.addEventListener('ST_AGGRID_CELL_CLICK', function(event) {
 });
 </script>
 """, height=0)
-
-
-
-
