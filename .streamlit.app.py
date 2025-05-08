@@ -6,7 +6,7 @@ st.set_page_config(layout="wide")
 
 # Data definition
 data = [
-    ["Category", "Dimension", "Attributes", None, None],
+    ["Category", "Dimension", "Attributes"],
     ["Impact (What)", "Benefits", "Quality/Scope/Knowledge", "Time Efficiency", "Cost"],
     [None, "Focus within Business Model Navigator", "Customer Segments", "Value Proposition", "Value Chain", "Revenue Model"],
     [None, "Aim", "Product Innovation", "Process Innovation", "Business Model Innovation"],
@@ -50,8 +50,8 @@ def generate_html_table(df):
         (4, 2), (4, 3)
     }
     
-    colspan_5 = {
-        (0, 0)
+    colspan_6 = {
+        (0, 2)
     }
 
     #outer thick border
@@ -105,8 +105,8 @@ def generate_html_table(df):
                 html += f"<td colspan='3' style='{style(base_cell_width * 3)} background-color: #f1fbfe; border: 1px solid #000000; border-bottom: 3px solid #000000;'>{val}</td>"
             elif (i, j) in colspan_2:
                 html += f"<td colspan='2' style='{style(base_cell_width * 2)} background-color: #f1fbfe; border: 1px solid #000000;'>{val}</td>"
-            elif (i, j) in colspan_5:
-                html += f"<td colspan='5' style='{style(base_cell_width * 5)} background-color: #E8E8E8; border-bottom: 3px solid #000000;'>{val}</td>"
+            elif (i, j) in colspan_6:
+                html += f"<td colspan='6' style='{style(base_cell_width * 6)} background-color: #E8E8E8; border-bottom: 3px solid #000000;'>{val}</td>"
             
 
             
