@@ -21,7 +21,13 @@ data = [
     [None, "Department", "R&D", "Manufacturing", "Marketing & Sales", "Customer Service"],
 ]
 
-df = pd.DataFrame(data)
+# Replace None values in the first row with default column names
+for i, col in enumerate(data[0]):
+    if col is None:
+        data[0][i] = f"Column{i+1}"  # Replace with default names like "Column1", "Column2"
+
+# Create the DataFrame
+df = pd.DataFrame(data[1:], columns=data[0])
 
 # Function to generate the interactive HTML table
 def generate_interactive_html_table(df):
