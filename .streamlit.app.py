@@ -49,6 +49,7 @@ def generate_html_table(df):
     colspan_3 = {
         (4, 2), (4, 3)
     }
+    
     colspan_6 = {
         (0, 2)
     }
@@ -61,7 +62,7 @@ def generate_html_table(df):
             if pd.isna(val):
                 continue
                 
-            #first row format
+            #first row format, row 0
             if i == 0:
                 html += f"<td style='{style(first_col_width, bold=True)} background-color: #E8E8E8; border-bottom: 3px solid #000000;'>{val}</td>"
             
