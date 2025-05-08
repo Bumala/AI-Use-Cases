@@ -60,8 +60,12 @@ def generate_html_table(df):
         for j, val in enumerate(row):
             if pd.isna(val):
                 continue
+                
+            #first row format
+            if i == 0;
+            html += f"<td style='{style(first_col_width, second_col_width, bold=True)} background-color: #E8E8E8; border-bottom: 3px solid #000000;'>{val}</td>"
 
-
+            
             #first column format, column 0
             if j == 0:
                 if i == 1:
