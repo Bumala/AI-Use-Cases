@@ -1,10 +1,11 @@
 import streamlit as st
 import pandas as pd
+from streamlit_javascript import st_javascript
 
 # Set page layout
 st.set_page_config(layout="wide")
 
-# Load your full data here (short example below)
+# ======= TABLE DATA =======
 data = [
     ["Category", "Dimension", "Attributes"],
     ["Impact (What)", "Benefits", "Quality/Scope/Knowledge", "Time Efficiency", "Cost"],
@@ -20,52 +21,61 @@ data = [
     [None, "Department", "R&D", "Manufacturing", "Marketing & Sales", "Customer Service"],
 ]
 
-# Get attribute names
+# Extract all attributes
 attributes = []
 for row in data[1:]:
     attributes.extend([x for x in row[2:] if x])
 
-# Setup session state
-if "selected_attrs" not in st.session_state:
-    st.session_state.selected_attrs = []
+# ======= SESSION STATE =======
+if "selected" not in st.session_state:
+    st.session_state.selected = set()
 
-# Toggle selection
-def toggle_selection(attr):
-    if attr in st.session_state.selected_attrs:
-        st.session_state.selected_attrs.remove(attr)
-    else:
-        st.session_state.selected_attrs.append(attr)
-
-# Generate table HTML
-def generate_html_table(data, selected_attrs):
+# ======= HTML TABLE WITH CLICK HANDLER =======
+def generate_html(data, selected):
     html = "<table style='border-collapse:collapse; width:100%;'>"
     for i, row in enumerate(data):
         html += "<tr>"
         for j, val in enumerate(row):
             if val is None:
                 continue
-            bg = "#92D050" if val in selected_attrs else "#f1fbfe"
+            bg = "#92D050" if val in selected else "#f1fbfe"
             if j == 0:
                 bg = "#61cbf3"
             elif j == 1:
                 bg = "#94dcf8"
-            html += f"<td style='border:1px solid black; padding:10px; background-color:{bg};'>{val}</td>"
+            attr_id = f"cell_{i}_{j}"
+            click_attr = f"data-attr='{val}'" if val in attributes else ""
+            html += f"<td id='{attr_id}' {click_attr} style='border:1px solid black; padding:10px; background-color:{bg}; cursor:pointer;'>{val}</td>"
         html += "</tr>"
     html += "</table>"
     return html
 
-# Show table
-st.markdown(generate_html_table(data, st.session_state.selected_attrs), unsafe_allow_html=True)
+# ======= RENDER HTML TABLE =======
+st.markdown(generate_html(data, st.session_state.selected), unsafe_allow_html=True)
 
-# Add buttons for attributes
-st.write("### Select attributes:")
-cols = st.columns(4)
-for idx, attr in enumerate(attributes):
-    if cols[idx % 4].button(attr):
-        toggle_selection(attr)
-        st.experimental_rerun()
+# ======= JAVASCRIPT TO CAPTURE CLICK =======
+js_code = """
+Array.from(document.querySelectorAll('td[data-attr]')).forEach(cell => {
+    cell.addEventListener('click', event => {
+        window.parent.postMessage({
+            isStreamlitMessage: true,
+            type: 'streamlit_javascript',
+            data: cell.getAttribute('data-attr')
+        }, '*')
+    })
+})
+"""
 
-# Example use case scoring
+clicked = st_javascript(js_code=js_code)
+
+if clicked:
+    if clicked in st.session_state.selected:
+        st.session_state.selected.remove(clicked)
+    else:
+        st.session_state.selected.add(clicked)
+    st.experimental_rerun()
+
+# ======= DUMMY ANALYSIS DATAFRAME =======
 analysis_df = pd.DataFrame({
 
    
@@ -163,13 +173,15 @@ analysis_df = pd.DataFrame({
 
 }).set_index("Use Case")
 
-if st.session_state.selected_attrs:
-    selected_cols = [c for c in analysis_df.columns if c in st.session_state.selected_attrs]
-    scores = analysis_df[selected_cols].sum(axis=1)
-    best = scores.idxmax()
-    st.write(f"### 🏆 Best matching use case: {best} (score: {scores.max()})")
+# ======= CALCULATE BEST MATCH =======
+if st.session_state.selected:
+    selected_cols = [col for col in analysis_df.columns if col in st.session_state.selected]
+    if selected_cols:
+        scores = analysis_df[selected_cols].sum(axis=1)
+        top = scores.idxmax()
+        st.markdown(f"### 🏆 Best matching use case: **{top}** (score: {scores.max()})")
 else:
-    st.write("### Select attributes to see best matching use case.")
+    st.markdown("### Please click on table cells to select attributes.")
 
 
 
