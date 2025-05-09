@@ -58,7 +58,7 @@ def generate_html_table(data, selected):
         (4, 2), (4, 3)
     }
 
-    html = "<table style='border-spacing: 0; width: 100%; border-collapse: collapse; table-layout: fixed; border: 3px solid #000000;'>"
+    html = "<table style='border-spacing: 0; border-collapse: collapse; table-layout: fixed; border: 3px solid #000000;'>"
 
     for i, row in enumerate(data):
         html += "<tr>"
@@ -121,10 +121,14 @@ interaction_js = """
 <script>
 function handleCellClick(element) {
     const attr = element.getAttribute('data-attr');
-    const isSelected = element.style.backgroundColor === 'rgb(146, 208, 80)';
+    const isSelected = element.classList.contains('selected');
     
     // Toggle visual selection immediately
-    element.style.backgroundColor = isSelected ? '#f1fbfe' : '#92D050';
+    if (isSelected) {
+        element.classList.remove('selected');
+    } else {
+        element.classList.add('selected');
+    }
     
     // Send message to Streamlit
     window.parent.postMessage({
@@ -232,23 +236,29 @@ analysis_df = pd.DataFrame({
     "Customer Service": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 1, 2, 2, 2, 2, 2, 2, 2]
 })
 
-# ======= DISPLAY THE TABLE WITH ZOOM =======
+# ======= DISPLAY THE TABLE WITH ZOOM AND CENTERING =======
 st.markdown("""
-<style>
-    .table-container {
-        transform: scale(0.9);
-        transform-origin: top left;
-        width: 111.11%; /* Counteract the scale */
-        margin-left: -5.55%; /* Center the scaled table */
-        margin-bottom: 20px;
-    }
-</style>
-<div class="table-container">
+    <style>
+        .center-table {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            height: 100%;
+            margin: 0 auto;
+            transform: scale(0.9);
+            transform-origin: top center;
+        }
+        table {
+            width: 100%;
+        }
+    </style>
 """, unsafe_allow_html=True)
 
-html(generate_html_table(data, st.session_state.selected) + interaction_js, height=800)
+st.markdown('<div class="center-table">' + generate_html_table(data, st.session_state.selected) + '</div>', unsafe_allow_html=True)
 
-st.markdown("</div>", unsafe_allow_html=True)
+# Add JavaScript for interactivity
+html(interaction_js)
 
 # ======= USE CASE RECOMMENDATION LOGIC =======
 if st.session_state.selected:
@@ -257,18 +267,21 @@ if st.session_state.selected:
     for i, attr in enumerate(st.session_state.selected):
         cols[i % 4].write(f"✓ {attr}")
 
-    # Calculate scores for each use case
+    # Calculate scores for each use case (sum of selected attribute values)
     analysis_df['Score'] = 0
     for attr in st.session_state.selected:
         if attr in analysis_df.columns:
             analysis_df['Score'] += analysis_df[attr]
     
-    # Get top 5 use cases with highest scores
-    top_use_cases = analysis_df.nlargest(5, 'Score')[['Use Case', 'Score']]
+    # Filter out use cases with score 0
+    filtered_df = analysis_df[analysis_df['Score'] > 0]
     
-    if not top_use_cases.empty:
-        st.subheader("Recommended Use Cases (Highest Score)")
-        for _, row in top_use_cases.iterrows():
+    if not filtered_df.empty:
+        # Sort by score descending
+        recommended_cases = filtered_df.sort_values('Score', ascending=False)
+        
+        st.subheader("Recommended Use Cases (Highest to Lowest Score)")
+        for _, row in recommended_cases.iterrows():
             st.success(f"▪ {row['Use Case']} (Score: {row['Score']})")
     else:
         st.warning("No use cases match the selected attributes")
