@@ -1,11 +1,10 @@
 import streamlit as st
 import pandas as pd
-from st_aggrid import AgGrid, GridOptionsBuilder, JsCode
 
-# Set Streamlit page layout
+# Set page layout
 st.set_page_config(layout="wide")
 
-# Define table data
+# Load your full data here (short example below)
 data = [
     ["Category", "Dimension", "Attributes"],
     ["Impact (What)", "Benefits", "Quality/Scope/Knowledge", "Time Efficiency", "Cost"],
@@ -21,76 +20,54 @@ data = [
     [None, "Department", "R&D", "Manufacturing", "Marketing & Sales", "Customer Service"],
 ]
 
-# Prepare dataframe
-max_cols = max(len(row) for row in data)
-columns = [f"Col_{i}" for i in range(max_cols)]
-df_data = [row + [None]*(max_cols - len(row)) for row in data]
-df = pd.DataFrame(df_data, columns=columns)
+# Get attribute names
+attributes = []
+for row in data[1:]:
+    attributes.extend([x for x in row[2:] if x])
 
-# Track selected cells
+# Setup session state
 if "selected_attrs" not in st.session_state:
     st.session_state.selected_attrs = []
 
-# Prepare attribute names from data
-attribute_cells = []
-for row in data[1:]:
-    attribute_cells.extend([x for x in row[2:] if x])
+# Toggle selection
+def toggle_selection(attr):
+    if attr in st.session_state.selected_attrs:
+        st.session_state.selected_attrs.remove(attr)
+    else:
+        st.session_state.selected_attrs.append(attr)
 
-# Prepare AgGrid config
-gb = GridOptionsBuilder.from_dataframe(df)
-gb.configure_default_column(resizable=False, wrapText=True, autoHeight=True, cellStyle={'textAlign': 'center'})
+# Generate table HTML
+def generate_html_table(data, selected_attrs):
+    html = "<table style='border-collapse:collapse; width:100%;'>"
+    for i, row in enumerate(data):
+        html += "<tr>"
+        for j, val in enumerate(row):
+            if val is None:
+                continue
+            bg = "#92D050" if val in selected_attrs else "#f1fbfe"
+            if j == 0:
+                bg = "#61cbf3"
+            elif j == 1:
+                bg = "#94dcf8"
+            html += f"<td style='border:1px solid black; padding:10px; background-color:{bg};'>{val}</td>"
+        html += "</tr>"
+    html += "</table>"
+    return html
 
-# Add JS code for cell rendering
-cell_renderer = JsCode(f"""
-function(params) {{
-    const value = params.value;
-    const selected = {st.session_state.selected_attrs};
-    let color = '#f1fbfe';
-    if (params.colDef.colId == 'Col_0' && value != null) {{
-        color = '#61cbf3';
-    }} else if (params.colDef.colId == 'Col_1' && value != null) {{
-        color = '#94dcf8';
-    }} else if (selected.includes(value)) {{
-        color = '#92D050';
-    }}
-    return `<div style="background-color: ${{color}}; width:100%; height:100%; display:flex; align-items:center; justify-content:center; border:1px solid black; cursor:pointer;">${{value || ''}}</div>`;
-}}
-""")
+# Show table
+st.markdown(generate_html_table(data, st.session_state.selected_attrs), unsafe_allow_html=True)
 
-# Apply renderer to all columns
-for col in df.columns:
-    gb.configure_column(col, cellRenderer=cell_renderer)
-
-# Build grid options
-grid_options = gb.build()
-
-# Render grid
-response = AgGrid(
-    df,
-    gridOptions=grid_options,
-    allow_unsafe_jscode=True,
-    update_mode='MANUAL',
-    enable_enterprise_modules=False,
-    height=600,
-)
-
-# Handle cell clicks
-if response['selected_rows']:
-    clicked = response['selected_rows'][0]
-    clicked_value = None
-    for col in df.columns[2:]:
-        if clicked[col] in attribute_cells:
-            clicked_value = clicked[col]
-            break
-    if clicked_value:
-        if clicked_value in st.session_state.selected_attrs:
-            st.session_state.selected_attrs.remove(clicked_value)
-        else:
-            st.session_state.selected_attrs.append(clicked_value)
+# Add buttons for attributes
+st.write("### Select attributes:")
+cols = st.columns(4)
+for idx, attr in enumerate(attributes):
+    if cols[idx % 4].button(attr):
+        toggle_selection(attr)
         st.experimental_rerun()
 
-# Example analysis table (you will replace with your full analysis_df)
-analysis_data = {
+# Example use case scoring
+analysis_df = pd.DataFrame({
+
    
 
 
@@ -184,22 +161,15 @@ analysis_data = {
 
 
 
-}
-analysis_df = pd.DataFrame(analysis_data).set_index("Use Case")
+}).set_index("Use Case")
 
-# Calculate best matching use case
 if st.session_state.selected_attrs:
-    selected_cols = [col for col in analysis_df.columns if col in st.session_state.selected_attrs]
+    selected_cols = [c for c in analysis_df.columns if c in st.session_state.selected_attrs]
     scores = analysis_df[selected_cols].sum(axis=1)
-    best_use_case = scores.idxmax()
-    best_score = scores.max()
-    st.markdown(f"### 🏆 Best matching use case: **{best_use_case}** (score: {best_score})")
+    best = scores.idxmax()
+    st.write(f"### 🏆 Best matching use case: {best} (score: {scores.max()})")
 else:
-    st.markdown("### Please click on attributes to select and calculate the best matching use case.")
-
-
-
-
+    st.write("### Select attributes to see best matching use case.")
 
 
 
