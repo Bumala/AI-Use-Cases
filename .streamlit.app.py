@@ -61,14 +61,16 @@ Array.from(document.querySelectorAll('td[data-attr]')).forEach(cell => {
             isStreamlitMessage: true,
             type: 'streamlit_javascript',
             data: cell.getAttribute('data-attr')
-        }, '*')
-    })
-})
+        }, '*');
+        cell.style.backgroundColor = '#92D050'; // Change color to green on click
+    });
+});
 """
 
 clicked = st_javascript(js_code=js_code)
 
 if clicked:
+    # Update selected items in session state
     if clicked in st.session_state.selected:
         st.session_state.selected.remove(clicked)
     else:
@@ -171,19 +173,19 @@ analysis_df = pd.DataFrame({
 
 
 
-}).set_index("Use Case")
+})
 
-# ======= CALCULATE BEST MATCH =======
-if st.session_state.selected:
-    selected_cols = [col for col in analysis_df.columns if col in st.session_state.selected]
-    if selected_cols:
-        scores = analysis_df[selected_cols].sum(axis=1)
-        top = scores.idxmax()
-        st.markdown(f"### 🏆 Best matching use case: **{top}** (score: {scores.max()})")
-else:
-    st.markdown("### Please click on table cells to select attributes.")
+# Display use case suggestions based on selected items
+use_case_suggestions = []
+for index, row in analysis_df.iterrows():
+    relevant_use_cases = [use_case for use_case in row.index if use_case in st.session_state.selected]
+    if relevant_use_cases:
+        use_case_suggestions.append(row["Use Case"])
 
-
+if use_case_suggestions:
+    st.write("### Suggested Use Cases based on your selection:")
+    for use_case in use_case_suggestions:
+        st.write(f"- {use_case}")
 
 
 
