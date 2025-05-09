@@ -21,6 +21,11 @@ data = [
     [None, "Department", "R&D", "Manufacturing", "Marketing & Sales", "Customer Service"],
 ]
 
+# Extract all attributes (all cells from 3rd column and 2nd row onwards)
+attributes = []
+for row in data[1:]:
+    attributes.extend([x for x in row[2:] if x and x not in ["Attributes"]])
+
 # ======= SESSION STATE =======
 if "selected" not in st.session_state:
     st.session_state.selected = set()
@@ -62,7 +67,7 @@ def generate_html_table(data, selected):
                 continue
 
             # Determine if this is an attribute cell that can be selected
-            is_attribute = (i > 0 and j >= 2) and val not in ["Attributes", "Quality/Scope/Knowledge", "Time Efficiency", "Cost"]
+            is_attribute = (i > 0 and j >= 2) and val in attributes
             click_attr = f"onclick='handleCellClick(this)' data-attr='{val}'" if is_attribute else ""
             cell_class = " class='selected'" if val in st.session_state.selected and is_attribute else ""
             
@@ -148,15 +153,8 @@ def handle_cell_click():
 st.session_state.cell_click = None
 handle_cell_click()
 
-# ======= DISPLAY THE TABLE =======
-html(generate_html_table(data, st.session_state.selected) + interaction_js, height=800)
-
-# ======= USE CASE ANALYSIS =======
+# ======= USE CASE ANALYSIS DATAFRAME =======
 analysis_df = pd.DataFrame({
-
-
-
-   
     "Use Case": [
         "AI-infused experiments in R&D",
         "AI-powered manufacturing planning in smart factories",
@@ -232,37 +230,47 @@ analysis_df = pd.DataFrame({
     "Manufacturing": [0, 1, 0, 0, 0, 0, 1, 1, 1, 0, 2, 2, 2, 2, 2, 1, 2, 2, 2, 2, 0, 0, 1, 0, 1, 0, 2, 2, 0, 1],
     "Marketing & Sales": [0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 2, 0, 2, 2, 2, 0, 2, 2, 0, 0, 2, 2, 1, 0, 0, 0, 0, 0, 0, 1],
     "Customer Service": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 1, 2, 2, 2, 2, 2, 2, 2]
-
-
-
 })
 
-# Display selected attributes and matching use cases
+# ======= DISPLAY THE TABLE WITH ZOOM =======
+st.markdown("""
+<style>
+    .table-container {
+        transform: scale(0.9);
+        transform-origin: top left;
+        width: 111.11%; /* Counteract the scale */
+        margin-left: -5.55%; /* Center the scaled table */
+        margin-bottom: 20px;
+    }
+</style>
+<div class="table-container">
+""", unsafe_allow_html=True)
+
+html(generate_html_table(data, st.session_state.selected) + interaction_js, height=800)
+
+st.markdown("</div>", unsafe_allow_html=True)
+
+# ======= USE CASE RECOMMENDATION LOGIC =======
 if st.session_state.selected:
     st.subheader("Selected Attributes")
     cols = st.columns(4)
     for i, attr in enumerate(st.session_state.selected):
         cols[i % 4].write(f"✓ {attr}")
 
-    # Find use cases that match ALL selected attributes
-    matching_use_cases = []
-    for _, row in analysis_df.iterrows():
-        match = True
-        for attr in st.session_state.selected:
-            if attr in row.index and row[attr] == 0:
-                match = False
-                break
-        if match:
-            matching_use_cases.append(row["Use Case"])
-
-    if matching_use_cases:
-        st.subheader("Recommended Use Cases")
-        for use_case in matching_use_cases:
-            st.success(f"▪ {use_case}")
+    # Calculate scores for each use case
+    analysis_df['Score'] = 0
+    for attr in st.session_state.selected:
+        if attr in analysis_df.columns:
+            analysis_df['Score'] += analysis_df[attr]
+    
+    # Get top 5 use cases with highest scores
+    top_use_cases = analysis_df.nlargest(5, 'Score')[['Use Case', 'Score']]
+    
+    if not top_use_cases.empty:
+        st.subheader("Recommended Use Cases (Highest Score)")
+        for _, row in top_use_cases.iterrows():
+            st.success(f"▪ {row['Use Case']} (Score: {row['Score']})")
     else:
-        st.warning("No use cases match all selected attributes. Try selecting fewer attributes.")
+        st.warning("No use cases match the selected attributes")
 else:
     st.info("Click on attributes in the table to see recommended use cases")
-
-
-
