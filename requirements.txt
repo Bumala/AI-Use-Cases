@@ -1,5 +1,6 @@
 streamlit
 streamlit-aggrid
+streamlit-javascript
 pandas
 openpyxl
 numpy
