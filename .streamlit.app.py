@@ -57,20 +57,21 @@ st.markdown(generate_html(data, st.session_state.selected), unsafe_allow_html=Tr
 js_code = """
 Array.from(document.querySelectorAll('td[data-attr]')).forEach(cell => {
     cell.addEventListener('click', event => {
+        const clickedValue = cell.getAttribute('data-attr');
         window.parent.postMessage({
             isStreamlitMessage: true,
             type: 'streamlit_javascript',
-            data: cell.getAttribute('data-attr')
-        }, '*');
-        cell.style.backgroundColor = '#92D050'; // Change color to green on click
-    });
-});
+            data: clickedValue
+        }, '*')
+    })
+})
 """
 
+# Capture the clicked value using Streamlit's custom javascript handler
 clicked = st_javascript(js_code=js_code)
 
+# Update session state based on the clicked value
 if clicked:
-    # Update selected items in session state
     if clicked in st.session_state.selected:
         st.session_state.selected.remove(clicked)
     else:
@@ -79,7 +80,6 @@ if clicked:
 
 # ======= DUMMY ANALYSIS DATAFRAME =======
 analysis_df = pd.DataFrame({
-
    
 
 
@@ -175,17 +175,8 @@ analysis_df = pd.DataFrame({
 
 })
 
-# Display use case suggestions based on selected items
-use_case_suggestions = []
-for index, row in analysis_df.iterrows():
-    relevant_use_cases = [use_case for use_case in row.index if use_case in st.session_state.selected]
-    if relevant_use_cases:
-        use_case_suggestions.append(row["Use Case"])
-
-if use_case_suggestions:
-    st.write("### Suggested Use Cases based on your selection:")
-    for use_case in use_case_suggestions:
-        st.write(f"- {use_case}")
+# Display the dataframe below the table
+st.write(analysis_df)
 
 
 
