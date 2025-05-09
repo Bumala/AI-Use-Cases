@@ -1,10 +1,11 @@
 import streamlit as st
 import pandas as pd
+from st_aggrid import AgGrid, GridOptionsBuilder, JsCode
 
-# Set page layout to wide
+# Set Streamlit page layout
 st.set_page_config(layout="wide")
 
-# Data definition
+# Define table data
 data = [
     ["Category", "Dimension", "Attributes"],
     ["Impact (What)", "Benefits", "Quality/Scope/Knowledge", "Time Efficiency", "Cost"],
@@ -20,14 +21,82 @@ data = [
     [None, "Department", "R&D", "Manufacturing", "Marketing & Sales", "Customer Service"],
 ]
 
-# Flatten all unique attributes
-attributes = []
-for row in data:
-    if len(row) > 2:
-        attributes.extend([x for x in row[2:] if x is not None])
+# Prepare dataframe
+max_cols = max(len(row) for row in data)
+columns = [f"Col_{i}" for i in range(max_cols)]
+df_data = [row + [None]*(max_cols - len(row)) for row in data]
+df = pd.DataFrame(df_data, columns=columns)
 
-# Example analysis data (shortened)
+# Track selected cells
+if "selected_attrs" not in st.session_state:
+    st.session_state.selected_attrs = []
+
+# Prepare attribute names from data
+attribute_cells = []
+for row in data[1:]:
+    attribute_cells.extend([x for x in row[2:] if x])
+
+# Prepare AgGrid config
+gb = GridOptionsBuilder.from_dataframe(df)
+gb.configure_default_column(resizable=False, wrapText=True, autoHeight=True, cellStyle={'textAlign': 'center'})
+
+# Add JS code for cell rendering
+cell_renderer = JsCode(f"""
+function(params) {{
+    const value = params.value;
+    const selected = {st.session_state.selected_attrs};
+    let color = '#f1fbfe';
+    if (params.colDef.colId == 'Col_0' && value != null) {{
+        color = '#61cbf3';
+    }} else if (params.colDef.colId == 'Col_1' && value != null) {{
+        color = '#94dcf8';
+    }} else if (selected.includes(value)) {{
+        color = '#92D050';
+    }}
+    return `<div style="background-color: ${{color}}; width:100%; height:100%; display:flex; align-items:center; justify-content:center; border:1px solid black; cursor:pointer;">${{value || ''}}</div>`;
+}}
+""")
+
+# Apply renderer to all columns
+for col in df.columns:
+    gb.configure_column(col, cellRenderer=cell_renderer)
+
+# Build grid options
+grid_options = gb.build()
+
+# Render grid
+response = AgGrid(
+    df,
+    gridOptions=grid_options,
+    allow_unsafe_jscode=True,
+    update_mode='MANUAL',
+    enable_enterprise_modules=False,
+    height=600,
+)
+
+# Handle cell clicks
+if response['selected_rows']:
+    clicked = response['selected_rows'][0]
+    clicked_value = None
+    for col in df.columns[2:]:
+        if clicked[col] in attribute_cells:
+            clicked_value = clicked[col]
+            break
+    if clicked_value:
+        if clicked_value in st.session_state.selected_attrs:
+            st.session_state.selected_attrs.remove(clicked_value)
+        else:
+            st.session_state.selected_attrs.append(clicked_value)
+        st.experimental_rerun()
+
+# Example analysis table (you will replace with your full analysis_df)
 analysis_data = {
+   
+
+
+
+
+
    
     "Use Case": [
         "AI-infused experiments in R&D",
@@ -104,96 +173,29 @@ analysis_data = {
     "Manufacturing": [0, 1, 0, 0, 0, 0, 1, 1, 1, 0, 2, 2, 2, 2, 2, 1, 2, 2, 2, 2, 0, 0, 1, 0, 1, 0, 2, 2, 0, 1],
     "Marketing & Sales": [0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 2, 0, 2, 2, 2, 0, 2, 2, 0, 0, 2, 2, 1, 0, 0, 0, 0, 0, 0, 1],
     "Customer Service": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 1, 2, 2, 2, 2, 2, 2, 2]
+
+
+
+
+
+
+
+
+
+
+
 }
+analysis_df = pd.DataFrame(analysis_data).set_index("Use Case")
 
-
-df_analysis = pd.DataFrame(analysis_data)
-
-# Initialize session state for selections
-if "selected" not in st.session_state:
-    st.session_state.selected = set()
-
-# Cell click handler
-def toggle_selection(attribute):
-    if attribute in st.session_state.selected:
-        st.session_state.selected.remove(attribute)
-    else:
-        st.session_state.selected.add(attribute)
-
-# Function to generate the HTML table
-def generate_html_table():
-    first_col_width = 160
-    second_col_width = 200
-    base_cell_width = 150
-    cell_height = 50
-
-    def style(width, attr, bold=False, bg_color=None):
-        bold_style = "font-weight: bold;" if bold else ""
-        if bg_color is None:
-            bg_color = "#f1fbfe" if attr not in st.session_state.selected else "#c6f5c6"
-        return f"text-align: center; vertical-align: middle; padding: 10px; border: 1px solid #000; width: {width}px; height: {cell_height}px; {bold_style} background-color: {bg_color};"
-
-    html = "<table style='border-spacing:0; width:100%; border-collapse:collapse; table-layout:fixed; border:3px solid #000;'>"
-
-    for i, row in enumerate(data):
-        html += "<tr>"
-        for j, val in enumerate(row):
-            if val is None:
-                continue
-
-            # Define clickable part
-            attr_id = f"attr_{i}_{j}"
-            is_clickable = val in attributes
-
-            cell_html = f"<td style='{style(base_cell_width if j>1 else (first_col_width if j==0 else second_col_width), val, bold=(i==0 or j==1))}'"
-            if is_clickable:
-                cell_html += f" onclick=\"window.location.href='?{attr_id}=1'\" style='cursor:pointer;'"
-            cell_html += f">{val}</td>"
-
-            # Handle special colspan cases if needed later
-            html += cell_html
-        html += "</tr>"
-    html += "</table>"
-    return html
-
-# Update selections from query params
-query_params = st.experimental_get_query_params()
-for key in query_params.keys():
-    if key.startswith("attr_"):
-        parts = key.split("_")
-        i, j = int(parts[1]), int(parts[2])
-        attr = data[i][j]
-        toggle_selection(attr)
-        st.experimental_set_query_params()  # clear after click
-
-# Apply CSS and render table
-st.markdown("""
-    <style>
-        .center-table {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            width: 100%;
-            height: 100%;
-            margin: 0 auto;
-            transform: scale(0.9);
-            transform-origin: top center;
-        }
-    </style>
-""", unsafe_allow_html=True)
-
-st.markdown('<div class="center-table">' + generate_html_table() + '</div>', unsafe_allow_html=True)
-
-# Calculate best use case
-if st.session_state.selected:
-    selected_attrs = list(st.session_state.selected)
-    df_sub = df_analysis[["Use Case"] + selected_attrs]
-    df_sub["Sum"] = df_sub[selected_attrs].sum(axis=1)
-    top_use_case = df_sub.sort_values("Sum", ascending=False).iloc[0]["Use Case"]
-    st.markdown(f"### 🏆 Best fitting use case: **{top_use_case}**")
+# Calculate best matching use case
+if st.session_state.selected_attrs:
+    selected_cols = [col for col in analysis_df.columns if col in st.session_state.selected_attrs]
+    scores = analysis_df[selected_cols].sum(axis=1)
+    best_use_case = scores.idxmax()
+    best_score = scores.max()
+    st.markdown(f"### 🏆 Best matching use case: **{best_use_case}** (score: {best_score})")
 else:
-    st.markdown("### Please select attributes to see the best fitting use case.")
-
+    st.markdown("### Please click on attributes to select and calculate the best matching use case.")
 
 
 
