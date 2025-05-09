@@ -1,11 +1,10 @@
 import streamlit as st
 import pandas as pd
-from st_aggrid import AgGrid, GridOptionsBuilder, JsCode
 
-# Set page config
+# Set page layout to wide
 st.set_page_config(layout="wide")
 
-# ========== INTERACTIVE ATTRIBUTE TABLE ==========
+# Data definition
 data = [
     ["Category", "Dimension", "Attributes"],
     ["Impact (What)", "Benefits", "Quality/Scope/Knowledge", "Time Efficiency", "Cost"],
@@ -21,23 +20,15 @@ data = [
     [None, "Department", "R&D", "Manufacturing", "Marketing & Sales", "Customer Service"],
 ]
 
-# Find the maximum number of columns
-max_cols = max(len(row) for row in data)
+# Flatten all unique attributes
+attributes = []
+for row in data:
+    if len(row) > 2:
+        attributes.extend([x for x in row[2:] if x is not None])
 
-# Pad shorter rows with None
-padded_data = [row + [None] * (max_cols - len(row)) for row in data]
-
-# Handle missing column names
-if padded_data:
-    # Replace None column names with a default string
-    column_names = [f"Column_{i}" if name is None else name for i, name in enumerate(padded_data[0])]
-    df = pd.DataFrame(padded_data[1:], columns=column_names)
-else:
-    df = pd.DataFrame()  # Create an empty DataFrame if data is empty
-
-
-# ========== ANALYSIS TABLE ==========
-analysis_data = {  # keep your full data here
+# Example analysis data (shortened)
+analysis_data = {
+   
     "Use Case": [
         "AI-infused experiments in R&D",
         "AI-powered manufacturing planning in smart factories",
@@ -115,73 +106,107 @@ analysis_data = {  # keep your full data here
     "Customer Service": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 1, 2, 2, 2, 2, 2, 2, 2]
 }
 
-analysis_df = pd.DataFrame(analysis_data).set_index("Use Case")
 
-# ========== INTERACTIVE FUNCTIONALITY ==========
-if 'selected_attrs' not in st.session_state:
-    st.session_state.selected_attrs = []
+df_analysis = pd.DataFrame(analysis_data)
+
+# Initialize session state for selections
+if "selected" not in st.session_state:
+    st.session_state.selected = set()
+
+# Cell click handler
+def toggle_selection(attribute):
+    if attribute in st.session_state.selected:
+        st.session_state.selected.remove(attribute)
+    else:
+        st.session_state.selected.add(attribute)
+
+# Function to generate the HTML table
+def generate_html_table():
+    first_col_width = 160
+    second_col_width = 200
+    base_cell_width = 150
+    cell_height = 50
+
+    def style(width, attr, bold=False, bg_color=None):
+        bold_style = "font-weight: bold;" if bold else ""
+        if bg_color is None:
+            bg_color = "#f1fbfe" if attr not in st.session_state.selected else "#c6f5c6"
+        return f"text-align: center; vertical-align: middle; padding: 10px; border: 1px solid #000; width: {width}px; height: {cell_height}px; {bold_style} background-color: {bg_color};"
+
+    html = "<table style='border-spacing:0; width:100%; border-collapse:collapse; table-layout:fixed; border:3px solid #000;'>"
+
+    for i, row in enumerate(data):
+        html += "<tr>"
+        for j, val in enumerate(row):
+            if val is None:
+                continue
+
+            # Define clickable part
+            attr_id = f"attr_{i}_{j}"
+            is_clickable = val in attributes
+
+            cell_html = f"<td style='{style(base_cell_width if j>1 else (first_col_width if j==0 else second_col_width), val, bold=(i==0 or j==1))}'"
+            if is_clickable:
+                cell_html += f" onclick=\"window.location.href='?{attr_id}=1'\" style='cursor:pointer;'"
+            cell_html += f">{val}</td>"
+
+            # Handle special colspan cases if needed later
+            html += cell_html
+        html += "</tr>"
+    html += "</table>"
+    return html
+
+# Update selections from query params
+query_params = st.experimental_get_query_params()
+for key in query_params.keys():
+    if key.startswith("attr_"):
+        parts = key.split("_")
+        i, j = int(parts[1]), int(parts[2])
+        attr = data[i][j]
+        toggle_selection(attr)
+        st.experimental_set_query_params()  # clear after click
+
+# Apply CSS and render table
+st.markdown("""
+    <style>
+        .center-table {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            height: 100%;
+            margin: 0 auto;
+            transform: scale(0.9);
+            transform-origin: top center;
+        }
+    </style>
+""", unsafe_allow_html=True)
+
+st.markdown('<div class="center-table">' + generate_html_table() + '</div>', unsafe_allow_html=True)
+
+# Calculate best use case
+if st.session_state.selected:
+    selected_attrs = list(st.session_state.selected)
+    df_sub = df_analysis[["Use Case"] + selected_attrs]
+    df_sub["Sum"] = df_sub[selected_attrs].sum(axis=1)
+    top_use_case = df_sub.sort_values("Sum", ascending=False).iloc[0]["Use Case"]
+    st.markdown(f"### 🏆 Best fitting use case: **{top_use_case}**")
+else:
+    st.markdown("### Please select attributes to see the best fitting use case.")
 
 
-def handle_attribute_click(params):
-    if params['column']['colId'] == 'Attributes':
-        clicked_attr = params['value']
-        if clicked_attr in analysis_df.columns:  # Ensure it's a valid attribute
-            if clicked_attr in st.session_state.selected_attrs:
-                st.session_state.selected_attrs.remove(clicked_attr)
-            else:
-                st.session_state.selected_attrs.append(clicked_attr)
-            st.experimental_rerun()
 
-# Custom cell renderer (for styling only)
-cell_renderer = JsCode(f"""
-function(params) {{
-    const value = params.value;
-    const isSelected = {st.session_state.selected_attrs}.includes(value);
-    const isAttrCol = params.colDef.headerName === 'Attributes';
 
-    let color = '#f1fbfe';
-    if (params.node.rowPinned === 'top') {{
-        color = '#E8E8E8'; // Header
-    }} else if (params.colDef.headerName === 'Category') {{
-        color = '#61cbf3'; // First column
-    }} else if (params.colDef.headerName === 'Dimension') {{
-        color = '#94dcf8'; // Second column
-    }} else if (isSelected && isAttrCol) {{
-        color = '#92D050'; // Selected
-    }}
 
-    return `<div style="
-        width: 100%; height: 100%;
-        display: flex; align-items: center; justify-content: center;
-        background-color: ${{color}};
-        border: 1px solid black;
-        padding: 10px;
-        cursor: ${{isAttrCol ? 'pointer' : 'default'}};
-        font-weight: ${{params.colDef.headerName !== 'Attributes' ? 'bold' : 'normal'}};
-    ">${{value}}</div>`;
-}}
-""")
 
-# Configure grid
-gb = GridOptionsBuilder.from_dataframe(df)
-gb.configure_default_column(
-    resizable=False,
-    cellStyle={'textAlign': 'center'},
-    wrapText=True,
-    autoHeight=True
-)
 
-# Set column widths and renderers
-gb.configure_column("Category", width=160, cellRenderer=cell_renderer)
-gb.configure_column("Dimension", width=200, cellRenderer=cell_renderer)
-gb.configure_column("Attributes", width=150, cellRenderer=cell_renderer)
 
-# Enable cell click event
-gridOptions = gb.build()
-gridOptions['onCellClicked'] = JsCode("""
-function(params) {
-    if (params.column.colId === 'Attributes') {
-        streamlit.setComponentValue(JSON.stringify({ 'attribute': params.value }));
-    }
-}
-"
+
+
+
+
+
+
+
+
+
