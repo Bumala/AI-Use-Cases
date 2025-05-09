@@ -21,189 +21,105 @@ data = [
     [None, "Department", "R&D", "Manufacturing", "Marketing & Sales", "Customer Service"],
 ]
 
-# Extract all attributes
-attributes = []
-for row in data[1:]:
-    attributes.extend([x for x in row[2:] if x])
-
 # ======= SESSION STATE =======
 if "selected" not in st.session_state:
     st.session_state.selected = set()
 
-# ======= IMPROVED HTML TABLE GENERATION =======
+# ======= PERFECT TABLE LAYOUT GENERATION =======
 def generate_html_table(data, selected):
-    html = """
-    <style>
-        .ai-table {
-            border-collapse: collapse;
-            width: 100%;
-            font-family: Arial, sans-serif;
-            table-layout: fixed;
-        }
-        .ai-table td {
-            border: 1px solid #000;
-            padding: 8px;
-            text-align: center;
-            vertical-align: middle;
-        }
-        .category-header {
-            background-color: #61cbf3;
-            font-weight: bold;
-            width: 160px;
-        }
-        .dimension-header {
-            background-color: #94dcf8;
-            font-weight: bold;
-            width: 200px;
-        }
-        .attribute-cell {
-            background-color: #f1fbfe;
-            cursor: pointer;
-            width: 150px;
-        }
-        .attribute-cell.selected {
-            background-color: #92D050 !important;
-        }
-        .header-row {
-            background-color: #E8E8E8;
-            font-weight: bold;
-        }
-    </style>
-    <table class="ai-table">
-    """
-    
-    # Header row
-    html += """
-    <tr class="header-row">
-        <td>Category</td>
-        <td>Dimension</td>
-        <td colspan="6">Attributes</td>
-    </tr>
-    """
-    
-    # Impact (What) section
-    html += """
-    <tr>
-        <td rowspan="4" class="category-header">Impact (What)</td>
-        <td class="dimension-header">Benefits</td>
-        <td class="attribute-cell" data-attr="Quality/Scope/Knowledge">Quality/Scope/Knowledge</td>
-        <td class="attribute-cell" data-attr="Time Efficiency">Time Efficiency</td>
-        <td class="attribute-cell" data-attr="Cost">Cost</td>
-        <td colspan="3"></td>
-    </tr>
-    <tr>
-        <td class="dimension-header">Focus within Business Model Navigator</td>
-        <td class="attribute-cell" data-attr="Customer Segments">Customer Segments</td>
-        <td class="attribute-cell" data-attr="Value Proposition">Value Proposition</td>
-        <td class="attribute-cell" data-attr="Value Chain">Value Chain</td>
-        <td class="attribute-cell" data-attr="Revenue Model">Revenue Model</td>
-        <td colspan="2"></td>
-    </tr>
-    <tr>
-        <td class="dimension-header">Aim</td>
-        <td class="attribute-cell" data-attr="Product Innovation">Product Innovation</td>
-        <td class="attribute-cell" data-attr="Process Innovation">Process Innovation</td>
-        <td class="attribute-cell" data-attr="Business Model Innovation">Business Model Innovation</td>
-        <td colspan="3"></td>
-    </tr>
-    <tr>
-        <td class="dimension-header">Ambidexterity</td>
-        <td class="attribute-cell" data-attr="Exploration">Exploration</td>
-        <td class="attribute-cell" data-attr="Exploitation">Exploitation</td>
-        <td colspan="4"></td>
-    </tr>
-    """
-    
-    # Technology (How) section
-    html += """
-    <tr>
-        <td rowspan="5" class="category-header">Technology (How)</td>
-        <td class="dimension-header">AI Role</td>
-        <td class="attribute-cell" data-attr="Automaton">Automaton</td>
-        <td class="attribute-cell" data-attr="Helper">Helper</td>
-        <td class="attribute-cell" data-attr="Partner">Partner</td>
-        <td colspan="3"></td>
-    </tr>
-    <tr>
-        <td class="dimension-header">AI Concepts</td>
-        <td class="attribute-cell" data-attr="Machine Learning">Machine Learning</td>
-        <td class="attribute-cell" data-attr="Deep Learning">Deep Learning</td>
-        <td class="attribute-cell" data-attr="Artificial Neural Networks">Artificial Neural Networks</td>
-        <td class="attribute-cell" data-attr="Natural Language Processing">Natural Language Processing</td>
-        <td class="attribute-cell" data-attr="Computer Vision">Computer Vision</td>
-        <td class="attribute-cell" data-attr="Robotics">Robotics</td>
-    </tr>
-    <tr>
-        <td class="dimension-header">Analytics Focus</td>
-        <td class="attribute-cell" data-attr="Descriptive">Descriptive</td>
-        <td class="attribute-cell" data-attr="Diagnostic">Diagnostic</td>
-        <td class="attribute-cell" data-attr="Predictive">Predictive</td>
-        <td class="attribute-cell" data-attr="Prescriptive">Prescriptive</td>
-        <td colspan="2"></td>
-    </tr>
-    <tr>
-        <td class="dimension-header">Analytics Problem</td>
-        <td class="attribute-cell" data-attr="Description/ Summary">Description/ Summary</td>
-        <td class="attribute-cell" data-attr="Clustering">Clustering</td>
-        <td class="attribute-cell" data-attr="Classification">Classification</td>
-        <td class="attribute-cell" data-attr="Dependency Analysis">Dependency Analysis</td>
-        <td class="attribute-cell" data-attr="Regression">Regression</td>
-        <td></td>
-    </tr>
-    <tr>
-        <td class="dimension-header">Data Type</td>
-        <td class="attribute-cell" data-attr="Customer Data">Customer Data</td>
-        <td class="attribute-cell" data-attr="Machine Data">Machine Data</td>
-        <td class="attribute-cell" data-attr="Business Data (Internal Data)">Business Data (Internal Data)</td>
-        <td class="attribute-cell" data-attr="Market Data">Market Data</td>
-        <td class="attribute-cell" data-attr="Public & Regulatory Data">Public & Regulatory Data</td>
-        <td class="attribute-cell" data-attr="Synthetic Data">Synthetic Data</td>
-    </tr>
-    """
-    
-    # Context (Where/When) section
-    html += """
-    <tr>
-        <td rowspan="2" class="category-header">Context (Where/When)</td>
-        <td class="dimension-header">Innovation Phase</td>
-        <td class="attribute-cell" data-attr="Front End">Front End</td>
-        <td class="attribute-cell" data-attr="Development">Development</td>
-        <td class="attribute-cell" data-attr="Market Introduction">Market Introduction</td>
-        <td colspan="3"></td>
-    </tr>
-    <tr>
-        <td class="dimension-header">Department</td>
-        <td class="attribute-cell" data-attr="R&D">R&D</td>
-        <td class="attribute-cell" data-attr="Manufacturing">Manufacturing</td>
-        <td class="attribute-cell" data-attr="Marketing & Sales">Marketing & Sales</td>
-        <td class="attribute-cell" data-attr="Customer Service">Customer Service</td>
-        <td colspan="2"></td>
-    </tr>
-    </table>
-    """
-    
-    # Add selected class to selected cells
-    for attr in selected:
-        html = html.replace(f'data-attr="{attr}"', f'data-attr="{attr}" class="selected"')
-    
+    first_col_width = 160
+    second_col_width = 200
+    base_cell_width = 150
+    cell_height = 50
+
+    def style(width, bold=False, border_bottom=False):
+        bold_style = "font-weight: bold;" if bold else ""
+        border_bottom_style = "border-bottom: 3px solid #000000;" if border_bottom else ""
+        return f"text-align: center; vertical-align: middle; padding: 10px; border: 1px solid #000000; width: {width}px; height: {cell_height}px; {bold_style} {border_bottom_style}"
+
+    # Define colspan rules
+    colspan_2 = {
+        (1, 2), (1, 3), (1, 4),
+        (2, 2), (2, 5),
+        (3, 2), (3, 3), (3, 4), 
+        (5, 2), (5, 3), (5, 4),
+        (7, 2), (7, 5),
+        (8, 4),
+        (10, 2), (10, 3), (10, 4),
+        (11, 2), (11, 5), 
+    }
+
+    colspan_3 = {
+        (4, 2), (4, 3)
+    }
+
+    html = "<table style='border-spacing: 0; width: 100%; border-collapse: collapse; table-layout: fixed; border: 3px solid #000000;'>"
+
+    for i, row in enumerate(data):
+        html += "<tr>"
+        for j, val in enumerate(row):
+            if val is None:
+                continue
+
+            # Determine if this is an attribute cell that can be selected
+            is_attribute = (i > 0 and j >= 2) and val not in ["Attributes", "Quality/Scope/Knowledge", "Time Efficiency", "Cost"]
+            click_attr = f"onclick='handleCellClick(this)' data-attr='{val}'" if is_attribute else ""
+            cell_class = " class='selected'" if val in st.session_state.selected and is_attribute else ""
+            
+            # Base cell style
+            bg_color = "#92D050" if val in st.session_state.selected and is_attribute else "#f1fbfe"
+            if j == 0:
+                bg_color = "#61cbf3"
+            elif j == 1:
+                bg_color = "#94dcf8"
+
+            # Header row
+            if i == 0:
+                if j == 0:
+                    html += f"<td style='{style(first_col_width, bold=True, border_bottom=True)} background-color: #E8E8E8;'>{val}</td>"
+                elif j == 1:
+                    html += f"<td style='{style(second_col_width, bold=True, border_bottom=True)} background-color: #E8E8E8;'>{val}</td>"
+                elif j == 2:
+                    html += f"<td colspan='6' style='{style(base_cell_width * 6, bold=True, border_bottom=True)} background-color: #E8E8E8;'>{val}</td>"
+            
+            # First column cells with rowspan
+            elif j == 0:
+                if i == 1:
+                    html += f"<td rowspan='4' style='{style(first_col_width, bold=True, border_bottom=True)} background-color: #61cbf3;'>{val}</td>"
+                elif i == 5:
+                    html += f"<td rowspan='5' style='{style(first_col_width, bold=True, border_bottom=True)} background-color: #61cbf3;'>{val}</td>"
+                elif i == 10:
+                    html += f"<td rowspan='2' style='{style(first_col_width, bold=True)} background-color: #61cbf3;'>{val}</td>"
+            
+            # Special formatting for certain cells
+            elif (i == 4 and j == 1) or (i == 9 and j == 1):
+                html += f"<td {click_attr}{cell_class} style='{style(base_cell_width, bold=True, border_bottom=True)} background-color: {bg_color}; cursor: pointer;'>{val}</td>"
+            elif i == 9 and j in {2, 4, 6}:
+                html += f"<td {click_attr}{cell_class} style='{style(base_cell_width)} background-color: {bg_color}; border-bottom: 3px solid #000000; cursor: pointer;'>{val}</td>"
+            elif i > 0 and j == 1:
+                html += f"<td style='{style(second_col_width, bold=True)} background-color: #94dcf8;'>{val}</td>"
+            
+            # Cells with colspan
+            elif (i, j) in colspan_3:
+                html += f"<td {click_attr}{cell_class} colspan='3' style='{style(base_cell_width * 3)} background-color: {bg_color}; border-bottom: 3px solid #000000; cursor: pointer;'>{val}</td>"
+            elif (i, j) in colspan_2:
+                html += f"<td {click_attr}{cell_class} colspan='2' style='{style(base_cell_width * 2)} background-color: {bg_color}; cursor: pointer;'>{val}</td>"
+            else:
+                html += f"<td {click_attr}{cell_class} style='{style(base_cell_width)} background-color: {bg_color}; cursor: pointer;'>{val}</td>"
+        html += "</tr>"
+
+    html += "</table>"
     return html
 
-# ======= IMPROVED JAVASCRIPT FOR INTERACTIVITY =======
+# ======= JAVASCRIPT FOR INTERACTIVITY =======
 interaction_js = """
 <script>
-function handleCellClick(event) {
-    const cell = event.target.closest('.attribute-cell');
-    if (!cell) return;
-    
-    const attr = cell.getAttribute('data-attr');
-    const isSelected = cell.classList.contains('selected');
+function handleCellClick(element) {
+    const attr = element.getAttribute('data-attr');
+    const isSelected = element.style.backgroundColor === 'rgb(146, 208, 80)';
     
     // Toggle visual selection immediately
-    if (isSelected) {
-        cell.classList.remove('selected');
-    } else {
-        cell.classList.add('selected');
-    }
+    element.style.backgroundColor = isSelected ? '#f1fbfe' : '#92D050';
     
     // Send message to Streamlit
     window.parent.postMessage({
@@ -215,12 +131,6 @@ function handleCellClick(event) {
         }
     }, '*');
 }
-
-// Add event listener after table is rendered
-document.addEventListener('DOMContentLoaded', function() {
-    const table = document.querySelector('.ai-table');
-    table.addEventListener('click', handleCellClick);
-});
 </script>
 """
 
@@ -242,9 +152,7 @@ handle_cell_click()
 html(generate_html_table(data, st.session_state.selected) + interaction_js, height=800)
 
 # ======= USE CASE ANALYSIS =======
-# (Include your analysis_df here - same as before)
 analysis_df = pd.DataFrame({
-
 
 
 
@@ -327,23 +235,23 @@ analysis_df = pd.DataFrame({
 
 
 
-
-
-
-
 })
 
-# Display selected attributes
+# Display selected attributes and matching use cases
 if st.session_state.selected:
     st.subheader("Selected Attributes")
     cols = st.columns(4)
     for i, attr in enumerate(st.session_state.selected):
         cols[i % 4].write(f"✓ {attr}")
 
-    # Find matching use cases
+    # Find use cases that match ALL selected attributes
     matching_use_cases = []
     for _, row in analysis_df.iterrows():
-        match = all(row.get(attr, 0) > 0 for attr in st.session_state.selected)
+        match = True
+        for attr in st.session_state.selected:
+            if attr in row.index and row[attr] == 0:
+                match = False
+                break
         if match:
             matching_use_cases.append(row["Use Case"])
 
@@ -352,6 +260,9 @@ if st.session_state.selected:
         for use_case in matching_use_cases:
             st.success(f"▪ {use_case}")
     else:
-        st.warning("No use cases match all selected attributes. Try selecting fewer or different attributes.")
+        st.warning("No use cases match all selected attributes. Try selecting fewer attributes.")
 else:
     st.info("Click on attributes in the table to see recommended use cases")
+
+
+
