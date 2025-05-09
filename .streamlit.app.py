@@ -1,6 +1,5 @@
 import streamlit as st
 import pandas as pd
-from streamlit_javascript import st_javascript
 
 # Set page layout
 st.set_page_config(layout="wide")
@@ -30,57 +29,161 @@ for row in data[1:]:
 if "selected" not in st.session_state:
     st.session_state.selected = set()
 
-# ======= HTML TABLE WITH CLICK HANDLER =======
-def generate_html(data, selected):
-    html = "<table style='border-collapse:collapse; width:100%;'>"
+# ======= IMPROVED HTML TABLE GENERATION =======
+def generate_html_table(data, selected):
+    first_col_width = 160
+    second_col_width = 200
+    base_cell_width = 150
+    cell_height = 50
+
+    def style(width, bold=False, border_bottom=False):
+        bold_style = "font-weight: bold;" if bold else ""
+        border_bottom_style = "border-bottom: 3px solid #000000;" if border_bottom else ""
+        return f"text-align: center; vertical-align: middle; padding: 10px; border: 1px solid #000000; width: {width}px; height: {cell_height}px; {bold_style} {border_bottom_style}"
+
+    # Define colspan rules
+    colspan_2 = {
+        (1, 2), (1, 3), (1, 4),
+        (2, 2), (2, 5),
+        (3, 2), (3, 3), (3, 4), 
+        (5, 2), (5, 3), (5, 4),
+        (7, 2), (7, 5),
+        (8, 4),
+        (10, 2), (10, 3), (10, 4),
+        (11, 2), (11, 5), 
+    }
+
+    colspan_3 = {
+        (4, 2), (4, 3)
+    }
+
+    colspan_6 = {
+        (0, 2)
+    }
+
+    html = "<table style='border-spacing: 0; width: 100%; border-collapse: collapse; table-layout: fixed; border: 3px solid #000000;'>"
+
     for i, row in enumerate(data):
         html += "<tr>"
         for j, val in enumerate(row):
             if val is None:
                 continue
-            bg = "#92D050" if val in selected else "#f1fbfe"
+
+            # Determine if this is an attribute cell that can be selected
+            is_attribute = val in attributes
+            click_attr = f"onclick='handleCellClick(this)' data-attr='{val}'" if is_attribute else ""
+            cell_id = f"id='cell_{i}_{j}'" if is_attribute else ""
+            
+            # Base cell style
+            bg_color = "#92D050" if val in selected else "#f1fbfe"
             if j == 0:
-                bg = "#61cbf3"
+                bg_color = "#61cbf3"
             elif j == 1:
-                bg = "#94dcf8"
-            attr_id = f"cell_{i}_{j}"
-            click_attr = f"data-attr='{val}'" if val in attributes else ""
-            html += f"<td id='{attr_id}' {click_attr} style='border:1px solid black; padding:10px; background-color:{bg}; cursor:pointer;'>{val}</td>"
+                bg_color = "#94dcf8"
+
+            # Header row
+            if i == 0:
+                if j == 0:
+                    html += f"<td style='{style(first_col_width, bold=True, border_bottom=True)} background-color: #E8E8E8;'>{val}</td>"
+                elif j == 1:
+                    html += f"<td style='{style(second_col_width, bold=True, border_bottom=True)} background-color: #E8E8E8;'>{val}</td>"
+                elif j == 2:
+                    html += f"<td colspan='6' style='{style(base_cell_width * 6, bold=True, border_bottom=True)} background-color: #E8E8E8;'>{val}</td>"
+            
+            # First column cells with rowspan
+            elif j == 0:
+                if i == 1:
+                    html += f"<td rowspan='4' style='{style(first_col_width, bold=True, border_bottom=True)} background-color: #61cbf3;'>{val}</td>"
+                elif i == 5:
+                    html += f"<td rowspan='5' style='{style(first_col_width, bold=True, border_bottom=True)} background-color: #61cbf3;'>{val}</td>"
+                elif i == 10:
+                    html += f"<td rowspan='2' style='{style(first_col_width, bold=True)} background-color: #61cbf3;'>{val}</td>"
+            
+            # Special formatting for certain cells
+            elif (i == 4 and j == 1) or (i == 9 and j == 1):
+                html += f"<td {cell_id} {click_attr} style='{style(base_cell_width, bold=True, border_bottom=True)} background-color: {bg_color}; cursor: pointer;'>{val}</td>"
+            elif i == 9 and j in {2, 4, 6}:
+                html += f"<td {cell_id} {click_attr} style='{style(base_cell_width)} background-color: {bg_color}; border-bottom: 3px solid #000000; cursor: pointer;'>{val}</td>"
+            elif i > 0 and j == 1:
+                html += f"<td style='{style(second_col_width, bold=True)} background-color: #94dcf8;'>{val}</td>"
+            
+            # Cells with colspan
+            elif (i, j) in colspan_3:
+                html += f"<td {cell_id} {click_attr} colspan='3' style='{style(base_cell_width * 3)} background-color: {bg_color}; border-bottom: 3px solid #000000; cursor: pointer;'>{val}</td>"
+            elif (i, j) in colspan_2:
+                html += f"<td {cell_id} {click_attr} colspan='2' style='{style(base_cell_width * 2)} background-color: {bg_color}; cursor: pointer;'>{val}</td>"
+            else:
+                html += f"<td {cell_id} {click_attr} style='{style(base_cell_width)} background-color: {bg_color}; cursor: pointer;'>{val}</td>"
         html += "</tr>"
+
     html += "</table>"
     return html
 
-# ======= RENDER HTML TABLE =======
-st.markdown(generate_html(data, st.session_state.selected), unsafe_allow_html=True)
+# ======= JAVASCRIPT FOR CELL SELECTION =======
+st.markdown("""
+<script>
+function handleCellClick(element) {
+    const attr = element.getAttribute('data-attr');
+    const isSelected = element.style.backgroundColor === 'rgb(146, 208, 80)';
+    
+    // Send message to Streamlit
+    window.parent.postMessage({
+        isStreamlitMessage: true,
+        type: 'cellClick',
+        data: {
+            attribute: attr,
+            selected: !isSelected
+        }
+    }, '*');
+    
+    // Toggle visual selection
+    element.style.backgroundColor = isSelected ? '#f1fbfe' : '#92D050';
+}
+</script>
+""", unsafe_allow_html=True)
 
-# ======= JAVASCRIPT TO CAPTURE CLICK =======
-js_code = """
-Array.from(document.querySelectorAll('td[data-attr]')).forEach(cell => {
-    cell.addEventListener('click', event => {
-        window.parent.postMessage({
-            isStreamlitMessage: true,
-            type: 'streamlit_javascript',
-            data: cell.getAttribute('data-attr')
-        }, '*');
-        cell.style.backgroundColor = '#92D050'; // Change color to green on click
-    });
-});
-"""
+# ======= STREAMLIT COMPONENT TO HANDLE CLICKS =======
+def handle_click():
+    # This will be triggered by the JavaScript
+    if st.session_state.get('cell_click'):
+        attr = st.session_state.cell_click['attribute']
+        if st.session_state.cell_click['selected']:
+            st.session_state.selected.add(attr)
+        else:
+            st.session_state.selected.discard(attr)
+        st.experimental_rerun()
 
-clicked = st_javascript(js_code=js_code)
+# Register the callback
+st.session_state.cell_click = None
+handle_click()
 
-if clicked:
-    # Update selected items in session state
-    if clicked in st.session_state.selected:
-        st.session_state.selected.remove(clicked)
-    else:
-        st.session_state.selected.add(clicked)
-    st.experimental_rerun()
+# ======= RENDER THE TABLE =======
+st.markdown("""
+<style>
+    .center-table {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+        height: 100%;
+        margin: 0 auto;
+        transform: scale(0.9);
+        transform-origin: top center;
+    }
+    table {
+        width: 100%;
+    }
+    td {
+        cursor: pointer;
+    }
+</style>
+""", unsafe_allow_html=True)
 
-# ======= DUMMY ANALYSIS DATAFRAME =======
+st.markdown('<div class="center-table">' + generate_html_table(data, st.session_state.selected) + '</div>', unsafe_allow_html=True)
+
+# ======= USE CASE SUGGESTIONS =======
+# (Keep your existing analysis_df and display code here)
 analysis_df = pd.DataFrame({
-   
-
 
 
 
@@ -169,24 +272,33 @@ analysis_df = pd.DataFrame({
 
 
 
-
-
-
 })
 
 # Display use case suggestions based on selected items
-use_case_suggestions = []
-for index, row in analysis_df.iterrows():
-    relevant_use_cases = [use_case for use_case in row.index if use_case in st.session_state.selected]
-    if relevant_use_cases:
-        use_case_suggestions.append(row["Use Case"])
+if st.session_state.selected:
+    st.write("### Selected Attributes:")
+    for attr in st.session_state.selected:
+        st.write(f"- {attr}")
 
-if use_case_suggestions:
-    st.write("### Suggested Use Cases based on your selection:")
-    for use_case in use_case_suggestions:
-        st.write(f"- {use_case}")
+    # Find use cases that match ALL selected attributes
+    matching_use_cases = []
+    for _, row in analysis_df.iterrows():
+        match = True
+        for attr in st.session_state.selected:
+            if attr in row.index and row[attr] == 0:
+                match = False
+                break
+        if match:
+            matching_use_cases.append(row["Use Case"])
 
-
+    if matching_use_cases:
+        st.write("### Suggested Use Cases based on your selection:")
+        for use_case in matching_use_cases:
+            st.write(f"- {use_case}")
+    else:
+        st.write("No use cases match all selected attributes. Try selecting fewer attributes.")
+else:
+    st.write("Select attributes in the table to see suggested use cases.")
 
 
 
