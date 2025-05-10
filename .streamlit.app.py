@@ -272,7 +272,7 @@ html(zoomed_html, height=800)
 
 
 # ---------- Calculate and show top use case ----------
-selected attributes = st.session_state.selected
+selected_attributes = st.session_state.selected
 if selected_attributes:
     summed = analysis_table[selected_attributes].sum(axis=1)
     top_use_case = summed.idxmax()
