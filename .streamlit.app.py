@@ -62,7 +62,7 @@ def generate_html_table(data, selected):
                 continue
 
             # Determine if this is an attribute cell that can be selected
-            is_attribute = (i > 0 and j >= 2) and val not in ["Attributes", "Quality/Scope/Knowledge", "Time Efficiency", "Cost"]
+            is_attribute = (i > 0 and j >= 2) 
             click_attr = f"onclick='handleCellClick(this)' data-attr='{val}'" if is_attribute else ""
             cell_class = " class='selected'" if val in st.session_state.selected and is_attribute else ""
             
