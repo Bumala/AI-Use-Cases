@@ -42,22 +42,6 @@ def generate_html_table(data, selected):
         border_bottom_style = "border-bottom: 3px solid #000000;" if border_bottom else ""
         return f"text-align: center; vertical-align: middle; padding: 10px; border: 1px solid #000000; width: {width}px; height: {cell_height}px; {bold_style} {border_bottom_style}"
 
-    # Define colspan rules
-    colspan_2 = {
-        (1, 2), (1, 3), (1, 4),
-        (2, 2), (2, 5),
-        (3, 2), (3, 3), (3, 4), 
-        (5, 2), (5, 3), (5, 4),
-        (7, 2), (7, 5),
-        (8, 4),
-        (10, 2), (10, 3), (10, 4),
-        (11, 2), (11, 5), 
-    }
-
-    colspan_3 = {
-        (4, 2), (4, 3)
-    }
-
     html = "<table style='border-spacing: 0; border-collapse: collapse; table-layout: fixed; border: 3px solid #000000;'>"
 
     for i, row in enumerate(data):
@@ -69,10 +53,10 @@ def generate_html_table(data, selected):
             # Determine if this is an attribute cell that can be selected
             is_attribute = (i > 0 and j >= 2) and val in attributes
             click_attr = f"onclick='handleCellClick(this)' data-attr='{val}'" if is_attribute else ""
-            cell_class = " class='selected'" if val in st.session_state.selected and is_attribute else ""
+            cell_class = " class='selected'" if val in selected and is_attribute else ""
             
             # Base cell style
-            bg_color = "#92D050" if val in st.session_state.selected and is_attribute else "#f1fbfe"
+            bg_color = "#92D050" if val in selected and is_attribute else "#f1fbfe"
             if j == 0:
                 bg_color = "#61cbf3"
             elif j == 1:
@@ -86,29 +70,6 @@ def generate_html_table(data, selected):
                     html += f"<td style='{style(second_col_width, bold=True, border_bottom=True)} background-color: #E8E8E8;'>{val}</td>"
                 elif j == 2:
                     html += f"<td colspan='6' style='{style(base_cell_width * 6, bold=True, border_bottom=True)} background-color: #E8E8E8;'>{val}</td>"
-            
-            # First column cells with rowspan
-            elif j == 0:
-                if i == 1:
-                    html += f"<td rowspan='4' style='{style(first_col_width, bold=True, border_bottom=True)} background-color: #61cbf3;'>{val}</td>"
-                elif i == 5:
-                    html += f"<td rowspan='5' style='{style(first_col_width, bold=True, border_bottom=True)} background-color: #61cbf3;'>{val}</td>"
-                elif i == 10:
-                    html += f"<td rowspan='2' style='{style(first_col_width, bold=True)} background-color: #61cbf3;'>{val}</td>"
-            
-            # Special formatting for certain cells
-            elif (i == 4 and j == 1) or (i == 9 and j == 1):
-                html += f"<td {click_attr}{cell_class} style='{style(base_cell_width, bold=True, border_bottom=True)} background-color: {bg_color}; cursor: pointer;'>{val}</td>"
-            elif i == 9 and j in {2, 4, 6}:
-                html += f"<td {click_attr}{cell_class} style='{style(base_cell_width)} background-color: {bg_color}; border-bottom: 3px solid #000000; cursor: pointer;'>{val}</td>"
-            elif i > 0 and j == 1:
-                html += f"<td style='{style(second_col_width, bold=True)} background-color: #94dcf8;'>{val}</td>"
-            
-            # Cells with colspan
-            elif (i, j) in colspan_3:
-                html += f"<td {click_attr}{cell_class} colspan='3' style='{style(base_cell_width * 3)} background-color: {bg_color}; border-bottom: 3px solid #000000; cursor: pointer;'>{val}</td>"
-            elif (i, j) in colspan_2:
-                html += f"<td {click_attr}{cell_class} colspan='2' style='{style(base_cell_width * 2)} background-color: {bg_color}; cursor: pointer;'>{val}</td>"
             else:
                 html += f"<td {click_attr}{cell_class} style='{style(base_cell_width)} background-color: {bg_color}; cursor: pointer;'>{val}</td>"
         html += "</tr>"
@@ -131,30 +92,32 @@ function handleCellClick(element) {
     }
     
     // Send message to Streamlit
-    window.parent.postMessage({
+    const message = {
         isStreamlitMessage: true,
         type: 'cellClick',
         data: {
             attribute: attr,
             selected: !isSelected
         }
-    }, '*');
+    };
+    window.parent.postMessage(message, '*');
 }
 </script>
 """
 
 # ======= HANDLE CELL CLICKS =======
 def handle_cell_click():
-    if st.session_state.get('cell_click'):
-        attr = st.session_state.cell_click['attribute']
-        if st.session_state.cell_click['selected']:
-            st.session_state.selected.add(attr)
-        else:
-            st.session_state.selected.discard(attr)
-        st.experimental_rerun()
+    if "cell_click" in st.session_state and st.session_state.cell_click:
+        attr = st.session_state.cell_click.get("attribute")
+        selected = st.session_state.cell_click.get("selected")
+        if attr:
+            if selected:
+                st.session_state.selected.add(attr)
+            else:
+                st.session_state.selected.discard(attr)
+        st.session_state.cell_click = None
 
 # Initialize and handle clicks
-st.session_state.cell_click = None
 handle_cell_click()
 
 # ======= USE CASE ANALYSIS DATAFRAME =======
@@ -236,7 +199,7 @@ analysis_df = pd.DataFrame({
     "Customer Service": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 1, 2, 2, 2, 2, 2, 2, 2]
 })
 
-# ======= DISPLAY THE TABLE WITH ZOOM AND CENTERING =======
+# ======= DISPLAY THE TABLE =======
 st.markdown("""
     <style>
         .center-table {
@@ -267,24 +230,20 @@ if st.session_state.selected:
     for i, attr in enumerate(st.session_state.selected):
         cols[i % 4].write(f"✓ {attr}")
 
-    # Calculate scores for each use case (sum of selected attribute values)
     analysis_df['Score'] = 0
     for attr in st.session_state.selected:
         if attr in analysis_df.columns:
             analysis_df['Score'] += analysis_df[attr]
     
-    # Filter out use cases with score 0
     filtered_df = analysis_df[analysis_df['Score'] > 0]
     
     if not filtered_df.empty:
-        # Sort by score descending
-        recommended_cases = filtered_df.sort_values('Score', ascending=False)
-        
-        st.subheader("Recommended Use Cases (Highest to Lowest Score)")
-        for _, row in recommended_cases.iterrows():
-            st.success(f"▪ {row['Use Case']} (Score: {row['Score']})")
+        highest_score = filtered_df['Score'].max()
+        top_use_cases = filtered_df[filtered_df['Score'] == highest_score]
+        recommended_use_case = top_use_cases.sample(1).iloc[0]
+        st.subheader("Recommended Use Case")
+        st.success(f"▪ {recommended_use_case['Use Case']} (Score: {recommended_use_case['Score']})")
     else:
         st.warning("No use cases match the selected attributes")
 else:
     st.info("Click on attributes in the table to see recommended use cases")
-
