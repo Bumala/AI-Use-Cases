@@ -268,11 +268,29 @@ zoomed_html = f"""
 
 html(zoomed_html, height=800)
 
-selected_attributes = st.session_state.selected
-if selected_attributes:
-    summed = analysis_df[selected_attributes].sum(axis=1)
-    top_indices = summed.nlargest(3).index
-    top_use_cases = analysis_df.loc[top_indices, 'Use Case']
-    st.success("🚀 **Top Use Cases:**\n" + "\n".join([f"{i+1}. {uc}" for i, uc in enumerate(top_use_cases)]))
-else:
-    st.info("👆 Select attributes above to see the top use case.")
+
+
+
+
+
+if st.session_state.selected:
+    # Calculate scores
+    analysis_df["score"] = analysis_df[list(st.session_state.selected)].sum(axis=1)
+
+    # Get maximum score
+    max_score = analysis_df["score"].max()
+
+    if max_score > 0:
+        # Filter use cases with max score
+        top_df = analysis_df[analysis_df["score"] == max_score]
+
+        # If more than 3, randomly select 3
+        if len(top_df) > 3:
+            top_use_cases = top_df.sample(3)["Use Case"].tolist()
+        else:
+            top_use_cases = top_df["Use Case"].tolist()
+
+        # Show use cases
+        st.subheader("Top Use Cases")
+        for i, use_case in enumerate(top_use_cases, 1):
+            st.write(f"{i}. {use_case}")
