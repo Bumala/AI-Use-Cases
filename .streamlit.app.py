@@ -178,6 +178,31 @@ html(zoomed_html, height=800)
 
 
 
+# ======= FILTER USE CASES BASED ON SELECTED ATTRIBUTES =======
+
+# Get selected attributes
+selected_attrs = list(st.session_state.selected)
+
+# Filter the analysis DataFrame if attributes are selected
+if selected_attrs:
+    # Keep only rows where at least one selected attribute has value > 0
+    mask = analysis_df[selected_attrs].gt(0).any(axis=1)
+    filtered_df = analysis_df[mask]
+else:
+    # If no selection, show full table
+    filtered_df = analysis_df
+
+# Display the filtered dataframe
+st.write("### Filtered Use Cases")
+st.dataframe(filtered_df)
+
+
+
+
+
+
+
+
 
 
 
