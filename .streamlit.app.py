@@ -268,7 +268,7 @@ zoomed_html = f"""
 
 html(zoomed_html, height=800)
 
-
+selected_attributes = st.session_state.selected
 if selected_attributes:
     summed = analysis_df[selected_attributes].sum(axis=1)
     top_indices = summed.nlargest(3).index
