@@ -21,8 +21,20 @@ data = [
     [None, "Department", "R&D", "Manufacturing", "Marketing & Sales", "Customer Service"],
 ]
 
-# Convert to DataFrame
-df = pd.DataFrame(data[1:], columns=data[0][:len(data[1])])
+# Find the maximum number of columns
+max_cols = max(len(row) for row in data)
+
+# Pad shorter rows with None
+padded_data = [row + [None] * (max_cols - len(row)) for row in data]
+
+# Handle missing column names
+if padded_data:
+    # Replace None column names with a default string
+    column_names = [f"Column_{i}" if name is None else name for i, name in enumerate(padded_data[0])]
+    df = pd.DataFrame(padded_data[1:], columns=column_names)
+else:
+    df = pd.DataFrame()  # Create an empty DataFrame if data is empty
+
 
 # ========== ANALYSIS TABLE ==========
 analysis_data = {  # keep your full data here
@@ -58,68 +70,49 @@ analysis_data = {  # keep your full data here
         "AI-driven competition analysis",
         "AI-driven vehicles sales prediction"
     ],
-
-
-
     "Quality/Scope/Knowledge": [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2],
     "Time Efficiency": [2, 2, 2, 0, 0, 0, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 0, 2, 0, 2, 0, 2, 2, 2, 0, 0],
     "Cost": [2, 2, 0, 0, 0, 0, 2, 1, 2, 2, 0, 2, 2, 0, 2, 0, 2, 0, 2, 2, 0, 2, 0, 2, 0, 2, 0, 0, 0, 0],
-
     "Customer Segments": [0, 0, 0, 2, 0, 1, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 2, 2, 0, 0, 2, 2, 2, 2],
     "Value Proposition": [2, 0, 0, 2, 0, 2, 2, 2, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 0, 2, 0, 0, 2, 2, 2, 0, 0, 2, 2, 2],
     "Value Chain": [2, 2, 2, 2, 2, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 0, 0, 2, 2, 2, 2, 2, 0, 0, 0],
     "Revenue Model": [0, 0, 0, 0, 0, 2, 0, 0, 1, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 2, 0, 2],
-    
     "Product Innovation": [2, 0, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 0, 2, 2, 2, 2, 0, 2, 2, 2, 2, 1, 0, 0, 2, 0, 0, 2],
     "Process Innovation": [1, 2, 2, 0, 0, 0, 2, 2, 2, 2, 2, 2, 2, 2, 2, 0, 2, 2, 2, 2, 0, 2, 0, 2, 2, 2, 2, 2, 2, 2],
     "Business Model Innovation": [0, 0, 1, 0, 0, 2, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 1, 2, 0, 0, 0, 0, 2, 0, 2],
-    
     "Exploration": [2, 0, 2, 2, 2, 2, 2, 2, 2, 2, 1, 2, 2, 0, 2, 2, 2, 2, 2, 2, 2, 2, 0, 0, 0, 2, 2, 2, 2, 2],
     "Exploitation": [0, 2, 0, 0, 0, 0, 2, 2, 2, 0, 2, 2, 2, 2, 0, 0, 0, 0, 2, 0, 2, 0, 2, 2, 2, 0, 0, 0, 2, 2],
-    
     "Automaton": [2, 0, 2, 0, 2, 2, 2, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2],
     "Helper": [1, 0, 1, 2, 0, 0, 0, 0, 0, 0, 2, 1, 2, 2, 2, 2, 1, 2, 2, 2, 2, 0, 1, 0, 0, 0, 0, 0, 2, 0],
     "Partner": [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 0, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2],
-    
     "Machine Learning": [2, 2, 2, 2, 0, 0, 2, 0, 0, 0, 0, 0, 2, 2, 2, 0, 2, 2, 2, 2, 0, 0, 0, 2, 0, 0, 0, 2, 0, 2],
     "Deep Learning": [2, 0, 2, 0, 0, 0, 2, 0, 0, 0, 0, 0, 2, 2, 2, 0, 2, 2, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     "Artificial Neural Networks": [0, 0, 2, 2, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 0, 0, 0, 2, 0, 2],
     "Natural Language Processing": [2, 0, 2, 2, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0],
     "Computer Vision": [0, 0, 2, 0, 0, 0, 2, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     "Robotics": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    
     "Descriptive": [1, 0, 0, 2, 2, 0, 0, 0, 0, 0, 2, 0, 0, 2, 0, 0, 2, 0, 0, 2, 2, 2, 2, 2, 2, 0, 2, 2, 2, 0],
     "Diagnostic": [0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 2, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 2, 2, 0, 0, 0, 0, 0],
     "Predictive": [2, 2, 2, 0, 2, 2, 2, 2, 2, 2, 0, 2, 2, 0, 2, 0, 0, 0, 2, 2, 0, 0, 2, 0, 2, 2, 0, 2, 0, 0],
     "Prescriptive": [0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 2, 2, 0, 0, 0, 0, 0],
-    
     "Description/ Summary": [1, 0, 0, 0, 2, 2, 0, 0, 1, 2, 0, 2, 0, 2, 0, 2, 0, 0, 2, 0, 0, 2, 0, 2, 2, 0, 0, 0, 0, 0],
     "Clustering": [0, 0, 0, 2, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 2, 2, 0, 2, 2, 2, 2],
     "Classification": [2, 0, 0, 2, 0, 0, 0, 0, 0, 2, 2, 0, 0, 2, 0, 0, 0, 0, 0, 0, 2, 2, 2, 2, 2, 0, 2, 2, 2, 2],
     "Dependency Analysis": [0, 0, 0, 0, 2, 0, 0, 0, 0, 2, 2, 0, 0, 2, 0, 0, 1, 0, 0, 2, 2, 2, 2, 2, 2, 0, 2, 2, 2, 2],
     "Regression": [1, 1, 2, 0, 2, 2, 2, 2, 2, 2, 0, 2, 2, 0, 2, 0, 2, 2, 0, 2, 0, 2, 2, 2, 2, 2, 2, 2, 2, 2],
-    
     "Customer Data": [2, 0, 2, 0, 2, 2, 2, 2, 2, 2, 2, 2, 2, 0, 2, 2, 2, 2, 2, 2, 0, 1, 1, 2, 2, 2, 2, 2, 2, 1],
     "Machine Data": [0, 1, 2, 2, 0, 0, 0, 0, 0, 2, 0, 2, 2, 0, 0, 0, 0, 0, 0, 0, 2, 0, 2, 0, 2, 0, 0, 2, 0, 1],
     "Business Data (Internal Data)": [2, 2, 2, 0, 2, 2, 2, 2, 2, 2, 2, 0, 1, 2, 2, 2, 2, 2, 2, 2, 2, 0, 1, 2, 2, 0, 0, 2, 2, 2],
     "Market Data": [2, 2, 1, 0, 2, 2, 2, 2, 2, 2, 2, 2, 2, 0, 2, 1, 2, 2, 2, 2, 2, 1, 1, 2, 2, 2, 2, 2, 2, 2],
     "Public & Regulatory Data": [0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 1, 0, 0, 0, 0, 2, 0, 2, 0, 0],
     "Synthetic Data": [2, 0, 0, 0, 0, 0, 1, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 2, 2, 2, 0, 2, 2, 2, 2],
-    
     "Front End": [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 0, 1, 1, 1, 2, 2, 2, 2, 2],
     "Development": [0, 1, 0, 0, 0, 0, 1, 1, 1, 0, 2, 2, 2, 2, 2, 1, 2, 2, 2, 1, 0, 0, 1, 1, 1, 2, 2, 1, 0, 1],
     "Market Introduction": [0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 2, 2, 2, 0, 2, 2, 2, 1],
-    
     "R&D": [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 0, 1, 1, 0, 1, 1, 0, 0, 0, 1, 0, 1, 0, 0, 0, 1, 1, 1, 1],
     "Manufacturing": [0, 1, 0, 0, 0, 0, 1, 1, 1, 0, 2, 2, 2, 2, 2, 1, 2, 2, 2, 2, 0, 0, 1, 0, 1, 0, 2, 2, 0, 1],
     "Marketing & Sales": [0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 2, 0, 2, 2, 2, 0, 2, 2, 0, 0, 2, 2, 1, 0, 0, 0, 0, 0, 0, 1],
     "Customer Service": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 1, 2, 2, 2, 2, 2, 2, 2]
-
-
-
-
-
-
 }
 
 analysis_df = pd.DataFrame(analysis_data).set_index("Use Case")
@@ -128,21 +121,24 @@ analysis_df = pd.DataFrame(analysis_data).set_index("Use Case")
 if 'selected_attrs' not in st.session_state:
     st.session_state.selected_attrs = []
 
-def handle_click(attr):
-    if attr in analysis_df.columns:  # Only allow valid attributes
-        if attr in st.session_state.selected_attrs:
-            st.session_state.selected_attrs.remove(attr)
-        else:
-            st.session_state.selected_attrs.append(attr)
-        st.experimental_rerun()
 
-# Custom cell renderer
+def handle_attribute_click(params):
+    if params['column']['colId'] == 'Attributes':
+        clicked_attr = params['value']
+        if clicked_attr in analysis_df.columns:  # Ensure it's a valid attribute
+            if clicked_attr in st.session_state.selected_attrs:
+                st.session_state.selected_attrs.remove(clicked_attr)
+            else:
+                st.session_state.selected_attrs.append(clicked_attr)
+            st.experimental_rerun()
+
+# Custom cell renderer (for styling only)
 cell_renderer = JsCode(f"""
 function(params) {{
     const value = params.value;
     const isSelected = {st.session_state.selected_attrs}.includes(value);
     const isAttrCol = params.colDef.headerName === 'Attributes';
-    
+
     let color = '#f1fbfe';
     if (params.node.rowPinned === 'top') {{
         color = '#E8E8E8'; // Header
@@ -153,7 +149,7 @@ function(params) {{
     }} else if (isSelected && isAttrCol) {{
         color = '#92D050'; // Selected
     }}
-    
+
     return `<div style="
         width: 100%; height: 100%;
         display: flex; align-items: center; justify-content: center;
@@ -180,45 +176,12 @@ gb.configure_column("Category", width=160, cellRenderer=cell_renderer)
 gb.configure_column("Dimension", width=200, cellRenderer=cell_renderer)
 gb.configure_column("Attributes", width=150, cellRenderer=cell_renderer)
 
-# Display both tables
-col1, col2 = st.columns([2, 1])
-
-with col1:
-    st.header("Attribute Selection")
-    grid = AgGrid(
-        df,
-        gridOptions=gb.build(),
-        height=600,
-        fit_columns_on_grid_load=False,
-        allow_unsafe_jscode=True,
-        theme='streamlit'
-    )
-
-with col2:
-    st.header("Analysis Results")
-    if st.session_state.selected_attrs:
-        # Calculate scores
-        scores = analysis_df[st.session_state.selected_attrs].sum(axis=1)
-        top_use_case = scores.idxmax()
-        
-        st.success(f"🚀 **Top Use Case:** {top_use_case}")
-        st.write("### Scores:")
-        st.dataframe(scores.sort_values(ascending=False))
-    else:
-        st.info("Select attributes to see recommendations")
-
-# JavaScript to handle cell clicks
-st.components.v1.html(f"""
-<script>
-document.addEventListener('click', function(event) {{
-    if (event.target.classList.contains('ag-cell-value')) {{
-        const colDef = event.target.closest('[col-id]').getAttribute('col-id');
-        if (colDef === 'Attributes') {{
-            const value = event.target.textContent.trim();
-            const data = {{attribute: value}};
-            Streamlit.setComponentValue(JSON.stringify(data));
-        }}
-    }}
-}});
-</script>
-""", height=0)
+# Enable cell click event
+gridOptions = gb.build()
+gridOptions['onCellClicked'] = JsCode("""
+function(params) {
+    if (params.column.colId === 'Attributes') {
+        streamlit.setComponentValue(JSON.stringify({ 'attribute': params.value }));
+    }
+}
+"
