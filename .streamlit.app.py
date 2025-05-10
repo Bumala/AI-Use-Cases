@@ -279,9 +279,9 @@ st.info("👆 Select attributes above to see the top use cases.")
 
 # Calculate summed scores
 if selected_attributes:
-    summed = analysis_table[selected_attributes].sum(axis=1)
+    summed = analysis_df[selected_attributes].sum(axis=1)
 else:
-    summed = analysis_table.sum(axis=1)
+    summed = analysis_df.sum(axis=1)
 
 # Get top 3 use cases
 top_3_use_cases = summed.nlargest(3)
