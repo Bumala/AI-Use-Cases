@@ -1,7 +1,7 @@
 import streamlit as st
 import pandas as pd
-import random
 from streamlit.components.v1 import html
+import random
 
 # Set page layout
 st.set_page_config(layout="wide")
@@ -30,6 +30,8 @@ for row in data[1:]:
 # ======= SESSION STATE =======
 if "selected" not in st.session_state:
     st.session_state.selected = set()
+if "cell_click" not in st.session_state:
+    st.session_state.cell_click = None
 
 # ======= PERFECT TABLE LAYOUT GENERATION =======
 def generate_html_table(data, selected):
@@ -47,31 +49,32 @@ def generate_html_table(data, selected):
     colspan_2 = {
         (1, 2), (1, 3), (1, 4),
         (2, 2), (2, 5),
-        (3, 2), (3, 3), (3, 4), 
+        (3, 2), (3, 3), (3, 4),
         (5, 2), (5, 3), (5, 4),
         (7, 2), (7, 5),
         (8, 4),
         (10, 2), (10, 3), (10, 4),
-        (11, 2), (11, 5), 
+        (11, 2), (11, 5),
     }
 
     colspan_3 = {
         (4, 2), (4, 3)
     }
 
-    html = "<table style='border-spacing: 0; border-collapse: collapse; table-layout: fixed; border: 3px solid #000000;'>"
+    html_code = "<table style='border-spacing: 0; border-collapse: collapse; table-layout: fixed; border: 3px solid #000000;'>"
 
     for i, row in enumerate(data):
-        html += "<tr>"
+        html_code += "<tr>"
         for j, val in enumerate(row):
             if val is None:
                 continue
 
             # Determine if this is an attribute cell that can be selected
             is_attribute = (i > 0 and j >= 2) and val in attributes
-            click_attr = f"onclick='handleCellClick(this)' data-attr='{val}'" if is_attribute else ""
-            cell_class = " class='selected'" if val in st.session_state.selected and is_attribute else ""
-            
+            cell_id = f"cell_{i}_{j}"
+            click_attr = f"onclick='handleCellClick(\"{cell_id}\", this)' data-attr='{val}'" if is_attribute else ""
+            cell_class = "selected" if val in st.session_state.selected and is_attribute else ""
+
             # Base cell style
             bg_color = "#92D050" if val in st.session_state.selected and is_attribute else "#f1fbfe"
             if j == 0:
@@ -82,55 +85,55 @@ def generate_html_table(data, selected):
             # Header row
             if i == 0:
                 if j == 0:
-                    html += f"<td style='{style(first_col_width, bold=True, border_bottom=True)} background-color: #E8E8E8;'>{val}</td>"
+                    html_code += f"<td style='{style(first_col_width, bold=True, border_bottom=True)} background-color: #E8E8E8;'>{val}</td>"
                 elif j == 1:
-                    html += f"<td style='{style(second_col_width, bold=True, border_bottom=True)} background-color: #E8E8E8;'>{val}</td>"
+                    html_code += f"<td style='{style(second_col_width, bold=True, border_bottom=True)} background-color: #E8E8E8;'>{val}</td>"
                 elif j == 2:
-                    html += f"<td colspan='6' style='{style(base_cell_width * 6, bold=True, border_bottom=True)} background-color: #E8E8E8;'>{val}</td>"
-            
+                    html_code += f"<td colspan='6' style='{style(base_cell_width * 6, bold=True, border_bottom=True)} background-color: #E8E8E8;'>{val}</td>"
+
             # First column cells with rowspan
             elif j == 0:
                 if i == 1:
-                    html += f"<td rowspan='4' style='{style(first_col_width, bold=True, border_bottom=True)} background-color: #61cbf3;'>{val}</td>"
+                    html_code += f"<td rowspan='4' style='{style(first_col_width, bold=True, border_bottom=True)} background-color: #61cbf3;'>{val}</td>"
                 elif i == 5:
-                    html += f"<td rowspan='5' style='{style(first_col_width, bold=True, border_bottom=True)} background-color: #61cbf3;'>{val}</td>"
+                    html_code += f"<td rowspan='5' style='{style(first_col_width, bold=True, border_bottom=True)} background-color: #61cbf3;'>{val}</td>"
                 elif i == 10:
-                    html += f"<td rowspan='2' style='{style(first_col_width, bold=True)} background-color: #61cbf3;'>{val}</td>"
-            
+                    html_code += f"<td rowspan='2' style='{style(first_col_width, bold=True)} background-color: #61cbf3;'>{val}</td>"
+
             # Special formatting for certain cells
             elif (i == 4 and j == 1) or (i == 9 and j == 1):
-                html += f"<td {click_attr}{cell_class} style='{style(base_cell_width, bold=True, border_bottom=True)} background-color: {bg_color}; cursor: pointer;'>{val}</td>"
+                html_code += f"<td {click_attr} id='cell_{i}_{j}' class='{cell_class}' style='{style(base_cell_width, bold=True, border_bottom=True)} background-color: {bg_color}; cursor: pointer;'>{val}</td>"
             elif i == 9 and j in {2, 4, 6}:
-                html += f"<td {click_attr}{cell_class} style='{style(base_cell_width)} background-color: {bg_color}; border-bottom: 3px solid #000000; cursor: pointer;'>{val}</td>"
+                html_code += f"<td {click_attr} id='cell_{i}_{j}' class='{cell_class}' style='{style(base_cell_width)} background-color: {bg_color}; border-bottom: 3px solid #000000; cursor: pointer;'>{val}</td>"
             elif i > 0 and j == 1:
-                html += f"<td style='{style(second_col_width, bold=True)} background-color: #94dcf8;'>{val}</td>"
-            
+                html_code += f"<td style='{style(second_col_width, bold=True)} background-color: #94dcf8;'>{val}</td>"
+
             # Cells with colspan
             elif (i, j) in colspan_3:
-                html += f"<td {click_attr}{cell_class} colspan='3' style='{style(base_cell_width * 3)} background-color: {bg_color}; border-bottom: 3px solid #000000; cursor: pointer;'>{val}</td>"
+                html_code += f"<td {click_attr} id='cell_{i}_{j}' class='{cell_class}' colspan='3' style='{style(base_cell_width * 3)} background-color: {bg_color}; border-bottom: 3px solid #000000; cursor: pointer;'>{val}</td>"
             elif (i, j) in colspan_2:
-                html += f"<td {click_attr}{cell_class} colspan='2' style='{style(base_cell_width * 2)} background-color: {bg_color}; cursor: pointer;'>{val}</td>"
-            else:
-                html += f"<td {click_attr}{cell_class} style='{style(base_cell_width)} background-color: {bg_color}; cursor: pointer;'>{val}</td>"
-        html += "</tr>"
+                html_code += f"<td {click_attr} id='cell_{i}_{j}' class='{cell_class}' colspan='2' style='{style(base_cell_width * 2)} background-color: {bg_color}; cursor: pointer;'>{val}</td>"
+            elif i > 0 and j >= 2:
+                html_code += f"<td {click_attr} id='cell_{i}_{j}' class='{cell_class}' style='{style(base_cell_width)} background-color: {bg_color}; cursor: pointer;'>{val}</td>"
+        html_code += "</tr>"
 
-    html += "</table>"
-    return html
+    html_code += "</table>"
+    return html_code
 
 # ======= JAVASCRIPT FOR INTERACTIVITY =======
 interaction_js = """
 <script>
-function handleCellClick(element) {
+function handleCellClick(cellId, element) {
     const attr = element.getAttribute('data-attr');
     const isSelected = element.classList.contains('selected');
-    
+
     // Toggle visual selection immediately
     if (isSelected) {
         element.classList.remove('selected');
     } else {
         element.classList.add('selected');
     }
-    
+
     // Send message to Streamlit
     window.parent.postMessage({
         isStreamlitMessage: true,
@@ -146,17 +149,30 @@ function handleCellClick(element) {
 
 # ======= HANDLE CELL CLICKS =======
 def handle_cell_click():
-    if st.session_state.get('cell_click'):
+    if st.session_state.cell_click:
         attr = st.session_state.cell_click['attribute']
         if st.session_state.cell_click['selected']:
             st.session_state.selected.add(attr)
         else:
             st.session_state.selected.discard(attr)
+        st.session_state.cell_click = None
         st.experimental_rerun()
 
-# Initialize and handle clicks
-st.session_state.cell_click = None
-handle_cell_click()
+# Receive cell click data from iframe
+def receive_message(event):
+    if event.data["isStreamlitMessage"] and event.data["type"] == "cellClick":
+        st.session_state.cell_click = event.data["data"]
+        handle_cell_click()
+
+html(f"""
+    <script>
+        window.addEventListener('message', function(event) {
+            if (event.data["isStreamlitMessage"] && event.data["type"] === "cellClick") {
+                window.streamlitParent.postMessage(event.data, "*");
+            }
+        });
+    </script>
+""", height=0)
 
 # ======= USE CASE ANALYSIS DATAFRAME =======
 analysis_df = pd.DataFrame({
@@ -225,107 +241,4 @@ analysis_df = pd.DataFrame({
     "Customer Data": [2, 0, 2, 0, 2, 2, 2, 2, 2, 2, 2, 2, 2, 0, 2, 2, 2, 2, 2, 2, 0, 1, 1, 2, 2, 2, 2, 2, 2, 1],
     "Machine Data": [0, 1, 2, 2, 0, 0, 0, 0, 0, 2, 0, 2, 2, 0, 0, 0, 0, 0, 0, 0, 2, 0, 2, 0, 2, 0, 0, 2, 0, 1],
     "Business Data (Internal Data)": [2, 2, 2, 0, 2, 2, 2, 2, 2, 2, 2, 0, 1, 2, 2, 2, 2, 2, 2, 2, 2, 0, 1, 2, 2, 0, 0, 2, 2, 2],
-    "Market Data": [2, 2, 1, 0, 2, 2, 2, 2, 2, 2, 2, 2, 2, 0, 2, 1, 2, 2, 2, 2, 2, 1, 1, 2, 2, 2, 2, 2, 2, 2],
-    "Public & Regulatory Data": [0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 1, 0, 0, 0, 0, 2, 0, 2, 0, 0],
-    "Synthetic Data": [2, 0, 0, 0, 0, 0, 1, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 2, 2, 2, 0, 2, 2, 2, 2],
-    "Front End": [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 0, 1, 1, 1, 2, 2, 2, 2, 2],
-    "Development": [0, 1, 0, 0, 0, 0, 1, 1, 1, 0, 2, 2, 2, 2, 2, 1, 2, 2, 2, 1, 0, 0, 1, 1, 1, 2, 2, 1, 0, 1],
-    "Market Introduction": [0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 2, 2, 2, 0, 2, 2, 2, 1],
-    "R&D": [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 0, 1, 1, 0, 1, 1, 0, 0, 0, 1, 0, 1, 0, 0, 0, 1, 1, 1, 1],
-    "Manufacturing": [0, 1, 0, 0, 0, 0, 1, 1, 1, 0, 2, 2, 2, 2, 2, 1, 2, 2, 2, 2, 0, 0, 1, 0, 1, 0, 2, 2, 0, 1],
-    "Marketing & Sales": [0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 2, 0, 2, 2, 2, 0, 2, 2, 0, 0, 2, 2, 1, 0, 0, 0, 0, 0, 0, 1],
-    "Customer Service": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 1, 2, 2, 2, 2, 2, 2, 2]
-})
-
-# ======= DISPLAY THE TABLE WITH ZOOM AND CENTERING =======
-st.markdown("""
-    <style>
-        .center-table {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            width: 100%;
-            height: 100%;
-            margin: 0 auto;
-            transform: scale(0.9);
-            transform-origin: top center;
-        }
-        table {
-            width: 100%;
-        }
-        .recommendation {
-            margin-top: 20px;
-            padding: 15px;
-            background-color: #f8f9fa;
-            border-radius: 5px;
-            border-left: 5px solid #4CAF50;
-        }
-    </style>
-""", unsafe_allow_html=True)
-
-st.markdown('<div class="center-table">' + generate_html_table(data, st.session_state.selected) + '</div>', unsafe_allow_html=True)
-
-# Add JavaScript for interactivity
-html(interaction_js)
-
-# ======= USE CASE RECOMMENDATION LOGIC =======
-if st.session_state.selected:
-    st.subheader("Selected Attributes")
-    cols = st.columns(4)
-    for i, attr in enumerate(st.session_state.selected):
-        cols[i % 4].write(f"✓ {attr}")
-
-    # Calculate scores for each use case (sum of selected attribute values)
-    analysis_df['Score'] = 0
-    for attr in st.session_state.selected:
-        if attr in analysis_df.columns:
-            analysis_df['Score'] += analysis_df[attr]
-    
-    # Filter out use cases with score 0
-    filtered_df = analysis_df[analysis_df['Score'] > 0]
-    
-    if not filtered_df.empty:
-        # Get the maximum score
-        max_score = filtered_df['Score'].max()
-        
-        # Get all use cases with the maximum score
-        top_cases = filtered_df[filtered_df['Score'] == max_score]
-        
-        # If there's only one cell selected, we might have multiple use cases with same score
-        if len(st.session_state.selected) == 1:
-            # For single selection, show one random use case from the top cases
-            recommended_case = top_cases.sample(1).iloc[0]
-            st.markdown(f"""
-            <div class="recommendation">
-                <h3>Recommended Use Case</h3>
-                <p><strong>{recommended_case['Use Case']}</strong> (Score: {recommended_case['Score']})</p>
-                <p>This use case has the highest value for the selected attribute.</p>
-            </div>
-            """, unsafe_allow_html=True)
-        else:
-            # For multiple selections, show the top use case(s)
-            if len(top_cases) == 1:
-                # Single top use case
-                recommended_case = top_cases.iloc[0]
-                st.markdown(f"""
-                <div class="recommendation">
-                    <h3>Recommended Use Case</h3>
-                    <p><strong>{recommended_case['Use Case']}</strong> (Score: {recommended_case['Score']})</p>
-                    <p>This use case has the highest combined score for the selected attributes.</p>
-                </div>
-                """, unsafe_allow_html=True)
-            else:
-                # Multiple top use cases with same score
-                st.markdown(f"""
-                <div class="recommendation">
-                    <h3>Recommended Use Cases (Tie)</h3>
-                    <p>Multiple use cases have the same highest score of {max_score}:</p>
-                    <ul>
-                        {"".join([f"<li><strong>{row['Use Case']}</strong></li>" for _, row in top_cases.iterrows()])}
-                    </ul>
-                </div>
-                """, unsafe_allow_html=True)
-    else:
-        st.warning("No use cases match the selected attributes")
-else:
-    st.info("Click on attributes in the table to see recommended use cases")
+    "Market Data": [2, 2, 1, 0, 2, 2, 2, 2, 2, 2, 2, 2, 2, 0, 2, 1, 2, 2, 2, 2, 2, 1, 1, 2, 2, 2, 2, 2,
