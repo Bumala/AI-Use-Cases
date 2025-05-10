@@ -271,48 +271,11 @@ html(zoomed_html, height=800)
 
 
 
-import random
-
-# Step 1: Calculate score for each use case based on predefined columns (if nothing is selected)
-if not st.session_state.selected:  # If no selection is made
-    # Calculate the score for each use case (sum of all columns, or any other predefined metric)
-    analysis_df["score"] = analysis_df[list(analysis_df.columns)].sum(axis=1)
-
-    # Get the maximum score (find top use cases based on that)
-    max_score = analysis_df["score"].max()
-
-    # Get all use cases with the top score
-    top_df = analysis_df[analysis_df["score"] == max_score]
-
-    # Handle the case where more than 3 use cases have the same top score
-    if len(top_df) > 3:
-        top_use_cases = random.sample(top_df["Use Case"].tolist(), 3)  # Randomly select 3
-    else:
-        top_use_cases = top_df["Use Case"].tolist()
-
-    # Display these top use cases
-    st.subheader("Top Use Cases")
-    for i, use_case in enumerate(top_use_cases, 1):
-        st.write(f"{i}. {use_case}")
-
-# Step 2: If selections are made, display top use cases based on selected criteria
-if st.session_state.selected:
-    # Calculate the score for each use case based on the selected criteria (columns)
-    analysis_df["score"] = analysis_df[list(st.session_state.selected)].sum(axis=1)
-
-    # Get the maximum score from selected criteria
-    max_score_selected = analysis_df["score"].max()
-
-    # Get all use cases with the top score based on selection
-    top_df_selected = analysis_df[analysis_df["score"] == max_score_selected]
-
-    # Handle the case where more than 3 use cases have the same top score
-    if len(top_df_selected) > 3:
-        top_use_cases_selected = random.sample(top_df_selected["Use Case"].tolist(), 3)  # Randomly select 3
-    else:
-        top_use_cases_selected = top_df_selected["Use Case"].tolist()
-
-    # Display these top use cases based on the selection
-    st.subheader("Top Use Cases Based on Selection")
-    for i, use_case in enumerate(top_use_cases_selected, 1):
-        st.write(f"{i}. {use_case}")
+# ---------- Calculate and show top use case ----------
+selected attributes = st.session_state.selected
+if selected_attributes:
+    summed = analysis_table[selected_attributes].sum(axis=1)
+    top_use_case = summed.idxmax()
+    st.success(f"🚀 **Top Use Case:** {top_use_case}")
+else:
+    st.info("👆 Select attributes above to see the top use case.")
