@@ -274,11 +274,19 @@ html(zoomed_html, height=800)
 # ---------- Calculate and show top use case ----------
 selected_attributes = st.session_state.selected
 
+# Always show the info message
+st.info("👆 Select attributes above to see the top use cases.")
+
+# Calculate summed scores
 if selected_attributes:
     summed = analysis_table[selected_attributes].sum(axis=1)
-    top_3_use_cases = summed.nlargest(3)
-    st.success("🚀 **Top 3 Use Cases:**")
-    for use_case, score in top_3_use_cases.items():
-        st.write(f"✅ {use_case}: {score}")
 else:
-    st.info("👆 Select attributes above to see the top use cases.")
+    summed = analysis_table.sum(axis=1)
+
+# Get top 3 use cases
+top_3_use_cases = summed.nlargest(3)
+
+# Display top 3 names
+st.success("🚀 **Top 3 Use Cases:**")
+for i, (use_case, score) in enumerate(top_3_use_cases.items(), start=1):
+    st.write(f"{i}. {use_case}")
