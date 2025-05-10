@@ -276,23 +276,12 @@ selected_attrs = list(st.session_state.selected)
 
 if selected_attrs:
     mask = analysis_df[selected_attrs].gt(0).any(axis=1)
-    filtered_df = analysis_df[mask]
-else:
-    filtered_df = analysis_df
+    summed = analysis_df.loc[mask, selected_attrs].sum(axis=1)
 
-st.write("### Filtered Use Cases")
-st.dataframe(filtered_df)
-
-
-
-
-
-
-
-if selected_attrs:
-    summed = filtered_df[selected_attrs].sum(axis=1)
-    top_use_case = summed.idxmax()
-    st.success(f"🚀 **Top Use Case:** {top_use_case}")
+    if not summed.empty:
+        top_use_case = summed.idxmax()
+        st.success(f"🚀 **Top Use Case:** {top_use_case}")
+    else:
+        st.info("⚠ No matching use cases found for selected attributes.")
 else:
     st.info("👆 Select attributes above to see the top use case.")
-
