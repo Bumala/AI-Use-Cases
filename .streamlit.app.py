@@ -61,7 +61,7 @@ def generate_html_table(data, selected):
             cursor: pointer;
             width: 150px;
         }
-        .attribute-cell.selected {
+        .selected {
             background-color: #92D050 !important;
         }
         .header-row {
@@ -188,38 +188,36 @@ def generate_html_table(data, selected):
     
     return html
 
-# ======= IMPROVED JAVASCRIPT FOR INTERACTIVITY =======
+# ======= JAVASCRIPT FOR INTERACTIVITY =======
 interaction_js = """
 <script>
-function handleCellClick(event) {
-    const cell = event.target.closest('.attribute-cell');
-    if (!cell) return;
-    
-    const attr = cell.getAttribute('data-attr');
-    const isSelected = cell.classList.contains('selected');
-    
-    // Toggle visual selection immediately
-    if (isSelected) {
-        cell.classList.remove('selected');
-    } else {
-        cell.classList.add('selected');
-    }
-    
-    // Send message to Streamlit
-    window.parent.postMessage({
-        isStreamlitMessage: true,
-        type: 'cellClick',
-        data: {
-            attribute: attr,
-            selected: !isSelected
-        }
-    }, '*');
-}
-
-// Add event listener after table is rendered
 document.addEventListener('DOMContentLoaded', function() {
     const table = document.querySelector('.ai-table');
-    table.addEventListener('click', handleCellClick);
+    
+    table.addEventListener('click', function(e) {
+        const cell = e.target.closest('[data-attr]');
+        if (!cell) return;
+        
+        const attr = cell.getAttribute('data-attr');
+        const isSelected = cell.classList.contains('selected');
+        
+        // Toggle selection
+        if (isSelected) {
+            cell.classList.remove('selected');
+        } else {
+            cell.classList.add('selected');
+        }
+        
+        // Send message to Streamlit
+        window.parent.postMessage({
+            isStreamlitMessage: true,
+            type: 'cellClick',
+            data: {
+                attribute: attr,
+                selected: !isSelected
+            }
+        }, '*');
+    });
 });
 </script>
 """
@@ -355,4 +353,3 @@ if st.session_state.selected:
         st.warning("No use cases match all selected attributes. Try selecting fewer or different attributes.")
 else:
     st.info("Click on attributes in the table to see recommended use cases")
-
