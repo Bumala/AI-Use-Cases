@@ -161,7 +161,15 @@ handle_cell_click()
 
 
 # ======= DISPLAY THE TABLE =======
-html(generate_html_table(data, st.session_state.selected) + interaction_js, height=800)
+zoomed_html = f"""
+<div style="display: flex; justify-content: center; align-items: center; height: 100%; transform: scale(0.8); transform-origin: top;">
+    {generate_html_table(data, st.session_state.selected)}
+</div>
+{interaction_js}
+"""
+
+html(zoomed_html, height=800)
+
 
 
 
