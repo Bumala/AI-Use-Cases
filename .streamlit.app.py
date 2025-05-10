@@ -161,47 +161,7 @@ handle_cell_click()
 
 
 # ======= DISPLAY THE TABLE =======
-st.markdown("""
-    <style>
-        .center-table {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh; /* Full viewport height */
-            transform: scale(0.8); /* Adjust scale to zoom out */
-            transform-origin: top center; /* Set zoom-out origin */
-        }
-    </style>
-    <div class="center-table">
-""" + generate_html_table(data, st.session_state.selected) + """
-    </div>
-""" + """
-<script>
-function handleCellClick(element) {
-    const attr = element.getAttribute('data-attr');
-    const isSelected = element.style.backgroundColor === 'rgb(146, 208, 80)'; // Light green color
-    
-    // Toggle visual selection immediately
-    element.style.backgroundColor = isSelected ? '#f1fbfe' : '#92D050'; // Reset or turn green
-    
-    // Send message to Streamlit
-    window.parent.postMessage({
-        isStreamlitMessage: true,
-        type: 'cellClick',
-        data: {
-            attribute: attr,
-            selected: !isSelected
-        }
-    }, '*');
-}
-</script>
-""", unsafe_allow_html=True)
-
-
-
-
-
-
+html(generate_html_table(data, st.session_state.selected) + interaction_js, height=800)
 
 
 
