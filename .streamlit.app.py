@@ -270,14 +270,4 @@ analysis_df = pd.DataFrame({
 
 
 
-# ---------- Calculate and show top use case ----------
-
-if selected_attributes:
-    summed = analysis_table[selected_attributes].sum(axis=1)
-    top_use_case = summed.idxmax()
-    st.success(f"🚀 **Top Use Case:** {top_use_case}")
-else:
-    st.info("👆 Select attributes above to see the top use case.")
-
-
 
