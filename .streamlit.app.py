@@ -270,18 +270,16 @@ html(zoomed_html, height=800)
 
 
 
-# ======= FILTER USE CASES BASED ON SELECTED ATTRIBUTES =======
+# ---------- Calculate and show top use case ----------
 
-selected_attrs = list(st.session_state.selected)
-
-if selected_attrs:
-    mask = analysis_df[selected_attrs].gt(0).any(axis=1)
-    summed = analysis_df.loc[mask, selected_attrs].sum(axis=1)
-
-    if not summed.empty:
-        top_use_case = summed.idxmax()
-        st.success(f"🚀 **Top Use Case:** {top_use_case}")
-    else:
-        st.info("⚠ No matching use cases found for selected attributes.")
+if selected_attributes:
+    # Sum across selected columns for each row
+    summed = analysis_df[selected_attributes].sum(axis=1)
+    
+    # Identify the index (likely the use case name) with the highest sum
+    top_use_case = summed.idxmax()
+    
+    # Show the result in Streamlit
+    st.success(f"🚀 **Top Use Case:** {top_use_case}")
 else:
     st.info("👆 Select attributes above to see the top use case.")
