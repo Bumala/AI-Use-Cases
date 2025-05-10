@@ -272,22 +272,14 @@ html(zoomed_html, height=800)
 
 
 # ---------- Calculate and show top use case ----------
-selected_attributes = st.session_state.selected
+# Get top 3 indices
+top_3_indices = summed.nlargest(3).index
 
-# Always show the info message
-st.info("👆 Select attributes above to see the top use cases.")
+# Get their names from the DataFrame
+top_3_names = analysis_df.loc[top_3_indices, 'Use Case']
+top_3_scores = summed.loc[top_3_indices]
 
-# Calculate summed scores
-if selected_attributes:
-    summed = analysis_df[selected_attributes].sum(axis=1)
-else:
-    numeric_df = analysis_df.select_dtypes(include='number')
-    summed = numeric_df.sum(axis=1)
-
-# Get top 3 use cases
-top_3_use_cases = summed.nlargest(3)
-
-# Display top 3 names
+# Display them
 st.success("🚀 **Top 3 Use Cases:**")
-for i, (use_case, score) in enumerate(top_3_use_cases.items(), start=1):
-    st.write(f"{i}. {use_case}")
+for i, (name, score) in enumerate(zip(top_3_names, top_3_scores), start=1):
+    st.write(f"{i}. {name} (Score: {score})")
