@@ -1,6 +1,6 @@
 import streamlit as st
 import pandas as pd
-from streamlit.components.v1 import html
+from streamlit_javascript import st_javascript
 
 # Set page layout
 st.set_page_config(layout="wide")
@@ -30,218 +30,57 @@ for row in data[1:]:
 if "selected" not in st.session_state:
     st.session_state.selected = set()
 
-# ======= IMPROVED HTML TABLE GENERATION =======
-def generate_html_table(data, selected):
-    html = """
-    <style>
-        .ai-table {
-            border-collapse: collapse;
-            width: 100%;
-            font-family: Arial, sans-serif;
-            table-layout: fixed;
-        }
-        .ai-table td {
-            border: 1px solid #000;
-            padding: 8px;
-            text-align: center;
-            vertical-align: middle;
-        }
-        .category-header {
-            background-color: #61cbf3;
-            font-weight: bold;
-            width: 160px;
-        }
-        .dimension-header {
-            background-color: #94dcf8;
-            font-weight: bold;
-            width: 200px;
-        }
-        .attribute-cell {
-            background-color: #f1fbfe;
-            cursor: pointer;
-            width: 150px;
-        }
-        .selected {
-            background-color: #92D050 !important;
-        }
-        .header-row {
-            background-color: #E8E8E8;
-            font-weight: bold;
-        }
-    </style>
-    <table class="ai-table">
-    """
-    
-    # Header row
-    html += """
-    <tr class="header-row">
-        <td>Category</td>
-        <td>Dimension</td>
-        <td colspan="6">Attributes</td>
-    </tr>
-    """
-    
-    # Impact (What) section
-    html += """
-    <tr>
-        <td rowspan="4" class="category-header">Impact (What)</td>
-        <td class="dimension-header">Benefits</td>
-        <td class="attribute-cell" data-attr="Quality/Scope/Knowledge">Quality/Scope/Knowledge</td>
-        <td class="attribute-cell" data-attr="Time Efficiency">Time Efficiency</td>
-        <td class="attribute-cell" data-attr="Cost">Cost</td>
-        <td colspan="3"></td>
-    </tr>
-    <tr>
-        <td class="dimension-header">Focus within Business Model Navigator</td>
-        <td class="attribute-cell" data-attr="Customer Segments">Customer Segments</td>
-        <td class="attribute-cell" data-attr="Value Proposition">Value Proposition</td>
-        <td class="attribute-cell" data-attr="Value Chain">Value Chain</td>
-        <td class="attribute-cell" data-attr="Revenue Model">Revenue Model</td>
-        <td colspan="2"></td>
-    </tr>
-    <tr>
-        <td class="dimension-header">Aim</td>
-        <td class="attribute-cell" data-attr="Product Innovation">Product Innovation</td>
-        <td class="attribute-cell" data-attr="Process Innovation">Process Innovation</td>
-        <td class="attribute-cell" data-attr="Business Model Innovation">Business Model Innovation</td>
-        <td colspan="3"></td>
-    </tr>
-    <tr>
-        <td class="dimension-header">Ambidexterity</td>
-        <td class="attribute-cell" data-attr="Exploration">Exploration</td>
-        <td class="attribute-cell" data-attr="Exploitation">Exploitation</td>
-        <td colspan="4"></td>
-    </tr>
-    """
-    
-    # Technology (How) section
-    html += """
-    <tr>
-        <td rowspan="5" class="category-header">Technology (How)</td>
-        <td class="dimension-header">AI Role</td>
-        <td class="attribute-cell" data-attr="Automaton">Automaton</td>
-        <td class="attribute-cell" data-attr="Helper">Helper</td>
-        <td class="attribute-cell" data-attr="Partner">Partner</td>
-        <td colspan="3"></td>
-    </tr>
-    <tr>
-        <td class="dimension-header">AI Concepts</td>
-        <td class="attribute-cell" data-attr="Machine Learning">Machine Learning</td>
-        <td class="attribute-cell" data-attr="Deep Learning">Deep Learning</td>
-        <td class="attribute-cell" data-attr="Artificial Neural Networks">Artificial Neural Networks</td>
-        <td class="attribute-cell" data-attr="Natural Language Processing">Natural Language Processing</td>
-        <td class="attribute-cell" data-attr="Computer Vision">Computer Vision</td>
-        <td class="attribute-cell" data-attr="Robotics">Robotics</td>
-    </tr>
-    <tr>
-        <td class="dimension-header">Analytics Focus</td>
-        <td class="attribute-cell" data-attr="Descriptive">Descriptive</td>
-        <td class="attribute-cell" data-attr="Diagnostic">Diagnostic</td>
-        <td class="attribute-cell" data-attr="Predictive">Predictive</td>
-        <td class="attribute-cell" data-attr="Prescriptive">Prescriptive</td>
-        <td colspan="2"></td>
-    </tr>
-    <tr>
-        <td class="dimension-header">Analytics Problem</td>
-        <td class="attribute-cell" data-attr="Description/ Summary">Description/ Summary</td>
-        <td class="attribute-cell" data-attr="Clustering">Clustering</td>
-        <td class="attribute-cell" data-attr="Classification">Classification</td>
-        <td class="attribute-cell" data-attr="Dependency Analysis">Dependency Analysis</td>
-        <td class="attribute-cell" data-attr="Regression">Regression</td>
-        <td></td>
-    </tr>
-    <tr>
-        <td class="dimension-header">Data Type</td>
-        <td class="attribute-cell" data-attr="Customer Data">Customer Data</td>
-        <td class="attribute-cell" data-attr="Machine Data">Machine Data</td>
-        <td class="attribute-cell" data-attr="Business Data (Internal Data)">Business Data (Internal Data)</td>
-        <td class="attribute-cell" data-attr="Market Data">Market Data</td>
-        <td class="attribute-cell" data-attr="Public & Regulatory Data">Public & Regulatory Data</td>
-        <td class="attribute-cell" data-attr="Synthetic Data">Synthetic Data</td>
-    </tr>
-    """
-    
-    # Context (Where/When) section
-    html += """
-    <tr>
-        <td rowspan="2" class="category-header">Context (Where/When)</td>
-        <td class="dimension-header">Innovation Phase</td>
-        <td class="attribute-cell" data-attr="Front End">Front End</td>
-        <td class="attribute-cell" data-attr="Development">Development</td>
-        <td class="attribute-cell" data-attr="Market Introduction">Market Introduction</td>
-        <td colspan="3"></td>
-    </tr>
-    <tr>
-        <td class="dimension-header">Department</td>
-        <td class="attribute-cell" data-attr="R&D">R&D</td>
-        <td class="attribute-cell" data-attr="Manufacturing">Manufacturing</td>
-        <td class="attribute-cell" data-attr="Marketing & Sales">Marketing & Sales</td>
-        <td class="attribute-cell" data-attr="Customer Service">Customer Service</td>
-        <td colspan="2"></td>
-    </tr>
-    </table>
-    """
-    
-    # Add selected class to selected cells
-    for attr in selected:
-        html = html.replace(f'data-attr="{attr}"', f'data-attr="{attr}" class="selected"')
-    
+# ======= HTML TABLE WITH CLICK HANDLER =======
+def generate_html(data, selected):
+    html = "<table style='border-collapse:collapse; width:100%;'>"
+    for i, row in enumerate(data):
+        html += "<tr>"
+        for j, val in enumerate(row):
+            if val is None:
+                continue
+            bg = "#92D050" if val in selected else "#f1fbfe"
+            if j == 0:
+                bg = "#61cbf3"
+            elif j == 1:
+                bg = "#94dcf8"
+            attr_id = f"cell_{i}_{j}"
+            click_attr = f"data-attr='{val}'" if val in attributes else ""
+            html += f"<td id='{attr_id}' {click_attr} style='border:1px solid black; padding:10px; background-color:{bg}; cursor:pointer;'>{val}</td>"
+        html += "</tr>"
+    html += "</table>"
     return html
 
-# ======= JAVASCRIPT FOR INTERACTIVITY =======
-interaction_js = """
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    const table = document.querySelector('.ai-table');
-    
-    table.addEventListener('click', function(e) {
-        const cell = e.target.closest('[data-attr]');
-        if (!cell) return;
-        
-        const attr = cell.getAttribute('data-attr');
-        const isSelected = cell.classList.contains('selected');
-        
-        // Toggle selection
-        if (isSelected) {
-            cell.classList.remove('selected');
-        } else {
-            cell.classList.add('selected');
-        }
-        
-        // Send message to Streamlit
+# ======= RENDER HTML TABLE =======
+st.markdown(generate_html(data, st.session_state.selected), unsafe_allow_html=True)
+
+# ======= JAVASCRIPT TO CAPTURE CLICK =======
+js_code = """
+Array.from(document.querySelectorAll('td[data-attr]')).forEach(cell => {
+    cell.addEventListener('click', event => {
         window.parent.postMessage({
             isStreamlitMessage: true,
-            type: 'cellClick',
-            data: {
-                attribute: attr,
-                selected: !isSelected
-            }
+            type: 'streamlit_javascript',
+            data: cell.getAttribute('data-attr')
         }, '*');
+        cell.style.backgroundColor = '#92D050'; // Change color to green on click
     });
 });
-</script>
 """
 
-# ======= HANDLE CELL CLICKS =======
-def handle_cell_click():
-    if st.session_state.get('cell_click'):
-        attr = st.session_state.cell_click['attribute']
-        if st.session_state.cell_click['selected']:
-            st.session_state.selected.add(attr)
-        else:
-            st.session_state.selected.discard(attr)
-        st.experimental_rerun()
+clicked = st_javascript(js_code=js_code)
 
-# Initialize and handle clicks
-st.session_state.cell_click = None
-handle_cell_click()
+if clicked:
+    # Update selected items in session state
+    if clicked in st.session_state.selected:
+        st.session_state.selected.remove(clicked)
+    else:
+        st.session_state.selected.add(clicked)
+    st.experimental_rerun()
 
-# ======= DISPLAY THE TABLE =======
-html(generate_html_table(data, st.session_state.selected) + interaction_js, height=800)
-
-# ======= USE CASE ANALYSIS =======
-# (Include your analysis_df here - same as before)
+# ======= DUMMY ANALYSIS DATAFRAME =======
 analysis_df = pd.DataFrame({
+   
+
 
 
 
@@ -329,27 +168,21 @@ analysis_df = pd.DataFrame({
 
 
 
+
+
+
+
 })
 
-# Display selected attributes
-if st.session_state.selected:
-    st.subheader("Selected Attributes")
-    cols = st.columns(4)
-    for i, attr in enumerate(st.session_state.selected):
-        cols[i % 4].write(f"✓ {attr}")
+# Display use case suggestions based on selected items
+use_case_suggestions = []
+for index, row in analysis_df.iterrows():
+    relevant_use_cases = [use_case for use_case in row.index if use_case in st.session_state.selected]
+    if relevant_use_cases:
+        use_case_suggestions.append(row["Use Case"])
 
-    # Find matching use cases
-    matching_use_cases = []
-    for _, row in analysis_df.iterrows():
-        match = all(row.get(attr, 0) > 0 for attr in st.session_state.selected)
-        if match:
-            matching_use_cases.append(row["Use Case"])
+if use_case_suggestions:
+    st.write("### Suggested Use Cases based on your selection:")
+    for use_case in use_case_suggestions:
+        st.write(f"- {use_case}")
 
-    if matching_use_cases:
-        st.subheader("Recommended Use Cases")
-        for use_case in matching_use_cases:
-            st.success(f"▪ {use_case}")
-    else:
-        st.warning("No use cases match all selected attributes. Try selecting fewer or different attributes.")
-else:
-    st.info("Click on attributes in the table to see recommended use cases")
