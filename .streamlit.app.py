@@ -271,26 +271,25 @@ html(zoomed_html, height=800)
 
 
 
-
+import random
 
 if st.session_state.selected:
-    # Calculate scores
+    # Step 1: Calculate the score for each use case
     analysis_df["score"] = analysis_df[list(st.session_state.selected)].sum(axis=1)
 
-    # Get maximum score
+    # Step 2: Get the maximum score
     max_score = analysis_df["score"].max()
 
-    if max_score > 0:
-        # Filter use cases with max score
-        top_df = analysis_df[analysis_df["score"] == max_score]
+    # Step 3: Get all use cases with the top score
+    top_df = analysis_df[analysis_df["score"] == max_score]
 
-        # If more than 3, randomly select 3
-        if len(top_df) > 3:
-            top_use_cases = top_df.sample(3)["Use Case"].tolist()
-        else:
-            top_use_cases = top_df["Use Case"].tolist()
+    # Step 4: Randomly select 3 use cases if there are more than 3 with the top score
+    if len(top_df) > 3:
+        top_use_cases = random.sample(top_df["Use Case"].tolist(), 3)
+    else:
+        top_use_cases = top_df["Use Case"].tolist()
 
-        # Show use cases
-        st.subheader("Top Use Cases")
-        for i, use_case in enumerate(top_use_cases, 1):
-            st.write(f"{i}. {use_case}")
+    # Step 5: Show the use cases
+    st.subheader("Top Use Cases")
+    for i, use_case in enumerate(top_use_cases, 1):
+        st.write(f"{i}. {use_case}")
