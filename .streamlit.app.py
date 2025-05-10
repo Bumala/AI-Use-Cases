@@ -271,7 +271,7 @@ html(zoomed_html, height=800)
 
 
 # ---------- Calculate and show top use case ----------
-
+selected_attributes = st.session_state.selected
 if selected_attributes:
     # Sum across selected columns for each row
     summed = analysis_df[selected_attributes].sum(axis=1)
