@@ -53,7 +53,7 @@ def generate_html_table(data, selected):
         (4, 2), (4, 3)
     }
 
-    html = "<table style='border-spacing: 0; width: 100%; border-collapse: collapse; table-layout: fixed; border: 3px solid #000000;'>"
+    html = "<table style='border-spacing: 0; border-collapse: collapse; table-layout: fixed; border: 3px solid #000000;'>"
 
     for i, row in enumerate(data):
         html += "<tr>"
@@ -81,29 +81,6 @@ def generate_html_table(data, selected):
                     html += f"<td style='{style(second_col_width, bold=True, border_bottom=True)} background-color: #E8E8E8;'>{val}</td>"
                 elif j == 2:
                     html += f"<td colspan='6' style='{style(base_cell_width * 6, bold=True, border_bottom=True)} background-color: #E8E8E8;'>{val}</td>"
-            
-            # First column cells with rowspan
-            elif j == 0:
-                if i == 1:
-                    html += f"<td rowspan='4' style='{style(first_col_width, bold=True, border_bottom=True)} background-color: #61cbf3;'>{val}</td>"
-                elif i == 5:
-                    html += f"<td rowspan='5' style='{style(first_col_width, bold=True, border_bottom=True)} background-color: #61cbf3;'>{val}</td>"
-                elif i == 10:
-                    html += f"<td rowspan='2' style='{style(first_col_width, bold=True)} background-color: #61cbf3;'>{val}</td>"
-            
-            # Special formatting for certain cells
-            elif (i == 4 and j == 1) or (i == 9 and j == 1):
-                html += f"<td {click_attr}{cell_class} style='{style(base_cell_width, bold=True, border_bottom=True)} background-color: {bg_color}; cursor: pointer;'>{val}</td>"
-            elif i == 9 and j in {2, 4, 6}:
-                html += f"<td {click_attr}{cell_class} style='{style(base_cell_width)} background-color: {bg_color}; border-bottom: 3px solid #000000; cursor: pointer;'>{val}</td>"
-            elif i > 0 and j == 1:
-                html += f"<td style='{style(second_col_width, bold=True)} background-color: #94dcf8;'>{val}</td>"
-            
-            # Cells with colspan
-            elif (i, j) in colspan_3:
-                html += f"<td {click_attr}{cell_class} colspan='3' style='{style(base_cell_width * 3)} background-color: {bg_color}; border-bottom: 3px solid #000000; cursor: pointer;'>{val}</td>"
-            elif (i, j) in colspan_2:
-                html += f"<td {click_attr}{cell_class} colspan='2' style='{style(base_cell_width * 2)} background-color: {bg_color}; cursor: pointer;'>{val}</td>"
             else:
                 html += f"<td {click_attr}{cell_class} style='{style(base_cell_width)} background-color: {bg_color}; cursor: pointer;'>{val}</td>"
         html += "</tr>"
@@ -136,16 +113,17 @@ function handleCellClick(element) {
 
 # ======= HANDLE CELL CLICKS =======
 def handle_cell_click():
-    if st.session_state.get('cell_click'):
-        attr = st.session_state.cell_click['attribute']
-        if st.session_state.cell_click['selected']:
-            st.session_state.selected.add(attr)
-        else:
-            st.session_state.selected.discard(attr)
-        st.experimental_rerun()
+    if "cell_click" in st.session_state and st.session_state.cell_click:
+        attr = st.session_state.cell_click.get("attribute")
+        selected = st.session_state.cell_click.get("selected")
+        if attr:
+            if selected:
+                st.session_state.selected.add(attr)
+            else:
+                st.session_state.selected.discard(attr)
+        st.session_state.cell_click = None
 
 # Initialize and handle clicks
-st.session_state.cell_click = None
 handle_cell_click()
 
 # ======= DISPLAY THE TABLE =======
@@ -157,7 +135,7 @@ st.markdown("""
             align-items: center;
             height: 100vh;
             overflow: auto;
-            transform: scale(0.85); /* Adjust the scale to zoom out */
+            transform: scale(0.8); /* Adjust the scale to zoom out */
             transform-origin: center top;
         }
     </style>
