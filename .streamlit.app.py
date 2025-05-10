@@ -269,17 +269,10 @@ zoomed_html = f"""
 html(zoomed_html, height=800)
 
 
-
-# ---------- Calculate and show top use case ----------
-selected_attributes = st.session_state.selected
 if selected_attributes:
-    # Sum across selected columns for each row
     summed = analysis_df[selected_attributes].sum(axis=1)
-    
-    # Identify the index (likely the use case name) with the highest sum
-    top_use_case = summed.idxmax()
-    
-    # Show the result in Streamlit
-    st.success(f"🚀 **Top Use Case:** {top_use_case}")
+    top_indices = summed.nlargest(3).index
+    top_use_cases = analysis_df.loc[top_indices, 'Use Case']
+    st.success("🚀 **Top Use Cases:**\n" + "\n".join([f"{i+1}. {uc}" for i, uc in enumerate(top_use_cases)]))
 else:
     st.info("👆 Select attributes above to see the top use case.")
