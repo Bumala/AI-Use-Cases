@@ -278,13 +278,15 @@ if st.session_state.selected:
     
     if not filtered_df.empty:
         # Sort by score descending
-        recommended_cases = filtered_df.sort_values('Score', ascending=False)
-        
-        st.subheader("Recommended Use Cases (Highest to Lowest Score)")
-        for _, row in recommended_cases.iterrows():
-            st.success(f"▪ {row['Use Case']} (Score: {row['Score']})")
+        highest_score = filtered_df['Score'].max()
+        top_use_cases = filtered_df[filtered_df['Score'] == highest_score]
+
+        # Randomly select one use case if there is a tie
+        recommended_use_case = top_use_cases.sample(1).iloc[0]
+
+        st.subheader("Recommended Use Case")
+        st.success(f"▪ {recommended_use_case['Use Case']} (Score: {recommended_use_case['Score']})")
     else:
         st.warning("No use cases match the selected attributes")
 else:
     st.info("Click on attributes in the table to see recommended use cases")
-
