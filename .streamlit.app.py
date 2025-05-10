@@ -287,3 +287,44 @@ if st.session_state.selected:
         st.warning("No use cases match the selected attributes")
 else:
     st.info("Click on attributes in the table to see recommended use cases")
+
+
+
+
+
+import random
+
+# Render the HTML table with interaction script
+st.markdown(generate_html_table(data, st.session_state.selected), unsafe_allow_html=True)
+st.markdown(interaction_js, unsafe_allow_html=True)
+
+# Sum the values for selected attributes
+if st.session_state.selected:
+    selected_cols = [attr for attr in st.session_state.selected if attr in analysis_df.columns]
+    summed = analysis_df[selected_cols].sum(axis=1)
+    max_sum = summed.max()
+    top_use_cases = analysis_df['Use Case'][summed == max_sum].tolist()
+    recommended_use_case = random.choice(top_use_cases)
+    st.markdown(f"<div style='margin-top:20px; font-size:20px; font-weight:bold;'>Recommended Use Case: {recommended_use_case}</div>", unsafe_allow_html=True)
+else:
+    st.markdown("<div style='margin-top:20px; font-size:16px;'>Select cells to get a use case recommendation.</div>", unsafe_allow_html=True)
+
+# Receive and process cell click events from the frontend
+st.components.v1.html(f"""
+<script>
+window.addEventListener('message', (event) => {{
+    const message = event.data;
+    if (message.type === 'cellClick') {{
+        const attr = message.data.attribute;
+        const selected = message.data.selected;
+        window.parent.postMessage({{
+            isStreamlitMessage: true,
+            type: 'streamlit:setComponentValue',
+            key: 'cell_click',
+            value: {{ attribute: attr, selected: selected }},
+        }}, '*');
+    }}
+}});
+</script>
+""", height=0)
+
