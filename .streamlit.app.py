@@ -292,8 +292,6 @@ else:
 
 
 
-# Add the table to the Streamlit app
-st.markdown(interaction_js + generate_html_table(data, st.session_state.selected), unsafe_allow_html=True)
 
 # Calculate and display the recommended use case
 if st.session_state.selected:
