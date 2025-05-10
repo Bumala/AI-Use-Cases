@@ -269,30 +269,3 @@ analysis_df = pd.DataFrame({
 
 
 
-
-# Display selected attributes and matching use cases
-if st.session_state.selected:
-    st.subheader("Selected Attributes")
-    cols = st.columns(4)
-    for i, attr in enumerate(st.session_state.selected):
-        cols[i % 4].write(f"✓ {attr}")
-
-    # Find use cases that match ALL selected attributes
-    matching_use_cases = []
-    for _, row in analysis_df.iterrows():
-        match = True
-        for attr in st.session_state.selected:
-            if attr in row.index and row[attr] == 0:
-                match = False
-                break
-        if match:
-            matching_use_cases.append(row["Use Case"])
-
-    if matching_use_cases:
-        st.subheader("Recommended Use Cases")
-        for use_case in matching_use_cases:
-            st.success(f"▪ {use_case}")
-    else:
-        st.warning("No use cases match all selected attributes. Try selecting fewer attributes.")
-else:
-    st.info("Click on attributes in the table to see recommended use cases")
