@@ -279,50 +279,5 @@ if selected_attributes:
 else:
     st.info("👆 Select attributes above to see the top use case.")
 
-# ---------- Generate styled HTML table ----------
 
-def generate_html_table(df):
-    first_col_width = 160
-    second_col_width = 200
-    base_cell_width = 150
-    cell_height = 50
-
-    def style(width, bold=False):
-        bold_style = "font-weight: bold;" if bold else ""
-        return f"text-align: center; vertical-align: middle; padding: 10px; border: 1px solid #000000; width: {width}px; height: {cell_height}px; {bold_style}"
-
-    html = "<table style='border-spacing: 0; width: 100%; border-collapse: collapse; table-layout: fixed; border: 3px solid #000000;'>"
-    for i, row in df.iterrows():
-        html += "<tr>"
-        for j, val in enumerate(row):
-            if pd.isna(val):
-                continue
-            width = first_col_width if j == 0 else (second_col_width if j == 1 else base_cell_width)
-            bg_color = "#E8E8E8" if i == 0 else "#61cbf3" if j == 0 else "#94dcf8" if j == 1 else "#f1fbfe"
-            bold = i == 0 or j <=1
-            attr_name = str(val)
-            highlight = "background-color: #92D050;" if attr_name in selected_attributes else f"background-color: {bg_color};"
-            html += f"<td style='{style(width, bold)} {highlight}'>{val}</td>"
-        html += "</tr>"
-    html += "</table>"
-    return html
-
-# ---------- Show HTML table ----------
-
-st.markdown(
-    """
-    <style>
-        .center-table {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            width: 100%;
-            margin: 0 auto;
-        }
-    </style>
-    """,
-    unsafe_allow_html=True,
-)
-
-st.markdown('<div class="center-table">' + generate_html_table(df) + '</div>', unsafe_allow_html=True)
 
