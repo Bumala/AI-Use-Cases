@@ -270,29 +270,59 @@ analysis_df = pd.DataFrame({
 
 
 
-# Display selected attributes and matching use cases
-if st.session_state.selected:
-    st.subheader("Selected Attributes")
-    cols = st.columns(4)
-    for i, attr in enumerate(st.session_state.selected):
-        cols[i % 4].write(f"✓ {attr}")
+# ---------- Calculate and show top use case ----------
 
-    # Find use cases that match ALL selected attributes
-    matching_use_cases = []
-    for _, row in analysis_df.iterrows():
-        match = True
-        for attr in st.session_state.selected:
-            if attr in row.index and row[attr] == 0:
-                match = False
-                break
-        if match:
-            matching_use_cases.append(row["Use Case"])
-
-    if matching_use_cases:
-        st.subheader("Recommended Use Cases")
-        for use_case in matching_use_cases:
-            st.success(f"▪ {use_case}")
-    else:
-        st.warning("No use cases match all selected attributes. Try selecting fewer attributes.")
+if selected_attributes:
+    summed = analysis_table[selected_attributes].sum(axis=1)
+    top_use_case = summed.idxmax()
+    st.success(f"🚀 **Top Use Case:** {top_use_case}")
 else:
-    st.info("Click on attributes in the table to see recommended use cases")
+    st.info("👆 Select attributes above to see the top use case.")
+
+# ---------- Generate styled HTML table ----------
+
+def generate_html_table(df):
+    first_col_width = 160
+    second_col_width = 200
+    base_cell_width = 150
+    cell_height = 50
+
+    def style(width, bold=False):
+        bold_style = "font-weight: bold;" if bold else ""
+        return f"text-align: center; vertical-align: middle; padding: 10px; border: 1px solid #000000; width: {width}px; height: {cell_height}px; {bold_style}"
+
+    html = "<table style='border-spacing: 0; width: 100%; border-collapse: collapse; table-layout: fixed; border: 3px solid #000000;'>"
+    for i, row in df.iterrows():
+        html += "<tr>"
+        for j, val in enumerate(row):
+            if pd.isna(val):
+                continue
+            width = first_col_width if j == 0 else (second_col_width if j == 1 else base_cell_width)
+            bg_color = "#E8E8E8" if i == 0 else "#61cbf3" if j == 0 else "#94dcf8" if j == 1 else "#f1fbfe"
+            bold = i == 0 or j <=1
+            attr_name = str(val)
+            highlight = "background-color: #92D050;" if attr_name in selected_attributes else f"background-color: {bg_color};"
+            html += f"<td style='{style(width, bold)} {highlight}'>{val}</td>"
+        html += "</tr>"
+    html += "</table>"
+    return html
+
+# ---------- Show HTML table ----------
+
+st.markdown(
+    """
+    <style>
+        .center-table {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            margin: 0 auto;
+        }
+    </style>
+    """,
+    unsafe_allow_html=True,
+)
+
+st.markdown('<div class="center-table">' + generate_html_table(df) + '</div>', unsafe_allow_html=True)
+
