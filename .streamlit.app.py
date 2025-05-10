@@ -281,7 +281,8 @@ st.info("👆 Select attributes above to see the top use cases.")
 if selected_attributes:
     summed = analysis_df[selected_attributes].sum(axis=1)
 else:
-    summed = analysis_df.sum(axis=1)
+    numeric_df = analysis_df.select_dtypes(include='number')
+    summed = numeric_df.sum(axis=1)
 
 # Get top 3 use cases
 top_3_use_cases = summed.nlargest(3)
