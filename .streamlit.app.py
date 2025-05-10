@@ -275,10 +275,10 @@ html(zoomed_html, height=800)
 selected_attrs = list(st.session_state.selected)
 
 if selected_attrs:
-    mask = analysis_table[selected_attrs].gt(0).any(axis=1)
-    filtered_df = analysis_table[mask]
+    mask = analysis_df[selected_attrs].gt(0).any(axis=1)
+    filtered_df = analysis_df[mask]
 else:
-    filtered_df = analysis_table
+    filtered_df = analysis_df
 
 st.write("### Filtered Use Cases")
 st.dataframe(filtered_df)
