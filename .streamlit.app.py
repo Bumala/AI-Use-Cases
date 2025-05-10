@@ -143,19 +143,32 @@ function handleCellClick(element) {
 </script>
 """
 
-# ======= HANDLE CELL CLICKS =======
-def handle_cell_click():
-    if st.session_state.get('cell_click'):
-        attr = st.session_state.cell_click['attribute']
-        if st.session_state.cell_click['selected']:
-            st.session_state.selected.add(attr)
-        else:
-            st.session_state.selected.discard(attr)
-        st.experimental_rerun()
+# ======= DISPLAY HTML TABLE =======
+st.markdown(generate_html_table(data, st.session_state.selected), unsafe_allow_html=True)
+st.markdown(interaction_js, unsafe_allow_html=True)
 
-# Initialize and handle clicks
-st.session_state.cell_click = None
-handle_cell_click()
+# ======= FILTER AND HIGHLIGHT analysis_df =======
+if st.session_state.selected:
+    # Get selected attributes that are columns in analysis_df
+    selected_cols = [col for col in st.session_state.selected if col in analysis_df.columns]
+    
+    # Filter rows where any selected attribute column has nonzero value
+    filtered_df = analysis_df[
+        analysis_df[selected_cols].apply(lambda row: any(row != 0), axis=1)
+    ]
+
+    # Highlight the selected columns in the DataFrame
+    def highlight_selected(s):
+        return ['background-color: yellow' if col in selected_cols else '' for col in s.index]
+
+    st.write("### Filtered Use Cases (based on selected attributes)")
+    st.dataframe(
+        filtered_df.style.apply(highlight_selected, axis=1),
+        use_container_width=True
+    )
+else:
+    st.write("### Full Use Cases")
+    st.dataframe(analysis_df, use_container_width=True)
 
 # ======= USE CASE ANALYSIS DATAFRAME =======
 analysis_df = pd.DataFrame({
