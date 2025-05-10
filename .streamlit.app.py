@@ -236,6 +236,26 @@ analysis_df = pd.DataFrame({
 
 
 })
+# ======= DISPLAY THE TABLE WITH ZOOM AND CENTERING =======
+st.markdown("""
+    <style>
+        .center-table {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            height: 100%;
+            margin: 0 auto;
+            transform: scale(0.9);
+            transform-origin: top center;
+        }
+        table {
+            width: 100%;
+        }
+    </style>
+""", unsafe_allow_html=True)
+
+st.markdown('<div class="center-table">' + generate_html_table(data, st.session_state.selected) + '</div>', unsafe_allow_html=True)
 
 # Display selected attributes and matching use cases
 if st.session_state.selected:
