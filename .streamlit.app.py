@@ -272,6 +272,16 @@ html(zoomed_html, height=800)
 
 
 # ---------- Calculate and show top use case ----------
+selected_attributes = st.session_state.selected
+
+if selected_attributes:
+    numeric_df = analysis_df[selected_attributes]
+else:
+    # fallback to all numeric columns (except the use case name column)
+    numeric_df = analysis_df.select_dtypes(include='number')
+
+summed = numeric_df.sum(axis=1)
+
 # Get top 3 indices
 top_3_indices = summed.nlargest(3).index
 
@@ -279,7 +289,10 @@ top_3_indices = summed.nlargest(3).index
 top_3_names = analysis_df.loc[top_3_indices, 'Use Case']
 top_3_scores = summed.loc[top_3_indices]
 
-# Display them
+# Always display this sentence
+st.info("👆 Select attributes above to see the top use cases.")
+
+# Display top 3 use cases
 st.success("🚀 **Top 3 Use Cases:**")
 for i, (name, score) in enumerate(zip(top_3_names, top_3_scores), start=1):
     st.write(f"{i}. {name} (Score: {score})")
