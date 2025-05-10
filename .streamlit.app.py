@@ -148,8 +148,49 @@ def handle_cell_click():
 st.session_state.cell_click = None
 handle_cell_click()
 
+
+
+
+
+
+
+
+
+
+
+
 # ======= DISPLAY THE TABLE =======
-html(generate_html_table(data, st.session_state.selected) + interaction_js, height=800)
+st.markdown("""
+    <style>
+        .center-table {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh; /* Full viewport height */
+            transform: scale(0.8); /* Adjust scale to zoom out */
+            transform-origin: top center; /* Center the zoom effect */
+        }
+    </style>
+    <div class="center-table">
+""" + generate_html_table(data, st.session_state.selected) + """
+    </div>
+""", unsafe_allow_html=True)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 # ======= USE CASE ANALYSIS =======
 analysis_df = pd.DataFrame({
@@ -236,38 +277,6 @@ analysis_df = pd.DataFrame({
 
 
 })
-
-
-# Add CSS for centering and zooming out the table
-st.markdown("""
-    <style>
-        .center-table {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh; /* Full viewport height */
-            transform: scale(0.8); /* Adjust scale to zoom out */
-            transform-origin: top center; /* Set zoom-out origin */
-        }
-    </style>
-""", unsafe_allow_html=True)
-
-# Wrap the table in a div with the 'center-table' class
-st.markdown(f"""
-    <div class="center-table">
-        {generate_html_table(data, st.session_state.selected)}
-    </div>
-""", unsafe_allow_html=True)
-
-
-
-
-
-
-
-
-
-
 
 
 
