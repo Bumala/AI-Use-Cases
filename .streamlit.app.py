@@ -143,32 +143,19 @@ function handleCellClick(element) {
 </script>
 """
 
-# ======= DISPLAY HTML TABLE =======
-st.markdown(generate_html_table(data, st.session_state.selected), unsafe_allow_html=True)
-st.markdown(interaction_js, unsafe_allow_html=True)
+# ======= HANDLE CELL CLICKS =======
+def handle_cell_click():
+    if st.session_state.get('cell_click'):
+        attr = st.session_state.cell_click['attribute']
+        if st.session_state.cell_click['selected']:
+            st.session_state.selected.add(attr)
+        else:
+            st.session_state.selected.discard(attr)
+        st.experimental_rerun()
 
-# ======= FILTER AND HIGHLIGHT analysis_df =======
-if st.session_state.selected:
-    # Get selected attributes that are columns in analysis_df
-    selected_cols = [col for col in st.session_state.selected if col in analysis_df.columns]
-    
-    # Filter rows where any selected attribute column has nonzero value
-    filtered_df = analysis_df[
-        analysis_df[selected_cols].apply(lambda row: any(row != 0), axis=1)
-    ]
-
-    # Highlight the selected columns in the DataFrame
-    def highlight_selected(s):
-        return ['background-color: yellow' if col in selected_cols else '' for col in s.index]
-
-    st.write("### Filtered Use Cases (based on selected attributes)")
-    st.dataframe(
-        filtered_df.style.apply(highlight_selected, axis=1),
-        use_container_width=True
-    )
-else:
-    st.write("### Full Use Cases")
-    st.dataframe(analysis_df, use_container_width=True)
+# Initialize and handle clicks
+st.session_state.cell_click = None
+handle_cell_click()
 
 # ======= USE CASE ANALYSIS DATAFRAME =======
 analysis_df = pd.DataFrame({
@@ -301,24 +288,3 @@ if st.session_state.selected:
 else:
     st.info("Click on attributes in the table to see recommended use cases")
 
-
-
-
-
-
-# Calculate and display the recommended use case
-if st.session_state.selected:
-    # Sum up values across selected attributes
-    selected_cols = [col for col in analysis_df.columns if col in st.session_state.selected]
-    summed = analysis_df[selected_cols].sum(axis=1)
-
-    # Find max value and corresponding use cases
-    max_value = summed.max()
-    best_use_cases = analysis_df.loc[summed == max_value, 'Use Case'].tolist()
-
-    # Pick one at random if multiple
-    import random
-    recommended = random.choice(best_use_cases)
-
-    # Display recommendation
-    st.markdown(f"<h3>Recommended Use Case:</h3><p>{recommended}</p>", unsafe_allow_html=True)
