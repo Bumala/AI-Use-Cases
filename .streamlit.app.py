@@ -121,10 +121,16 @@ handle_cell_click()
 
 # ======= USE CASE ANALYSIS DATAFRAME =======
 analysis_df = pd.DataFrame({
-    "Use Case": ["Use Case 1", "Use Case 2"],  # Example use cases
-    "Quality/Scope/Knowledge": [2, 3],
-    "Time Efficiency": [4, 1],
-    "Cost": [1, 5]
+    "Use Case": [
+        "AI-infused experiments in R&D",
+        "AI-powered manufacturing planning",
+        "AI-driven ideation",
+        "AI-enabled predictive maintenance",
+        "AI-optimized processes",
+    ],
+    "Quality/Scope/Knowledge": [2, 3, 4, 5, 1],
+    "Time Efficiency": [4, 3, 1, 5, 2],
+    "Cost": [1, 2, 5, 3, 4],
 })
 
 # ======= DISPLAY THE TABLE =======
