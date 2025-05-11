@@ -270,13 +270,26 @@ html(zoomed_html, height=800)
 
 
 
+# ======= MAP CELL COORDINATES TO WORDS =======
+cell_to_word_mapping = {
+    (1, 2): "Quality/Scope/Knowledge",
+    (1, 3): "Time Efficiency",
+    (1, 4): "Cost",
+    (2, 2): "Customer Segments",
+    (2, 3): "Value Proposition",
+    (2, 4): "Value Chain",
+    # Add more mappings as needed
+}
 
-# ======= DISPLAY SELECTED ITEMS =======
+# ======= DISPLAY SELECTED ITEMS WITH MAPPING =======
 st.markdown("### Selected Items")
 if st.session_state.selected:
-    for item in st.session_state.selected:
-        st.write(f"🟢 {item}")  # You can replace "🟢" with any symbol or styling you prefer
+    for cell in st.session_state.selected:
+        # Check if the selected cell is in the mapping
+        word = cell_to_word_mapping.get(cell)
+        if word:
+            st.write(f"🟢 {word}")  # Display the corresponding word
+        else:
+            st.write(f"🔵 {cell}")  # Display the cell itself if no mapping is found
 else:
-    st.info("No items selected yet.")
-
-
+    st.info("No cells selected yet.")
