@@ -276,3 +276,34 @@ zoomed_html = f"""
 
 html(zoomed_html, height=800)
 
+
+
+
+
+
+from streamlit.components.v1 import html
+
+# Add a simple HTML table with JavaScript to print coordinates and content on cell click
+html("""
+<table id="clickableTable" border="1" style="margin-top: 30px;">
+  <tr><td>A1</td><td>B1</td><td>C1</td></tr>
+  <tr><td>A2</td><td>B2</td><td>C2</td></tr>
+  <tr><td>A3</td><td>B3</td><td>C3</td></tr>
+</table>
+<div id="output" style="margin-top: 10px; font-weight: bold;"></div>
+
+<script>
+  const table = document.getElementById("clickableTable");
+  const output = document.getElementById("output");
+
+  table.querySelectorAll("td").forEach((cell, index) => {
+    cell.addEventListener("click", () => {
+      const row = cell.parentNode.rowIndex;
+      const col = cell.cellIndex;
+      const content = cell.innerText;
+      output.innerText = `Clicked Cell - Row: ${row}, Column: ${col}, Content: "${content}"`;
+    });
+  });
+</script>
+""", height=300)
+
