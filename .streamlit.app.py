@@ -272,7 +272,15 @@ html(zoomed_html, height=800)
 
 
 
-# HTML + JS to extract only cells with #92D050 background
+
+
+
+
+
+import streamlit as st
+import streamlit.components.v1 as components
+
+# HTML and JavaScript for the table
 html_code = """
 <div id="table-wrapper">
     <table id="color-table" border="1" style="border-collapse: collapse;">
@@ -313,30 +321,39 @@ html_code = """
                 }
             }
         }
-        const streamlitMsg = window.parent;
-        streamlitMsg.postMessage({ isStreamlitMessage: true, type: "streamlit:setComponentValue", value: greenCells }, "*");
+        // Send green cells to Streamlit using session_state
+        window.parent.postMessage({ isStreamlitMessage: true, type: "streamlit:setComponentValue", value: greenCells }, "*");
     };
 
     findGreenCells();
-    setInterval(findGreenCells, 1000);  // Run every 1s
+    setInterval(findGreenCells, 1000);  // Run every 1s to track updates
 </script>
 """
 
-# Display HTML + capture green cell coordinates
-green_cells = components.html(html_code, height=300)
+# Initialize session_state variable for storing green cells if not already present
+if "green_cells" not in st.session_state:
+    st.session_state.green_cells = []
 
-# Display green cell coordinates as a bar
-if green_cells:
-    if len(green_cells) > 0:
-        coords_str = ', '.join([f"({c['row']}, {c['col']})" for c in green_cells])
-        st.markdown(f"""
-        <div style="background-color:#f0f0f0; padding:10px; border-radius:5px; border:1px solid #ccc; margin-bottom:10px;">
-            <strong>Cells with <span style="color:#92D050;">#92D050</span>:</strong> {coords_str}
-        </div>
-        """, unsafe_allow_html=True)
-    else:
-        st.markdown(f"""
-        <div style="background-color:#f0f0f0; padding:10px; border-radius:5px; border:1px solid #ccc; margin-bottom:10px;">
-            <strong>No light green cells detected.</strong>
-        </div>
-        """, unsafe_allow_html=True)
+# Function to display and update the list of green cells
+def update_green_cells(cells):
+    # Update session state with new green cell coordinates
+    st.session_state.green_cells = cells
+
+# Create the HTML table and capture green cell coordinates in session state
+components.html(html_code, height=300)
+
+# Display the coordinates of the green cells in a bar
+if st.session_state.green_cells:
+    coords_str = ', '.join([f"({c['row']}, {c['col']})" for c in st.session_state.green_cells])
+    st.markdown(f"""
+    <div style="background-color:#f0f0f0; padding:10px; border-radius:5px; border:1px solid #ccc; margin-bottom:10px;">
+        <strong>Cells with <span style="color:#92D050;">#92D050</span>:</strong> {coords_str}
+    </div>
+    """, unsafe_allow_html=True)
+else:
+    st.markdown(f"""
+    <div style="background-color:#f0f0f0; padding:10px; border-radius:5px; border:1px solid #ccc; margin-bottom:10px;">
+        <strong>No light green cells detected.</strong>
+    </div>
+    """, unsafe_allow_html=True)
+
