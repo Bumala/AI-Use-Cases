@@ -117,12 +117,30 @@ analysis_df = pd.DataFrame({
 
 
 
+st.write("Analysis DataFrame:")
+st.dataframe(analysis_df)
+
+
+
+
+
+
+
+
+
 
 
 
 # ======= SESSION STATE =======
 if "selected" not in st.session_state:
     st.session_state.selected = set()
+
+
+
+
+
+
+
 
 # ======= HANDLE CELL CLICKS =======
 def handle_cell_click():
