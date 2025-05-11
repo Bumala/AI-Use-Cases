@@ -333,6 +333,48 @@ setTimeout(() => {{
 
 
 
+selected_table_html = generate_html_table(data, st.session_state.selected)
+html(
+    f"""
+    {interaction_js}
+    {selected_table_html}
+    <input type="text" id="selectedAttribute" style="display:none;" oninput="sendValueToStreamlit(this.value)" />
+    <script>
+    function sendValueToStreamlit(val) {{
+        const streamlitInput = window.parent.document.querySelector('iframe').contentWindow;
+        streamlitInput.postMessage({{
+            isStreamlitMessage: true,
+            type: 'streamlit:setComponentValue',
+            value: val
+        }}, '*');
+    }}
+    
+    function handleCellClick(element) {{
+        const attr = element.getAttribute('data-attr');
+        const isSelected = element.style.backgroundColor === 'rgb(146, 208, 80)';
+        element.style.backgroundColor = isSelected ? '#f1fbfe' : '#92D050';
+        document.getElementById('selectedAttribute').value = attr;
+        document.getElementById('selectedAttribute').dispatchEvent(new Event('input'));
+    }}
+    </script>
+    """,
+    height=600,
+)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
  
 # ======= MAP CELL COORDINATES TO WORDS =======
 cell_to_word_mapping = {
