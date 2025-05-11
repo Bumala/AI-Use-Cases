@@ -238,17 +238,25 @@ def generate_html_table(data, selected):
 
 
 
+# ---------- Show HTML table ----------
 
+st.markdown(
+    """
+    <style>
+        .center-table {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            margin: 0 auto;
+        }
+    </style>
+    """,
+    unsafe_allow_html=True,
+)
 
-# ======= DISPLAY THE TABLE =======
-zoomed_html = f"""
-<div style="display: flex; justify-content: center; align-items: center; height: 100%; transform: scale(0.8); transform-origin: top;">
-    {generate_html_table(data, st.session_state.selected)}
-</div>
-{interaction_js}
-"""
+st.markdown('<div class="center-table">' + generate_html_table(df) + '</div>', unsafe_allow_html=True)
 
-html(zoomed_html, height=800)
 
 
 
