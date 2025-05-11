@@ -148,29 +148,8 @@ def handle_cell_click():
 st.session_state.cell_click = None
 handle_cell_click()
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 # ======= USE CASE ANALYSIS =======
-analysis_df = pd.DataFrame({
+analysis_data = {
 
 
 
@@ -208,8 +187,6 @@ analysis_df = pd.DataFrame({
         "AI-driven vehicles sales prediction"
     ],
 
-const analysisData = {
-    
     "Quality/Scope/Knowledge": [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2],
     "Time Efficiency": [2, 2, 2, 0, 0, 0, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 0, 2, 0, 2, 0, 2, 2, 2, 0, 0],
     "Cost": [2, 2, 0, 0, 0, 0, 2, 1, 2, 2, 0, 2, 2, 0, 2, 0, 2, 0, 2, 2, 0, 2, 0, 2, 0, 2, 0, 0, 0, 0],
@@ -254,8 +231,20 @@ const analysisData = {
     "Marketing & Sales": [0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 2, 0, 2, 2, 2, 0, 2, 2, 0, 0, 2, 2, 1, 0, 0, 0, 0, 0, 0, 1],
     "Customer Service": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 1, 2, 2, 2, 2, 2, 2, 2]
 
-};
+}
 
+df = pd.DataFrame(analysis_data)
+
+# Filter data based on selected categories
+filtered_df = df[df["Category"].isin(st.session_state.selected)] if st.session_state.selected else pd.DataFrame(columns=["Use Case", "Category"])
+
+# Show filtered results dynamically
+st.subheader("Top Use Cases Based on Selection")
+st.dataframe(filtered_df)
+
+# Show Table
+html_code = generate_html_table(data, st.session_state.selected)
+html(html_code + interaction_js, height=600)
 
 
 
