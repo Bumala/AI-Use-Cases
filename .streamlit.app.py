@@ -276,8 +276,8 @@ zoomed_html = f"""
 <div style="display: flex; justify-content: center; align-items: center; height: 100%; transform: scale(0.8); transform-origin: top;">
     {generate_html_table(data, st.session_state.selected)}
 </div>
-{interaction_js}
+<script>
+    {interaction_js}
+</script>
 """
-
 html(zoomed_html, height=800)
-
