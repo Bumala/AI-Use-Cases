@@ -134,61 +134,63 @@ function handleCellClick(element) {
 </script>
 """
 
+
+
+
+
+
+
+
+
+
 # ======= HANDLE CELL CLICKS =======
 import streamlit as st
 
-# Define target actions per cell using a dictionary
+# Define the cell-action dictionary
 cell_actions = {
     (1, 2): lambda: st.success("✅ Cell (1, 2) is green — running logic for (1, 2)!"),
     (3, 4): lambda: st.warning("⚠️ Cell (3, 4) is green — triggering another action."),
     (7, 6): lambda: st.info("ℹ️ Cell (7, 6) is green — showing some information."),
-    # Add more cells as needed
 }
 
-
-
-
-# Initialize color and selection state
+# Initialize state if needed
 if "cell_colors" not in st.session_state:
     st.session_state.cell_colors = {}
 if "selected" not in st.session_state:
     st.session_state.selected = set()
+if "cell_click" not in st.session_state:
+    st.session_state.cell_click = None
 
+# ✅ Check green target cells BEFORE handling click
+for coord, action in cell_actions.items():
+    if st.session_state.cell_colors.get(coord) == '#92D050':
+        action()
+
+# ⬇️ Function to handle the cell click and possibly change color
 def handle_cell_click():
-    if st.session_state.get('cell_click'):
-        attr = st.session_state.cell_click['attribute']
-        row_index = st.session_state.cell_click['row']
-        col_index = st.session_state.cell_click['column']
+    click = st.session_state.get('cell_click')
+    if click:
+        attr = click['attribute']
+        row_index = click['row']
+        col_index = click['column']
         coord = (row_index, col_index)
 
         st.write(f"Clicked cell attribute: {attr}, Row: {row_index}, Column: {col_index}")
 
-        # Toggle selection and background color
-        if st.session_state.cell_click['selected']:
+        # Toggle color and selection
+        if click['selected']:
             st.session_state.selected.add(attr)
             st.session_state.cell_colors[coord] = '#92D050'
         else:
             st.session_state.selected.discard(attr)
             st.session_state.cell_colors[coord] = '#FFFFFF'
 
-        # Run the corresponding action if the cell is green
-        if st.session_state.cell_colors.get(coord) == '#92D050':
-            action = cell_actions.get(coord)
-            if action:
-                action()
-            else:
-                st.write(f"Cell {coord} is green, but no action is defined.")
-
+        # ⚠️ Important: rerun after state update
+        st.session_state.cell_click = None  # Reset click after handling
         st.experimental_rerun()
 
-# Initialize click handler
-if 'cell_click' not in st.session_state:
-    st.session_state.cell_click = None
-
+# 🟢 Call the handler (after action checks)
 handle_cell_click()
-
-
-
 
 
 
