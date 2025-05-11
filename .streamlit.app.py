@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
 from streamlit.components.v1 import html
+import streamlit.components.v1 as components
 
 # Set page layout
 st.set_page_config(layout="wide")
@@ -271,63 +272,71 @@ html(zoomed_html, height=800)
 
 
 
+# HTML + JS to extract only cells with #92D050 background
+html_code = """
+<div id="table-wrapper">
+    <table id="color-table" border="1" style="border-collapse: collapse;">
+        <tr>
+            <td style="background-color: #FFFFFF;">A1</td>
+            <td style="background-color: #92D050;">A2</td>
+            <td style="background-color: #FFFFFF;">A3</td>
+        </tr>
+        <tr>
+            <td style="background-color: #92D050;">B1</td>
+            <td style="background-color: #FFFFFF;">B2</td>
+            <td style="background-color: #92D050;">B3</td>
+        </tr>
+    </table>
+</div>
 
+<script>
+    function rgbToHex(rgb) {
+        const result = rgb.match(/^rgb\\((\\d+),\\s*(\\d+),\\s*(\\d+)\\)$/);
+        if (!result) return null;
+        return "#" + 
+            ("0" + parseInt(result[1]).toString(16)).slice(-2) +
+            ("0" + parseInt(result[2]).toString(16)).slice(-2) +
+            ("0" + parseInt(result[3]).toString(16)).slice(-2);
+    }
 
+    const findGreenCells = () => {
+        const table = document.getElementById("color-table");
+        const greenCells = [];
+        for (let i = 0; i < table.rows.length; i++) {
+            const row = table.rows[i];
+            for (let j = 0; j < row.cells.length; j++) {
+                const cell = row.cells[j];
+                const color = window.getComputedStyle(cell).backgroundColor;
+                const hex = rgbToHex(color).toUpperCase();
+                if (hex === "#92D050") {
+                    greenCells.push({ row: i, col: j });
+                }
+            }
+        }
+        const streamlitMsg = window.parent;
+        streamlitMsg.postMessage({ isStreamlitMessage: true, type: "streamlit:setComponentValue", value: greenCells }, "*");
+    };
 
+    findGreenCells();
+    setInterval(findGreenCells, 1000);  // Run every 1s
+</script>
+"""
 
-import streamlit as st
+# Display HTML + capture green cell coordinates
+green_cells = components.html(html_code, height=300)
 
-# Initialize state
-if "selected" not in st.session_state:
-    st.session_state.selected = []
-
-# Dummy table data
-table_data = [
-    ["Category", "Dimension", "Attributes"],
-    ["Impact (What)", "Benefits", "Quality/Scope/Knowledge", "Time Efficiency", "Cost"],
-    [None, "Focus within Business Model Navigator", "Customer Segments", "Value Proposition", "Value Chain", "Revenue Model"],
-    [None, "Aim", "Product Innovation", "Process Innovation", "Business Model Innovation"],
-    [None, "Ambidexterity", "Exploration", "Exploitation"],
-    ["Technology (How)", "AI Role", "Automaton", "Helper", "Partner"],
-    [None, "AI Concepts", "Machine Learning", "Deep Learning", "Artificial Neural Networks", "Natural Language Processing", "Computer Vision", "Robotics"],
-    [None, "Analytics Focus", "Descriptive", "Diagnostic", "Predictive", "Prescriptive"],
-    [None, "Analytics Problem", "Description/ Summary", "Clustering", "Classification", "Dependency Analysis", "Regression"],
-    [None, "Data Type", "Customer Data", "Machine Data", "Business Data (Internal Data)", "Market Data", "Public & Regulatory Data", "Synthetic Data"],
-    ["Context (Where/When)", "Innovation Phase", "Front End", "Development", "Market Introduction"],
-    [None, "Department", "R&D", "Manufacturing", "Marketing & Sales", "Customer Service"],
-]
-
-# Handle click (fake click simulation — in real usage, you'd hook this to input somehow)
-clicked_row, clicked_col = st.slider("Row", 0, 2), st.slider("Column", 0, 2)
-if st.button("Select Cell"):
-    coord = (clicked_row, clicked_col)
-    if coord not in st.session_state.selected:
-        st.session_state.selected.append(coord)
-
-# 🚩 Display bar with selected cells
-if st.session_state.selected:
-    selected_coords = ', '.join([f"({r},{c})" for r, c in st.session_state.selected])
-    st.markdown(f"""
+# Display green cell coordinates as a bar
+if green_cells:
+    if len(green_cells) > 0:
+        coords_str = ', '.join([f"({c['row']}, {c['col']})" for c in green_cells])
+        st.markdown(f"""
         <div style="background-color:#f0f0f0; padding:10px; border-radius:5px; border:1px solid #ccc; margin-bottom:10px;">
-            <strong>Selected cells (highlighted in green):</strong> {selected_coords}
+            <strong>Cells with <span style="color:#92D050;">#92D050</span>:</strong> {coords_str}
         </div>
-    """, unsafe_allow_html=True)
-else:
-    st.markdown("""
+        """, unsafe_allow_html=True)
+    else:
+        st.markdown(f"""
         <div style="background-color:#f0f0f0; padding:10px; border-radius:5px; border:1px solid #ccc; margin-bottom:10px;">
-            <strong>No cells selected.</strong>
+            <strong>No light green cells detected.</strong>
         </div>
-    """, unsafe_allow_html=True)
-
-# 🔲 Build HTML table with green highlights
-html = '<table border="1" style="border-collapse: collapse;">'
-for i, row in enumerate(table_data):
-    html += "<tr>"
-    for j, val in enumerate(row):
-        color = "#92D050" if (i, j) in st.session_state.selected else "white"
-        html += f'<td style="padding:10px; background-color:{color};">{val}</td>'
-    html += "</tr>"
-html += "</table>"
-
-# Render the HTML table
-st.markdown(html, unsafe_allow_html=True)
+        """, unsafe_allow_html=True)
