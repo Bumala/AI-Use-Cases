@@ -272,7 +272,7 @@ const calculateScore = (userSelections) => {
 
     return scores;
 };
-
+}
 document.getElementById('generateRecommendations').addEventListener('click', function() {
     // Get the selections from the HTML table
     const userSelections = [];
@@ -311,9 +311,6 @@ document.getElementById('generateRecommendations').addEventListener('click', fun
 
 
 
-}
-
-}
 
 
 
