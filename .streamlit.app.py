@@ -139,25 +139,34 @@ function handleCellClick(element) {
 
 
 
+
+
+
+
+
+# List of clickable cells
+clickable_cells = {(1, 2), (1, 4), (2, 4)}
+
 # ======= HANDLE CELL CLICKS =======
 def handle_cell_click():
     if st.session_state.get('cell_click'):
-        # Get the clicked cell's attribute
-        attr = st.session_state.cell_click['attribute']
+        # Get the clicked cell's coordinates (assumed to be in the 'attribute')
+        cell = st.session_state.cell_click['attribute']  # e.g., (1, 2)
         
-        # Display the clicked cell
-        st.write(f"Cell clicked: {attr}")  # Show which cell was clicked
+        # Check if the clicked cell is one of the predefined clickable cells
+        if cell in clickable_cells:
+            st.write(f"Cell clicked: {cell}")  # Show which cell was clicked
+            
+            # Add or remove the cell to/from selected based on the 'selected' flag
+            if st.session_state.cell_click['selected']:
+                st.session_state.selected.add(cell)
+            else:
+                st.session_state.selected.discard(cell)
+            
+            # Rerun to reflect changes
+            st.experimental_rerun()
 
-        # Add or remove the attribute to/from selected based on 'selected' flag
-        if st.session_state.cell_click['selected']:
-            st.session_state.selected.add(attr)
-        else:
-            st.session_state.selected.discard(attr)
-        
-        # Rerun the app to update state
-        st.experimental_rerun()
-
-# Initialize state if necessary
+# Initialize session state if necessary
 if 'cell_click' not in st.session_state:
     st.session_state.cell_click = None
 if 'selected' not in st.session_state:
@@ -165,7 +174,6 @@ if 'selected' not in st.session_state:
 
 # Handle clicks
 handle_cell_click()
-
 
 
 
