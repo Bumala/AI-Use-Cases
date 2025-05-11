@@ -1,4 +1,4 @@
-Version 1: die recommended use cases werden nicht angezeigt. Tabelle ist ok
+
 
 
 import streamlit as st
