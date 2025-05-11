@@ -217,5 +217,20 @@ def generate_html_table(data, selected):
 # Define the interaction JavaScript code
 interaction_js = """
 function handleCellClick(element) {
-    const attr = element*
-
+    const attr = element.getAttribute('data-attr');
+    const isSelected = element.style.backgroundColor === 'rgb(146, 208, 80)';
+
+    // Toggle visual selection immediately
+    element.style.backgroundColor = isSelected ? '#f1fbfe' : '#92D050';
+
+    // Send message to Streamlit
+    window.parent.postMessage({
+        isStreamlitMessage: true,
+        type: 'cellClick',
+        data: {
+            attribute: attr,
+            selected: !isSelected
+        }
+    }, '*');
+}
+"""
