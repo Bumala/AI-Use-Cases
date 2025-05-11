@@ -254,7 +254,7 @@ const analysisData = {
     "Marketing & Sales": [0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 2, 0, 2, 2, 2, 0, 2, 2, 0, 0, 2, 2, 1, 0, 0, 0, 0, 0, 0, 1],
     "Customer Service": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 1, 2, 2, 2, 2, 2, 2, 2]
 
-
+})
 };
 
 const calculateScore = (userSelections) => {
@@ -272,7 +272,7 @@ const calculateScore = (userSelections) => {
 
     return scores;
 };
-}
+
 document.getElementById('generateRecommendations').addEventListener('click', function() {
     // Get the selections from the HTML table
     const userSelections = [];
