@@ -119,51 +119,6 @@ def generate_html_table(data, selected):
 
 
 
-
-
-
-html_code = """
-<table border="1">
-  <tr><td>1</td><td>2</td><td>3</td></tr>
-  <tr><td>4</td><td>5</td><td>6</td></tr>
-</table>
-
-<script>
-document.querySelectorAll("table td").forEach(cell => {
-  cell.addEventListener("click", function () {
-    document.querySelectorAll("table td").forEach(c => c.style.backgroundColor = "");
-    this.style.backgroundColor = "#f1fbfe";
-    const row = this.parentNode.rowIndex;
-    const col = this.cellIndex;
-    console.log(`Selected cell: Row ${row}, Column ${col}`);
-  });
-});
-</script>
-"""
-
-st.markdown(html_code, unsafe_allow_html=True)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 # ======= JAVASCRIPT FOR INTERACTIVITY =======
 interaction_js = """
 <script>
