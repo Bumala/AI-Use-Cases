@@ -260,58 +260,50 @@ analysis_df = pd.DataFrame({
 
 
 
-
-# ======= CALCULATE AND DISPLAY RECOMMENDED USE CASES =======
+# ======= USE CASE RECOMMENDATION SYSTEM =======
 def get_top_use_cases(selected_attributes, analysis_df):
-    """
-    Calculate the top 3 use cases based on selected attributes.
-    """
+    """Calculate the top 3 use cases based on selected attributes."""
     if not selected_attributes:
         return []
-    
-    attribute_mapping = {
-        # ... (keep the full attribute mapping dictionary shown above) ...
-    }
-    
-    scores = []
-    for _, row in analysis_df.iterrows():
-        use_case = row['Use Case']
-        score = 0
-        
-        for attr in selected_attributes:
-            df_column = attribute_mapping.get(attr)
-            if df_column and df_column in row:
-                score += row[df_column]
-        
-        scores.append((use_case, score))
-    
-    scores.sort(key=lambda x: x[1], reverse=True)
-    return scores[:3]
 
-# Display recommendations in a container at the top
+    # Create a score for each use case based on selected attributes
+    use_case_scores = []
+    for _, row in analysis_df.iterrows():
+        score = 0
+        for attr in selected_attributes:
+            if attr in row:
+                score += row[attr]
+        use_case_scores.append((row['Use Case'], score))
+    
+    # Sort by score and return top 3
+    return sorted(use_case_scores, key=lambda x: x[1], reverse=True)[:3]
+
+# Create a container for recommendations at the top
 recommendation_container = st.container()
 
-# ======= DISPLAY THE TABLE ======= 
+# ======= DISPLAY THE TABLE =======
 zoomed_html = f"""
 <div style="display: flex; justify-content: center; align-items: center; height: 100%; transform: scale(0.8); transform-origin: top;">
     {generate_html_table(data, st.session_state.selected)}
 </div>
 {interaction_js}
 """
-
 html(zoomed_html, height=800)
 
-# Show recommendations after the table
+# Display recommendations after the table
 with recommendation_container:
     if st.session_state.selected:
         top_use_cases = get_top_use_cases(st.session_state.selected, analysis_df)
         
-        st.write("## Recommended Use Cases")
+        st.subheader("Recommended Use Cases")
         if top_use_cases:
-            for i, (use_case, score) in enumerate(top_use_cases, 1):
-                st.write(f"{i}. **{use_case}** (Match Score: {score})")
+            cols = st.columns(3)
+            for i, (use_case, score) in enumerate(top_use_cases):
+                with cols[i]:
+                    st.metric(label=f"#{i+1} Match", 
+                             value=use_case, 
+                             help=f"Match score: {score}")
         else:
-            st.write("No matching use cases found for the selected attributes")
+            st.warning("No matching use cases found")
     else:
-        st.write("Select attributes from the table to see recommended use cases")
-
+        st.info("Select attributes to see recommendations")
