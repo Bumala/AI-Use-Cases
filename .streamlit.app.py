@@ -268,7 +268,6 @@ analysis_df = pd.DataFrame({
 
 
 
-
 selected_bar_html = """
 <div id="resetButtonContainer" style="padding: 10px; background-color: #f1fbfe; text-align: center;">
     <button id="resetButton" style="padding: 10px 20px; background-color: #61cbf3; border: none; border-radius: 5px; cursor: pointer; font-weight: bold;">
@@ -294,6 +293,7 @@ html_code += """
 <script>
 let selectedItems = new Set();
 
+// Function to update the Selected Attributes bar
 function updateSelectedBar() {
     const bar = document.getElementById("selectedItems");
     if (selectedItems.size === 0) {
@@ -303,10 +303,11 @@ function updateSelectedBar() {
     }
 }
 
+// Function to handle a cell click event
 function handleCellClick(element) {
     const attr = element.getAttribute('data-attr');
     const isSelected = element.style.backgroundColor === 'rgb(146, 208, 80)';
-    
+
     // Toggle visual selection
     element.style.backgroundColor = isSelected ? '#f1fbfe' : '#92D050'; // Color toggle
 
@@ -329,19 +330,18 @@ function handleCellClick(element) {
     }, '*');
 }
 
-// Reset button click handler
+// Reset button functionality
 document.getElementById('resetButton').addEventListener('click', function() {
     // Clear selections
     selectedItems.clear();
 
-    // Reset cell backgrounds to original (without affecting selected cells)
+    // Reset all cells to their default background color (unselected)
     const cells = document.querySelectorAll('td');
     cells.forEach(cell => {
-        // Reset background color to the original unselected color
-        cell.style.backgroundColor = '#f1fbfe'; // Default unselected color
+        cell.style.backgroundColor = '#f1fbfe'; // Reset background color to default unselected color
     });
 
-    // Update selected items display
+    // Update the "Selected Attributes" bar
     updateSelectedBar();
 
     // Optionally, notify backend for reset (if needed)
@@ -368,9 +368,6 @@ html_code += """
 """
 
 html(html_code, height=800)
-
-
-
 
 
 
