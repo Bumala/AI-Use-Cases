@@ -277,8 +277,6 @@ html(zoomed_html, height=800)
 
 
 
-import streamlit as st
-import streamlit.components.v1 as components
 
 # HTML and JavaScript for the table
 html_code = """
@@ -298,6 +296,7 @@ html_code = """
 </div>
 
 <script>
+    // Function to convert rgb to hex
     function rgbToHex(rgb) {
         const result = rgb.match(/^rgb\\((\\d+),\\s*(\\d+),\\s*(\\d+)\\)$/);
         if (!result) return null;
@@ -307,7 +306,8 @@ html_code = """
             ("0" + parseInt(result[3]).toString(16)).slice(-2);
     }
 
-    const findGreenCells = () => {
+    // Function to find green cells in the table
+    function findGreenCells() {
         const table = document.getElementById("color-table");
         const greenCells = [];
         for (let i = 0; i < table.rows.length; i++) {
@@ -323,10 +323,10 @@ html_code = """
         }
         // Send green cells to Streamlit using session_state
         window.parent.postMessage({ isStreamlitMessage: true, type: "streamlit:setComponentValue", value: greenCells }, "*");
-    };
+    }
 
-    findGreenCells();
-    setInterval(findGreenCells, 1000);  // Run every 1s to track updates
+    // Automatically refresh green cell detection every second
+    setInterval(findGreenCells, 1000);  // Run every 1 second to detect updates
 </script>
 """
 
@@ -342,8 +342,8 @@ def update_green_cells(cells):
 # Create the HTML table and capture green cell coordinates in session state
 components.html(html_code, height=300)
 
-# Display the coordinates of the green cells in a bar
-if st.session_state.green_cells:
+# Refresh the green cells when a new set of green cells is detected
+if "green_cells" in st.session_state and len(st.session_state.green_cells) > 0:
     coords_str = ', '.join([f"({c['row']}, {c['col']})" for c in st.session_state.green_cells])
     st.markdown(f"""
     <div style="background-color:#f0f0f0; padding:10px; border-radius:5px; border:1px solid #ccc; margin-bottom:10px;">
