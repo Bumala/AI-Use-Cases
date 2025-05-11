@@ -233,6 +233,11 @@ analysis_data = {
 
 }
 
+
+
+
+
+
 df = pd.DataFrame(analysis_data)
 
 # Filter data based on selected categories
@@ -240,13 +245,14 @@ filtered_df = df[df["Category"].isin(st.session_state.selected)] if st.session_s
 
 # Show filtered results dynamically
 st.subheader("Top Use Cases Based on Selection")
-st.dataframe(filtered_df)
+if not filtered_df.empty:
+    st.dataframe(filtered_df)
+else:
+    st.write("No use cases match the selected categories.")
 
 # Show Table
 html_code = generate_html_table(data, st.session_state.selected)
 html(html_code + interaction_js, height=600)
-
-
 
 
 
