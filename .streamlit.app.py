@@ -134,50 +134,27 @@ function handleCellClick(element) {
 </script>
 """
  
-
-
-
-
-
-
-
-
 # ======= HANDLE CELL CLICKS =======
 def handle_cell_click():
-    # Debug: Print the current state of cell_click
-    st.write("Debug: cell_click state:", st.session_state.get('cell_click'))
-    
-    if st.session_state.get('cell_click'):
-        cell_coordinates = st.session_state.cell_click.get('coordinates')  # Extract coordinates
-        if cell_coordinates:
-            # Add or remove the cell based on selection state
-            if st.session_state.cell_click.get('selected'):
-                st.session_state.selected.add(cell_coordinates)
-                st.session_state.last_clicked = cell_coordinates  # Update last clicked cell
-            else:
-                st.session_state.selected.discard(cell_coordinates)
-                st.session_state.last_clicked = None  # Clear last clicked cell if deselected
-        else:
-            st.warning("Debug: No coordinates found in cell_click!")
-        st.experimental_rerun()  # Re-run to reflect state changes
-
-# Initialize session state variables
-if "cell_click" not in st.session_state:
-    st.session_state.cell_click = None
-if "selected" not in st.session_state:
-    st.session_state.selected = set()
-if "last_clicked" not in st.session_state:
-    st.session_state.last_clicked = None
-
-# Handle cell clicks
+   if st.session_state.get('cell_click'):
+       attr = st.session_state.cell_click['attribute']
+       if st.session_state.cell_click['selected']:
+           st.session_state.selected.add(attr)
+       else:
+           st.session_state.selected.discard(attr)
+       st.experimental_rerun()
+ 
+# Initialize and handle clicks
+st.session_state.cell_click = None
 handle_cell_click()
-
-# Display the last clicked cell coordinates
-st.markdown("### Last Clicked Cell Coordinates")
-if st.session_state.last_clicked:
-    st.write(f"🟠 You clicked on cell: {st.session_state.last_clicked}")
-else:
-    st.info("No cell clicked yet.")
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
  
  
  
