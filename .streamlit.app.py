@@ -121,7 +121,6 @@ def generate_html_table(data, selected):
 
 
 
-import streamlit as st
 
 html_code = """
 <table border="1">
