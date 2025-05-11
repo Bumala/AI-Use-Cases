@@ -62,10 +62,7 @@ def generate_html_table(data, selected):
                 continue
 
             # Determine if this is an attribute cell that can be selected
-            is_attribute = ( (i == 1 and j == 2) or 
-                 (i == 1 and j == 4) or 
-                 (i == 2 and j == 4) )
- 
+            is_attribute = (i > 0 and j >= 2) 
             click_attr = f"onclick='handleCellClick(this)' data-attr='{val}'" if is_attribute else ""
             cell_class = " class='selected'" if val in st.session_state.selected and is_attribute else ""
             
@@ -137,79 +134,19 @@ function handleCellClick(element) {
 </script>
 """
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-# List of clickable cells
-clickable_cells = {(1, 2), (1, 4), (2, 4)}
-
 # ======= HANDLE CELL CLICKS =======
 def handle_cell_click():
-    # Check if there is a click event in session state
     if st.session_state.get('cell_click'):
-        cell = st.session_state.cell_click['attribute']  # e.g., (1, 2)
-        
-        # Check if the clicked cell is one of the predefined clickable cells
-        if cell in clickable_cells:
-            st.write(f"Cell clicked: {cell}")  # Show which cell was clicked
-            
-            # Add or remove the cell to/from selected based on the 'selected' flag
-            if st.session_state.cell_click['selected']:
-                st.session_state.selected.add(cell)
-            else:
-                st.session_state.selected.discard(cell)
-            
-            # Rerun to reflect changes
-            st.experimental_rerun()
+        attr = st.session_state.cell_click['attribute']
+        if st.session_state.cell_click['selected']:
+            st.session_state.selected.add(attr)
+        else:
+            st.session_state.selected.discard(attr)
+        st.experimental_rerun()
 
-# Function to simulate a cell click event (you will replace this with actual event logic)
-def simulate_cell_click(i, j, selected):
-    # Update the session state to store the clicked cell's attribute
-    st.session_state.cell_click = {
-        'attribute': (i, j),  # Store the clicked cell's coordinates
-        'selected': selected   # Whether the cell is selected or not
-    }
-
-# Initialize session state if necessary
-if 'cell_click' not in st.session_state:
-    st.session_state.cell_click = None
-if 'selected' not in st.session_state:
-    st.session_state.selected = set()
-
-# Render cells for interaction (in your case, you can render it dynamically, here's a basic example)
-def render_cells():
-    for i in range(3):  # Example: 3 rows
-        for j in range(5):  # Example: 5 columns
-            if (i, j) in clickable_cells:  # Only render clickable cells
-                if st.button(f"Cell ({i}, {j})"):
-                    # Simulate cell click when button is clicked
-                    simulate_cell_click(i, j, True)  # Set selected to True for simplicity
-                    handle_cell_click()
-
-# Render the interactive cells
-render_cells()
-
-
-
-
-
-
-
-
-
-
-
-
+# Initialize and handle clicks
+st.session_state.cell_click = None
+handle_cell_click()
 
 
 
@@ -330,8 +267,5 @@ zoomed_html = f"""
 """
 
 html(zoomed_html, height=800)
-
-
-
 
 
