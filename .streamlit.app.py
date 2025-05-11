@@ -113,7 +113,23 @@ def generate_html_table(data, selected):
     return html
 
 # ======= JAVASCRIPT FOR INTERACTIVITY =======
+
+
+# Embed JavaScript/HTML code using st.markdown
+st.markdown("""
 <script>
+    console.log("This is a test message");
+</script>
+""", unsafe_allow_html=True)
+
+
+
+
+
+
+
+
+
 function handleCellClick(element) {
     const attr = element.getAttribute('data-attr');
     const isSelected = element.style.backgroundColor === 'rgb(146, 208, 80)';
