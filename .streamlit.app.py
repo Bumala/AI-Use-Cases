@@ -283,7 +283,7 @@ html_code += """
 <style>
   /* Zoom out the table */
   .zoomed-table {
-    transform: scale(0.5); /* Adjust the zoom level to fit the table on screen */
+    transform: scale(0.7); /* Adjust the zoom level to fit the table on screen */
     transform-origin: top center;
     margin: 0 auto;
     overflow-x: auto;
