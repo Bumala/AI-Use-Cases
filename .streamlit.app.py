@@ -148,17 +148,17 @@ def handle_cell_click():
     st.write("Debug: cell_click state:", st.session_state.get('cell_click'))
     
     if st.session_state.get('cell_click'):
-        attr = st.session_state.cell_click.get('attribute')  # Extract clicked attribute
-        if attr:
-            # Handle selection or deselection
+        cell_coordinates = st.session_state.cell_click.get('coordinates')  # Extract coordinates
+        if cell_coordinates:
+            # Add or remove the cell based on selection state
             if st.session_state.cell_click.get('selected'):
-                st.session_state.selected.add(attr)
-                st.session_state.last_clicked = attr  # Update last clicked cell
+                st.session_state.selected.add(cell_coordinates)
+                st.session_state.last_clicked = cell_coordinates  # Update last clicked cell
             else:
-                st.session_state.selected.discard(attr)
+                st.session_state.selected.discard(cell_coordinates)
                 st.session_state.last_clicked = None  # Clear last clicked cell if deselected
         else:
-            st.warning("Debug: No attribute found in cell_click!")
+            st.warning("Debug: No coordinates found in cell_click!")
         st.experimental_rerun()  # Re-run to reflect state changes
 
 # Initialize session state variables
@@ -172,13 +172,12 @@ if "last_clicked" not in st.session_state:
 # Handle cell clicks
 handle_cell_click()
 
-# Display the last clicked cell
-st.markdown("### Last Clicked Cell")
+# Display the last clicked cell coordinates
+st.markdown("### Last Clicked Cell Coordinates")
 if st.session_state.last_clicked:
-    st.write(f"🟠 You clicked on: {st.session_state.last_clicked}")
+    st.write(f"🟠 You clicked on cell: {st.session_state.last_clicked}")
 else:
     st.info("No cell clicked yet.")
- 
  
  
  
