@@ -282,22 +282,31 @@ function handleCellClick(element) {
 
 
 
-
-
-# Include the JavaScript code in the HTML block
+# Corrected zoomed_html content
 zoomed_html = f"""
 <div style="display: flex; justify-content: center; align-items: center; height: 100%; transform: scale(0.8); transform-origin: top;">
     {generate_html_table(data, st.session_state.selected)}
 </div>
 <script>
-    {interaction_js}
+    function handleCellClick(element) {{
+        const attr = element.getAttribute('data-attr');
+        const isSelected = element.style.backgroundColor === 'rgb(146, 208, 80)';
+        
+        // Toggle visual selection immediately
+        element.style.backgroundColor = isSelected ? '#f1fbfe' : '#92D050';
+        
+        // Send message to Streamlit
+        window.parent.postMessage({{
+            isStreamlitMessage: true,
+            type: 'cellClick',
+            data: {{
+                attribute: attr,
+                selected: !isSelected
+            }}
+        }}, '*');
+    }}
 </script>
 """
-
-# Render the HTML
-html(zoomed_html, height=800)
-
-
 
 
 
@@ -323,5 +332,3 @@ html(zoomed_html, height=800)
 
 
 
-
-st.write(zoomed_html)
