@@ -266,6 +266,10 @@ analysis_df = pd.DataFrame({
 
 
 
+
+
+
+
 selected_bar_html = """
 <div id="selectedBar" style="margin-bottom: 10px; padding: 10px; background-color: #dceefc; border: 2px solid #61cbf3; border-radius: 8px; font-weight: bold;">
     Selected Attributes: <span id="selectedItems">None</span>
@@ -277,55 +281,14 @@ html_code = selected_bar_html + generate_html_table(data, st.session_state.selec
 # Inject update script
 html_code += """
 <style>
-  /* Center the entire content on the screen */
-  html, body {
-    height: 100%;
-    margin: 0;
-    padding: 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background: #f0f0f0;
-    overflow: auto;
-  }
-
-  /* Scale down the table and center it */
-  .table-container {
-    transform: scale(0.8); /* Zoom out */
-    transform-origin: top center; /* Keep top as origin for zoom */
+  /* Zoom out the table */
+  .zoomed-table {
+    transform: scale(0.75); /* Adjust the zoom level to fit the table on screen */
+    transform-origin: top center;
     margin: 0 auto;
-    max-width: 95%;
     overflow-x: auto;
   }
-
-  /* Optional: Adjust the selected bar styling to fit */
-  #selectedBar {
-    width: 100%;
-    max-width: 1200px;
-    margin-bottom: 15px;
-  }
-
-  table {
-    border-collapse: collapse;
-    background: white;
-  }
-
-  th, td {
-    border: 1px solid #ccc;
-    padding: 12px 16px;
-    text-align: center;
-  }
-
-  th {
-    background: #333;
-    color: #fff;
-  }
 </style>
-
-<div class="table-container">
-  <!-- Table and content will go here -->
-  """ + generate_html_table(data, st.session_state.selected) + """
-</div>
 
 <script>
 let selectedItems = new Set();
@@ -368,6 +331,9 @@ function handleCellClick(element) {
 updateSelectedBar();
 </script>
 """
+
+# Apply zoom effect to the table by wrapping it in a div with the zoom class
+html_code = html_code.replace(generate_html_table(data, st.session_state.selected), f'<div class="zoomed-table">{generate_html_table(data, st.session_state.selected)}</div>')
 
 html(html_code, height=800)
 
