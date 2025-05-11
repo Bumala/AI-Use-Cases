@@ -295,19 +295,3 @@ else:
    st.info("No cells selected yet.")
 
 
-
-
-
-
-
-
-
-
-
-# ======= DISPLAY SELECTED ITEMS =======
-st.markdown("### Selected Items")
-if st.session_state.selected:
-    for item in st.session_state.selected:
-        st.write(f"Selected: {item}")
-else:
-    st.info("No cells selected yet.")
