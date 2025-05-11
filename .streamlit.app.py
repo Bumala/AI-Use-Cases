@@ -259,24 +259,25 @@ analysis_df = pd.DataFrame({
 })
 
 
-
 # ======= USE CASE RECOMMENDATION SYSTEM =======
 def get_top_use_cases(selected_attributes, analysis_df):
     """Calculate the top 3 use cases based on selected attributes."""
     if not selected_attributes:
         return []
 
-    # Create a score for each use case based on selected attributes
-    use_case_scores = []
-    for _, row in analysis_df.iterrows():
-        score = 0
-        for attr in selected_attributes:
-            if attr in row:
-                score += row[attr]
-        use_case_scores.append((row['Use Case'], score))
+    # First, ensure all selected attributes exist in our dataframe
+    valid_attributes = [attr for attr in selected_attributes if attr in analysis_df.columns]
     
-    # Sort by score and return top 3
-    return sorted(use_case_scores, key=lambda x: x[1], reverse=True)[:3]
+    if not valid_attributes:
+        return []
+
+    # Calculate scores for each use case
+    analysis_df['Match Score'] = analysis_df[valid_attributes].sum(axis=1)
+    
+    # Get top 3 use cases with highest scores
+    top_use_cases = analysis_df.nlargest(3, 'Match Score')[['Use Case', 'Match Score']]
+    
+    return list(top_use_cases.itertuples(index=False, name=None))
 
 # Create a container for recommendations at the top
 recommendation_container = st.container()
@@ -293,17 +294,17 @@ html(zoomed_html, height=800)
 # Display recommendations after the table
 with recommendation_container:
     if st.session_state.selected:
+        st.subheader("Recommended AI Use Cases")
         top_use_cases = get_top_use_cases(st.session_state.selected, analysis_df)
         
-        st.subheader("Recommended Use Cases")
         if top_use_cases:
             cols = st.columns(3)
             for i, (use_case, score) in enumerate(top_use_cases):
                 with cols[i]:
-                    st.metric(label=f"#{i+1} Match", 
-                             value=use_case, 
-                             help=f"Match score: {score}")
+                    st.success(f"**#{i+1}**: {use_case}")
+                    st.progress(min(score/10, 1.0))  # Adjust denominator based on max possible score
+                    st.caption(f"Match score: {score}")
         else:
-            st.warning("No matching use cases found")
+            st.warning("No matching use cases found for selected attributes")
     else:
-        st.info("Select attributes to see recommendations")
+        st.info("Select attributes from the table to get AI use case recommendations")
