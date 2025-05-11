@@ -258,42 +258,6 @@ analysis_df = pd.DataFrame({
 
 
 
-# ======= DISPLAY THE TABLE =======
-zoomed_html = f"""
-<div style="display: flex; justify-content: center; align-items: center; height: 100%; transform: scale(0.8); transform-origin: top;">
-    {generate_html_table(data, st.session_state.selected)}
-</div>
-{interaction_js}
-"""
-
-html(zoomed_html, height=800)
-
-
-
-
-
-
-
-import streamlit as st
-import pandas as pd
-from streamlit.components.v1 import html
-
-# Existing table data and session state setup are unchanged
-
-# ======= TABLE DATA =======
-# Same as before ...
-
-# ======= SESSION STATE =======
-# Same as before ...
-
-# ======= TABLE LAYOUT AND INTERACTIVITY =======
-# Same as before ...
-
-# ======= USE CASE ANALYSIS =======
-# Using the same data as you provided
-analysis_df = pd.DataFrame({
-    # Same data as before ...
-})
 
 # ======= CALCULATE RECOMMENDED USE CASES BASED ON SELECTED ATTRIBUTES =======
 
@@ -338,5 +302,39 @@ if st.session_state.selected:
         st.write(f"{i + 1}. {use_case} - Match Score: {score}")
 else:
     st.write("Please select some attributes from the table to get recommended use cases.")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# ======= DISPLAY THE TABLE =======
+zoomed_html = f"""
+<div style="display: flex; justify-content: center; align-items: center; height: 100%; transform: scale(0.8); transform-origin: top;">
+    {generate_html_table(data, st.session_state.selected)}
+</div>
+{interaction_js}
+"""
+
+html(zoomed_html, height=800)
+
+
+
+
+
+
 
 
