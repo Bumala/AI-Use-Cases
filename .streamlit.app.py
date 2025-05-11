@@ -151,18 +151,6 @@ handle_cell_click()
 
 
 
-# Show selected (green) cells below the table
-if st.session_state.selected:
-    st.markdown("### 🟩 Selected Attributes:")
-    for attr in sorted(st.session_state.selected):
-        st.write(f"- {attr}")
-else:
-    st.markdown("### 🟩 No attributes selected yet.")
-
-
-
-
-
 
 
 
@@ -275,4 +263,15 @@ zoomed_html = f"""
 
 html(zoomed_html, height=800)
 
+
+
+
+
+# Show selected (green) cells below the table
+if st.session_state.selected:
+    st.markdown("### 🟩 Selected Attributes:")
+    for attr in sorted(st.session_state.selected):
+        st.write(f"- {attr}")
+else:
+    st.markdown("### 🟩 No attributes selected yet.")
 
