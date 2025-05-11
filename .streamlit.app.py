@@ -113,7 +113,6 @@ def generate_html_table(data, selected):
     return html
 
 # ======= JAVASCRIPT FOR INTERACTIVITY =======
-interaction_js = """
 <script>
 function handleCellClick(element) {
     const attr = element.getAttribute('data-attr');
@@ -128,26 +127,30 @@ function handleCellClick(element) {
         type: 'cellClick',
         data: {
             attribute: attr,
-            selected: !isSelected
+            selected: !isSelected,
+            content: element.innerHTML  // Send the content of the cell as well
         }
     }, '*');
 }
 </script>
-"""
 
+
+
+# ======= HANDLE CELL CLICKS =======
 # ======= HANDLE CELL CLICKS =======
 def handle_cell_click():
     if st.session_state.get('cell_click'):
         attr = st.session_state.cell_click['attribute']
+        content = st.session_state.cell_click['content']
         if st.session_state.cell_click['selected']:
             st.session_state.selected.add(attr)
         else:
             st.session_state.selected.discard(attr)
+        
+        # Print out the content of the clicked cell
+        st.write(f"Content of the clicked cell: {content}")
         st.experimental_rerun()
 
-# Initialize and handle clicks
-st.session_state.cell_click = None
-handle_cell_click()
 
 
 
@@ -273,87 +276,4 @@ html(zoomed_html, height=800)
 
 
 
-
-
-
-
-
-# HTML and JavaScript for the table
-html_code = """
-<div id="table-wrapper">
-    <table id="color-table" border="1" style="border-collapse: collapse;">
-        <tr>
-            <td style="background-color: #FFFFFF;">A1</td>
-            <td style="background-color: #92D050;">A2</td>
-            <td style="background-color: #FFFFFF;">A3</td>
-        </tr>
-        <tr>
-            <td style="background-color: #92D050;">B1</td>
-            <td style="background-color: #FFFFFF;">B2</td>
-            <td style="background-color: #92D050;">B3</td>
-        </tr>
-    </table>
-</div>
-
-<script>
-    // Function to convert rgb to hex
-    function rgbToHex(rgb) {
-        const result = rgb.match(/^rgb\\((\\d+),\\s*(\\d+),\\s*(\\d+)\\)$/);
-        if (!result) return null;
-        return "#" + 
-            ("0" + parseInt(result[1]).toString(16)).slice(-2) +
-            ("0" + parseInt(result[2]).toString(16)).slice(-2) +
-            ("0" + parseInt(result[3]).toString(16)).slice(-2);
-    }
-
-    // Function to find green cells in the table
-    function findGreenCells() {
-        const table = document.getElementById("color-table");
-        const greenCells = [];
-        for (let i = 0; i < table.rows.length; i++) {
-            const row = table.rows[i];
-            for (let j = 0; j < row.cells.length; j++) {
-                const cell = row.cells[j];
-                const color = window.getComputedStyle(cell).backgroundColor;
-                const hex = rgbToHex(color).toUpperCase();
-                if (hex === "#92D050") {
-                    greenCells.push({ row: i, col: j });
-                }
-            }
-        }
-        // Send green cells to Streamlit using session_state
-        window.parent.postMessage({ isStreamlitMessage: true, type: "streamlit:setComponentValue", value: greenCells }, "*");
-    }
-
-    // Automatically refresh green cell detection every second
-    setInterval(findGreenCells, 1000);  // Run every 1 second to detect updates
-</script>
-"""
-
-# Initialize session_state variable for storing green cells if not already present
-if "green_cells" not in st.session_state:
-    st.session_state.green_cells = []
-
-# Function to display and update the list of green cells
-def update_green_cells(cells):
-    # Update session state with new green cell coordinates
-    st.session_state.green_cells = cells
-
-# Create the HTML table and capture green cell coordinates in session state
-components.html(html_code, height=300)
-
-# Refresh the green cells when a new set of green cells is detected
-if "green_cells" in st.session_state and len(st.session_state.green_cells) > 0:
-    coords_str = ', '.join([f"({c['row']}, {c['col']})" for c in st.session_state.green_cells])
-    st.markdown(f"""
-    <div style="background-color:#f0f0f0; padding:10px; border-radius:5px; border:1px solid #ccc; margin-bottom:10px;">
-        <strong>Cells with <span style="color:#92D050;">#92D050</span>:</strong> {coords_str}
-    </div>
-    """, unsafe_allow_html=True)
-else:
-    st.markdown(f"""
-    <div style="background-color:#f0f0f0; padding:10px; border-radius:5px; border:1px solid #ccc; margin-bottom:10px;">
-        <strong>No light green cells detected.</strong>
-    </div>
-    """, unsafe_allow_html=True)
 
