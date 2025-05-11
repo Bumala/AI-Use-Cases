@@ -270,30 +270,25 @@ html(zoomed_html, height=800)
 
 
 
-# ======= FILTER USE CASES BASED ON SELECTION =======
+
+
+# Display a bar with selected cell coordinates
 if st.session_state.selected:
-    st.markdown("### 🔍 Matching Use Cases Based on Selected Attributes")
-    
-    # Convert selection to a list
-    selected_attrs = list(st.session_state.selected)
-
-    # Ensure selected attributes exist in analysis_df columns
-    valid_attrs = [attr for attr in selected_attrs if attr in analysis_df.columns]
-
-    if valid_attrs:
-        # Filter: show rows where at least one selected attribute has value >= 1
-        filtered_df = analysis_df[analysis_df[valid_attrs].apply(lambda row: any(row >= 1), axis=1)]
-        
-        st.write(f"Filtered by: {', '.join(valid_attrs)}")
-        st.dataframe(filtered_df, use_container_width=True)
-    else:
-        st.warning("None of the selected attributes matched columns in the use case data.")
+    selected_coords = ', '.join([f"({row}, {col})" for row, col in st.session_state.selected])
+    st.markdown(
+        f"""
+        <div style="background-color:#f0f0f0; padding:10px; border-radius:5px; border:1px solid #ccc; margin-bottom:10px;">
+            <strong>Selected cells (highlighted in green):</strong> {selected_coords}
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
 else:
-    st.info("Select attributes in the table above to filter relevant use cases.")
-
-
-
-
-if st.button("Reset Selections"):
-    st.session_state.selected.clear()
-    st.experimental_rerun()
+    st.markdown(
+        f"""
+        <div style="background-color:#f0f0f0; padding:10px; border-radius:5px; border:1px solid #ccc; margin-bottom:10px;">
+            <strong>No cells selected.</strong>
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
