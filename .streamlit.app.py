@@ -34,11 +34,6 @@ data = [
 
 
 
-# ======= USE CASE ANALYSIS =======
-analysis_df = pd.DataFrame({
-
-
-
    
     "Use Case": [
         "AI-infused experiments in R&D",
@@ -128,47 +123,9 @@ analysis_df.set_index("Use Case", inplace=True)
 
 
 
-
-
-
-
-
-
 # ======= SESSION STATE =======
 if "selected" not in st.session_state:
     st.session_state.selected = set()
-
-
-
-# ======= JAVASCRIPT FOR INTERACTIVITY =======
-interaction_js = """
-<script>
-function handleCellClick(element) {
-    const attr = element.getAttribute('data-attr');
-    const isSelected = element.style.backgroundColor === 'rgb(146, 208, 80)';
-    
-    // Toggle visual selection immediately
-    element.style.backgroundColor = isSelected ? '#f1fbfe' : '#92D050';
-    
-    // Send message to Streamlit
-    window.parent.postMessage({
-        isStreamlitMessage: true,
-        type: 'cellClick',
-        data: {
-            attribute: attr,
-            selected: !isSelected
-        }
-    }, '*');
-}
-</script>
-"""
-
-
-
-
-
-
-
 
 # ======= HANDLE CELL CLICKS =======
 def handle_cell_click():
@@ -184,44 +141,25 @@ def handle_cell_click():
 st.session_state.cell_click = None
 handle_cell_click()
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-# ---------- Calculate and show top use case ----------
+# ======= DISPLAY THE TOP USE CASE =======
 selected_attributes = st.session_state.selected
+st.write(f"Selected Attributes: {selected_attributes}")  # Debugging
+
 if selected_attributes:
-    summed = analysis_df[selected_attributes].sum(axis=1)
-    top_use_case = summed.idxmax()
-    st.success(f"🚀 **Top Use Case:** {top_use_case}")
+    valid_attributes = [attr for attr in selected_attributes if attr in analysis_df.columns]
+    if not valid_attributes:
+        st.error("Selected attributes are not valid.")
+    else:
+        summed = analysis_df[valid_attributes].sum(axis=1)
+        top_use_case = summed.idxmax()
+        st.success(f"🚀 **Top Use Case:** {top_use_case}")
 else:
     st.info("👆 Select attributes above to see the top use case.")
+
+
+
+
+
 
 
 
