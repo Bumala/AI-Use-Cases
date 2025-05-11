@@ -272,23 +272,62 @@ html(zoomed_html, height=800)
 
 
 
-# Display a bar with selected cell coordinates
+
+
+
+import streamlit as st
+
+# Initialize state
+if "selected" not in st.session_state:
+    st.session_state.selected = []
+
+# Dummy table data
+table_data = [
+    ["Category", "Dimension", "Attributes"],
+    ["Impact (What)", "Benefits", "Quality/Scope/Knowledge", "Time Efficiency", "Cost"],
+    [None, "Focus within Business Model Navigator", "Customer Segments", "Value Proposition", "Value Chain", "Revenue Model"],
+    [None, "Aim", "Product Innovation", "Process Innovation", "Business Model Innovation"],
+    [None, "Ambidexterity", "Exploration", "Exploitation"],
+    ["Technology (How)", "AI Role", "Automaton", "Helper", "Partner"],
+    [None, "AI Concepts", "Machine Learning", "Deep Learning", "Artificial Neural Networks", "Natural Language Processing", "Computer Vision", "Robotics"],
+    [None, "Analytics Focus", "Descriptive", "Diagnostic", "Predictive", "Prescriptive"],
+    [None, "Analytics Problem", "Description/ Summary", "Clustering", "Classification", "Dependency Analysis", "Regression"],
+    [None, "Data Type", "Customer Data", "Machine Data", "Business Data (Internal Data)", "Market Data", "Public & Regulatory Data", "Synthetic Data"],
+    ["Context (Where/When)", "Innovation Phase", "Front End", "Development", "Market Introduction"],
+    [None, "Department", "R&D", "Manufacturing", "Marketing & Sales", "Customer Service"],
+]
+
+# Handle click (fake click simulation — in real usage, you'd hook this to input somehow)
+clicked_row, clicked_col = st.slider("Row", 0, 2), st.slider("Column", 0, 2)
+if st.button("Select Cell"):
+    coord = (clicked_row, clicked_col)
+    if coord not in st.session_state.selected:
+        st.session_state.selected.append(coord)
+
+# 🚩 Display bar with selected cells
 if st.session_state.selected:
-    selected_coords = ', '.join([f"({row}, {col})" for row, col in st.session_state.selected])
-    st.markdown(
-        f"""
+    selected_coords = ', '.join([f"({r},{c})" for r, c in st.session_state.selected])
+    st.markdown(f"""
         <div style="background-color:#f0f0f0; padding:10px; border-radius:5px; border:1px solid #ccc; margin-bottom:10px;">
             <strong>Selected cells (highlighted in green):</strong> {selected_coords}
         </div>
-        """,
-        unsafe_allow_html=True
-    )
+    """, unsafe_allow_html=True)
 else:
-    st.markdown(
-        f"""
+    st.markdown("""
         <div style="background-color:#f0f0f0; padding:10px; border-radius:5px; border:1px solid #ccc; margin-bottom:10px;">
             <strong>No cells selected.</strong>
         </div>
-        """,
-        unsafe_allow_html=True
-    )
+    """, unsafe_allow_html=True)
+
+# 🔲 Build HTML table with green highlights
+html = '<table border="1" style="border-collapse: collapse;">'
+for i, row in enumerate(table_data):
+    html += "<tr>"
+    for j, val in enumerate(row):
+        color = "#92D050" if (i, j) in st.session_state.selected else "white"
+        html += f'<td style="padding:10px; background-color:{color};">{val}</td>'
+    html += "</tr>"
+html += "</table>"
+
+# Render the HTML table
+st.markdown(html, unsafe_allow_html=True)
