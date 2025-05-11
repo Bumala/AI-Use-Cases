@@ -126,69 +126,48 @@ analysis_table_data = {  # keep your full data here
 analysis_table = pd.DataFrame(analysis_table_data)
 analysis_table.set_index("Use Case", inplace=True)
 
-# ---------- Selectable attribute list ----------
 
-attribute_columns = list(analysis_table.columns)
-selected_attributes = st.multiselect(
-    "Select attributes (these match the table cells you want to 'click'):",
-    attribute_columns,
-)
 
-# ---------- Calculate and show top use case ----------
+# Initialize session state variables
+if "selected_cells" not in st.session_state:
+    st.session_state.selected_cells = set()  # Track selected cells
+if "selected_attributes" not in st.session_state:
+    st.session_state.selected_attributes = []  # List of selected words
 
-if selected_attributes:
-    summed = analysis_table[selected_attributes].sum(axis=1)
-    top_use_case = summed.idxmax()
-    st.success(f"🚀 **Top Use Case:** {top_use_case}")
+# Simulated Cell Click Handler
+def handle_cell_click(row, col):
+    # Get the value of the clicked cell
+    cell_value = df.iloc[row, col]
+
+    # Toggle cell selection
+    if (row, col) in st.session_state.selected_cells:
+        st.session_state.selected_cells.remove((row, col))  # Deselect cell
+        st.session_state.selected_attributes.remove(cell_value)  # Remove word
+    else:
+        st.session_state.selected_cells.add((row, col))  # Select cell
+        st.session_state.selected_attributes.append(cell_value)  # Add word
+
+# Display the table and handle clicks
+st.markdown("### Clickable Table")
+for i, row in df.iterrows():
+    cols = st.columns(len(row))
+    for j, val in enumerate(row):
+        if pd.isna(val):
+            continue
+        # Highlight selected cells
+        if (i, j) in st.session_state.selected_cells:
+            bg_color = "lightgreen"
+        else:
+            bg_color = "white"
+        if st.button(val, key=f"cell_{i}_{j}"):
+            handle_cell_click(i, j)
+
+# Display the selected words
+st.markdown("### Selected Words")
+if st.session_state.selected_attributes:
+    st.write(", ".join(st.session_state.selected_attributes))
 else:
-    st.info("👆 Select attributes above to see the top use case.")
-
-# ---------- Generate styled HTML table ----------
-
-def generate_html_table(df):
-    first_col_width = 160
-    second_col_width = 200
-    base_cell_width = 150
-    cell_height = 50
-
-    def style(width, bold=False):
-        bold_style = "font-weight: bold;" if bold else ""
-        return f"text-align: center; vertical-align: middle; padding: 10px; border: 1px solid #000000; width: {width}px; height: {cell_height}px; {bold_style}"
-
-    html = "<table style='border-spacing: 0; width: 100%; border-collapse: collapse; table-layout: fixed; border: 3px solid #000000;'>"
-    for i, row in df.iterrows():
-        html += "<tr>"
-        for j, val in enumerate(row):
-            if pd.isna(val):
-                continue
-            width = first_col_width if j == 0 else (second_col_width if j == 1 else base_cell_width)
-            bg_color = "#E8E8E8" if i == 0 else "#61cbf3" if j == 0 else "#94dcf8" if j == 1 else "#f1fbfe"
-            bold = i == 0 or j <=1
-            attr_name = str(val)
-            highlight = "background-color: #92D050;" if attr_name in selected_attributes else f"background-color: {bg_color};"
-            html += f"<td style='{style(width, bold)} {highlight}'>{val}</td>"
-        html += "</tr>"
-    html += "</table>"
-    return html
-
-# ---------- Show HTML table ----------
-
-st.markdown(
-    """
-    <style>
-        .center-table {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            width: 100%;
-            margin: 0 auto;
-        }
-    </style>
-    """,
-    unsafe_allow_html=True,
-)
-
-st.markdown('<div class="center-table">' + generate_html_table(df) + '</div>', unsafe_allow_html=True)
+    st.info("No words selected yet.")
 
 
 
