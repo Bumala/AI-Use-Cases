@@ -293,23 +293,17 @@ html_code += """
 <script>
 let selectedItems = new Set();
 
-// Function to update the Selected Attributes bar
 function updateSelectedBar() {
     const bar = document.getElementById("selectedItems");
-    if (selectedItems.size === 0) {
-        bar.innerText = "None";
-    } else {
-        bar.innerText = Array.from(selectedItems).join(", ");
-    }
+    bar.innerText = selectedItems.size === 0 ? "None" : Array.from(selectedItems).join(", ");
 }
 
-// Function to handle a cell click event
 function handleCellClick(element) {
     const attr = element.getAttribute('data-attr');
     const isSelected = element.style.backgroundColor === 'rgb(146, 208, 80)';
 
     // Toggle visual selection
-    element.style.backgroundColor = isSelected ? '#f1fbfe' : '#92D050'; // Color toggle
+    element.style.backgroundColor = isSelected ? element.dataset.originalColor : '#92D050';
 
     if (!isSelected) {
         selectedItems.add(attr);
@@ -323,36 +317,39 @@ function handleCellClick(element) {
     window.parent.postMessage({
         isStreamlitMessage: true,
         type: 'cellClick',
-        data: {
-            attribute: attr,
-            selected: !isSelected
-        }
+        data: { attribute: attr, selected: !isSelected }
     }, '*');
 }
 
-// Reset button functionality
-document.getElementById('resetButton').addEventListener('click', function() {
-    // Clear selections
-    selectedItems.clear();
-
-    // Reset all cells to their default background color (unselected)
+document.addEventListener("DOMContentLoaded", function() {
+    // Store original background color of each cell
     const cells = document.querySelectorAll('td');
     cells.forEach(cell => {
-        cell.style.backgroundColor = '#f1fbfe'; // Reset background color to default unselected color
+        const original = getComputedStyle(cell).backgroundColor;
+        cell.dataset.originalColor = original;
     });
 
-    // Update the "Selected Attributes" bar
+    document.getElementById('resetButton').addEventListener('click', function() {
+        // Clear selections
+        selectedItems.clear();
+
+        // Restore each cell's original background color
+        cells.forEach(cell => {
+            cell.style.backgroundColor = cell.dataset.originalColor;
+        });
+
+        updateSelectedBar();
+
+        // Optionally notify Streamlit backend
+        window.parent.postMessage({
+            isStreamlitMessage: true,
+            type: 'resetSelection',
+            data: { reset: true }
+        }, '*');
+    });
+
     updateSelectedBar();
-
-    // Optionally, notify backend for reset (if needed)
-    window.parent.postMessage({
-        isStreamlitMessage: true,
-        type: 'resetSelection',
-        data: { reset: true }
-    }, '*');
 });
-
-updateSelectedBar();
 </script>
 """
 
@@ -368,6 +365,7 @@ html_code += """
 """
 
 html(html_code, height=800)
+
 
 
 
