@@ -138,6 +138,13 @@ function handleCellClick(element) {
 def handle_cell_click():
     if st.session_state.get('cell_click'):
         attr = st.session_state.cell_click['attribute']
+        i = st.session_state.cell_click.get('i')
+        j = st.session_state.cell_click.get('j')
+        
+        # Print the clicked cell coordinates
+        if i is not None and j is not None:
+            st.write(f"Clicked cell: ({i}, {j})")
+
         if st.session_state.cell_click['selected']:
             st.session_state.selected.add(attr)
         else:
@@ -145,8 +152,13 @@ def handle_cell_click():
         st.experimental_rerun()
 
 # Initialize and handle clicks
-st.session_state.cell_click = None
+if 'cell_click' not in st.session_state:
+    st.session_state.cell_click = None
+if 'selected' not in st.session_state:
+    st.session_state.selected = set()
+
 handle_cell_click()
+
 
 
 
