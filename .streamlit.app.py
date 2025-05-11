@@ -1,6 +1,9 @@
 import streamlit as st
 import pandas as pd
 from streamlit.components.v1 import html
+import streamlit.components.v1 as components
+import json
+
 
 # Set page layout
 st.set_page_config(layout="wide")
@@ -143,17 +146,9 @@ function handleCellClick(element) {
 
 
 
-# ======= HANDLE CELL CLICKS =======
-import streamlit as st
 
-# Define the cell-action dictionary
-cell_actions = {
-    (1, 2): lambda: st.success("✅ Cell (1, 2) is green — running logic for (1, 2)!"),
-    (3, 4): lambda: st.warning("⚠️ Cell (3, 4) is green — triggering another action."),
-    (7, 6): lambda: st.info("ℹ️ Cell (7, 6) is green — showing some information."),
-}
 
-# Initialize state if needed
+# ==== STATE SETUP ====
 if "cell_colors" not in st.session_state:
     st.session_state.cell_colors = {}
 if "selected" not in st.session_state:
@@ -161,37 +156,98 @@ if "selected" not in st.session_state:
 if "cell_click" not in st.session_state:
     st.session_state.cell_click = None
 
-# ✅ Check green target cells BEFORE handling click
+# ==== TARGET CELL ACTIONS ====
+cell_actions = {
+    (1, 2): lambda: st.success("✅ Cell (1, 2) is green — running logic for (1, 2)!"),
+    (3, 4): lambda: st.warning("⚠️ Cell (3, 4) is green — triggering another action."),
+    (7, 6): lambda: st.info("ℹ️ Cell (7, 6) is green — showing some information."),
+}
+
+# ==== CHECK TARGET CELL COLORS BEFORE INTERACTIVITY ====
 for coord, action in cell_actions.items():
     if st.session_state.cell_colors.get(coord) == '#92D050':
         action()
 
-# ⬇️ Function to handle the cell click and possibly change color
-def handle_cell_click():
-    click = st.session_state.get('cell_click')
-    if click:
-        attr = click['attribute']
-        row_index = click['row']
-        col_index = click['column']
-        coord = (row_index, col_index)
+# ==== JAVASCRIPT + HTML CELL GRID ====
+NUM_ROWS, NUM_COLS = 10, 10  # Grid size
+html_cells = ""
 
-        st.write(f"Clicked cell attribute: {attr}, Row: {row_index}, Column: {col_index}")
+for i in range(NUM_ROWS):
+    row_html = "<tr>"
+    for j in range(NUM_COLS):
+        attr = f"{i}-{j}"
+        color = st.session_state.cell_colors.get((i, j), "#f1fbfe")
+        row_html += f"""
+        <td onclick="handleCellClick(this)"
+            data-attr="{attr}"
+            style="cursor:pointer; background-color:{color}; padding:15px; border:1px solid #ccc; text-align:center;">
+            {i},{j}
+        </td>
+        """
+    row_html += "</tr>"
+    html_cells += row_html
 
-        # Toggle color and selection
-        if click['selected']:
-            st.session_state.selected.add(attr)
-            st.session_state.cell_colors[coord] = '#92D050'
-        else:
-            st.session_state.selected.discard(attr)
-            st.session_state.cell_colors[coord] = '#FFFFFF'
+# Embed HTML/JS grid
+interaction_js = """
+<script>
+function handleCellClick(element) {
+    const attr = element.getAttribute('data-attr');
+    const isSelected = element.style.backgroundColor === 'rgb(146, 208, 80)';
+    element.style.backgroundColor = isSelected ? '#f1fbfe' : '#92D050';
+    const coords = attr.split('-').map(Number);
+    window.parent.postMessage({
+        isStreamlitMessage: true,
+        type: 'cellClick',
+        data: {
+            attribute: attr,
+            row: coords[0],
+            column: coords[1],
+            selected: !isSelected
+        }
+    }, '*');
+}
+</script>
+"""
 
-        # ⚠️ Important: rerun after state update
-        st.session_state.cell_click = None  # Reset click after handling
-        st.experimental_rerun()
+components.html(f"""
+{interaction_js}
+<table style="border-collapse:collapse;">{html_cells}</table>
+""", height=500)
 
-# 🟢 Call the handler (after action checks)
-handle_cell_click()
+# ==== HANDLE CLICKED CELL MESSAGE ====
+# Streamlit receives JavaScript messages using `st_javascript_eval`
+from streamlit_javascript import st_javascript
 
+clicked = st_javascript("""
+(() => {
+    window.addEventListener("message", (event) => {
+        if (event.data?.type === "cellClick") {
+            window.cellClickData = event.data.data;
+        }
+    });
+    return window.cellClickData || null;
+})()
+""")
+
+# ==== PROCESS CLICK ====
+if clicked:
+    attr = clicked['attribute']
+    row_index = clicked['row']
+    col_index = clicked['column']
+    coord = (row_index, col_index)
+    selected = clicked['selected']
+
+    st.session_state.cell_click = clicked
+
+    if selected:
+        st.session_state.selected.add(attr)
+        st.session_state.cell_colors[coord] = '#92D050'
+    else:
+        st.session_state.selected.discard(attr)
+        st.session_state.cell_colors[coord] = '#f1fbfe'
+
+    # Rerun to process color state
+    st.experimental_rerun()
 
 
 
