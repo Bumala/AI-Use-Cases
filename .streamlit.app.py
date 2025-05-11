@@ -1,3 +1,4 @@
+
 import streamlit as st
 import pandas as pd
 from streamlit.components.v1 import html
@@ -269,6 +270,14 @@ analysis_df = pd.DataFrame({
 
 
 
+
+
+
+
+
+
+
+
 selected_bar_html = """
 <div id="resetButtonContainer" style="padding: 10px; background-color: #f1fbfe; text-align: center;">
     <button id="resetButton" style="padding: 10px 20px; background-color: #61cbf3; border: none; border-radius: 5px; cursor: pointer; font-weight: bold;">
@@ -360,13 +369,9 @@ html_code += """
 .zoomed-table {
     transform: scale(0.75); /* Zoom out to 75% */
     transform-origin: top center;
-    width:
+    width: 100%;
+}
+</style>
+"""
 
-
-
-
-
-
-
-
-
+html(html_code, height=800)
