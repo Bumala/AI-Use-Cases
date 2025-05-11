@@ -264,6 +264,72 @@ analysis_df = pd.DataFrame({
 })
 
 
+selected_bar_html = """
+<div id="selectedBar" style="margin-bottom: 10px; padding: 10px; background-color: #dceefc; border: 2px solid #61cbf3; border-radius: 8px; font-weight: bold;">
+    Selected Attributes: <span id="selectedItems">None</span>
+</div>
+"""
+
+html_code = selected_bar_html + generate_html_table(data, st.session_state.selected) + interaction_js
+
+# Inject update script
+html_code += """
+<script>
+let selectedItems = new Set();
+
+function updateSelectedBar() {
+    const bar = document.getElementById("selectedItems");
+    if (selectedItems.size === 0) {
+        bar.innerText = "None";
+    } else {
+        bar.innerText = Array.from(selectedItems).join(", ");
+    }
+}
+
+function handleCellClick(element) {
+    const attr = element.getAttribute('data-attr');
+    const isSelected = element.style.backgroundColor === 'rgb(146, 208, 80)';
+    
+    // Toggle visual selection
+    element.style.backgroundColor = isSelected ? '#f1fbfe' : '#92D050';
+
+    if (!isSelected) {
+        selectedItems.add(attr);
+    } else {
+        selectedItems.delete(attr);
+    }
+
+    updateSelectedBar();
+
+    // Notify Streamlit backend
+    window.parent.postMessage({
+        isStreamlitMessage: true,
+        type: 'cellClick',
+        data: {
+            attribute: attr,
+            selected: !isSelected
+        }
+    }, '*');
+}
+
+updateSelectedBar();
+</script>
+"""
+
+html(html_code, height=800)
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 # ======= DISPLAY THE TABLE =======
@@ -281,29 +347,4 @@ html(zoomed_html, height=800)
 
 
 
-from streamlit.components.v1 import html
-
-# Add a simple HTML table with JavaScript to print coordinates and content on cell click
-html("""
-<table id="clickableTable" border="1" style="margin-top: 30px;">
-  <tr><td>A1</td><td>B1</td><td>C1</td></tr>
-  <tr><td>A2</td><td>B2</td><td>C2</td></tr>
-  <tr><td>A3</td><td>B3</td><td>C3</td></tr>
-</table>
-<div id="output" style="margin-top: 10px; font-weight: bold;"></div>
-
-<script>
-  const table = document.getElementById("clickableTable");
-  const output = document.getElementById("output");
-
-  table.querySelectorAll("td").forEach((cell, index) => {
-    cell.addEventListener("click", () => {
-      const row = cell.parentNode.rowIndex;
-      const col = cell.cellIndex;
-      const content = cell.innerText;
-      output.innerText = `Clicked Cell - Row: ${row}, Column: ${col}, Content: "${content}"`;
-    });
-  });
-</script>
-""", height=300)
 
