@@ -268,7 +268,71 @@ zoomed_html = f"""
  
 html(zoomed_html, height=800)
  
- 
+
+
+
+
+
+selected_row = st.number_input("Row", min_value=0, step=1)
+selected_col = st.number_input("Column", min_value=0, step=1)
+
+html(f"""
+<script>
+function getCellContentAt(rowIndex, colIndex) {{
+    const table = document.querySelector('table');
+    if (!table) {{
+        return;
+    }}
+    let currentRow = 0;
+    let result = null;
+    let spanMatrix = [];
+
+    for (let r = 0; r < table.rows.length; r++) {{
+        const row = table.rows[r];
+        spanMatrix[r] = spanMatrix[r] || [];
+        let colPosition = 0;
+        for (let c = 0; c < row.cells.length; c++) {{
+            const cell = row.cells[c];
+
+            // Skip already occupied columns due to rowspan/colspan
+            while (spanMatrix[r][colPosition]) {{
+                colPosition++;
+            }}
+
+            const rowspan = parseInt(cell.getAttribute('rowspan') || 1);
+            const colspan = parseInt(cell.getAttribute('colspan') || 1);
+
+            // Fill span matrix
+            for (let i = 0; i < rowspan; i++) {{
+                for (let j = 0; j < colspan; j++) {{
+                    if (!spanMatrix[r + i]) spanMatrix[r + i] = [];
+                    spanMatrix[r + i][colPosition + j] = cell;
+                }}
+            }}
+
+            colPosition += colspan;
+        }}
+    }}
+
+    const targetCell = spanMatrix[rowIndex]?.[colIndex];
+    if (targetCell) {{
+        const resultDiv = document.getElementById("cell-result");
+        resultDiv.innerText = "Selected Cell Content: " + targetCell.textContent.trim();
+    }} else {{
+        document.getElementById("cell-result").innerText = "No cell found at that position.";
+    }}
+}}
+
+setTimeout(() => {{
+    getCellContentAt({int(selected_row)}, {int(selected_col)});
+}}, 1000);
+</script>
+<div id="cell-result" style="margin-top:10px; font-weight:bold; font-size:18px; color:#444;"></div>
+""", height=100)
+
+
+
+
  
 # ======= MAP CELL COORDINATES TO WORDS =======
 cell_to_word_mapping = {
