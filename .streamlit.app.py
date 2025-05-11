@@ -134,21 +134,45 @@ function handleCellClick(element) {
 </script>
 """
 
-# ======= HANDLE CELL CLICKS =======
-def handle_cell_click():
-    if st.session_state.get('cell_click'):
-        attr = st.session_state.cell_click['attribute']
-        if st.session_state.cell_click['selected']:
-            st.session_state.selected.add(attr)
-        else:
-            st.session_state.selected.discard(attr)
-        st.experimental_rerun()
-
-# Initialize and handle clicks
-st.session_state.cell_click = None
-handle_cell_click()
 
 
+
+
+
+
+cell.onclick = function() {
+  const i = cell.getAttribute('data-i');
+  const j = cell.getAttribute('data-j');
+  const text = cell.innerText.trim();
+  const key = text + '|' + i + '|' + j;
+  // Update selection
+  if (selected.has(key)) {
+    selected.delete(key);
+    cell.style.backgroundColor = '';
+  } else {
+    selected.add(key);
+    cell.style.backgroundColor = '#92D050';
+  }
+  // Send updated selection to Streamlit
+  const selectedList = Array.from(selected);
+  const result = selectedList.join(',');
+  Streamlit.setComponentValue(result);
+};
+
+
+
+# Example: st.session_state.selected = ['Attr1|2|1', 'Attr3|3|2']
+selected_raw = st.session_state.selected if isinstance(st.session_state.selected, list) else []
+
+if selected_raw:
+    st.markdown("### 🟩 Selected Cells (i, j):")
+    for item in selected_raw:
+        parts = item.split('|')
+        if len(parts) == 3:
+            attr, i, j = parts
+            st.write(f"- {attr} at ({i}, {j})")
+else:
+    st.markdown("### 🟩 No cells selected.")
 
 
 
