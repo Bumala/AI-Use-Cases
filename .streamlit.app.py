@@ -269,27 +269,23 @@ analysis_df = pd.DataFrame({
 
 
 
-
 selected_bar_html = """
 <div id="selectedBar" style="margin-bottom: 10px; padding: 10px; background-color: #dceefc; border: 2px solid #61cbf3; border-radius: 8px; font-weight: bold;">
     Selected Attributes: <span id="selectedItems">None</span>
 </div>
 """
 
-html_code = selected_bar_html + generate_html_table(data, st.session_state.selected) + interaction_js
+# Wrap the table in a div container to manage zoom and scrolling
+html_code = selected_bar_html + f"""
+<div style="overflow-x: auto; width: 100%; padding: 10px; box-sizing: border-box;">
+    <div class="zoomed-table">
+        {generate_html_table(data, st.session_state.selected)}
+    </div>
+</div>
+""" + interaction_js
 
 # Inject update script
 html_code += """
-<style>
-  /* Zoom out the table */
-  .zoomed-table {
-    transform: scale(0.7); /* Adjust the zoom level to fit the table on screen */
-    transform-origin: top center;
-    margin: 0 auto;
-    overflow-x: auto;
-  }
-</style>
-
 <script>
 let selectedItems = new Set();
 
@@ -332,8 +328,16 @@ updateSelectedBar();
 </script>
 """
 
-# Apply zoom effect to the table by wrapping it in a div with the zoom class
-html_code = html_code.replace(generate_html_table(data, st.session_state.selected), f'<div class="zoomed-table">{generate_html_table(data, st.session_state.selected)}</div>')
+# Apply the zoom effect to the table
+html_code += """
+<style>
+.zoomed-table {
+    transform: scale(0.75); /* Zoom out to 75% */
+    transform-origin: top center;
+    width: 100%;
+}
+</style>
+"""
 
 html(html_code, height=800)
 
