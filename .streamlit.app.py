@@ -135,6 +135,9 @@ if "selected" not in st.session_state:
 
 
 
+
+
+
 # ======= HANDLE CELL CLICKS =======
 def handle_cell_click():
     if st.session_state.get('cell_click'):
@@ -161,25 +164,47 @@ handle_cell_click()
 
 
 
+
 # ======= DISPLAY THE TOP USE CASE =======
 selected_attributes = st.session_state.selected
 
+# Check if any attributes have been selected
 if selected_attributes:
     # Ensure only valid columns are used
     valid_attributes = [attr for attr in selected_attributes if attr in analysis_df.columns]
-    st.write("Valid Attributes:", valid_attributes)  # Debugging
-
+    
     if valid_attributes:
-        # Sum the selected attributes for each use case
-        summed = analysis_df[valid_attributes].sum(axis=1)
-        top_use_case = summed.idxmax()  # Get the index of the maximum value
-        st.success(f"🚀 **Top Use Case:** {analysis_df.iloc[top_use_case]['Use Case']}")
-        st.write("Summed Data:")
-        st.dataframe(summed)  # Debugging
+        # Debugging: Display valid attributes
+        st.write(f"Valid Attributes: {valid_attributes}")  # You can remove this line when debugging is complete
+        
+        # Sum the scores of selected attributes for each use case
+        summed_scores = analysis_df[valid_attributes].sum(axis=1)
+        
+        # Find the top use case (highest score)
+        top_use_case_index = summed_scores.idxmax()  # Index of the highest score
+        top_use_case = analysis_df.iloc[top_use_case_index]['Use Case']  # Use case name
+        
+        # Display the top use case
+        st.success(f"🚀 **Top Use Case:** {top_use_case}")
+        
+        # Optionally, display the scores for all use cases
+        st.write("Scores for All Use Cases:")
+        results_df = pd.DataFrame({
+            "Use Case": analysis_df["Use Case"],
+            "Score": summed_scores
+        }).sort_values(by="Score", ascending=False)  # Sort by score
+        st.dataframe(results_df)  # Display as a table
     else:
-        st.error("No valid attributes selected.")
+        st.error("No valid attributes selected. Please select relevant attributes.")
 else:
-    st.info("👆 Select attributes above to see the top use case.")
+    st.info("👆 Select attributes in the table above to see the top use case.")
+
+
+
+
+
+
+
 
 
 
