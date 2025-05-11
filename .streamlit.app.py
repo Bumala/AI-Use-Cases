@@ -259,20 +259,6 @@ analysis_df = pd.DataFrame({
 })
 
 
-
-
-# ======= DISPLAY THE TABLE =======
-zoomed_html = f"""
-<div style="display: flex; justify-content: center; align-items: center; height: 100%; transform: scale(0.8); transform-origin: top;">
-    {generate_html_table(data, st.session_state.selected)}
-</div>
-{interaction_js}
-"""
-
-html(zoomed_html, height=800)
-
-
-
 # ======= USE CASE ANALYSIS =======
 def get_top_use_cases(selected_attributes, analysis_df):
     """
@@ -366,3 +352,25 @@ if st.session_state.selected:
         st.write("No matching use cases found for the selected attributes")
 else:
     st.write("Select attributes from the table to see recommended use cases")
+
+
+
+
+
+
+
+
+
+# ======= DISPLAY THE TABLE =======
+zoomed_html = f"""
+<div style="display: flex; justify-content: center; align-items: center; height: 100%; transform: scale(0.8); transform-origin: top;">
+    {generate_html_table(data, st.session_state.selected)}
+</div>
+{interaction_js}
+"""
+
+html(zoomed_html, height=800)
+
+
+
+
