@@ -269,3 +269,14 @@ zoomed_html = f"""
 html(zoomed_html, height=800)
 
 
+
+
+# ======= DISPLAY SELECTED ITEMS =======
+st.markdown("### Selected Items")
+if st.session_state.selected:
+    for item in st.session_state.selected:
+        st.write(f"🟢 {item}")  # You can replace "🟢" with any symbol or styling you prefer
+else:
+    st.info("No items selected yet.")
+
+
