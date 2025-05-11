@@ -360,12 +360,8 @@ html_code += """
 .zoomed-table {
     transform: scale(0.75); /* Zoom out to 75% */
     transform-origin: top center;
-    width: 100%;
-}
-</style>
-"""
+    width:
 
-html(html_code, height=800)
 
 
 
