@@ -21,20 +21,8 @@ data = [
     [None, "Department", "R&D", "Manufacturing", "Marketing & Sales", "Customer Service"],
 ]
 
-
-
-
-
-
-
-
-
-
-
-
+# ======= ANALYSIS DATAFRAME =======
 analysis_df = pd.DataFrame({
-
-   
     "Use Case": [
         "AI-infused experiments in R&D",
         "AI-powered manufacturing planning in smart factories",
@@ -66,6 +54,7 @@ analysis_df = pd.DataFrame({
         "AI-powered customer satisfaction analysis",
         "AI-driven competition analysis",
         "AI-driven vehicles sales prediction"
+  
     ],
     "Quality/Scope/Knowledge": [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2],
     "Time Efficiency": [2, 2, 2, 0, 0, 0, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 0, 2, 0, 2, 0, 2, 2, 2, 0, 0],
@@ -124,18 +113,85 @@ analysis_df = pd.DataFrame({
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+import streamlit as st
+import pandas as pd
+from streamlit.components.v1 import html
+
+# Set page layout
+st.set_page_config(layout="wide")
+
+# ======= TABLE DATA =======
+data = [
+    ["Category", "Dimension", "Attributes"],
+    ["Impact (What)", "Benefits", "Quality/Scope/Knowledge", "Time Efficiency", "Cost"],
+    [None, "Focus within Business Model Navigator", "Customer Segments", "Value Proposition", "Value Chain", "Revenue Model"],
+    [None, "Aim", "Product Innovation", "Process Innovation", "Business Model Innovation"],
+    [None, "Ambidexterity", "Exploration", "Exploitation"],
+    ["Technology (How)", "AI Role", "Automaton", "Helper", "Partner"],
+    [None, "AI Concepts", "Machine Learning", "Deep Learning", "Artificial Neural Networks", "Natural Language Processing", "Computer Vision", "Robotics"],
+    [None, "Analytics Focus", "Descriptive", "Diagnostic", "Predictive", "Prescriptive"],
+    [None, "Analytics Problem", "Description/ Summary", "Clustering", "Classification", "Dependency Analysis", "Regression"],
+    [None, "Data Type", "Customer Data", "Machine Data", "Business Data (Internal Data)", "Market Data", "Public & Regulatory Data", "Synthetic Data"],
+    ["Context (Where/When)", "Innovation Phase", "Front End", "Development", "Market Introduction"],
+    [None, "Department", "R&D", "Manufacturing", "Marketing & Sales", "Customer Service"],
+]
+
+# ======= ANALYSIS DATAFRAME =======
+analysis_df = pd.DataFrame({
+    "Use Case": [
+        "AI-infused experiments in R&D",
+        "AI-powered manufacturing planning in smart factories",
+        "AI-driven Human-Machine Collaboration in ideation",
+        "AI-enabled idea generation in the Metaverse",
+        "AI-optimized patent analysis",
+        "AI-powered forecasting of the technology life cycle of EVs (S-Curve)",
+        "AI-enabled bionic digital twin production planning",
+        "AI-infused Human-Robot Collaboration planning",
+        "AI-powered material flow planning",
+        "AI-assisted ideation",
+        "AI-driven interactive collaborative innovation",
+        "AI-based digital twin for lithium-ion battery development",
+        "AI- and Genetic Algorithms-based vehicle design",
+        "AI-augmented visual inspections",
+        "AI-optimized scenario engineering",
+        "AI-driven design process",
+        "AI- and Bio-inspired Design",
+        "AI-assisted quality control of the bumper warpage",
+        "AI-enabled predictive maintenance",
+        "AI-optimized braking system test",
+        "AI-based identification of consumer adoption stage",
+        "AI-powered marketing campaign",
+        "AI-driven relationship marketing",
+        "AI-assisted customer service in after-sales",
+        "AI-enabled battery monitoring",
+        "AI-assisted staff training",
+        "AI-driven predictive quality models for customer defects",
+        "AI-powered customer satisfaction analysis",
+        "AI-driven competition analysis",
+        "AI-driven vehicles sales prediction"
+    ],
+    "Quality/Scope/Knowledge": [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2],
+    "Time Efficiency": [2, 2, 2, 0, 0, 0, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 0, 2, 0, 2, 0, 2, 2, 2, 0, 0],
+    "Cost": [2, 2, 0, 0, 0, 0, 2, 1, 2, 2, 0, 2, 2, 0, 2, 0, 2, 0, 2, 2, 0, 2, 0, 2, 0, 2, 0, 0, 0, 0],
+    # Add more attributes/columns if needed
+})
+
 # ======= SESSION STATE =======
 if "selected" not in st.session_state:
     st.session_state.selected = set()
-
-
-
-
-
-
-
-
-
 
 
 # ======= HANDLE CELL CLICKS =======
@@ -152,69 +208,38 @@ def handle_cell_click():
 st.session_state.cell_click = None
 handle_cell_click()
 
-
-
-
-
-
-
-
-
-
-
-
-
-
 # ======= DISPLAY THE TOP USE CASE =======
 selected_attributes = st.session_state.selected
 
-# Check if any attributes have been selected
 if selected_attributes:
-    # Ensure only valid columns are used
+    st.write(f"Selected Attributes: {selected_attributes}")  # Debugging
+
+    # Filter valid attributes
     valid_attributes = [attr for attr in selected_attributes if attr in analysis_df.columns]
-    
+    st.write(f"Valid Attributes: {valid_attributes}")  # Debugging
+
     if valid_attributes:
-        # Debugging: Display valid attributes
-        st.write(f"Valid Attributes: {valid_attributes}")  # You can remove this line when debugging is complete
-        
-        # Sum the scores of selected attributes for each use case
+        # Calculate scores
         summed_scores = analysis_df[valid_attributes].sum(axis=1)
-        
-        # Find the top use case (highest score)
+        st.write(f"Summed Scores: {summed_scores}")  # Debugging
+
+        # Find the top use case
         top_use_case_index = summed_scores.idxmax()  # Index of the highest score
         top_use_case = analysis_df.iloc[top_use_case_index]['Use Case']  # Use case name
-        
+
         # Display the top use case
         st.success(f"🚀 **Top Use Case:** {top_use_case}")
-        
-        # Optionally, display the scores for all use cases
-        st.write("Scores for All Use Cases:")
+
+        # Optional: Display all scores
         results_df = pd.DataFrame({
             "Use Case": analysis_df["Use Case"],
             "Score": summed_scores
-        }).sort_values(by="Score", ascending=False)  # Sort by score
-        st.dataframe(results_df)  # Display as a table
+        }).sort_values(by="Score", ascending=False)
+        st.dataframe(results_df)
     else:
         st.error("No valid attributes selected. Please select relevant attributes.")
 else:
     st.info("👆 Select attributes in the table above to see the top use case.")
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 # ======= PERFECT TABLE LAYOUT GENERATION =======
@@ -229,24 +254,7 @@ def generate_html_table(data, selected):
         border_bottom_style = "border-bottom: 3px solid #000000;" if border_bottom else ""
         return f"text-align: center; vertical-align: middle; padding: 10px; border: 1px solid #000000; width: {width}px; height: {cell_height}px; {bold_style} {border_bottom_style}"
 
-    # Define colspan rules
-    colspan_2 = {
-        (1, 2), (1, 3), (1, 4),
-        (2, 2), (2, 5),
-        (3, 2), (3, 3), (3, 4), 
-        (5, 2), (5, 3), (5, 4),
-        (7, 2), (7, 5),
-        (8, 4),
-        (10, 2), (10, 3), (10, 4),
-        (11, 2), (11, 5), 
-    }
-
-    colspan_3 = {
-        (4, 2), (4, 3)
-    }
-
     html = "<table style='border-spacing: 0; width: 100%; border-collapse: collapse; table-layout: fixed; border: 3px solid #000000;'>"
-
     for i, row in enumerate(data):
         html += "<tr>"
         for j, val in enumerate(row):
@@ -254,10 +262,10 @@ def generate_html_table(data, selected):
                 continue
 
             # Determine if this is an attribute cell that can be selected
-            is_attribute = (i > 0 and j >= 2) 
+            is_attribute = (i > 0 and j >= 2)
             click_attr = f"onclick='handleCellClick(this)' data-attr='{val}'" if is_attribute else ""
             cell_class = " class='selected'" if val in st.session_state.selected and is_attribute else ""
-            
+
             # Base cell style
             bg_color = "#92D050" if val in st.session_state.selected and is_attribute else "#f1fbfe"
             if j == 0:
@@ -267,121 +275,16 @@ def generate_html_table(data, selected):
 
             # Header row
             if i == 0:
-                if j == 0:
-                    html += f"<td style='{style(first_col_width, bold=True, border_bottom=True)} background-color: #E8E8E8;'>{val}</td>"
-                elif j == 1:
-                    html += f"<td style='{style(second_col_width, bold=True, border_bottom=True)} background-color: #E8E8E8;'>{val}</td>"
-                elif j == 2:
-                    html += f"<td colspan='6' style='{style(base_cell_width * 6, bold=True, border_bottom=True)} background-color: #E8E8E8;'>{val}</td>"
-            
-            # First column cells with rowspan
-            elif j == 0:
-                if i == 1:
-                    html += f"<td rowspan='4' style='{style(first_col_width, bold=True, border_bottom=True)} background-color: #61cbf3;'>{val}</td>"
-                elif i == 5:
-                    html += f"<td rowspan='5' style='{style(first_col_width, bold=True, border_bottom=True)} background-color: #61cbf3;'>{val}</td>"
-                elif i == 10:
-                    html += f"<td rowspan='2' style='{style(first_col_width, bold=True)} background-color: #61cbf3;'>{val}</td>"
-            
-            # Special formatting for certain cells
-            elif (i == 4 and j == 1) or (i == 9 and j == 1):
-                html += f"<td {click_attr}{cell_class} style='{style(base_cell_width, bold=True, border_bottom=True)} background-color: {bg_color}; cursor: pointer;'>{val}</td>"
-            elif i == 9 and j in {2, 4, 6}:
-                html += f"<td {click_attr}{cell_class} style='{style(base_cell_width)} background-color: {bg_color}; border-bottom: 3px solid #000000; cursor: pointer;'>{val}</td>"
-            elif i > 0 and j == 1:
-                html += f"<td style='{style(second_col_width, bold=True)} background-color: #94dcf8;'>{val}</td>"
-            
-            # Cells with colspan
-            elif (i, j) in colspan_3:
-                html += f"<td {click_attr}{cell_class} colspan='3' style='{style(base_cell_width * 3)} background-color: {bg_color}; border-bottom: 3px solid #000000; cursor: pointer;'>{val}</td>"
-            elif (i, j) in colspan_2:
-                html += f"<td {click_attr}{cell_class} colspan='2' style='{style(base_cell_width * 2)} background-color: {bg_color}; cursor: pointer;'>{val}</td>"
+                html += f"<td style='{style(base_cell_width * 6, bold=True)}'>{val}</td>"
             else:
                 html += f"<td {click_attr}{cell_class} style='{style(base_cell_width)} background-color: {bg_color}; cursor: pointer;'>{val}</td>"
         html += "</tr>"
-
     html += "</table>"
     return html
 
 
-
-
-
-
-
-
-# Define the interaction JavaScript code as a proper string
+# Define the interaction JavaScript code
 interaction_js = """
 function handleCellClick(element) {
-    const attr = element.getAttribute('data-attr');
-    const isSelected = element.style.backgroundColor === 'rgb(146, 208, 80)';
-    
-    // Toggle visual selection immediately
-    element.style.backgroundColor = isSelected ? '#f1fbfe' : '#92D050';
-    
-    // Send message to Streamlit
-    window.parent.postMessage({
-        isStreamlitMessage: true,
-        type: 'cellClick',
-        data: {
-            attribute: attr,
-            selected: !isSelected
-        }
-    }, '*');
-}
-"""
-
-
-
-
-
-# Corrected zoomed_html content
-zoomed_html = f"""
-<div style="display: flex; justify-content: center; align-items: center; height: 100%; transform: scale(0.8); transform-origin: top;">
-    {generate_html_table(data, st.session_state.selected)}
-</div>
-<script>
-    function handleCellClick(element) {{
-        const attr = element.getAttribute('data-attr');
-        const isSelected = element.style.backgroundColor === 'rgb(146, 208, 80)';
-        
-        // Toggle visual selection immediately
-        element.style.backgroundColor = isSelected ? '#f1fbfe' : '#92D050';
-        
-        // Send message to Streamlit
-        window.parent.postMessage({{
-            isStreamlitMessage: true,
-            type: 'cellClick',
-            data: {{
-                attribute: attr,
-                selected: !isSelected
-            }}
-        }}, '*');
-    }}
-</script>
-"""
-
-
-
-
-
-
-
-
-
-
-
-# ======= DISPLAY THE TABLE =======
-zoomed_html = f"""
-<div style="display: flex; justify-content: center; align-items: center; height: 100%; transform: scale(0.8); transform-origin: top;">
-    {generate_html_table(data, st.session_state.selected)}
-</div>
-<script>
-    {interaction_js}
-</script>
-"""
-html(zoomed_html, height=800)
-
-
-
-
+    const attr = element*
+
