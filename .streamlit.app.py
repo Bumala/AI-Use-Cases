@@ -1,11 +1,15 @@
+
+
+
+
 import streamlit as st
 import pandas as pd
-from streamlit.components.v1 import html
 
-# Set page layout
+# Set Streamlit page layout
 st.set_page_config(layout="wide")
 
-# ======= TABLE DATA =======
+# ---------- Data for the HTML table ----------
+
 data = [
     ["Category", "Dimension", "Attributes"],
     ["Impact (What)", "Benefits", "Quality/Scope/Knowledge", "Time Efficiency", "Cost"],
@@ -21,12 +25,11 @@ data = [
     [None, "Department", "R&D", "Manufacturing", "Marketing & Sales", "Customer Service"],
 ]
 
-# ======= SESSION STATE =======
-if "selected" not in st.session_state:
-    st.session_state.selected = set()
+df = pd.DataFrame(data)
 
-# ======= ANALYSIS DATA =======
-analysis_data = { # keep your full data here
+# ---------- Load analysis table ----------
+
+analysis_table_data = {  # keep your full data here
     "Use Case": [
         "AI-infused experiments in R&D",
         "AI-powered manufacturing planning in smart factories",
@@ -120,92 +123,75 @@ analysis_data = { # keep your full data here
     
 }
 
-analysis_df = pd.DataFrame(analysis_data)
-analysis_df.set_index("Use Case", inplace=True)
+analysis_table = pd.DataFrame(analysis_table_data)
+analysis_table.set_index("Use Case", inplace=True)
 
-# ======= USE CASE RECOMMENDATION =======
-def get_top_use_cases(selected_attributes):
-    """Calculate top use cases based on selected attributes."""
-    if not selected_attributes:
-        return []
-    
-    # Calculate scores for each use case
-    scores = analysis_df[list(selected_attributes)].sum(axis=1)
-    top_use_cases = scores.nlargest(3)
-    
-    return [(use_case, score) for use_case, score in top_use_cases.items()]
+# ---------- Selectable attribute list ----------
 
-# ======= TABLE GENERATION =======
-def generate_html_table(data, selected):
-    # ... (keep your existing table generation code exactly as is) ...
-    pass
+attribute_columns = list(analysis_table.columns)
+selected_attributes = st.multiselect(
+    "Select attributes (these match the table cells you want to 'click'):",
+    attribute_columns,
+)
 
-# ======= JAVASCRIPT INTERACTION =======
-interaction_js = """
-<script>
-function handleCellClick(element) {
-    const attr = element.getAttribute('data-attr');
-    const isSelected = element.classList.contains('selected');
-    
-    // Toggle selection
-    if (isSelected) {
-        element.classList.remove('selected');
-        element.style.backgroundColor = '#f1fbfe';
-    } else {
-        element.classList.add('selected');
-        element.style.backgroundColor = '#92D050';
-    }
-    
-    // Send message to Streamlit
-    window.parent.postMessage({
-        isStreamlitMessage: true,
-        type: 'cellClick',
-        data: {
-            attribute: attr,
-            selected: !isSelected
-        }
-    }, '*');
-}
-</script>
-"""
+# ---------- Calculate and show top use case ----------
 
-# ======= HANDLE CELL CLICKS =======
-def handle_cell_click():
-    if st.session_state.get('cell_click'):
-        attr = st.session_state.cell_click['attribute']
-        if st.session_state.cell_click['selected']:
-            st.session_state.selected.add(attr)
-        else:
-            st.session_state.selected.discard(attr)
-        st.experimental_rerun()
-
-# Initialize and handle clicks
-st.session_state.cell_click = None
-handle_cell_click()
-
-# ======= DISPLAY RECOMMENDATIONS =======
-if st.session_state.selected:
-    top_use_cases = get_top_use_cases(st.session_state.selected)
-    st.subheader("Recommended AI Use Cases")
-    
-    if top_use_cases:
-        cols = st.columns(3)
-        for i, (use_case, score) in enumerate(top_use_cases):
-            with cols[i % 3]:
-                st.success(f"**#{i+1}**: {use_case}")
-                st.progress(min(score/10, 1.0))
-                st.caption(f"Match score: {score}")
-    else:
-        st.warning("No matching use cases found")
+if selected_attributes:
+    summed = analysis_table[selected_attributes].sum(axis=1)
+    top_use_case = summed.idxmax()
+    st.success(f"🚀 **Top Use Case:** {top_use_case}")
 else:
-    st.info("Select attributes from the table to see recommendations")
+    st.info("👆 Select attributes above to see the top use case.")
 
-# ======= DISPLAY THE TABLE =======
-zoomed_html = f"""
-<div style="display: flex; justify-content: center; align-items: center; height: 100%; transform: scale(0.8); transform-origin: top;">
-    {generate_html_table(data, st.session_state.selected)}
-</div>
-{interaction_js}
-"""
+# ---------- Generate styled HTML table ----------
 
-html(zoomed_html, height=800)
+def generate_html_table(df):
+    first_col_width = 160
+    second_col_width = 200
+    base_cell_width = 150
+    cell_height = 50
+
+    def style(width, bold=False):
+        bold_style = "font-weight: bold;" if bold else ""
+        return f"text-align: center; vertical-align: middle; padding: 10px; border: 1px solid #000000; width: {width}px; height: {cell_height}px; {bold_style}"
+
+    html = "<table style='border-spacing: 0; width: 100%; border-collapse: collapse; table-layout: fixed; border: 3px solid #000000;'>"
+    for i, row in df.iterrows():
+        html += "<tr>"
+        for j, val in enumerate(row):
+            if pd.isna(val):
+                continue
+            width = first_col_width if j == 0 else (second_col_width if j == 1 else base_cell_width)
+            bg_color = "#E8E8E8" if i == 0 else "#61cbf3" if j == 0 else "#94dcf8" if j == 1 else "#f1fbfe"
+            bold = i == 0 or j <=1
+            attr_name = str(val)
+            highlight = "background-color: #92D050;" if attr_name in selected_attributes else f"background-color: {bg_color};"
+            html += f"<td style='{style(width, bold)} {highlight}'>{val}</td>"
+        html += "</tr>"
+    html += "</table>"
+    return html
+
+# ---------- Show HTML table ----------
+
+st.markdown(
+    """
+    <style>
+        .center-table {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            margin: 0 auto;
+        }
+    </style>
+    """,
+    unsafe_allow_html=True,
+)
+
+st.markdown('<div class="center-table">' + generate_html_table(df) + '</div>', unsafe_allow_html=True)
+
+
+
+
+
+
