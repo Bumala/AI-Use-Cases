@@ -270,26 +270,119 @@ html(zoomed_html, height=800)
 
 
 
-# ======= MAP CELL COORDINATES TO WORDS =======
-cell_to_word_mapping = {
-    (1, 2): "Quality/Scope/Knowledge",
-    (1, 3): "Time Efficiency",
-    (1, 4): "Cost",
-    (2, 2): "Customer Segments",
-    (2, 3): "Value Proposition",
-    (2, 4): "Value Chain",
-    # Add more mappings as needed
-}
+# ======= PERFECT TABLE LAYOUT GENERATION =======
+def generate_html_table(data, selected):
+    first_col_width = 160
+    second_col_width = 200
+    base_cell_width = 150
+    cell_height = 50
 
-# ======= DISPLAY SELECTED ITEMS WITH MAPPING =======
+    def style(width, bold=False, border_bottom=False):
+        bold_style = "font-weight: bold;" if bold else ""
+        border_bottom_style = "border-bottom: 3px solid #000000;" if border_bottom else ""
+        return f"text-align: center; vertical-align: middle; padding: 10px; border: 1px solid #000000; width: {width}px; height: {cell_height}px; {bold_style} {border_bottom_style}"
+
+    # Define the mapping for cells with colspan
+    cell_mapping = {
+        "Quality/Scope/Knowledge": (1, 2),
+        "Time Efficiency": (1, 3),
+        "Cost": (1, 4),
+    }
+
+    html = "<table style='border-spacing: 0; width: 100%; border-collapse: collapse; table-layout: fixed; border: 3px solid #000000;'>"
+
+    for i, row in enumerate(data):
+        html += "<tr>"
+        for j, val in enumerate(row):
+            if val is None:
+                continue
+
+            # Determine if this is an attribute cell that can be selected
+            is_attribute = (i > 0 and j >= 2)
+
+            # Handle cells with colspan
+            if val in cell_mapping:
+                row_idx, col_idx = cell_mapping[val]  # Get the mapped row and column
+                click_attr = f"onclick='handleCellClick({row_idx}, {col_idx})'"  # Pass mapped identifier
+            else:
+                click_attr = f"onclick='handleCellClick({i}, {j})'"
+
+            cell_class = " class='selected'" if val in selected and is_attribute else ""
+
+            # Base cell style
+            bg_color = "#92D050" if val in selected and is_attribute else "#f1fbfe"
+            if j == 0:
+                bg_color = "#61cbf3"
+            elif j == 1:
+                bg_color = "#94dcf8"
+
+            # Header row
+            if i == 0:
+                if j == 0:
+                    html += f"<td style='{style(first_col_width, bold=True, border_bottom=True)} background-color: #E8E8E8;'>{val}</td>"
+                elif j == 1:
+                    html += f"<td style='{style(second_col_width, bold=True, border_bottom=True)} background-color: #E8E8E8;'>{val}</td>"
+                elif j == 2:
+                    html += f"<td colspan='6' style='{style(base_cell_width * 6, bold=True, border_bottom=True)} background-color: #E8E8E8;'>{val}</td>"
+            else:
+                html += f"<td {click_attr} style='{style(base_cell_width)} background-color: {bg_color}; cursor: pointer;'>{val}</td>"
+        html += "</tr>"
+
+    html += "</table>"
+    return html
+
+# ======= JAVASCRIPT FOR INTERACTIVITY =======
+interaction_js = """
+<script>
+function handleCellClick(row, col) {
+    // Send the selected cell's row and column back to Streamlit
+    window.parent.postMessage({
+        isStreamlitMessage: true,
+        type: 'cellClick',
+        data: { row: row, col: col }
+    }, '*');
+}
+</script>
+"""
+
+# ======= HANDLE CELL CLICKS =======
+def handle_cell_click():
+    if st.session_state.get('cell_click'):
+        row = st.session_state.cell_click['row']
+        col = st.session_state.cell_click['col']
+
+        # Map (row, col) to a word or action
+        cell_to_word_mapping = {
+            (1, 2): "Quality/Scope/Knowledge",
+            (1, 3): "Time Efficiency",
+            (1, 4): "Cost",
+        }
+        word = cell_to_word_mapping.get((row, col), None)
+        if word:
+            st.session_state.selected.add(word)
+        else:
+            st.session_state.selected.add(f"Cell ({row}, {col})")
+        st.experimental_rerun()
+
+# Initialize and handle clicks
+if 'cell_click' not in st.session_state:
+    st.session_state.cell_click = None
+handle_cell_click()
+
+# ======= DISPLAY THE HTML TABLE =======
+zoomed_html = f"""
+<div style="display: flex; justify-content: center; align-items: center; height: 100%; transform: scale(0.8); transform-origin: top;">
+    {generate_html_table(data, st.session_state.selected)}
+</div>
+{interaction_js}
+"""
+
+html(zoomed_html, height=800)
+
+# ======= DISPLAY SELECTED ITEMS =======
 st.markdown("### Selected Items")
 if st.session_state.selected:
-    for cell in st.session_state.selected:
-        # Check if the selected cell is in the mapping
-        word = cell_to_word_mapping.get(cell)
-        if word:
-            st.write(f"🟢 {word}")  # Display the corresponding word
-        else:
-            st.write(f"🔵 {cell}")  # Display the cell itself if no mapping is found
+    for item in st.session_state.selected:
+        st.write(f"🟢 {item}")
 else:
-    st.info("No cells selected yet.")
+    st.info("No items selected yet.")
