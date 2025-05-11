@@ -117,13 +117,6 @@ analysis_df = pd.DataFrame({
 
 
 
-st.write("Analysis DataFrame:")
-st.dataframe(analysis_df)
-
-
-
-
-
 
 
 
