@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
 from streamlit.components.v1 import html
+import streamlit.components.v1 as components
 
 # Set page layout
 st.set_page_config(layout="wide")
@@ -112,6 +113,10 @@ def generate_html_table(data, selected):
     return html
 
 # ======= JAVASCRIPT FOR INTERACTIVITY =======
+
+
+# Inject the JavaScript code into the Streamlit app using components
+interaction_js = """
 <script>
 function handleCellClick(element) {
     const attr = element.getAttribute('data-attr');
@@ -135,6 +140,32 @@ function handleCellClick(element) {
     }, '*');
 }
 </script>
+"""
+
+# Embed the JavaScript code in the app
+components.html(interaction_js)
+
+# ======= HANDLE CELL CLICKS =======
+def handle_cell_click():
+    if st.session_state.get('cell_click'):
+        attr = st.session_state.cell_click['attribute']
+        row_index = st.session_state.cell_click['row']
+        col_index = st.session_state.cell_click['column']
+        
+        # Display the row and column that was clicked
+        st.write(f"Clicked cell attribute: {attr}, Row: {row_index}, Column: {col_index}")
+        
+        if st.session_state.cell_click['selected']:
+            st.session_state.selected.add(attr)
+        else:
+            st.session_state.selected.discard(attr)
+        st.experimental_rerun()
+
+# Initialize and handle clicks
+st.session_state.cell_click = None
+handle_cell_click()
+
+# Additional Streamlit functionality can go here
 
 
 
