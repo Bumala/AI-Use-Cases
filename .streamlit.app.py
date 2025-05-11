@@ -269,29 +269,32 @@ zoomed_html = f"""
 html(zoomed_html, height=800)
  
  
- 
+import streamlit as st
+
 # ======= MAP CELL COORDINATES TO WORDS =======
 cell_to_word_mapping = {
-   (1, 2): "Quality/Scope/Knowledge",
-   (1, 3): "Time Efficiency",
-   (1, 4): "Cost",
-   (2, 2): "Customer Segments",
-   (2, 3): "Value Proposition",
-   (2, 4): "Value Chain",
-   # Add more mappings as needed
+    (1, 2): "Quality/Scope/Knowledge",
+    (1, 3): "Time Efficiency",
+    (1, 4): "Cost",
+    (2, 2): "Customer Segments",
+    (2, 3): "Value Proposition",
+    (2, 4): "Value Chain",
+    # Add more mappings as needed
 }
- 
+
+# Pre-fill session state for testing (remove in production)
+if "selected" not in st.session_state:
+    st.session_state.selected = [(1, 2), (1, 5)]  # Example pre-filled cells
+
 # ======= DISPLAY SELECTED ITEMS WITH MAPPING =======
 st.markdown("### Selected Items")
 if st.session_state.selected:
-   for cell in st.session_state.selected:
-       # Check if the selected cell is in the mapping
-       word = cell_to_word_mapping.get(cell)
-       if word:
-           st.write(f"🟢 {word}")  # Display the corresponding word
-       else:
-           st.write(f"🔵 {cell}")  # Display the cell itself if no mapping is found
+    for cell in st.session_state.selected:
+        # Check if the selected cell is in the mapping
+        word = cell_to_word_mapping.get(tuple(cell))  # Ensure tuple format
+        if word:
+            st.write(f"🟢 {word}")  # Display the corresponding word
+        else:
+            st.warning(f"Cell {cell} is not mapped.")  # Explicit warning
 else:
-   st.info("No cells selected yet.")
-
-
+    st.info("No cells selected yet.")
