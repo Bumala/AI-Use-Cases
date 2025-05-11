@@ -126,12 +126,7 @@ def generate_html_table(data, selected):
 
 
 # ======= JAVASCRIPT FOR INTERACTIVITY =======
-
-
-import streamlit as st
-
-# Embed JavaScript/HTML code using st.markdown
-st.markdown("""
+interaction_js = """
 <script>
     console.log("This is a test message");
 
@@ -154,7 +149,11 @@ st.markdown("""
         }, '*');
     }
 </script>
-""", unsafe_allow_html=True)
+"""
+
+
+
+
 
 
 # ======= HANDLE CELL CLICKS =======
