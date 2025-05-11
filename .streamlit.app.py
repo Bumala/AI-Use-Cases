@@ -138,17 +138,35 @@ def handle_cell_click():
 st.session_state.cell_click = None
 handle_cell_click()
 
+
+
+
+
+
+
+
+
+
+
+
+
 # ======= DISPLAY THE TOP USE CASE =======
 selected_attributes = st.session_state.selected
 
 if selected_attributes:
+    # Ensure only valid columns are used
     valid_attributes = [attr for attr in selected_attributes if attr in analysis_df.columns]
-    if not valid_attributes:
-        st.error("Selected attributes are not valid.")
-    else:
+    st.write("Valid Attributes:", valid_attributes)  # Debugging
+
+    if valid_attributes:
+        # Sum the selected attributes for each use case
         summed = analysis_df[valid_attributes].sum(axis=1)
-        top_use_case = summed.idxmax()
-        st.success(f"🚀 **Top Use Case:** {top_use_case}")
+        top_use_case = summed.idxmax()  # Get the index of the maximum value
+        st.success(f"🚀 **Top Use Case:** {analysis_df.iloc[top_use_case]['Use Case']}")
+        st.write("Summed Data:")
+        st.dataframe(summed)  # Debugging
+    else:
+        st.error("No valid attributes selected.")
 else:
     st.info("👆 Select attributes above to see the top use case.")
 
