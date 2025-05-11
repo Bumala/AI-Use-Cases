@@ -281,3 +281,9 @@ zoomed_html = f"""
 </script>
 """
 html(zoomed_html, height=800)
+
+
+
+
+
+st.write(zoomed_html)
