@@ -62,6 +62,13 @@ def handle_cell_click():
 st.session_state.cell_click = None
 handle_cell_click()
 
+
+
+if 'cell_click' not in st.session_state:
+    st.session_state.cell_click = {'attribute': None, 'selected': False}
+
+
+
 # ======= PERFECT TABLE LAYOUT GENERATION =======
 def generate_html_table(data, selected):
     first_col_width = 160
