@@ -1,7 +1,6 @@
 import streamlit as st
 import pandas as pd
 from streamlit.components.v1 import html
-import streamlit.components.v1 as components
 
 # Set page layout
 st.set_page_config(layout="wide")
@@ -113,15 +112,10 @@ def generate_html_table(data, selected):
     return html
 
 # ======= JAVASCRIPT FOR INTERACTIVITY =======
-
-
-# Inject the JavaScript code into the Streamlit app using components
 interaction_js = """
 <script>
 function handleCellClick(element) {
     const attr = element.getAttribute('data-attr');
-    const rowIndex = element.parentElement.rowIndex; // Get the row index
-    const colIndex = element.cellIndex; // Get the column index
     const isSelected = element.style.backgroundColor === 'rgb(146, 208, 80)';
     
     // Toggle visual selection immediately
@@ -133,64 +127,66 @@ function handleCellClick(element) {
         type: 'cellClick',
         data: {
             attribute: attr,
-            selected: !isSelected,
-            row: rowIndex,
-            column: colIndex
+            selected: !isSelected
         }
     }, '*');
 }
 </script>
 """
 
-# Embed the JavaScript code in the app
-components.html(interaction_js)
-
 # ======= HANDLE CELL CLICKS =======
+import streamlit as st
+
+# Define target actions per cell using a dictionary
+cell_actions = {
+    (1, 2): lambda: st.success("✅ Cell (1, 2) is green — running logic for (1, 2)!"),
+    (3, 4): lambda: st.warning("⚠️ Cell (3, 4) is green — triggering another action."),
+    (7, 6): lambda: st.info("ℹ️ Cell (7, 6) is green — showing some information."),
+    # Add more cells as needed
+}
+
+
+
+
+# Initialize color and selection state
+if "cell_colors" not in st.session_state:
+    st.session_state.cell_colors = {}
+if "selected" not in st.session_state:
+    st.session_state.selected = set()
+
 def handle_cell_click():
     if st.session_state.get('cell_click'):
         attr = st.session_state.cell_click['attribute']
         row_index = st.session_state.cell_click['row']
         col_index = st.session_state.cell_click['column']
-        
-        # Display the row and column that was clicked
+        coord = (row_index, col_index)
+
         st.write(f"Clicked cell attribute: {attr}, Row: {row_index}, Column: {col_index}")
-        
+
+        # Toggle selection and background color
         if st.session_state.cell_click['selected']:
             st.session_state.selected.add(attr)
+            st.session_state.cell_colors[coord] = '#92D050'
         else:
             st.session_state.selected.discard(attr)
+            st.session_state.cell_colors[coord] = '#FFFFFF'
+
+        # Run the corresponding action if the cell is green
+        if st.session_state.cell_colors.get(coord) == '#92D050':
+            action = cell_actions.get(coord)
+            if action:
+                action()
+            else:
+                st.write(f"Cell {coord} is green, but no action is defined.")
+
         st.experimental_rerun()
 
-# Initialize and handle clicks
-st.session_state.cell_click = None
+# Initialize click handler
+if 'cell_click' not in st.session_state:
+    st.session_state.cell_click = None
+
 handle_cell_click()
 
-# Additional Streamlit functionality can go here
-
-
-
-
-
-# ======= HANDLE CELL CLICKS =======
-# ======= HANDLE CELL CLICKS =======
-def handle_cell_click():
-    if st.session_state.get('cell_click'):
-        attr = st.session_state.cell_click['attribute']
-        row_index = st.session_state.cell_click['row']
-        col_index = st.session_state.cell_click['column']
-        
-        # Display the row and column that was clicked
-        st.write(f"Clicked cell attribute: {attr}, Row: {row_index}, Column: {col_index}")
-        
-        if st.session_state.cell_click['selected']:
-            st.session_state.selected.add(attr)
-        else:
-            st.session_state.selected.discard(attr)
-        st.experimental_rerun()
-
-# Initialize and handle clicks
-st.session_state.cell_click = None
-handle_cell_click()
 
 
 
@@ -310,5 +306,4 @@ zoomed_html = f"""
 """
 
 html(zoomed_html, height=800)
-
 
