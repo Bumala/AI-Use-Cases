@@ -140,7 +140,6 @@ handle_cell_click()
 
 # ======= DISPLAY THE TOP USE CASE =======
 selected_attributes = st.session_state.selected
-st.write(f"Selected Attributes: {selected_attributes}")  # Debugging
 
 if selected_attributes:
     valid_attributes = [attr for attr in selected_attributes if attr in analysis_df.columns]
