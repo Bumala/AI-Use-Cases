@@ -117,7 +117,7 @@ analysis_df = pd.DataFrame({
 
 
 
-analysis_df = pd.DataFrame(analysis_df_data)
+analysis_df = pd.DataFrame
 analysis_df.set_index("Use Case", inplace=True)
 
 
