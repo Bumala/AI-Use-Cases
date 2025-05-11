@@ -111,6 +111,36 @@ def generate_html_table(data, selected):
     html += "</table>"
     return html
 
+
+<script>
+document.querySelectorAll("table td").forEach(cell => {
+  cell.addEventListener("click", function () {
+    // Remove previous selection
+    document.querySelectorAll("table td").forEach(c => c.style.backgroundColor = "");
+
+    // Highlight selected cell
+    this.style.backgroundColor = "#f1fbfe";  // or '#92D050' based on your logic
+
+    // Find coordinates
+    const row = this.parentNode.rowIndex;     // zero-based
+    const col = this.cellIndex;               // zero-based
+
+    console.log(`Selected cell: Row ${row}, Column ${col}`);
+  });
+});
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
 # ======= JAVASCRIPT FOR INTERACTIVITY =======
 interaction_js = """
 <script>
