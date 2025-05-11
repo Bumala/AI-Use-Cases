@@ -271,26 +271,72 @@ html(zoomed_html, height=800)
 
 
 
-# ---------- Calculate and show top use case ----------
-selected_attributes = st.session_state.selected
 
-# Always show the info message
-st.info("👆 Select attributes above to see the top use cases.")
 
-# Calculate summed scores
-if selected_attributes:
-    summed = analysis_df[selected_attributes].sum(axis=1)
+
+import streamlit as st
+import pandas as pd
+from streamlit.components.v1 import html
+
+# Existing table data and session state setup are unchanged
+
+# ======= TABLE DATA =======
+# Same as before ...
+
+# ======= SESSION STATE =======
+# Same as before ...
+
+# ======= TABLE LAYOUT AND INTERACTIVITY =======
+# Same as before ...
+
+# ======= USE CASE ANALYSIS =======
+# Using the same data as you provided
+analysis_df = pd.DataFrame({
+    # Same data as before ...
+})
+
+# ======= CALCULATE RECOMMENDED USE CASES BASED ON SELECTED ATTRIBUTES =======
+
+def calculate_match_score(selected_attributes, use_case):
+    # Initialize score
+    score = 0
+    
+    # For each selected attribute, check if it matches any attribute in the use case
+    for attribute in selected_attributes:
+        if attribute in use_case:
+            score += 1  # Increase score if there's a match
+    
+    return score
+
+# Function to recommend use cases based on selected attributes
+def recommend_use_cases(selected_attributes, analysis_df):
+    # Create an empty list to store scores
+    use_case_scores = []
+
+    # Loop through each use case and calculate its match score
+    for index, row in analysis_df.iterrows():
+        use_case_name = row['Use Case']
+        use_case_attributes = row.index[1:].tolist()  # Skip the first column (Use Case name)
+
+        # Calculate score based on selected attributes
+        score = calculate_match_score(selected_attributes, use_case_attributes)
+        use_case_scores.append((use_case_name, score))
+
+    # Sort the use cases by score (descending order)
+    recommended_use_cases = sorted(use_case_scores, key=lambda x: x[1], reverse=True)
+    
+    return recommended_use_cases
+
+# Display the recommended use cases based on selected attributes
+if st.session_state.selected:
+    # Get recommended use cases
+    recommended_use_cases = recommend_use_cases(st.session_state.selected, analysis_df)
+
+    # Display the top 5 recommended use cases
+    st.write("### Recommended Use Cases")
+    for i, (use_case, score) in enumerate(recommended_use_cases[:5]):
+        st.write(f"{i + 1}. {use_case} - Match Score: {score}")
 else:
-    numeric_df = analysis_df.select_dtypes(include='number')
-    summed = numeric_df.sum(axis=1)
-
-# Get top 3 use cases
-top_3_use_cases = summed.nlargest(3)
-
-# Display top 3 names
-st.success("🚀 **Top 3 Use Cases:**")
-for i, (use_case, score) in enumerate(top_3_use_cases.items(), start=1):
-    st.write(f"{i}. {use_case}")
-
+    st.write("Please select some attributes from the table to get recommended use cases.")
 
 
