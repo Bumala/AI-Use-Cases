@@ -271,66 +271,26 @@ html(zoomed_html, height=800)
 
 
 
+# ---------- Calculate and show top use case ----------
+selected_attributes = st.session_state.selected
 
+# Always show the info message
+st.info("👆 Select attributes above to see the top use cases.")
 
-
-# Show table with interaction
-html(generate_html_table(data, st.session_state.selected) + interaction_js, height=600)
-
-# Filter use cases based on selected attributes
-if st.session_state.selected:
-    selected_attributes = list(st.session_state.selected)
-    st.write(f"### 🔍 Use Case Analysis for Selected Attributes: {', '.join(selected_attributes)}")
-
-    # Sum relevance scores for each use case
-    filtered_df = analysis_df.copy()
-    filtered_df["Relevance Score"] = filtered_df[selected_attributes].sum(axis=1)
-
-    # Sort by relevance and filter those with at least some relevance
-    result_df = filtered_df[filtered_df["Relevance Score"] > 0]
-    result_df = result_df.sort_values(by="Relevance Score", ascending=False)
-
-    # Show result
-    st.dataframe(result_df[["Use Case", "Relevance Score"] + selected_attributes])
+# Calculate summed scores
+if selected_attributes:
+    summed = analysis_df[selected_attributes].sum(axis=1)
 else:
-    st.info("Click on attribute cells in the table above to see relevant AI use cases.")
+    numeric_df = analysis_df.select_dtypes(include='number')
+    summed = numeric_df.sum(axis=1)
 
-# Show selected attributes
-st.markdown("### Selected Attributes")
-if st.session_state.selected:
-    st.write(", ".join(st.session_state.selected))
-else:
-    st.write("No attributes selected.")
+# Get top 3 use cases
+top_3_use_cases = summed.nlargest(3)
 
-
-
-
-
-
-
-
-# Filter use cases based on selected attributes
-def filter_use_cases(df, selected_attrs):
-    if not selected_attrs:
-        return df  # Show all if nothing selected
-
-    # Keep rows where ALL selected attributes have value > 0
-    mask = df[selected_attrs].gt(0).all(axis=1)
-    return df[mask]
-
-# Apply filtering
-filtered_df = filter_use_cases(analysis_df, list(st.session_state.selected))
-
-# Display filtered use cases
-st.markdown("### Matching Use Cases")
-st.dataframe(filtered_df[["Use Case"] + list(st.session_state.selected)], use_container_width=True)
-
-
-
-
-
-
-
+# Display top 3 names
+st.success("🚀 **Top 3 Use Cases:**")
+for i, (use_case, score) in enumerate(top_3_use_cases.items(), start=1):
+    st.write(f"{i}. {use_case}")
 
 
 
