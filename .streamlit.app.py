@@ -137,20 +137,34 @@ function handleCellClick(element) {
 </script>
 """
 
+
+
 # ======= HANDLE CELL CLICKS =======
 def handle_cell_click():
     if st.session_state.get('cell_click'):
+        # Get the clicked cell's attribute
         attr = st.session_state.cell_click['attribute']
+        
+        # Display the clicked cell
+        st.write(f"Cell clicked: {attr}")  # Show which cell was clicked
+
+        # Add or remove the attribute to/from selected based on 'selected' flag
         if st.session_state.cell_click['selected']:
             st.session_state.selected.add(attr)
         else:
             st.session_state.selected.discard(attr)
+        
+        # Rerun the app to update state
         st.experimental_rerun()
 
-# Initialize and handle clicks
-st.session_state.cell_click = None
-handle_cell_click()
+# Initialize state if necessary
+if 'cell_click' not in st.session_state:
+    st.session_state.cell_click = None
+if 'selected' not in st.session_state:
+    st.session_state.selected = set()
 
+# Handle clicks
+handle_cell_click()
 
 
 
