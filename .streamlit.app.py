@@ -271,47 +271,30 @@ html(zoomed_html, height=800)
 
 
 
+
+
+
+
+
+
 # ---------- Calculate and show top use case ----------
+selected_attributes = st.session_state.selected
 
-# Assuming your data is loaded into analysis_df, with a 'Use Case' column
-analysis_df = pd.DataFrame({
-    'Use Case': ['Use Case 1', 'Use Case 2', 'Use Case 3', 'Use Case 4'],
-    'Attribute A': [10, 20, 30, 40],
-    'Attribute B': [50, 60, 70, 80],
-    'Attribute C': [90, 100, 110, 120],
-})
-
-# Let the user select the attributes
-selected_attributes = st.multiselect(
-    'Select attributes:',
-    options=analysis_df.columns.tolist()[1:],  # Exclude 'Use Case' column from selection
-    default=[],  # Default is empty
-)
-
-# Store the selected attributes in session state
-st.session_state.selected = selected_attributes
-
-# Display message if no attributes are selected
+# Always show the info message
 st.info("👆 Select attributes above to see the top use cases.")
 
-# If attributes are selected, calculate and display top 3 use cases
+# Calculate summed scores
 if selected_attributes:
-    # Filter the dataframe based on selected attributes
-    numeric_df = analysis_df[selected_attributes]
-
-    # Calculate the row-wise sum for the selected columns
+    summed = analysis_df[selected_attributes].sum(axis=1)
+else:
+    numeric_df = analysis_df.select_dtypes(include='number')
     summed = numeric_df.sum(axis=1)
 
-    # Get top 3 indices (based on summed values)
-    top_3_indices = summed.nlargest(3).index
+# Get top 3 use cases
+top_3_use_cases = summed.nlargest(3)
 
-    # Get the corresponding use case names
-    top_3_names = analysis_df.loc[top_3_indices, 'Use Case']
+# Display top 3 names
+st.success("🚀 **Top 3 Use Cases:**")
+for i, (use_case, score) in enumerate(top_3_use_cases.items(), start=1):
+    st.write(f"{i}. {use_case}")
 
-    # Get their scores (summed values)
-    top_3_scores = summed.loc[top_3_indices]
-
-    # Display the top 3 use cases
-    st.success("🚀 **Top 3 Use Cases:**")
-    for i, (name, score) in enumerate(zip(top_3_names, top_3_scores), start=1):
-        st.write(f"{i}. {name} (Score: {score})")
