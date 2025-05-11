@@ -112,44 +112,49 @@ def generate_html_table(data, selected):
     html += "</table>"
     return html
 
+
+
+
+
+
+
+
+
+
+
+
+
+
 # ======= JAVASCRIPT FOR INTERACTIVITY =======
 
+
+import streamlit as st
 
 # Embed JavaScript/HTML code using st.markdown
 st.markdown("""
 <script>
     console.log("This is a test message");
+
+    function handleCellClick(element) {
+        const attr = element.getAttribute('data-attr');
+        const isSelected = element.style.backgroundColor === 'rgb(146, 208, 80)';
+        
+        // Toggle visual selection immediately
+        element.style.backgroundColor = isSelected ? '#f1fbfe' : '#92D050';
+        
+        // Send message to Streamlit
+        window.parent.postMessage({
+            isStreamlitMessage: true,
+            type: 'cellClick',
+            data: {
+                attribute: attr,
+                selected: !isSelected,
+                content: element.innerHTML  // Send the content of the cell as well
+            }
+        }, '*');
+    }
 </script>
 """, unsafe_allow_html=True)
-
-
-
-
-
-
-
-
-
-function handleCellClick(element) {
-    const attr = element.getAttribute('data-attr');
-    const isSelected = element.style.backgroundColor === 'rgb(146, 208, 80)';
-    
-    // Toggle visual selection immediately
-    element.style.backgroundColor = isSelected ? '#f1fbfe' : '#92D050';
-    
-    // Send message to Streamlit
-    window.parent.postMessage({
-        isStreamlitMessage: true,
-        type: 'cellClick',
-        data: {
-            attribute: attr,
-            selected: !isSelected,
-            content: element.innerHTML  // Send the content of the cell as well
-        }
-    }, '*');
-}
-</script>
-
 
 
 # ======= HANDLE CELL CLICKS =======
