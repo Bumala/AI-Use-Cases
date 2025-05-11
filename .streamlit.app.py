@@ -270,15 +270,24 @@ analysis_df = pd.DataFrame({
 
 
 selected_bar_html = """
-<div id="selectedBar" style="margin-bottom: 10px; padding: 10px; background-color: #dceefc; border: 2px solid #61cbf3; border-radius: 8px; font-weight: bold;">
-    Selected Attributes: <span id="selectedItems">None</span>
-    <button id="resetButton" style="margin-left: 10px; padding: 5px 10px; background-color: #61cbf3; border: none; border-radius: 5px; cursor: pointer; font-weight: bold;">
+<div id="resetButtonContainer" style="padding: 10px; background-color: #f1fbfe; text-align: center;">
+    <button id="resetButton" style="padding: 10px 20px; background-color: #61cbf3; border: none; border-radius: 5px; cursor: pointer; font-weight: bold;">
         Reset Selection
     </button>
 </div>
+<div id="selectedBar" style="margin-bottom: 10px; padding: 10px; background-color: #dceefc; border: 2px solid #61cbf3; border-radius: 8px; font-weight: bold;">
+    Selected Attributes: <span id="selectedItems">None</span>
+</div>
 """
 
-html_code = selected_bar_html + generate_html_table(data, st.session_state.selected) + interaction_js
+# Wrap the table in a div container to manage zoom and scrolling
+html_code = selected_bar_html + f"""
+<div style="overflow-x: auto; width: 100%; padding: 10px; box-sizing: border-box;">
+    <div class="zoomed-table">
+        {generate_html_table(data, st.session_state.selected)}
+    </div>
+</div>
+""" + interaction_js
 
 # Inject update script
 html_code += """
@@ -343,6 +352,17 @@ document.getElementById('resetButton').addEventListener('click', function() {
 
 updateSelectedBar();
 </script>
+"""
+
+# Apply the zoom effect to the table
+html_code += """
+<style>
+.zoomed-table {
+    transform: scale(0.75); /* Zoom out to 75% */
+    transform-origin: top center;
+    width: 100%;
+}
+</style>
 """
 
 html(html_code, height=800)
