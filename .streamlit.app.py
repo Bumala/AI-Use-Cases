@@ -313,7 +313,7 @@ document.getElementById('generateRecommendations').addEventListener('click', fun
 
 }
 
-
+}
 
 
 
