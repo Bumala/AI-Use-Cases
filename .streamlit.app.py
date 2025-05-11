@@ -275,49 +275,44 @@ html(zoomed_html, height=800)
 
 
 
-
-
-import streamlit as st
-import pandas as pd
-from streamlit.components.v1 import html
-
-# Existing table data and session state setup are unchanged
-
-# ======= TABLE DATA =======
-# Same as before ...
-
-# ======= SESSION STATE =======
-# Same as before ...
-
-# ======= TABLE LAYOUT AND INTERACTIVITY =======
-# Same as before ...
-
 # ======= USE CASE ANALYSIS =======
-# Using the same data as you provided
-analysis_df = pd.DataFrame({
-    # Same data as before ...
-})
+def get_top_use_cases(selected_attributes, analysis_df):
+    """
+    Calculate the top 3 use cases based on selected attributes.
+    
+    Args:
+        selected_attributes: Set of selected attribute names
+        analysis_df: DataFrame containing use cases and their attribute scores
+        
+    Returns:
+        List of top 3 use case names with their match scores
+    """
+    if not selected_attributes:
+        return []
+    
+    # Calculate match scores for each use case
+    scores = []
+    for _, row in analysis_df.iterrows():
+        use_case = row['Use Case']
+        score = 0
+        
+        # For each selected attribute, add its score from the analysis table
+        for attr in selected_attributes:
+            if attr in row:
+                score += row[attr]
+        
+        scores.append((use_case, score))
+    
+    # Sort by score (descending) and get top 3
+    scores.sort(key=lambda x: x[1], reverse=True)
+    return scores[:3]
 
-# ======= USE CASE SELECTION LOGIC & DISPLAY =======
+# Display top use cases
 if st.session_state.selected:
-    selected_attrs = list(st.session_state.selected)
-
-    # Check which attributes exist in the dataframe
-    valid_attrs = [attr for attr in selected_attrs if attr in analysis_df.columns]
-
-    if valid_attrs:
-        st.subheader("Top 3 Use Cases Based on Your Selection:")
-
-        # Compute scores
-        analysis_df["Score"] = analysis_df[valid_attrs].sum(axis=1)
-
-        # Sort by score and get top 3
-        top_use_cases = analysis_df.sort_values(by="Score", ascending=False).head(3)
-
-        for idx, row in top_use_cases.iterrows():
-            st.markdown(f"**{idx+1}. {row['Use Case']}** (Score: {row['Score']})")
-    else:
-        st.info("None of your selected attributes match the analysis table.")
+    top_use_cases = get_top_use_cases(st.session_state.selected, analysis_df)
+    
+    st.write("## Recommended Use Cases")
+    for i, (use_case, score) in enumerate(top_use_cases, 1):
+        st.write(f"{i}. **{use_case}** (Match Score: {score})")
 else:
-    st.info("Select attributes from the box to see top use cases.")
-
+    st.write("Select attributes from the table to see recommended use cases")
