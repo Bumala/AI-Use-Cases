@@ -112,27 +112,72 @@ def generate_html_table(data, selected):
     return html
 
 # ======= JAVASCRIPT FOR INTERACTIVITY =======
-interaction_js = """
 <script>
 function handleCellClick(element) {
     const attr = element.getAttribute('data-attr');
     const isSelected = element.style.backgroundColor === 'rgb(146, 208, 80)';
-    
+    const table = element.closest('table');
+
+    let rowIndex = -1;
+    let colIndex = -1;
+    let found = false;
+
+    // Create a matrix to track the layout due to rowspan/colspan
+    let matrix = [];
+    let rows = table.rows;
+
+    for (let i = 0; i < rows.length; i++) {
+        let cells = rows[i].cells;
+        let colPosition = 0;
+        if (!matrix[i]) matrix[i] = [];
+
+        for (let j = 0; j < cells.length; j++) {
+            let cell = cells[j];
+
+            // Find next available position in the matrix row
+            while (matrix[i][colPosition]) {
+                colPosition++;
+            }
+
+            let rowspan = cell.rowSpan || 1;
+            let colspan = cell.colSpan || 1;
+
+            // Fill the matrix with a reference to this cell
+            for (let r = 0; r < rowspan; r++) {
+                for (let c = 0; c < colspan; c++) {
+                    if (!matrix[i + r]) matrix[i + r] = [];
+                    matrix[i + r][colPosition + c] = cell;
+                }
+            }
+
+            // Check if this is the clicked cell
+            if (cell === element && !found) {
+                rowIndex = i;
+                colIndex = colPosition;
+                found = true;
+            }
+
+            colPosition += colspan;
+        }
+    }
+
     // Toggle visual selection immediately
     element.style.backgroundColor = isSelected ? '#f1fbfe' : '#92D050';
-    
-    // Send message to Streamlit
+
+    // Send message to Streamlit with coordinates
     window.parent.postMessage({
         isStreamlitMessage: true,
         type: 'cellClick',
         data: {
             attribute: attr,
-            selected: !isSelected
+            selected: !isSelected,
+            i: rowIndex,
+            j: colIndex
         }
     }, '*');
 }
 </script>
-"""
+
 
 # ======= HANDLE CELL CLICKS =======
 def handle_cell_click():
