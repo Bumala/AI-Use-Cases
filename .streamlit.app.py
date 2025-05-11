@@ -1,3 +1,6 @@
+Version 1: die recommended use cases werden nicht angezeigt. Tabelle ist ok
+
+
 import streamlit as st
 import pandas as pd
 from streamlit.components.v1 import html
@@ -148,8 +151,29 @@ def handle_cell_click():
 st.session_state.cell_click = None
 handle_cell_click()
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 # ======= USE CASE ANALYSIS =======
-analysis_data = {
+analysis_df = pd.DataFrame({
 
 
 
@@ -186,7 +210,6 @@ analysis_data = {
         "AI-driven competition analysis",
         "AI-driven vehicles sales prediction"
     ],
-
     "Quality/Scope/Knowledge": [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2],
     "Time Efficiency": [2, 2, 2, 0, 0, 0, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 0, 2, 0, 2, 0, 2, 2, 2, 0, 0],
     "Cost": [2, 2, 0, 0, 0, 0, 2, 1, 2, 2, 0, 2, 2, 0, 2, 0, 2, 0, 2, 2, 0, 2, 0, 2, 0, 2, 0, 0, 0, 0],
@@ -231,28 +254,70 @@ analysis_data = {
     "Marketing & Sales": [0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 2, 0, 2, 2, 2, 0, 2, 2, 0, 0, 2, 2, 1, 0, 0, 0, 0, 0, 0, 1],
     "Customer Service": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 1, 2, 2, 2, 2, 2, 2, 2]
 
-}
+
+
+})
+
+
+
+
+# ======= DISPLAY THE TABLE =======
+zoomed_html = f"""
+<div style="display: flex; justify-content: center; align-items: center; height: 100%; transform: scale(0.8); transform-origin: top;">
+    {generate_html_table(data, st.session_state.selected)}
+</div>
+{interaction_js}
+"""
+
+html(zoomed_html, height=800)
 
 
 
 
 
 
-df = pd.DataFrame(analysis_data)
 
-# Filter data based on selected categories
-filtered_df = df[df["Category"].isin(st.session_state.selected)] if st.session_state.selected else pd.DataFrame(columns=["Use Case", "Category"])
+import streamlit as st
+import pandas as pd
+from streamlit.components.v1 import html
 
-# Show filtered results dynamically
-st.subheader("Top Use Cases Based on Selection")
-if not filtered_df.empty:
-    st.dataframe(filtered_df)
+# Existing table data and session state setup are unchanged
+
+# ======= TABLE DATA =======
+# Same as before ...
+
+# ======= SESSION STATE =======
+# Same as before ...
+
+# ======= TABLE LAYOUT AND INTERACTIVITY =======
+# Same as before ...
+
+# ======= USE CASE ANALYSIS =======
+# Using the same data as you provided
+analysis_df = pd.DataFrame({
+    # Same data as before ...
+})
+
+# ======= USE CASE SELECTION LOGIC & DISPLAY =======
+if st.session_state.selected:
+    selected_attrs = list(st.session_state.selected)
+
+    # Check which attributes exist in the dataframe
+    valid_attrs = [attr for attr in selected_attrs if attr in analysis_df.columns]
+
+    if valid_attrs:
+        st.subheader("Top 3 Use Cases Based on Your Selection:")
+
+        # Compute scores
+        analysis_df["Score"] = analysis_df[valid_attrs].sum(axis=1)
+
+        # Sort by score and get top 3
+        top_use_cases = analysis_df.sort_values(by="Score", ascending=False).head(3)
+
+        for idx, row in top_use_cases.iterrows():
+            st.markdown(f"**{idx+1}. {row['Use Case']}** (Score: {row['Score']})")
+    else:
+        st.info("None of your selected attributes match the analysis table.")
 else:
-    st.write("No use cases match the selected categories.")
-
-# Show Table
-html_code = generate_html_table(data, st.session_state.selected)
-html(html_code + interaction_js, height=600)
-
-
+    st.info("Select attributes from the box to see top use cases.")
 
