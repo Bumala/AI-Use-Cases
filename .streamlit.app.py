@@ -329,17 +329,16 @@ function handleCellClick(element) {
     }, '*');
 }
 
+// Reset button click handler
 document.getElementById('resetButton').addEventListener('click', function() {
     // Clear selections
     selectedItems.clear();
 
-    // Reset cell backgrounds (but keep the original selection colors intact)
+    // Reset cell backgrounds to original (without affecting selected cells)
     const cells = document.querySelectorAll('td');
     cells.forEach(cell => {
-        // If cells were selected before reset, preserve the selected color
-        if (cell.style.backgroundColor !== 'rgb(241, 251, 254)') { 
-            cell.style.backgroundColor = '#f1fbfe'; // Reset background color to default
-        }
+        // Reset background color to the original unselected color
+        cell.style.backgroundColor = '#f1fbfe'; // Default unselected color
     });
 
     // Update selected items display
@@ -369,6 +368,7 @@ html_code += """
 """
 
 html(html_code, height=800)
+
 
 
 
