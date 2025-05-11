@@ -1,7 +1,6 @@
 import streamlit as st
 import pandas as pd
 from streamlit.components.v1 import html
-import streamlit.components.v1 as components
 
 # Set page layout
 st.set_page_config(layout="wide")
@@ -112,45 +111,30 @@ def generate_html_table(data, selected):
     html += "</table>"
     return html
 
-
-
-
-
-
-
-
-
-
-
-
-
-
 # ======= JAVASCRIPT FOR INTERACTIVITY =======
-interaction_js = """
 <script>
-    console.log("This is a test message");
-
-    function handleCellClick(element) {
-        const attr = element.getAttribute('data-attr');
-        const isSelected = element.style.backgroundColor === 'rgb(146, 208, 80)';
-        
-        // Toggle visual selection immediately
-        element.style.backgroundColor = isSelected ? '#f1fbfe' : '#92D050';
-        
-        // Send message to Streamlit
-        window.parent.postMessage({
-            isStreamlitMessage: true,
-            type: 'cellClick',
-            data: {
-                attribute: attr,
-                selected: !isSelected,
-                content: element.innerHTML  // Send the content of the cell as well
-            }
-        }, '*');
-    }
+function handleCellClick(element) {
+    const attr = element.getAttribute('data-attr');
+    const rowIndex = element.parentElement.rowIndex; // Get the row index
+    const colIndex = element.cellIndex; // Get the column index
+    const isSelected = element.style.backgroundColor === 'rgb(146, 208, 80)';
+    
+    // Toggle visual selection immediately
+    element.style.backgroundColor = isSelected ? '#f1fbfe' : '#92D050';
+    
+    // Send message to Streamlit
+    window.parent.postMessage({
+        isStreamlitMessage: true,
+        type: 'cellClick',
+        data: {
+            attribute: attr,
+            selected: !isSelected,
+            row: rowIndex,
+            column: colIndex
+        }
+    }, '*');
+}
 </script>
-"""
-
 
 
 
@@ -161,17 +145,21 @@ interaction_js = """
 def handle_cell_click():
     if st.session_state.get('cell_click'):
         attr = st.session_state.cell_click['attribute']
-        content = st.session_state.cell_click['content']
+        row_index = st.session_state.cell_click['row']
+        col_index = st.session_state.cell_click['column']
+        
+        # Display the row and column that was clicked
+        st.write(f"Clicked cell attribute: {attr}, Row: {row_index}, Column: {col_index}")
+        
         if st.session_state.cell_click['selected']:
             st.session_state.selected.add(attr)
         else:
             st.session_state.selected.discard(attr)
-        
-        # Print out the content of the clicked cell
-        st.write(f"Content of the clicked cell: {content}")
         st.experimental_rerun()
 
-
+# Initialize and handle clicks
+st.session_state.cell_click = None
+handle_cell_click()
 
 
 
@@ -291,9 +279,5 @@ zoomed_html = f"""
 """
 
 html(zoomed_html, height=800)
-
-
-
-
 
 
