@@ -2,7 +2,7 @@ import streamlit as st
 import pandas as pd
 from streamlit.components.v1 import html
 import streamlit.components.v1 as components
-import json
+
 
 
 # Set page layout
@@ -148,106 +148,83 @@ function handleCellClick(element) {
 
 
 
-# ==== STATE SETUP ====
+
+
+# State Initialization
 if "cell_colors" not in st.session_state:
     st.session_state.cell_colors = {}
 if "selected" not in st.session_state:
     st.session_state.selected = set()
-if "cell_click" not in st.session_state:
-    st.session_state.cell_click = None
 
-# ==== TARGET CELL ACTIONS ====
+# Target cell actions
 cell_actions = {
     (1, 2): lambda: st.success("✅ Cell (1, 2) is green — running logic for (1, 2)!"),
     (3, 4): lambda: st.warning("⚠️ Cell (3, 4) is green — triggering another action."),
     (7, 6): lambda: st.info("ℹ️ Cell (7, 6) is green — showing some information."),
 }
 
-# ==== CHECK TARGET CELL COLORS BEFORE INTERACTIVITY ====
+# Run actions for green target cells
 for coord, action in cell_actions.items():
     if st.session_state.cell_colors.get(coord) == '#92D050':
         action()
 
-# ==== JAVASCRIPT + HTML CELL GRID ====
-NUM_ROWS, NUM_COLS = 10, 10  # Grid size
-html_cells = ""
+# Read clicked cell info from query params
+query_params = st.experimental_get_query_params()
+if "cell" in query_params:
+    try:
+        row, col, selected = map(int, query_params["cell"][0].split("-"))
+        coord = (row, col)
+        attr = f"{row}-{col}"
+        if selected:
+            st.session_state.cell_colors[coord] = '#92D050'
+            st.session_state.selected.add(attr)
+        else:
+            st.session_state.cell_colors[coord] = '#f1fbfe'
+            st.session_state.selected.discard(attr)
 
-for i in range(NUM_ROWS):
-    row_html = "<tr>"
-    for j in range(NUM_COLS):
-        attr = f"{i}-{j}"
-        color = st.session_state.cell_colors.get((i, j), "#f1fbfe")
-        row_html += f"""
-        <td onclick="handleCellClick(this)"
-            data-attr="{attr}"
-            style="cursor:pointer; background-color:{color}; padding:15px; border:1px solid #ccc; text-align:center;">
-            {i},{j}
-        </td>
-        """
-    row_html += "</tr>"
-    html_cells += row_html
+        # Clear the query params to prevent repeated triggering
+        st.experimental_set_query_params()
+        st.experimental_rerun()
+    except Exception as e:
+        st.error(f"Invalid cell data in URL: {e}")
 
-# Embed HTML/JS grid
-interaction_js = """
+# Render JS + HTML table
+html = """
 <script>
-function handleCellClick(element) {
-    const attr = element.getAttribute('data-attr');
-    const isSelected = element.style.backgroundColor === 'rgb(146, 208, 80)';
-    element.style.backgroundColor = isSelected ? '#f1fbfe' : '#92D050';
-    const coords = attr.split('-').map(Number);
-    window.parent.postMessage({
-        isStreamlitMessage: true,
-        type: 'cellClick',
-        data: {
-            attribute: attr,
-            row: coords[0],
-            column: coords[1],
-            selected: !isSelected
-        }
-    }, '*');
+function handleCellClick(row, col, selected) {
+    let isSelected = selected;
+    // Toggle visually
+    let cellId = 'cell-' + row + '-' + col;
+    let cell = document.getElementById(cellId);
+    let currentColor = window.getComputedStyle(cell).backgroundColor;
+    if (currentColor === 'rgb(146, 208, 80)') {
+        cell.style.backgroundColor = '#f1fbfe';
+        isSelected = 0;
+    } else {
+        cell.style.backgroundColor = '#92D050';
+        isSelected = 1;
+    }
+    // Update query params (simulate interaction)
+    window.location.search = '?cell=' + row + '-' + col + '-' + isSelected;
 }
 </script>
+<table style="border-collapse:collapse;">
 """
 
-components.html(f"""
-{interaction_js}
-<table style="border-collapse:collapse;">{html_cells}</table>
-""", height=500)
+for i in range(10):
+    html += "<tr>"
+    for j in range(10):
+        coord = (i, j)
+        color = st.session_state.cell_colors.get(coord, '#f1fbfe')
+        html += f"""<td id="cell-{i}-{j}" onclick="handleCellClick({i},{j},0)"
+                style="cursor:pointer; background-color:{color}; padding:15px; border:1px solid #ccc; text-align:center;">
+                {i},{j}
+                </td>"""
+    html += "</tr>"
+html += "</table>"
 
-# ==== HANDLE CLICKED CELL MESSAGE ====
-# Streamlit receives JavaScript messages using `st_javascript_eval`
-from streamlit_javascript import st_javascript
-
-clicked = st_javascript("""
-(() => {
-    window.addEventListener("message", (event) => {
-        if (event.data?.type === "cellClick") {
-            window.cellClickData = event.data.data;
-        }
-    });
-    return window.cellClickData || null;
-})()
-""")
-
-# ==== PROCESS CLICK ====
-if clicked:
-    attr = clicked['attribute']
-    row_index = clicked['row']
-    col_index = clicked['column']
-    coord = (row_index, col_index)
-    selected = clicked['selected']
-
-    st.session_state.cell_click = clicked
-
-    if selected:
-        st.session_state.selected.add(attr)
-        st.session_state.cell_colors[coord] = '#92D050'
-    else:
-        st.session_state.selected.discard(attr)
-        st.session_state.cell_colors[coord] = '#f1fbfe'
-
-    # Rerun to process color state
-    st.experimental_rerun()
+# Render it
+components.html(html, height=500)
 
 
 
