@@ -207,6 +207,9 @@ analysis_df = pd.DataFrame({
         "AI-driven competition analysis",
         "AI-driven vehicles sales prediction"
     ],
+
+const analysisData = {
+    
     "Quality/Scope/Knowledge": [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2],
     "Time Efficiency": [2, 2, 2, 0, 0, 0, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 0, 2, 0, 2, 0, 2, 2, 2, 0, 0],
     "Cost": [2, 2, 0, 0, 0, 0, 2, 1, 2, 2, 0, 2, 2, 0, 2, 0, 2, 0, 2, 2, 0, 2, 0, 2, 0, 2, 0, 0, 0, 0],
@@ -252,56 +255,181 @@ analysis_df = pd.DataFrame({
     "Customer Service": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 1, 2, 2, 2, 2, 2, 2, 2]
 
 
+};
 
-})
+const calculateScore = (userSelections) => {
+    let scores = Array(userSelections.length).fill(0);
 
+    // Iterate over all the columns (attributes) and add the respective scores
+    Object.keys(analysisData).forEach((attribute, index) => {
+        const values = analysisData[attribute];
+        userSelections.forEach((selection, idx) => {
+            if (selection[index]) {
+                scores[idx] += values[index];
+            }
+        });
+    });
 
+    return scores;
+};
 
-
-
-# ======= CALCULATE RECOMMENDED USE CASES BASED ON SELECTED ATTRIBUTES =======
-
-def calculate_match_score(selected_attributes, use_case):
-    # Initialize score
-    score = 0
+document.getElementById('generateRecommendations').addEventListener('click', function() {
+    // Get the selections from the HTML table
+    const userSelections = [];
+    const checkboxes = document.querySelectorAll('.usecase');
     
-    # For each selected attribute, check if it matches any attribute in the use case
-    for attribute in selected_attributes:
-        if attribute in use_case:
-            score += 1  # Increase score if there's a match
+    // Collecting data based on the checked boxes
+    for (let i = 0; i < checkboxes.length; i++) {
+        const rowIndex = Math.floor(i / (checkboxes.length / analysisData["Quality/Scope/Knowledge"].length));  // Determine row
+        const colIndex = i % (checkboxes.length / analysisData["Quality/Scope/Knowledge"].length);  // Determine column
+        
+        if (!userSelections[rowIndex]) {
+            userSelections[rowIndex] = [];
+        }
+        
+        userSelections[rowIndex][colIndex] = checkboxes[i].checked ? 1 : 0;
+    }
+
+    // Calculate scores based on the user selections
+    const scores = calculateScore(userSelections);
     
-    return score
+    // Sorting scores in descending order and displaying recommendations
+    const recommendations = scores.map((score, index) => {
+        return { useCase: index + 1, score: score };
+    });
 
-# Function to recommend use cases based on selected attributes
-def recommend_use_cases(selected_attributes, analysis_df):
-    # Create an empty list to store scores
-    use_case_scores = []
+    recommendations.sort((a, b) => b.score - a.score);
 
-    # Loop through each use case and calculate its match score
-    for index, row in analysis_df.iterrows():
-        use_case_name = row['Use Case']
-        use_case_attributes = row.index[1:].tolist()  # Skip the first column (Use Case name)
+    let recommendationsHTML = "<h3>Recommended Use Cases</h3><ul>";
+    recommendations.forEach(item => {
+        recommendationsHTML += `<li>Use Case ${item.useCase} - Score: ${item.score}</li>`;
+    });
+    recommendationsHTML += "</ul>";
 
-        # Calculate score based on selected attributes
-        score = calculate_match_score(selected_attributes, use_case_attributes)
-        use_case_scores.append((use_case_name, score))
+    document.getElementById("recommendations").innerHTML = recommendationsHTML;
+});
 
-    # Sort the use cases by score (descending order)
-    recommended_use_cases = sorted(use_case_scores, key=lambda x: x[1], reverse=True)
-    
-    return recommended_use_cases
 
-# Display the recommended use cases based on selected attributes
-if st.session_state.selected:
-    # Get recommended use cases
-    recommended_use_cases = recommend_use_cases(st.session_state.selected, analysis_df)
 
-    # Display the top 5 recommended use cases
-    st.write("### Recommended Use Cases")
-    for i, (use_case, score) in enumerate(recommended_use_cases[:5]):
-        st.write(f"{i + 1}. {use_case} - Match Score: {score}")
-else:
-    st.write("Please select some attributes from the table to get recommended use cases.")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Use Case Recommendations</title>
+</head>
+<body>
+
+    <h1>Select Your Preferences</h1>
+
+    <!-- HTML Table -->
+    <table id="usecaseSelectionTable">
+        <thead>
+            <tr>
+                <th>Use Case</th>
+                <th>Quality/Scope/Knowledge</th>
+                <th>Time Efficiency</th>
+                <th>Cost</th>
+                <th>Customer Segments</th>
+                <th>Value Proposition</th>
+                <th>Value Chain</th>
+                <th>Revenue Model</th>
+                <th>Product Innovation</th>
+                <th>Process Innovation</th>
+                <th>Business Model Innovation</th>
+                <th>Exploration</th>
+                <th>Exploitation</th>
+                <th>Automaton</th>
+                <th>Helper</th>
+                <th>Partner</th>
+                <th>Machine Learning</th>
+                <th>Deep Learning</th>
+                <th>Artificial Neural Networks</th>
+                <th>Natural Language Processing</th>
+                <th>Computer Vision</th>
+                <th>Robotics</th>
+                <th>Descriptive</th>
+                <th>Diagnostic</th>
+                <th>Predictive</th>
+                <th>Prescriptive</th>
+                <th>Description/Summary</th>
+                <th>Clustering</th>
+                <th>Classification</th>
+                <th>Dependency Analysis</th>
+                <th>Regression</th>
+                <th>Customer Data</th>
+                <th>Machine Data</th>
+                <th>Business Data</th>
+                <th>Market Data</th>
+                <th>Public & Regulatory Data</th>
+                <th>Synthetic Data</th>
+                <th>Front End</th>
+                <th>Development</th>
+                <th>Market Introduction</th>
+                <th>R&D</th>
+                <th>Manufacturing</th>
+                <th>Marketing & Sales</th>
+                <th>Customer Service</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><strong>Use Case 1</strong></td>
+                <td><input type="checkbox" class="usecase" data-index="0"></td>
+                <td><input type="checkbox" class="usecase" data-index="1"></td>
+                <td><input type="checkbox" class="usecase" data-index="2"></td>
+                <td><input type="checkbox" class="usecase" data-index="3"></td>
+                <!-- Repeat for all columns -->
+            </tr>
+            <!-- Add more rows for other use cases -->
+        </tbody>
+    </table>
+
+    <button id="generateRecommendations">Generate Recommendations</button>
+
+    <div id="recommendations"></div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="path/to/your/script.js"></script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
