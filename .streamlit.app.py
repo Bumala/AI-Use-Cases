@@ -111,7 +111,18 @@ def generate_html_table(data, selected):
     html += "</table>"
     return html
 
+
+
+
+
+
+
+
+
 # ======= JAVASCRIPT FOR INTERACTIVITY =======
+import streamlit as st
+
+interaction_js = """
 <script>
 function handleCellClick(element) {
     const attr = element.getAttribute('data-attr');
@@ -177,6 +188,15 @@ function handleCellClick(element) {
     }, '*');
 }
 </script>
+"""
+
+# Inject it into the page
+st.markdown(interaction_js, unsafe_allow_html=True)
+
+
+
+
+
 
 
 # ======= HANDLE CELL CLICKS =======
