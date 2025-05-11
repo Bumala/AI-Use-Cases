@@ -136,19 +136,36 @@ function handleCellClick(element) {
  
 # ======= HANDLE CELL CLICKS =======
 def handle_cell_click():
-   if st.session_state.get('cell_click'):
-       attr = st.session_state.cell_click['attribute']
-       if st.session_state.cell_click['selected']:
-           st.session_state.selected.add(attr)
-       else:
-           st.session_state.selected.discard(attr)
-       st.experimental_rerun()
- 
-# Initialize and handle clicks
-st.session_state.cell_click = None
+    if st.session_state.get('cell_click'):
+        # Extract the clicked cell's attribute
+        attr = st.session_state.cell_click.get('attribute')
+        if attr:
+            # Add or remove the attribute based on selection state
+            if st.session_state.cell_click.get('selected'):
+                st.session_state.selected.add(attr)
+                st.session_state.last_clicked = attr  # Track the last clicked cell
+            else:
+                st.session_state.selected.discard(attr)
+                st.session_state.last_clicked = None  # Clear the last clicked cell if deselected
+        st.experimental_rerun()
+
+# Initialize session state variables
+if "cell_click" not in st.session_state:
+    st.session_state.cell_click = None
+if "selected" not in st.session_state:
+    st.session_state.selected = set()
+if "last_clicked" not in st.session_state:
+    st.session_state.last_clicked = None
+
+# Handle cell clicks
 handle_cell_click()
- 
- 
+
+# Display the last clicked cell
+st.markdown("### Last Clicked Cell")
+if st.session_state.last_clicked:
+    st.write(f"🟠 You clicked on: {st.session_state.last_clicked}")
+else:
+    st.info("No cell clicked yet.")
  
  
  
