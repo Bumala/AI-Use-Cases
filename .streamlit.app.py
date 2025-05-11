@@ -273,8 +273,6 @@ html(zoomed_html, height=800)
 
 
 
-
-
 # ======= USE CASE ANALYSIS =======
 def get_top_use_cases(selected_attributes, analysis_df):
     """
@@ -290,6 +288,53 @@ def get_top_use_cases(selected_attributes, analysis_df):
     if not selected_attributes:
         return []
     
+    # Create a mapping between table display names and dataframe column names
+    attribute_mapping = {
+        "Quality/Scope/Knowledge": "Quality/Scope/Knowledge",
+        "Time Efficiency": "Time Efficiency",
+        "Cost": "Cost",
+        "Customer Segments": "Customer Segments",
+        "Value Proposition": "Value Proposition",
+        "Value Chain": "Value Chain",
+        "Revenue Model": "Revenue Model",
+        "Product Innovation": "Product Innovation",
+        "Process Innovation": "Process Innovation",
+        "Business Model Innovation": "Business Model Innovation",
+        "Exploration": "Exploration",
+        "Exploitation": "Exploitation",
+        "Automaton": "Automaton",
+        "Helper": "Helper",
+        "Partner": "Partner",
+        "Machine Learning": "Machine Learning",
+        "Deep Learning": "Deep Learning",
+        "Artificial Neural Networks": "Artificial Neural Networks",
+        "Natural Language Processing": "Natural Language Processing",
+        "Computer Vision": "Computer Vision",
+        "Robotics": "Robotics",
+        "Descriptive": "Descriptive",
+        "Diagnostic": "Diagnostic",
+        "Predictive": "Predictive",
+        "Prescriptive": "Prescriptive",
+        "Description/ Summary": "Description/ Summary",
+        "Clustering": "Clustering",
+        "Classification": "Classification",
+        "Dependency Analysis": "Dependency Analysis",
+        "Regression": "Regression",
+        "Customer Data": "Customer Data",
+        "Machine Data": "Machine Data",
+        "Business Data (Internal Data)": "Business Data (Internal Data)",
+        "Market Data": "Market Data",
+        "Public & Regulatory Data": "Public & Regulatory Data",
+        "Synthetic Data": "Synthetic Data",
+        "Front End": "Front End",
+        "Development": "Development",
+        "Market Introduction": "Market Introduction",
+        "R&D": "R&D",
+        "Manufacturing": "Manufacturing",
+        "Marketing & Sales": "Marketing & Sales",
+        "Customer Service": "Customer Service"
+    }
+    
     # Calculate match scores for each use case
     scores = []
     for _, row in analysis_df.iterrows():
@@ -298,8 +343,10 @@ def get_top_use_cases(selected_attributes, analysis_df):
         
         # For each selected attribute, add its score from the analysis table
         for attr in selected_attributes:
-            if attr in row:
-                score += row[attr]
+            # Map the display name to dataframe column name
+            df_column = attribute_mapping.get(attr)
+            if df_column and df_column in row:
+                score += row[df_column]
         
         scores.append((use_case, score))
     
@@ -312,7 +359,10 @@ if st.session_state.selected:
     top_use_cases = get_top_use_cases(st.session_state.selected, analysis_df)
     
     st.write("## Recommended Use Cases")
-    for i, (use_case, score) in enumerate(top_use_cases, 1):
-        st.write(f"{i}. **{use_case}** (Match Score: {score})")
+    if top_use_cases:
+        for i, (use_case, score) in enumerate(top_use_cases, 1):
+            st.write(f"{i}. **{use_case}** (Match Score: {score})")
+    else:
+        st.write("No matching use cases found for the selected attributes")
 else:
     st.write("Select attributes from the table to see recommended use cases")
