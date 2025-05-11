@@ -259,109 +259,39 @@ analysis_df = pd.DataFrame({
 })
 
 
-# ======= USE CASE ANALYSIS =======
+
+
+# ======= CALCULATE AND DISPLAY RECOMMENDED USE CASES =======
 def get_top_use_cases(selected_attributes, analysis_df):
     """
     Calculate the top 3 use cases based on selected attributes.
-    
-    Args:
-        selected_attributes: Set of selected attribute names
-        analysis_df: DataFrame containing use cases and their attribute scores
-        
-    Returns:
-        List of top 3 use case names with their match scores
     """
     if not selected_attributes:
         return []
     
-    # Create a mapping between table display names and dataframe column names
     attribute_mapping = {
-        "Quality/Scope/Knowledge": "Quality/Scope/Knowledge",
-        "Time Efficiency": "Time Efficiency",
-        "Cost": "Cost",
-        "Customer Segments": "Customer Segments",
-        "Value Proposition": "Value Proposition",
-        "Value Chain": "Value Chain",
-        "Revenue Model": "Revenue Model",
-        "Product Innovation": "Product Innovation",
-        "Process Innovation": "Process Innovation",
-        "Business Model Innovation": "Business Model Innovation",
-        "Exploration": "Exploration",
-        "Exploitation": "Exploitation",
-        "Automaton": "Automaton",
-        "Helper": "Helper",
-        "Partner": "Partner",
-        "Machine Learning": "Machine Learning",
-        "Deep Learning": "Deep Learning",
-        "Artificial Neural Networks": "Artificial Neural Networks",
-        "Natural Language Processing": "Natural Language Processing",
-        "Computer Vision": "Computer Vision",
-        "Robotics": "Robotics",
-        "Descriptive": "Descriptive",
-        "Diagnostic": "Diagnostic",
-        "Predictive": "Predictive",
-        "Prescriptive": "Prescriptive",
-        "Description/ Summary": "Description/ Summary",
-        "Clustering": "Clustering",
-        "Classification": "Classification",
-        "Dependency Analysis": "Dependency Analysis",
-        "Regression": "Regression",
-        "Customer Data": "Customer Data",
-        "Machine Data": "Machine Data",
-        "Business Data (Internal Data)": "Business Data (Internal Data)",
-        "Market Data": "Market Data",
-        "Public & Regulatory Data": "Public & Regulatory Data",
-        "Synthetic Data": "Synthetic Data",
-        "Front End": "Front End",
-        "Development": "Development",
-        "Market Introduction": "Market Introduction",
-        "R&D": "R&D",
-        "Manufacturing": "Manufacturing",
-        "Marketing & Sales": "Marketing & Sales",
-        "Customer Service": "Customer Service"
+        # ... (keep the full attribute mapping dictionary shown above) ...
     }
     
-    # Calculate match scores for each use case
     scores = []
     for _, row in analysis_df.iterrows():
         use_case = row['Use Case']
         score = 0
         
-        # For each selected attribute, add its score from the analysis table
         for attr in selected_attributes:
-            # Map the display name to dataframe column name
             df_column = attribute_mapping.get(attr)
             if df_column and df_column in row:
                 score += row[df_column]
         
         scores.append((use_case, score))
     
-    # Sort by score (descending) and get top 3
     scores.sort(key=lambda x: x[1], reverse=True)
     return scores[:3]
 
-# Display top use cases
-if st.session_state.selected:
-    top_use_cases = get_top_use_cases(st.session_state.selected, analysis_df)
-    
-    st.write("## Recommended Use Cases")
-    if top_use_cases:
-        for i, (use_case, score) in enumerate(top_use_cases, 1):
-            st.write(f"{i}. **{use_case}** (Match Score: {score})")
-    else:
-        st.write("No matching use cases found for the selected attributes")
-else:
-    st.write("Select attributes from the table to see recommended use cases")
+# Display recommendations in a container at the top
+recommendation_container = st.container()
 
-
-
-
-
-
-
-
-
-# ======= DISPLAY THE TABLE =======
+# ======= DISPLAY THE TABLE ======= 
 zoomed_html = f"""
 <div style="display: flex; justify-content: center; align-items: center; height: 100%; transform: scale(0.8); transform-origin: top;">
     {generate_html_table(data, st.session_state.selected)}
@@ -371,6 +301,17 @@ zoomed_html = f"""
 
 html(zoomed_html, height=800)
 
-
-
+# Show recommendations after the table
+with recommendation_container:
+    if st.session_state.selected:
+        top_use_cases = get_top_use_cases(st.session_state.selected, analysis_df)
+        
+        st.write("## Recommended Use Cases")
+        if top_use_cases:
+            for i, (use_case, score) in enumerate(top_use_cases, 1):
+                st.write(f"{i}. **{use_case}** (Match Score: {score})")
+        else:
+            st.write("No matching use cases found for the selected attributes")
+    else:
+        st.write("Select attributes from the table to see recommended use cases")
 
