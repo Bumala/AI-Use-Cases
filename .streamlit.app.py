@@ -144,13 +144,19 @@ function handleCellClick(element) {
 
 
 
+
+
+
+
+
+
 # List of clickable cells
 clickable_cells = {(1, 2), (1, 4), (2, 4)}
 
 # ======= HANDLE CELL CLICKS =======
 def handle_cell_click():
+    # Check if there is a click event in session state
     if st.session_state.get('cell_click'):
-        # Get the clicked cell's coordinates (assumed to be in the 'attribute')
         cell = st.session_state.cell_click['attribute']  # e.g., (1, 2)
         
         # Check if the clicked cell is one of the predefined clickable cells
@@ -166,14 +172,46 @@ def handle_cell_click():
             # Rerun to reflect changes
             st.experimental_rerun()
 
+# Function to simulate a cell click event (you will replace this with actual event logic)
+def simulate_cell_click(i, j, selected):
+    # Update the session state to store the clicked cell's attribute
+    st.session_state.cell_click = {
+        'attribute': (i, j),  # Store the clicked cell's coordinates
+        'selected': selected   # Whether the cell is selected or not
+    }
+
 # Initialize session state if necessary
 if 'cell_click' not in st.session_state:
     st.session_state.cell_click = None
 if 'selected' not in st.session_state:
     st.session_state.selected = set()
 
-# Handle clicks
-handle_cell_click()
+# Render cells for interaction (in your case, you can render it dynamically, here's a basic example)
+def render_cells():
+    for i in range(3):  # Example: 3 rows
+        for j in range(5):  # Example: 5 columns
+            if (i, j) in clickable_cells:  # Only render clickable cells
+                if st.button(f"Cell ({i}, {j})"):
+                    # Simulate cell click when button is clicked
+                    simulate_cell_click(i, j, True)  # Set selected to True for simplicity
+                    handle_cell_click()
+
+# Render the interactive cells
+render_cells()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -295,26 +333,5 @@ html(zoomed_html, height=800)
 
 
 
-# ======= MAP CELL COORDINATES TO WORDS =======
-cell_to_word_mapping = {
-    (1, 2): "Quality/Scope/Knowledge",
-    (1, 3): "Time Efficiency",
-    (1, 4): "Cost",
-    (2, 2): "Customer Segments",
-    (2, 3): "Value Proposition",
-    (2, 4): "Value Chain",
-    # Add more mappings as needed
-}
 
-# ======= DISPLAY SELECTED ITEMS WITH MAPPING =======
-st.markdown("### Selected Items")
-if st.session_state.selected:
-    for cell in st.session_state.selected:
-        # Check if the selected cell is in the mapping
-        word = cell_to_word_mapping.get(cell)
-        if word:
-            st.write(f"🟢 {word}")  # Display the corresponding word
-        else:
-            st.write(f"🔵 {cell}")  # Display the cell itself if no mapping is found
-else:
-    st.info("No cells selected yet.")
+
