@@ -142,29 +142,40 @@ function handleCellClick(element) {
 
 
 
-
 def handle_cell_click():
-    # Check if a cell click event exists in the session state
+    # Debug: Check if cell_click exists in session state
     if st.session_state.get('cell_click'):
-        # Extract the cell's attribute (e.g., coordinates)
-        attr = st.session_state.cell_click['attribute']
+        # Extract the cell's attribute (coordinates or identifier)
+        attr = st.session_state.cell_click.get('attribute')
+        
+        # Debug: Display the raw cell_click data
+        st.write("Debug: cell_click data:", st.session_state.cell_click)
 
-        # Print or display the clicked cell's coordinates
-        st.write(f"Clicked cell coordinates: {attr}")
-
-        # Handle selection or deselection of the cell
-        if st.session_state.cell_click['selected']:
-            st.session_state.selected.add(attr)  # Add the cell to the selected set
+        if attr:
+            # Print or display the clicked cell coordinates
+            st.write(f"Clicked cell coordinates: {attr}")
+            
+            # Handle selection or deselection of the cell
+            if st.session_state.cell_click.get('selected'):
+                st.session_state.selected.add(attr)  # Add the cell to the selected set
+            else:
+                st.session_state.selected.discard(attr)  # Remove the cell from the selected set
         else:
-            st.session_state.selected.discard(attr)  # Remove the cell from the selected set
-
-        # Force a rerun of the Streamlit app to reflect the changes
+            st.warning("No 'attribute' found in cell_click data.")
+        
+        # Force the app to re-run to reflect changes
         st.experimental_rerun()
+    else:
+        # Debug: Notify if cell_click is None or not set
+        st.info("No cell click detected yet.")
 
 # Initialize session state variables and handle clicks
-st.session_state.cell_click = None
+if "cell_click" not in st.session_state:
+    st.session_state.cell_click = None
+if "selected" not in st.session_state:
+    st.session_state.selected = set()
+
 handle_cell_click()
- 
  
  
  
