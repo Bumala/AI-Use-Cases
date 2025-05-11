@@ -65,6 +65,58 @@ def generate_html_table(data, selected):
             is_attribute = (i > 0 and j >= 2) 
             click_attr = f"onclick='handleCellClick(this)' data-attr='{val}'" if is_attribute else ""
             cell_class = " class='selected'" if val in st.session_state.selected and is_attribute else ""
+
+
+
+# ======= HANDLE CELL CLICKS =======
+def handle_cell_click():
+    if "clicked_history" not in st.session_state:
+        st.session_state.clicked_history = []
+
+    if st.session_state.get('cell_click'):
+        attr = st.session_state.cell_click['attribute']
+        selected = st.session_state.cell_click['selected']
+
+        # Add to history
+        st.session_state.clicked_history.append({
+            "attribute": attr,
+            "selected": selected
+        })
+
+        # Update current selection set
+        if selected:
+            st.session_state.selected.add(attr)
+        else:
+            st.session_state.selected.discard(attr)
+
+        st.experimental_rerun()
+
+
+
+
+
+
+if "clicked_history" in st.session_state:
+    st.subheader("Click History")
+    for entry in st.session_state.clicked_history:
+        st.write(f"{'Selected' if entry['selected'] else 'Deselected'}: {entry['attribute']}")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            
             
             # Base cell style
             bg_color = "#92D050" if val in st.session_state.selected and is_attribute else "#f1fbfe"
@@ -142,38 +194,6 @@ function handleCellClick(element) {
 
 
 
-# ======= HANDLE CELL CLICKS =======
-def handle_cell_click():
-    if "clicked_history" not in st.session_state:
-        st.session_state.clicked_history = []
-
-    if st.session_state.get('cell_click'):
-        attr = st.session_state.cell_click['attribute']
-        selected = st.session_state.cell_click['selected']
-
-        # Add to history
-        st.session_state.clicked_history.append({
-            "attribute": attr,
-            "selected": selected
-        })
-
-        # Update current selection set
-        if selected:
-            st.session_state.selected.add(attr)
-        else:
-            st.session_state.selected.discard(attr)
-
-        st.experimental_rerun()
-
-
-
-
-
-
-if "clicked_history" in st.session_state:
-    st.subheader("Click History")
-    for entry in st.session_state.clicked_history:
-        st.write(f"{'Selected' if entry['selected'] else 'Deselected'}: {entry['attribute']}")
 
 
 
