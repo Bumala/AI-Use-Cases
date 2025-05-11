@@ -1,4 +1,3 @@
-
 import streamlit as st
 import pandas as pd
 from streamlit.components.v1 import html
@@ -270,20 +269,7 @@ analysis_df = pd.DataFrame({
 
 
 
-
-
-
-
-
-
-
-
 selected_bar_html = """
-<div id="resetButtonContainer" style="padding: 10px; background-color: #f1fbfe; text-align: center;">
-    <button id="resetButton" style="padding: 10px 20px; background-color: #61cbf3; border: none; border-radius: 5px; cursor: pointer; font-weight: bold;">
-        Reset Selection
-    </button>
-</div>
 <div id="selectedBar" style="margin-bottom: 10px; padding: 10px; background-color: #dceefc; border: 2px solid #61cbf3; border-radius: 8px; font-weight: bold;">
     Selected Attributes: <span id="selectedItems">None</span>
 </div>
@@ -338,27 +324,6 @@ function handleCellClick(element) {
     }, '*');
 }
 
-document.getElementById('resetButton').addEventListener('click', function() {
-    // Clear selections
-    selectedItems.clear();
-
-    // Reset cell backgrounds
-    const cells = document.querySelectorAll('td');
-    cells.forEach(cell => {
-        cell.style.backgroundColor = '#f1fbfe'; // Reset background color to default
-    });
-
-    // Update selected items display
-    updateSelectedBar();
-
-    // Optionally, notify backend for reset (if needed)
-    window.parent.postMessage({
-        isStreamlitMessage: true,
-        type: 'resetSelection',
-        data: { reset: true }
-    }, '*');
-});
-
 updateSelectedBar();
 </script>
 """
@@ -375,3 +340,7 @@ html_code += """
 """
 
 html(html_code, height=800)
+
+
+
+
