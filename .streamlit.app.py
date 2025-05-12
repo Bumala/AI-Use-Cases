@@ -267,47 +267,6 @@ html(html_code, height=1200)
 
 
 
-grid_response = AgGrid(
-    analysis_df[["Use Case"] + selected_columns],
-    gridOptions=gridOptions,
-    update_mode=GridUpdateMode.SELECTION_CHANGED,
-    fit_columns_on_grid_load=True,
-    height=1000,
-    allow_unsafe_jscode=True,
-    enable_enterprise_modules=True,
-)
-
-
-
-
-selected_rows = grid_response["selected_rows"]
-
-
-
-
-# ======= CALCULATE & DISPLAY TOP USE CASE BASED ON AGGRID SELECTION =======
-if selected_rows:
-    # Extract selected attribute names
-    selected_attrs = [row["attribute"] for row in selected_rows if "attribute" in row]
-
-    # OR: Extract column names directly from the selection if available
-    selected_columns = [col for col in analysis_df.columns if col in [r.get("Use Case") for r in selected_rows]]
-
-    # Compute score by summing across selected columns
-    if selected_attrs:
-        valid_attrs = [col for col in selected_attrs if col in analysis_df.columns]
-        scores = analysis_df[valid_attrs].sum(axis=1)
-        top_index = scores.idxmax()
-        top_use_case = analysis_df.loc[top_index, "Use Case"]
-
-        st.markdown(f"""
-        <div style="background-color: #e6f7ff; padding: 20px; border-radius: 8px; border-left: 6px solid #61cbf3; margin-top: 20px;">
-            <h3 style="margin: 0;">🔍 Top Matching Use Case:</h3>
-            <p style="font-size: 18px; margin-top: 10px;"><strong>{top_use_case}</strong></p>
-        </div>
-        """, unsafe_allow_html=True)
-
-
 
 
 
