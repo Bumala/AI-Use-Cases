@@ -474,23 +474,18 @@ analysis_df = pd.DataFrame({
 
 })
 
-# Set up a placeholder for selected attributes
+# Initialize session state if needed
 if "selected" not in st.session_state:
     st.session_state.selected = []
 
-# Handle frontend-to-backend messages (requires Streamlit >=1.27 with JS <-> Python communication support)
-from streamlit.components.v1 import components
+# Inject the custom HTML UI you’ve already built
+from streamlit.components.v1 import html
+html(html_code, height=1200)
 
-components.html(html_code, height=1200)
-
-# Frontend event listener (simulate receiving selected attributes)
-# In a real deployment, you would update `st.session_state.selected` via a custom component or use PyScript/Bidirectional Bridge
-st.markdown("### Selected Attributes")
-st.write(st.session_state.selected)
-
-# Compute top use case based on current selections
+# Only use the selected attributes from the HTML interface
 selected_attrs = st.session_state.selected
 
+# Display and evaluate selections
 if selected_attrs:
     valid_attrs = [attr for attr in selected_attrs if attr in analysis_df.columns]
 
@@ -505,11 +500,7 @@ if selected_attrs:
     else:
         st.warning("None of the selected attributes match the analysis table columns.")
 else:
-    st.info("No attributes selected yet.")
-
-
-
-
+    st.info("No attributes selected yet. Please click cells in the table.")
 
 
 
