@@ -179,7 +179,7 @@ handle_cell_click()
 
 
 # ======= USE CASE ANALYSIS =======
-analysis_table_data = {
+analysis_table = pd.DataFrame({
 
 
 
@@ -262,34 +262,7 @@ analysis_table_data = {
 
 
 
-}
-
-analysis_table = pd.DataFrame(analysis_table_data)
-analysis_table.set_index("Use Case", inplace=True)
-
-
-
-
-
-
-
-
-column_names = list(analysis_table.columns)
-st.markdown(f"""
-<script>
-    const columns = {column_names};
-</script>
-""", unsafe_allow_html=True)
-
-
-
-
-
-
-
-
-
-
+})
 
 
 
@@ -418,94 +391,3 @@ html_code += """
 """
 
 html(html_code, height=1200)
-
-
-
-
-
-
-
-
-
-
-
-
-
-# ---------- Custom JavaScript for retrieving selected attributes ----------
-st.markdown(
-    """
-    <script>
-        const selectedBar = document.getElementById("selectedBar");
-        const selectedItemsSpan = document.getElementById("selectedItems");
-
-        // Example: Update the text dynamically based on user selections
-        // This would normally happen dynamically in your app
-        selectedItemsSpan.textContent = "Time Efficiency, Cost";
-
-        // Send the selected attributes to Streamlit's backend
-        const selectedAttributes = selectedItemsSpan.textContent.split(",").map(attr => attr.trim());
-        window.streamlitSelectedAttributes = selectedAttributes;
-    </script>
-    """,
-    unsafe_allow_html=True,
-)
-
-
-
-
-
-
-
-
-# ---------- Streamlit Python Backend ----------
-# Retrieve selected attributes from the frontend
-if selected_attributes:
-    valid_attributes = [attr for attr in selected_attributes if attr in analysis_table.columns]
-    invalid_attributes = [attr for attr in selected_attributes if attr not in analysis_table.columns]
-
-    if valid_attributes:
-        # Calculate the sum for the valid selected attributes
-        summed = analysis_table[valid_attributes].sum(axis=1)
-
-        # Identify the top use case
-        top_use_case = summed.idxmax()
-
-        # Update the Top Use Case bar in the frontend
-        st.markdown(f"""
-        <script>
-            document.getElementById("topUseCase").innerText = "🚀 **Top Use Case:** {top_use_case}";
-        </script>
-        """, unsafe_allow_html=True)
-
-
-
-
-
-
-
-
-# ---------- Calculate and show top use case ----------
-if selected_attributes:
-    valid_attributes = [attr for attr in selected_attributes if attr in analysis_table.columns]
-    invalid_attributes = [attr for attr in selected_attributes if attr not in analysis_table.columns]
-
-    # Display warnings for invalid attributes
-    if invalid_attributes:
-        st.warning(f"Invalid attributes: {', '.join(invalid_attributes)}")
-
-    if valid_attributes:
-        # Calculate the sum for the valid selected attributes
-        summed = analysis_table[valid_attributes].sum(axis=1)
-
-        # Identify the top use case
-        top_use_case = summed.idxmax()
-
-        # Display the top use case
-        st.success(f"🚀 **Top Use Case:** {top_use_case}")
-
-        # Optional: Display a bar chart for summed values
-        st.bar_chart(summed)
-    else:
-        st.info("No valid attributes entered. Please check the selections in the text bar.")
-else:
-    st.info("👆 Select attributes in the text bar to see the top use case.")
