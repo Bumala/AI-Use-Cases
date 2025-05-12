@@ -2,6 +2,7 @@ import streamlit as st
 import pandas as pd
 from streamlit.components.v1 import html
 from streamlit_js_eval import streamlit_js_eval
+import streamlit.components.v1 as components
  
 # Set page layout
 st.set_page_config(layout="wide")
@@ -382,29 +383,66 @@ analysis_df = pd.DataFrame({
 })
 
 
-# Initialize session state if it doesn't exist
+# Session key to store attributes from JS
 if "selected_attributes" not in st.session_state:
     st.session_state.selected_attributes = []
 
-# --- 👇 Capture the selected attributes from JS ---
-# You can use Streamlit's `st.experimental_get_query_params()` to receive the data 
-# sent by the JavaScript through window.parent.postMessage if the message was properly handled in JS
+# Listen for attribute selection via JS
+components.html(
+    """
+    <script>
+    function sendSelectedAttributes() {
+        const span = document.getElementById("selectedItems");
+        if (span) {
+            const attrs = span.innerText;
+            window.parent.postMessage({isStreamlitMessage: true, type: "selectedAttributes", data: attrs}, "*");
+        }
+    }
 
-selected_attributes = st.session_state.selected_attributes
+    // Automatically call the function repeatedly (e.g., every second)
+    setInterval(sendSelectedAttributes, 1000);
+    </script>
+    """,
+    height=0  # Hidden
+)
 
-# --- 👇 Process and display result ---
+# Receive attributes from JS
+from streamlit_javascript import st_javascript
+
+# If using st_javascript, but if not available use experimental connection via session state
+# Make sure this part is wired in your JS handler in Streamlit frontend (custom frontend)
+
+# 👇 Simulate frontend-to-backend message listener
+# You would need a listener in a custom Streamlit component or use streamlit-js-events lib
+
+def extract_selected_attrs():
+    # Try to read selection from query param, session state, or similar
+    # For now, simulate this (you'll want to integrate your own JS-to-Python pipe)
+    return st.session_state.get("selected_attributes", [])
+
+# 👇 Example placeholder: replace this with real selected attribute sync from JS
+selected_raw = st.experimental_get_query_params().get("selected", [""])[0]  # temporary workaround
+selected_attributes = [x.strip() for x in selected_raw.split(",") if x.strip()]
+st.session_state.selected_attributes = selected_attributes
+
+# --- Compute top use case ---
 if selected_attributes:
     valid_attributes = [attr for attr in selected_attributes if attr in analysis_df.columns]
-    
+
     if valid_attributes:
         analysis_df["Score"] = analysis_df[valid_attributes].sum(axis=1)
         top_idx = analysis_df["Score"].idxmax()
         top_use_case = analysis_df.loc[top_idx, "Use Case"]
         top_score = analysis_df.loc[top_idx, "Score"]
 
-        st.markdown(f"### 🏆 Top Use Case Based on Your Selection:")
-        st.success(f"**{top_use_case}** with a score of **{top_score}**")
+        # ✅ Final output bar only
+        st.markdown(f"""
+        <div style="padding: 15px; background-color: #e6f7e6; border: 2px solid #4CAF50; border-radius: 8px; font-size: 16px;">
+            <b>🏆 Top Use Case:</b> {top_use_case} <br>
+            <b>Score:</b> {top_score}
+        </div>
+        """, unsafe_allow_html=True)
     else:
-        st.warning("None of the entered attributes match the available analysis columns.")
+        st.warning("Selected attributes do not match any known columns.")
 else:
-    st.info("Please select one or more attributes to evaluate use cases.")
+    st.info("Select attributes to reveal the top use case.")
