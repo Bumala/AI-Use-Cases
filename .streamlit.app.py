@@ -178,7 +178,7 @@ handle_cell_click()
 
 
 # ======= USE CASE ANALYSIS =======
-analysis_df = pd.DataFrame({
+analysis_table = pd.DataFrame({
 
 
 
