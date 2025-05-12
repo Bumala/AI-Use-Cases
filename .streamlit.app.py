@@ -281,6 +281,7 @@ selected_bar_html = """
 </div>
 <div id="selectedBar" style="margin-bottom: 10px; padding: 10px; background-color: #dceefc; border: 2px solid #61cbf3; border-radius: 8px; font-weight: bold;">
     Selected Attributes: <span id="selectedItems">None</span>
+    <div id="topUseCase" style="margin-top: 10px; font-size: 14px;"></div> <!-- Add a place to display top use case -->
 </div>
 """
 
@@ -300,24 +301,27 @@ let selectedItems = new Set();
 
 function updateSelectedBar() {
     const bar = document.getElementById("selectedItems");
+    const topUseCaseDiv = document.getElementById("topUseCase");
     const selectedText = selectedItems.size === 0 ? "None" : Array.from(selectedItems).join(", ");
     bar.innerText = selectedText;
 
     // Check if any selected word matches a column in the analysis_table
     const selectedWords = Array.from(selectedItems);
-    const columns = ['Quality/Scope/Knowledge', 'Time Efficiency', 'Cost', 'Customer Segments', 'Value Proposition', 'Value Chain', 'Revenue Model', 'Product Innovation', 'Process Innovation', 'Business Model Innovation', 'Exploration', 'Exploitation', 'Automaton', 'Helper', 'Partner', 'Machine Learning', 'Deep Learning', 'Artificial Neural Networks', 'Natural Language Processing', 'Computer Vision', 'Robotics', 'Descriptive', 'Diagnostic', 'Predictive', 'Prescriptive', 'Description/ Summary', 'Clustering', 'Classification', 'Dependency Analysis', 'Regression', 'Customer Data', 'Machine Data', 'Business Data (Internal Data)', 'Market Data', 'Public & Regulatory Data', 'Synthetic Data', 'Front End', 'Development', 'Market Introduction', 'R&D', 'Manufacturing', 'Marketing & Sales', 'Customer Service'
-]; // column names from analysis_table
+    const columns = ['Quality/Scope/Knowledge', 'Time Efficiency', 'Cost', 'Customer Segments', 'Value Proposition', 'Value Chain', 'Revenue Model', 'Product Innovation', 'Process Innovation', 'Business Model Innovation', 'Exploration', 'Exploitation', 'Automaton', 'Helper', 'Partner', 'Machine Learning', 'Deep Learning', 'Artificial Neural Networks', 'Natural Language Processing', 'Computer Vision', 'Robotics', 'Descriptive', 'Diagnostic', 'Predictive', 'Prescriptive', 'Description/ Summary', 'Clustering', 'Classification', 'Dependency Analysis', 'Regression', 'Customer Data', 'Machine Data', 'Business Data (Internal Data)', 'Market Data', 'Public & Regulatory Data', 'Synthetic Data', 'Front End', 'Development', 'Market Introduction', 'R&D', 'Manufacturing', 'Marketing & Sales', 'Customer Service']; // column names from analysis_table
+
+    // Reset the Top Use Case section
+    topUseCaseDiv.innerHTML = "";
 
     selectedWords.forEach(function(word) {
         // Check if word matches any column name
-        if (columns.includes(word.toLowerCase())) {
+        if (columns.includes(word)) {
             // Perform the sum and calculation for the corresponding column
-            const column = word.toLowerCase();
+            const column = word;  // Use the column name as-is (case-sensitive match)
             const summed = analysis_table[column].sum(axis=1);
             const topUseCase = summed.idxmax();
 
-            // Display the result (you can change how you show it in the UI)
-            alert(`🚀 **Top Use Case for ${word}:** ${topUseCase}`);
+            // Display the result in the UI
+            topUseCaseDiv.innerHTML = `🚀 **Top Use Case for ${word}:** ${topUseCase}`;
         }
     });
 }
