@@ -265,24 +265,24 @@ html(html_code, height=1200)
 
 
 
-# ======= TOP USE CASE CALCULATION AND DISPLAY =======
+# ======= CALCULATE & DISPLAY TOP USE CASE =======
 if st.session_state.selected:
-    selected_attributes = list(st.session_state.selected)
-
-    # Filter to columns that match selected attributes and exist in DataFrame
-    valid_attributes = [attr for attr in selected_attributes if attr in analysis_df.columns]
+    selected_attrs = list(st.session_state.selected)
+    # Filter columns that are in the selected attributes
+    valid_attrs = [col for col in selected_attrs if col in analysis_df.columns]
     
-    if valid_attributes:
-        # Sum the selected attribute scores row-wise
-        scores = analysis_df[valid_attributes].sum(axis=1)
-        
-        # Find index of the top use case
+    if valid_attrs:
+        # Calculate the score for each use case
+        scores = analysis_df[valid_attrs].sum(axis=1)
         top_index = scores.idxmax()
         top_use_case = analysis_df.loc[top_index, "Use Case"]
-        top_score = scores[top_index]
-
-        st.markdown("### 🔍 Top Matching Use Case:")
-        st.success(f"**{top_use_case}** (Score: {top_score})")
+        
+        st.markdown(f"""
+        <div style="background-color: #e6f7ff; padding: 20px; border-radius: 8px; border-left: 6px solid #61cbf3; margin-top: 20px;">
+            <h3 style="margin: 0;">🔍 Top Matching Use Case:</h3>
+            <p style="font-size: 18px; margin-top: 10px;"><strong>{top_use_case}</strong></p>
+        </div>
+        """, unsafe_allow_html=True)
 
 
 
