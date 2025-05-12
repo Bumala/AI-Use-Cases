@@ -281,8 +281,6 @@ handle_cell_click()
 
 
 
- 
- 
 selected_bar_html = """
 <div id="resetButtonContainer" style="padding: 10px; background-color: #f1fbfe; text-align: center;">
    <button id="resetButton" style="padding: 10px 20px; background-color: #61cbf3; border: none; border-radius: 5px; cursor: pointer; font-weight: bold;">
@@ -309,23 +307,9 @@ html_code += """
 let selectedItems = new Set();
  
 function updateSelectedBar() {
-    const bar = document.getElementById("selectedItems");
-    const selectedList = Array.from(selectedItems);
-    bar.innerText = selectedList.length === 0 ? "None" : selectedList.join(", ");
-
-    // ✅ Send to Streamlit backend
-    window.parent.postMessage({
-        isStreamlitMessage: true,
-        type: 'selectedAttributes',
-        selected: selectedList
-    }, '*');
+   const bar = document.getElementById("selectedItems");
+   bar.innerText = selectedItems.size === 0 ? "None" : Array.from(selectedItems).join(", ");
 }
-
-
-
-
-
-
  
 function handleCellClick(element) {
    const attr = element.getAttribute('data-attr');
@@ -394,26 +378,38 @@ html_code += """
 """
  
 html(html_code, height=1200)
- 
 
 
 
-import streamlit.components.v1 as components
 
-# Add a hidden component to listen to JS messages
-components.html("""
+
+
+
+
+
+# Display the selected items as Python code
+selected_items_js = """
 <script>
-window.addEventListener("message", (event) => {
-    const data = event.data;
-    if (data && data.type === "selectedAttributes" && data.isStreamlitMessage) {
-        const json = JSON.stringify(data.selected);
-        window.parent.postMessage({isStreamlitMessage: true, type: "streamlit:setComponentValue", value: json}, "*");
-    }
-});
+// Function to get the current selected items
+function getSelectedItems() {
+    return Array.from(selectedItems).join(", ");
+}
+</script>
+"""
+
+# Get the selected items from JavaScript and display as Python
+components.html(selected_items_js, height=0)
+selected_items = components.html("""
+<script>
+document.write(getSelectedItems());
 </script>
 """, height=0)
 
-
+st.subheader("Selected Items (Python)")
+if selected_items:
+    st.code(f"selected_items = {selected_items.split(', ')}")
+else:
+    st.code("selected_items = []")
 
 
 
