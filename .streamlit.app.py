@@ -281,6 +281,38 @@ handle_cell_click()
 
 
 
+
+
+# Add this where you handle other JS messages
+if 'cellClick' in st.session_state:
+    # Your existing cell click handling code
+    pass
+
+# Add this to handle the selected items updates
+@st.experimental_fragment
+def handle_js_messages():
+    if st.session_state.get('selected_items_update'):
+        st.session_state.selected_attributes = st.session_state.selected_items_update
+        st.rerun()
+
+# In your JS message handling code, add:
+if msg.type == 'selectedItemsUpdate':
+    st.session_state.selected_items_update = msg.data
+    handle_js_messages()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
  
  
 selected_bar_html = """
@@ -394,28 +426,44 @@ html(html_code, height=1200)
 
 
 
-
-# Display the selected items as Python code
-selected_items_js = """
+# Add this JavaScript to your existing html_code (before the final html() call)
+html_code += """
 <script>
-// Function to get the current selected items
-function getSelectedItems() {
-    return Array.from(selectedItems).join(", ");
+// Function to send selected items to Python
+function sendSelectedToPython() {
+    const items = Array.from(selectedItems);
+    window.parent.postMessage({
+        isStreamlitMessage: true,
+        type: 'selectedItemsUpdate',
+        data: items
+    }, '*');
 }
+
+// Update whenever selections change
+selectedItemsUpdateHandlers = [];
+function onSelectedItemsUpdate(handler) {
+    selectedItemsUpdateHandlers.push(handler);
+}
+
+// Modify your existing updateSelectedBar function to also send updates
+const originalUpdateSelectedBar = updateSelectedBar;
+updateSelectedBar = function() {
+    originalUpdateSelectedBar();
+    sendSelectedToPython();
+};
 </script>
 """
 
-# Get the selected items from JavaScript and display as Python
-components.html(selected_items_js, height=0)
-selected_items = components.html("""
-<script>
-document.write(getSelectedItems());
-</script>
-""", height=0)
+# Display the HTML with your table
+components.html(html_code, height=1200)
 
+# Handle the selected items in Python
+if 'selected_attributes' not in st.session_state:
+    st.session_state.selected_attributes = []
+
+# Display the selected items as Python code
 st.subheader("Selected Items (Python)")
-if selected_items:
-    st.code(f"selected_items = {selected_items.split(', ')}")
+if st.session_state.selected_attributes:
+    st.code(f"selected_attributes = {st.session_state.selected_attributes}")
 else:
-    st.code("selected_items = []")
-
+    st.code("selected_attributes = []")
