@@ -242,8 +242,8 @@ analysis_table = pd.DataFrame({
     "Predictive": [2, 2, 2, 0, 2, 2, 2, 2, 2, 2, 0, 2, 2, 0, 2, 0, 0, 0, 2, 2, 0, 0, 2, 0, 2, 2, 0, 2, 0, 0],
     "Prescriptive": [0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 2, 2, 0, 0, 0, 0, 0],
     "Description/ Summary": [1, 0, 0, 0, 2, 2, 0, 0, 1, 2, 0, 2, 0, 2, 0, 2, 0, 0, 2, 0, 0, 2, 0, 2, 2, 0, 0, 0, 0, 0],
-    "Clustering": [0, 0, 0, 2, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 2, 2, 0, 2, 2, 2, 2],
-    "Classification": [2, 0, 0, 2, 0, 0, 0, 0, 0, 2, 2, 0, 0, 2, 0, 0, 0, 0, 0, 0, 2, 2, 2, 2, 2, 0, 2, 2, 2, 2],
+    "Ctering": [0, 0, 0, 2, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 2, 2, 0, 2, 2, 2, 2],
+    "Classifiation": [2, 0, 0, 2, 0, 0, 0, 0, 0, 2, 2, 0, 0, 2, 0, 0, 0, 0, 0, 0, 2, 2, 2, 2, 2, 0, 2, 2, 2, 2],
     "Dependency Analysis": [0, 0, 0, 0, 2, 0, 0, 0, 0, 2, 2, 0, 0, 2, 0, 0, 1, 0, 0, 2, 2, 2, 2, 2, 2, 0, 2, 2, 2, 2],
     "Regression": [1, 1, 2, 0, 2, 2, 2, 2, 2, 2, 0, 2, 2, 0, 2, 0, 2, 2, 0, 2, 0, 2, 2, 2, 2, 2, 2, 2, 2, 2],
     "Customer Data": [2, 0, 2, 0, 2, 2, 2, 2, 2, 2, 2, 2, 2, 0, 2, 2, 2, 2, 2, 2, 0, 1, 1, 2, 2, 2, 2, 2, 2, 1],
@@ -263,8 +263,6 @@ analysis_table = pd.DataFrame({
 
 
 })
-
-
 
 
 selected_bar_html = """
@@ -289,10 +287,7 @@ html_code = selected_bar_html + f"""
         {generate_html_table(data, st.session_state.selected)}
     </div>
 </div>
-""" + interaction_js
-
-# Inject update script
-html_code += """
+""" + """
 <script>
 let selectedItems = new Set();
 
@@ -301,27 +296,12 @@ function updateSelectedBar() {
     const selectedText = selectedItems.size === 0 ? "None" : Array.from(selectedItems).join(", ");
     bar.innerText = selectedText;
 
-    // Check if any selected word matches a column in the analysis_table
-    const selectedWords = Array.from(selectedItems);
-    const columns = ['Quality/Scope/Knowledge', 'Time Efficiency', 'Cost', 'Customer Segments', 'Value Proposition', 'Value Chain', 'Revenue Model', 'Product Innovation', 'Process Innovation', 'Business Model Innovation', 'Exploration', 'Exploitation', 'Automaton', 'Helper', 'Partner', 'Machine Learning', 'Deep Learning', 'Artificial Neural Networks', 'Natural Language Processing', 'Computer Vision', 'Robotics', 'Descriptive', 'Diagnostic', 'Predictive', 'Prescriptive', 'Description/ Summary', 'Clustering', 'Classification', 'Dependency Analysis', 'Regression', 'Customer Data', 'Machine Data', 'Business Data (Internal Data)', 'Market Data', 'Public & Regulatory Data', 'Synthetic Data', 'Front End', 'Development', 'Market Introduction', 'R&D', 'Manufacturing', 'Marketing & Sales', 'Customer Service']; // column names from analysis_table
-
-    let topUseCaseText = "None"; // Default top use case text
-
-    selectedWords.forEach(function(word) {
-        // Ensure we match exact column names
-        const column = columns.find(col => col.toLowerCase() === word.toLowerCase());
-        if (column) {
-            // Perform the sum and calculation for the corresponding column
-            const summed = analysis_table[column].sum(axis=1);  // Assuming analysis_table is accessible in JS context
-            const topUseCase = summed.idxmax();
-
-            // Update the Top Use Case display
-            topUseCaseText = `🚀 **Top Use Case for ${column}:** ${topUseCase}`;
-        }
-    });
-
-    // Update the Top Use Case bar with the result
-    document.getElementById("topUseCase").innerText = topUseCaseText;
+    // Notify Streamlit backend of the updated selection
+    window.parent.postMessage({
+        isStreamlitMessage: true,
+        type: 'updateSelection',
+        data: Array.from(selectedItems)
+    }, '*');
 }
 
 function handleCellClick(element) {
@@ -329,7 +309,7 @@ function handleCellClick(element) {
     const isSelected = element.style.backgroundColor === 'rgb(146, 208, 80)';
 
     // Toggle visual selection
-    element.style.backgroundColor = isSelected ? element.dataset.originalColor : '#92D050';
+    element.style.backgroundColor = isSelected ? '#f1fbfe' : '#92D050';
 
     if (!isSelected) {
         selectedItems.add(attr);
@@ -338,13 +318,6 @@ function handleCellClick(element) {
     }
 
     updateSelectedBar();
-
-    // Notify Streamlit backend
-    window.parent.postMessage({
-        isStreamlitMessage: true,
-        type: 'cellClick',
-        data: { attribute: attr, selected: !isSelected }
-    }, '*');
 }
 
 document.addEventListener("DOMContentLoaded", function() {
@@ -366,11 +339,11 @@ document.addEventListener("DOMContentLoaded", function() {
 
         updateSelectedBar();
 
-        // Optionally notify Streamlit backend
+        // Notify Streamlit backend of reset action
         window.parent.postMessage({
             isStreamlitMessage: true,
             type: 'resetSelection',
-            data: { reset: true }
+            data: []
         }, '*');
     });
 
@@ -391,3 +364,63 @@ html_code += """
 """
 
 html(html_code, height=1200)
+
+
+
+
+
+# Synchronize selections with session state
+def handle_selection_update():
+    if st.session_state.get('cell_click'):
+        # Update selected attributes based on the click
+        attr = st.session_state.cell_click['attribute']
+        if st.session_state.cell_click['selected']:
+            st.session_state.selected.add(attr)
+        else:
+            st.session_state.selected.discard(attr)
+
+    if st.session_state.get('reset_selection'):
+        # Clear all selected attributes
+        st.session_state.selected.clear()
+
+# Hook to handle updates
+handle_selection_update()
+
+
+
+
+
+
+
+
+# Calculate the top use case
+def calculate_top_use_case(selected_attributes):
+    if not selected_attributes:
+        return None, None
+
+    valid_attributes = [attr for attr in selected_attributes if attr in analysis_table.columns]
+    invalid_attributes = [attr for attr in selected_attributes if attr not in analysis_table.columns]
+
+    if invalid_attributes:
+        st.warning(f"Invalid attributes: {', '.join(invalid_attributes)}")
+
+    if valid_attributes:
+        summed = analysis_table[valid_attributes].sum(axis=1)
+        top_use_case = summed.idxmax()
+        return top_use_case, summed
+
+    return None, None
+
+# Get selected attributes from session state
+selected_attributes = list(st.session_state.selected)
+
+# Perform calculation
+top_use_case, summed = calculate_top_use_case(selected_attributes)
+
+# Display results
+if top_use_case:
+    st.success(f"🚀 **Top Use Case:** {top_use_case}")
+    st.bar_chart(summed)
+else:
+    st.info("👆 Select attributes to see the top use case.")
+
