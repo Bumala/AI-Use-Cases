@@ -281,7 +281,8 @@ handle_cell_click()
 
 
 
-
+ 
+ 
 selected_bar_html = """
 <div id="resetButtonContainer" style="padding: 10px; background-color: #f1fbfe; text-align: center;">
    <button id="resetButton" style="padding: 10px 20px; background-color: #61cbf3; border: none; border-radius: 5px; cursor: pointer; font-weight: bold;">
@@ -308,13 +309,8 @@ html_code += """
 let selectedItems = new Set();
  
 function updateSelectedBar() {
-    const bar = document.getElementById("selectedItems");
-    const selectedList = Array.from(selectedItems);
-    bar.innerText = selectedList.length === 0 ? "None" : selectedList.join(", ");
-
-    // Store selected items in sessionStorage (this will persist across page reloads)
-    sessionStorage.setItem("selectedAttributes", JSON.stringify(selectedList));
-
+   const bar = document.getElementById("selectedItems");
+   bar.innerText = selectedItems.size === 0 ? "None" : Array.from(selectedItems).join(", ");
 }
  
 function handleCellClick(element) {
@@ -384,31 +380,7 @@ html_code += """
 """
  
 html(html_code, height=1200)
-
-
-
-
-
-
-
-# Show the table and selected attributes (existing HTML+JS code)
-html_code = """<div id="selectedBar" ...>Selected Attributes: <span id="selectedItems">None</span></div>"""
-
-st.components.v1.html(html_code, height=500)
-
-# Get selected attributes from sessionStorage or query params
-selected_items = st.experimental_get_query_params().get("selectedAttributes", [None])[0]
-
-if selected_items:
-    try:
-        selected_items = json.loads(selected_items)  # Convert from string to list
-    except json.JSONDecodeError:
-        selected_items = []  # Default to empty list
-
-    st.session_state.selected_attributes = selected_items
-
-# Display the selected attributes below the table
-st.write(f"Selected Attributes: {st.session_state.get('selected_attributes', [])}")
+ 
 
 
 
