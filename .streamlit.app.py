@@ -396,8 +396,6 @@ st.write(top_use_case_html, unsafe_allow_html=True)
 
 
 
-
-# Example of embedding JavaScript for your Top Use Case calculation
 st.write("""
 <script>
     let selectedItems = new Set();
