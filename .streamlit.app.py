@@ -395,9 +395,22 @@ st.write(top_use_case_html, unsafe_allow_html=True)
 
 
 
+from streamlit.components.v1 import html
 
 # Add JavaScript for interaction
-st.write("""
+html("""
+<div id="resetButtonContainer" style="text-align: center;">
+    <button id="resetButton" style="padding: 10px 20px; background-color: #61cbf3; border: none; border-radius: 5px; cursor: pointer; font-weight: bold;">
+        Reset Selection
+    </button>
+</div>
+<div id="selectedBar" style="margin-top: 20px; padding: 10px; background-color: #dceefc; border: 2px solid #61cbf3; border-radius: 8px;">
+    Selected Attributes: <span id="selectedItems">None</span>
+</div>
+<div id="topUseCaseBar" style="margin-top: 20px; padding: 10px; background-color: #f1fbfe; border: 2px solid #61cbf3; border-radius: 8px;">
+    🚀 Top Use Case: <span id="topUseCase">None</span>
+</div>
+
 <script>
     let selectedItems = new Set();
 
@@ -426,9 +439,6 @@ st.write("""
         updateSelectedBar();
     });
 </script>
-""", unsafe_allow_html=True)
-
-
-
+""", height=300)
 
 
