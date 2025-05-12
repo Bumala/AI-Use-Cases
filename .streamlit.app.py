@@ -268,28 +268,31 @@ analysis_df = pd.DataFrame({
 
 
 
+
+
+
+
+
+
 selected_bar_html = """
-<div style="display: flex; flex-direction: column; height: 100%;">
-    <div id="resetButtonContainer" style="padding: 10px; background-color: #f1fbfe; text-align: center;">
-        <button id="resetButton" style="padding: 10px 20px; background-color: #61cbf3; border: none; border-radius: 5px; cursor: pointer; font-weight: bold;">
-            Reset Selection
-        </button>
-    </div>
-    <div id="selectedBar" style="margin-bottom: 10px; padding: 10px; background-color: #dceefc; border: 2px solid #61cbf3; border-radius: 8px; font-weight: bold;">
-        Selected Attributes: <span id="selectedItems">None</span>
-    </div>
+<div id="resetButtonContainer" style="padding: 10px; background-color: #f1fbfe; text-align: center;">
+    <button id="resetButton" style="padding: 10px 20px; background-color: #61cbf3; border: none; border-radius: 5px; cursor: pointer; font-weight: bold;">
+        Reset Selection
+    </button>
+</div>
+<div id="selectedBar" style="margin-bottom: 10px; padding: 10px; background-color: #dceefc; border: 2px solid #61cbf3; border-radius: 8px; font-weight: bold;">
+    Selected Attributes: <span id="selectedItems">None</span>
+</div>
 """
 
-# Wrap table in scroll container and close the outer flex container
+# Wrap the table in a div container to manage zoom and scrolling
 html_code = selected_bar_html + f"""
-    <div style="flex-grow: 1; overflow-y: auto; overflow-x: auto; width: 100%; padding: 10px; box-sizing: border-box;">
-        <div class="zoomed-table">
-            {generate_html_table(data, st.session_state.selected)}
-        </div>
+<div style="overflow-x: auto; width: 100%; padding: 10px; box-sizing: border-box;">
+    <div class="zoomed-table">
+        {generate_html_table(data, st.session_state.selected)}
     </div>
 </div>
 """ + interaction_js
-
 
 # Inject update script
 html_code += """
@@ -368,6 +371,7 @@ html_code += """
 """
 
 html(html_code, height=800)
+
 
 
 
