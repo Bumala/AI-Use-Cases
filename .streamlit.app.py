@@ -305,7 +305,8 @@ function updateSelectedBar() {
 
     // Check if any selected word matches a column in the analysis_table
     const selectedWords = Array.from(selectedItems);
-    const columns = ['column1', 'column2', 'column3']; // Replace with your actual column names from analysis_table
+    const columns = ['Quality/Scope/Knowledge', 'Time Efficiency', 'Cost', 'Customer Segments', 'Value Proposition', 'Value Chain', 'Revenue Model', 'Product Innovation', 'Process Innovation', 'Business Model Innovation', 'Exploration', 'Exploitation', 'Automaton', 'Helper', 'Partner', 'Machine Learning', 'Deep Learning', 'Artificial Neural Networks', 'Natural Language Processing', 'Computer Vision', 'Robotics', 'Descriptive', 'Diagnostic', 'Predictive', 'Prescriptive', 'Description/ Summary', 'Clustering', 'Classification', 'Dependency Analysis', 'Regression', 'Customer Data', 'Machine Data', 'Business Data (Internal Data)', 'Market Data', 'Public & Regulatory Data', 'Synthetic Data', 'Front End', 'Development', 'Market Introduction', 'R&D', 'Manufacturing', 'Marketing & Sales', 'Customer Service'
+]; // column names from analysis_table
 
     selectedWords.forEach(function(word) {
         // Check if word matches any column name
