@@ -5,6 +5,7 @@ from streamlit_js_eval import streamlit_js_eval
 import streamlit.components.v1 as components
 from st_aggrid import AgGrid, GridOptionsBuilder, GridUpdateMode
 from streamlit_javascript import st_javascript
+import json
 
 
 
@@ -384,23 +385,25 @@ html(html_code, height=1200)
 
 
 
-import json
 
-# Assuming `selected_items` was sent from JS as a JSON array (list in Python)
-selected_items = st.experimental_get_component_value()
+# Show the table and selected attributes (existing HTML+JS code)
+html_code = """<div id="selectedBar" ...>Selected Attributes: <span id="selectedItems">None</span></div>"""
 
-# If selected_items is not None or an empty string, process it
+st.components.v1.html(html_code, height=500)
+
+# Get selected attributes from sessionStorage or query params
+selected_items = st.experimental_get_query_params().get("selectedAttributes", [None])[0]
+
 if selected_items:
     try:
-        selected_items = json.loads(selected_items)  # Converts the JSON string back into a Python list
+        selected_items = json.loads(selected_items)  # Convert from string to list
     except json.JSONDecodeError:
-        selected_items = []  # Default to empty list if decoding fails
+        selected_items = []  # Default to empty list
 
-# Show the results
-st.write(f"selected_items = {selected_items}")
+    st.session_state.selected_attributes = selected_items
 
-
-
+# Display the selected attributes below the table
+st.write(f"Selected Attributes: {st.session_state.get('selected_attributes', [])}")
 
 
 
