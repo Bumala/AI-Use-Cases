@@ -394,7 +394,7 @@ html(html_code, height=1200)
 # Safe way to capture selected items from the URL into Python
 def get_selected_from_js():
     try:
-        params = st.experimental_get_query_params()
+        params = st.st.query_params()
         selected = params.get("selectedAttributes", ["None"])[0]
         if selected and selected != "None":
             st.session_state.selected_attributes = selected.split(",")
