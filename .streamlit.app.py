@@ -417,10 +417,17 @@ selected_attributes = list(st.session_state.selected)
 # Perform calculation
 top_use_case, summed = calculate_top_use_case(selected_attributes)
 
-# Display results
-if top_use_case:
-    st.success(f"🚀 **Top Use Case:** {top_use_case}")
-    st.bar_chart(summed)
-else:
-    st.info("👆 Select attributes to see the top use case.")
+
+
+# Calculate the top use case
+selected_attributes = list(st.session_state.selected)
+top_use_case, summed = calculate_top_use_case(selected_attributes)
+
+# The bar for the top use case is already created elsewhere, so no need to display it here.
+# Remove or comment out this block if already implemented:
+# if top_use_case:
+#     st.success(f"🚀 **Top Use Case:** {top_use_case}")
+#     st.bar_chart(summed)
+# else:
+#     st.info("👆 Select attributes to see the top use case.")
 
