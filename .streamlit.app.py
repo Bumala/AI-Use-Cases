@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
 from streamlit.components.v1 import html
+import json
 
 
 # Set page layout
@@ -263,6 +264,54 @@ analysis_table = pd.DataFrame({
 
 
 })
+
+# API endpoint to serve the DataFrame as JSON
+def get_analysis_table():
+    return analysis_table.to_dict(orient="records")  # Convert DataFrame to JSON-compatible format
+
+# Streamlit app
+st.title("AI Use Cases Analysis")
+
+# Render the API output as a hidden div for frontend access
+st.write(
+    f"<div id='analysis-table' style='display: none;'>{json.dumps(get_analysis_table())}</div>",
+    unsafe_allow_html=True,
+)
+
+
+
+
+
+
+
+
+<script>
+    // Fetch the analysis table data from the hidden div
+    const analysisTableDiv = document.getElementById('analysis-table');
+    const analysisTable = JSON.parse(analysisTableDiv.innerText);
+
+    // Function to calculate the sum of a specific column
+    function getColumnSum(columnName) {
+        return analysisTable.reduce((sum, row) => sum + (row[columnName] || 0), 0);
+    }
+
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
