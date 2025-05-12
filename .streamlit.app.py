@@ -273,7 +273,6 @@ analysis_table = pd.DataFrame({
 
 
 
-
 selected_bar_html = """
 <div id="resetButtonContainer" style="padding: 10px; background-color: #f1fbfe; text-align: center;">
     <button id="resetButton" style="padding: 10px 20px; background-color: #61cbf3; border: none; border-radius: 5px; cursor: pointer; font-weight: bold;">
@@ -301,7 +300,25 @@ let selectedItems = new Set();
 
 function updateSelectedBar() {
     const bar = document.getElementById("selectedItems");
-    bar.innerText = selectedItems.size === 0 ? "None" : Array.from(selectedItems).join(", ");
+    const selectedText = selectedItems.size === 0 ? "None" : Array.from(selectedItems).join(", ");
+    bar.innerText = selectedText;
+
+    // Check if any selected word matches a column in the analysis_table
+    const selectedWords = Array.from(selectedItems);
+    const columns = ['column1', 'column2', 'column3']; // Replace with your actual column names from analysis_table
+
+    selectedWords.forEach(function(word) {
+        // Check if word matches any column name
+        if (columns.includes(word.toLowerCase())) {
+            // Perform the sum and calculation for the corresponding column
+            const column = word.toLowerCase();
+            const summed = analysis_table[column].sum(axis=1);
+            const topUseCase = summed.idxmax();
+
+            // Display the result (you can change how you show it in the UI)
+            alert(`🚀 **Top Use Case for ${word}:** ${topUseCase}`);
+        }
+    });
 }
 
 function handleCellClick(element) {
@@ -371,35 +388,3 @@ html_code += """
 """
 
 html(html_code, height=1200)
-
-
-
-
-# ======= DISPLAY TOP USE CASE BASED ON SELECTION =======
-
-if st.session_state.selected:
-    st.markdown("## Top Use Case Matching Selection")
-
-    # Extract selected attributes
-    selected_attrs = st.session_state.selected
-
-    # Compute score for each use case
-    scores = []
-    for idx, row in analysis_table.iterrows():
-        score = 0
-        for attr in selected_attrs:
-            if attr in row and pd.notna(row[attr]):
-                score += row[attr]
-        scores.append(score)
-
-    # Find index of top score
-    max_score = max(scores)
-    best_indices = [i for i, s in enumerate(scores) if s == max_score]
-
-    # Show top use case(s)
-    for i in best_indices:
-        use_case_name = analysis_table.iloc[i]["Use Case"]
-        st.success(f"**{use_case_name}** (Score: {max_score})")
-else:
-    st.info("Select attributes from the table to see the most relevant use case.")
-
