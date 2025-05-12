@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
 from streamlit.components.v1 import html
+from streamlit_js_eval import streamlit_js_eval
  
 # Set page layout
 st.set_page_config(layout="wide")
@@ -474,18 +475,19 @@ analysis_df = pd.DataFrame({
 
 })
 
-# Initialize session state if needed
-if "selected" not in st.session_state:
-    st.session_state.selected = []
+# --- 👇 Get selected attributes from the HTML bar using JS eval ---
+js_result = streamlit_js_eval(
+    js_expressions="document.getElementById('selectedItems')?.innerText",
+    key="selected_items_bar"
+)
 
-# Inject the custom HTML UI you’ve already built
-from streamlit.components.v1 import html
-html(html_code, height=1200)
+# Parse the selection string
+if js_result and js_result != "None":
+    selected_attrs = [attr.strip() for attr in js_result.split(",") if attr.strip()]
+else:
+    selected_attrs = []
 
-# Only use the selected attributes from the HTML interface
-selected_attrs = st.session_state.selected
-
-# Display and evaluate selections
+# --- 👇 Perform use case calculation ---
 if selected_attrs:
     valid_attrs = [attr for attr in selected_attrs if attr in analysis_df.columns]
 
@@ -500,8 +502,6 @@ if selected_attrs:
     else:
         st.warning("None of the selected attributes match the analysis table columns.")
 else:
-    st.info("No attributes selected yet. Please click cells in the table.")
-
-
+    st.info("No attributes selected yet. Click on cells to start.")
 
 
