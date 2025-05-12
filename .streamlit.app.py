@@ -287,7 +287,7 @@ selected_bar_html = """
 
 # Wrap the table in a div container to manage zoom and scrolling
 html_code = selected_bar_html + f"""
-<div style="overflow-x: auto; width: 100%; padding: 10px; box-sizing: border-box;">
+<div style="overflow-x: auto; overflow-y: auto; max-height: calc(100vh - 100px); width: 100%; padding: 10px; box-sizing: border-box;">
     <div class="zoomed-table">
         {generate_html_table(data, st.session_state.selected)}
     </div>
