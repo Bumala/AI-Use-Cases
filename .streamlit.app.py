@@ -397,18 +397,11 @@ st.write(top_use_case_html, unsafe_allow_html=True)
 
 
 
-
-
-
-
+# Example of embedding JavaScript for your Top Use Case calculation
+st.write("""
 <script>
-    // Fetch the analysis table data from the hidden div
-    const analysisTableDiv = document.getElementById('analysis-table-data');
-    const analysisTable = JSON.parse(analysisTableDiv.innerText);
-
     let selectedItems = new Set();
 
-    // Update the selected attributes bar
     function updateSelectedBar() {
         const selectedBar = document.getElementById('selectedItems');
         const selectedText = selectedItems.size === 0 ? "None" : Array.from(selectedItems).join(", ");
@@ -418,51 +411,25 @@ st.write(top_use_case_html, unsafe_allow_html=True)
         updateTopUseCase();
     }
 
-    // Calculate and display the top use case
     function updateTopUseCase() {
         if (selectedItems.size === 0) {
             document.getElementById('topUseCase').innerText = "None";
             return;
         }
 
-        // Convert selected attributes to an array
-        const selectedAttributes = Array.from(selectedItems);
-
-        // Calculate the sum for each use case
-        const summedValues = analysisTable.data.map(row => {
-            return selectedAttributes.reduce((sum, attribute) => {
-                const columnIndex = analysisTable.columns.indexOf(attribute);
-                return sum + (row[columnIndex] || 0);
-            }, 0);
-        });
-
-        // Find the index of the max value
-        const maxIndex = summedValues.indexOf(Math.max(...summedValues));
-
-        // Display the top use case
-        const topUseCase = analysisTable.index[maxIndex];
-        document.getElementById('topUseCase').innerText = topUseCase;
+        // Add your logic for calculating the top use case here
+        document.getElementById('topUseCase').innerText = "Calculated Top Use Case";
     }
 
-    // Handle cell clicks to toggle selection
-    function handleCellClick(attribute) {
-        if (selectedItems.has(attribute)) {
-            selectedItems.delete(attribute);
-        } else {
-            selectedItems.add(attribute);
-        }
-        updateSelectedBar();
-    }
-
-    // Reset the selection
     document.getElementById('resetButton').addEventListener('click', () => {
         selectedItems.clear();
         updateSelectedBar();
     });
-
-    // Initial setup
-    updateSelectedBar();
 </script>
+""", unsafe_allow_html=True)
+
+
+
 
 
 
