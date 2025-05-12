@@ -117,159 +117,6 @@ def generate_html_table(data, selected):
    return html
  
  
- 
- 
- 
- 
- 
- 
- 
-# ======= JAVASCRIPT FOR INTERACTIVITY =======
-interaction_js = """
-<script>
-function handleCellClick(element) {
-   const attr = element.getAttribute('data-attr');
-   const isSelected = element.style.backgroundColor === 'rgb(146, 208, 80)';
-   
-   // Toggle visual selection immediately
-   element.style.backgroundColor = isSelected ? '#f1fbfe' : '#92D050';
-   
-   // Send message to Streamlit
-   window.parent.postMessage({
-       isStreamlitMessage: true,
-       type: 'cellClick',
-       data: {
-           attribute: attr,
-           selected: !isSelected
-       }
-   }, '*');
-}
-</script>
-"""
- 
-# ======= HANDLE CELL CLICKS =======
-def handle_cell_click():
-   if st.session_state.get('cell_click'):
-       attr = st.session_state.cell_click['attribute']
-       if st.session_state.cell_click['selected']:
-           st.session_state.selected.add(attr)
-       else:
-           st.session_state.selected.discard(attr)
-       st.experimental_rerun()
- 
-# Initialize and handle clicks
-st.session_state.cell_click = None
-handle_cell_click()
- 
-
-
-
- 
-selected_bar_html = """
-<div id="resetButtonContainer" style="padding: 10px; background-color: #f1fbfe; text-align: center;">
-   <button id="resetButton" style="padding: 10px 20px; background-color: #61cbf3; border: none; border-radius: 5px; cursor: pointer; font-weight: bold;">
-       Reset Selection
-   </button>
-</div>
-<div id="selectedBar" style="margin-bottom: 10px; padding: 10px; background-color: #dceefc; border: 2px solid #61cbf3; border-radius: 8px; font-weight: bold;">
-   Selected Attributes: <span id="selectedItems">None</span>
-</div>
-"""
- 
-# Wrap the table in a div container to manage zoom and scrolling
-html_code = selected_bar_html + f"""
-<div style="overflow-x: auto; width: 100%; padding: 10px; box-sizing: border-box;">
-   <div class="zoomed-table">
-       {generate_html_table(data, st.session_state.selected)}
-   </div>
-</div>
-""" + interaction_js
- 
-# Inject update script
-html_code += """
-<script>
-let selectedItems = new Set();
- 
-function updateSelectedBar() {
-   const bar = document.getElementById("selectedItems");
-   bar.innerText = selectedItems.size === 0 ? "None" : Array.from(selectedItems).join(", ");
-}
- 
-function handleCellClick(element) {
-   const attr = element.getAttribute('data-attr');
-   const isSelected = element.style.backgroundColor === 'rgb(146, 208, 80)';
- 
-   // Toggle visual selection
-   element.style.backgroundColor = isSelected ? element.dataset.originalColor : '#92D050';
- 
-   if (!isSelected) {
-       selectedItems.add(attr);
-   } else {
-       selectedItems.delete(attr);
-   }
- 
-   updateSelectedBar();
- 
-   // Notify Streamlit backend
-   window.parent.postMessage({
-       isStreamlitMessage: true,
-       type: 'cellClick',
-       data: { attribute: attr, selected: !isSelected }
-   }, '*');
-}
- 
-document.addEventListener("DOMContentLoaded", function() {
-   // Store original background color of each cell
-   const cells = document.querySelectorAll('td');
-   cells.forEach(cell => {
-       const original = getComputedStyle(cell).backgroundColor;
-       cell.dataset.originalColor = original;
-   });
- 
-   document.getElementById('resetButton').addEventListener('click', function() {
-       // Clear selections
-       selectedItems.clear();
- 
-       // Restore each cell's original background color
-       cells.forEach(cell => {
-           cell.style.backgroundColor = cell.dataset.originalColor;
-       });
- 
-       updateSelectedBar();
- 
-       // Optionally notify Streamlit backend
-       window.parent.postMessage({
-           isStreamlitMessage: true,
-           type: 'resetSelection',
-           data: { reset: true }
-       }, '*');
-   });
- 
-   updateSelectedBar();
-});
-</script>
-"""
- 
-# Apply the zoom effect to the table
-html_code += """
-<style>
-.zoomed-table {
-   transform: scale(0.75); /* Zoom out to 75% */
-   transform-origin: top center;
-   width: 100%;
-}
-</style>
-"""
- 
-html(html_code, height=1200)
-
-
-
-
-
-
-
-
 
 
 
@@ -379,6 +226,279 @@ analysis_df = pd.DataFrame({
     "Customer Service": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 1, 2, 2, 2, 2, 2, 2, 2]
 
 })
+
+
+
+
+
+# Set the 'Use Case' column as the index
+analysis_df.set_index("Use Case", inplace=True)
+
+# Display the updated dataframe (for debugging)
+print(analysis_df)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
+ 
+ 
+ 
+ 
+ 
+# ======= JAVASCRIPT FOR INTERACTIVITY =======
+interaction_js = """
+<script>
+function handleCellClick(element) {
+   const attr = element.getAttribute('data-attr');
+   const isSelected = element.style.backgroundColor === 'rgb(146, 208, 80)';
+   
+   // Toggle visual selection immediately
+   element.style.backgroundColor = isSelected ? '#f1fbfe' : '#92D050';
+   
+   // Send message to Streamlit
+   window.parent.postMessage({
+       isStreamlitMessage: true,
+       type: 'cellClick',
+       data: {
+           attribute: attr,
+           selected: !isSelected
+       }
+   }, '*');
+}
+</script>
+"""
+ 
+# ======= HANDLE CELL CLICKS =======
+def handle_cell_click():
+   if st.session_state.get('cell_click'):
+       attr = st.session_state.cell_click['attribute']
+       if st.session_state.cell_click['selected']:
+           st.session_state.selected.add(attr)
+       else:
+           st.session_state.selected.discard(attr)
+       st.experimental_rerun()
+ 
+# Initialize and handle clicks
+st.session_state.cell_click = None
+handle_cell_click()
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+import streamlit as st
+import pandas as pd
+
+# Assuming 'data' and 'analysis_table' are defined elsewhere
+# 'data' represents the table data for generating the HTML table
+# 'analysis_table' is the table we will analyze based on user selection
+
+selected_bar_html = """
+<div id="resetButtonContainer" style="padding: 10px; background-color: #f1fbfe; text-align: center;">
+   <button id="resetButton" style="padding: 10px 20px; background-color: #61cbf3; border: none; border-radius: 5px; cursor: pointer; font-weight: bold;">
+       Reset Selection
+   </button>
+</div>
+<div id="selectedBar" style="margin-bottom: 10px; padding: 10px; background-color: #dceefc; border: 2px solid #61cbf3; border-radius: 8px; font-weight: bold;">
+   Selected Attributes: <span id="selectedItems">None</span>
+</div>
+"""
+
+# Wrap the table in a div container to manage zoom and scrolling
+html_code = selected_bar_html + f"""
+<div style="overflow-x: auto; width: 100%; padding: 10px; box-sizing: border-box;">
+   <div class="zoomed-table">
+       {generate_html_table(data, st.session_state.selected)}
+   </div>
+</div>
+""" + interaction_js
+
+# Inject update script
+html_code += """
+<script>
+let selectedItems = new Set();
+
+function updateSelectedBar() {
+   const bar = document.getElementById("selectedItems");
+   bar.innerText = selectedItems.size === 0 ? "None" : Array.from(selectedItems).join(", ");
+}
+
+function handleCellClick(element) {
+   const attr = element.getAttribute('data-attr');
+   const isSelected = element.style.backgroundColor === 'rgb(146, 208, 80)';
+   
+   // Toggle visual selection
+   element.style.backgroundColor = isSelected ? element.dataset.originalColor : '#92D050';
+
+   if (!isSelected) {
+       selectedItems.add(attr);
+   } else {
+       selectedItems.delete(attr);
+   }
+
+   updateSelectedBar();
+
+   // Notify Streamlit backend
+   window.parent.postMessage({
+       isStreamlitMessage: true,
+       type: 'cellClick',
+       data: { attribute: attr, selected: !isSelected }
+   }, '*');
+}
+
+document.addEventListener("DOMContentLoaded", function() {
+   // Store original background color of each cell
+   const cells = document.querySelectorAll('td');
+   cells.forEach(cell => {
+       const original = getComputedStyle(cell).backgroundColor;
+       cell.dataset.originalColor = original;
+   });
+
+   document.getElementById('resetButton').addEventListener('click', function() {
+       // Clear selections
+       selectedItems.clear();
+
+       // Restore each cell's original background color
+       cells.forEach(cell => {
+           cell.style.backgroundColor = cell.dataset.originalColor;
+       });
+
+       updateSelectedBar();
+
+       // Optionally notify Streamlit backend
+       window.parent.postMessage({
+           isStreamlitMessage: true,
+           type: 'resetSelection',
+           data: { reset: true }
+       }, '*');
+   });
+
+   updateSelectedBar();
+});
+</script>
+"""
+
+# Apply the zoom effect to the table
+html_code += """
+<style>
+.zoomed-table {
+   transform: scale(0.75); /* Zoom out to 75% */
+   transform-origin: top center;
+   width: 100%;
+}
+</style>
+"""
+
+# Initialize selected attributes in session state
+if 'selected_attributes' not in st.session_state:
+    st.session_state.selected_attributes = []
+
+# Create a multiselect dropdown to select attributes
+attribute_columns = list(data.columns)  # Assuming 'data' contains your table data
+selected_attributes = st.multiselect(
+    "Select attributes (these match the table cells you want to 'click'):",
+    attribute_columns,
+    default=st.session_state.selected_attributes,  # Default to current selections
+)
+
+# Save the selected attributes to session state when the user selects/deselects
+st.session_state.selected_attributes = selected_attributes
+
+# Show the table with the zoom effect and the selection functionality
+st.components.v1.html(html_code, height=1200)
+
+
+
+
+# ---------- Calculate and show top use case ----------
+if selected_attributes:
+    # Sum the selected attributes (rows)
+    summed = analysis_df[selected_attributes].sum(axis=1)
+    
+    # Get the index of the row with the maximum sum (i.e., the top use case)
+    top_use_case = summed.idxmax()
+    
+    # Display the top use case
+    st.success(f"🚀 **Top Use Case:** {top_use_case}")
+else:
+    st.info("👆 Select attributes above to see the top use case.")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
