@@ -266,6 +266,26 @@ html(html_code, height=1200)
 
 
 
+// Notify Streamlit backend with the current selected attributes
+window.parent.postMessage({
+    isStreamlitMessage: true,
+    type: 'updateSelectedAttributes', // New type
+    data: { selected: Array.from(selectedItems) } // Send the updated set of selected attributes
+}, '*');
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 # Sample analysis_df — replace this with your full version
 analysis_df = pd.DataFrame({
@@ -362,17 +382,15 @@ analysis_df = pd.DataFrame({
 })
 
 
-# --- 👇 Get selected attributes from the HTML bar using JS eval ---
-js_result = streamlit_js_eval(
-    js_expressions="document.getElementById('selectedItems')?.innerText",
-    key="selected_items_bar"
-)
+# Initialize session state if it doesn't exist
+if "selected_attributes" not in st.session_state:
+    st.session_state.selected_attributes = []
 
-# Parse the selection string
-if js_result and js_result != "None":
-    selected_attributes = [attr.strip() for attr in js_result.split(",") if attr.strip()]
-else:
-    selected_attributes = []
+# --- 👇 Capture the selected attributes from JS ---
+# You can use Streamlit's `st.experimental_get_query_params()` to receive the data 
+# sent by the JavaScript through window.parent.postMessage if the message was properly handled in JS
+
+selected_attributes = st.session_state.selected_attributes
 
 # --- 👇 Process and display result ---
 if selected_attributes:
@@ -390,4 +408,3 @@ if selected_attributes:
         st.warning("None of the entered attributes match the available analysis columns.")
 else:
     st.info("Please select one or more attributes to evaluate use cases.")
-
