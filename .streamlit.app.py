@@ -384,3 +384,38 @@ html(html_code, height=1200)
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+# Display the selected items as Python code
+selected_items_js = """
+<script>
+// Function to get the current selected items
+function getSelectedItems() {
+    return Array.from(selectedItems).join(", ");
+}
+</script>
+"""
+
+# Get the selected items from JavaScript and display as Python
+components.html(selected_items_js, height=0)
+selected_items = components.html("""
+<script>
+document.write(getSelectedItems());
+</script>
+""", height=0)
+
+st.subheader("Selected Items (Python)")
+if selected_items:
+    st.code(f"selected_items = {selected_items.split(', ')}")
+else:
+    st.code("selected_items = []")
+
