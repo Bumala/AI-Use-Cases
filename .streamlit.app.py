@@ -373,3 +373,74 @@ html_code += """
 html(html_code, height=1200)
 
 
+
+
+
+
+
+
+
+import streamlit as st
+import streamlit.components.v1 as components
+
+# Initialize session state for the selected items if it doesn't exist
+if "selected_items" not in st.session_state:
+    st.session_state["selected_items"] = "None"
+
+# Your existing HTML with added JavaScript to update session state
+selected_bar_html = f"""
+<div id="resetButtonContainer" style="padding: 10px; background-color: #f1fbfe; text-align: center;">
+    <button id="resetButton" style="padding: 10px 20px; background-color: #61cbf3; border: none; border-radius: 5px; cursor: pointer; font-weight: bold;">
+        Reset Selection
+    </button>
+</div>
+<div id="selectedBar" style="margin-bottom: 10px; padding: 10px; background-color: #dceefc; border: 2px solid #61cbf3; border-radius: 8px; font-weight: bold;">
+    Selected Attributes: <span id="selectedItems">{st.session_state["selected_items"]}</span>
+</div>
+
+<script>
+    const selectedItemsSpan = document.getElementById('selectedItems');
+    const resetButton = document.getElementById('resetButton');
+
+    // Function to update Streamlit session state
+    function updateStreamlit(value) {
+        Streamlit.set({ "selected_items": value });
+    }
+
+    // You'll need to trigger this update based on how your first text bar changes.
+    // For example, if you have an input field:
+    // const inputField = document.getElementById('yourInputFieldId');
+    // inputField.addEventListener('input', function() {
+    //     updateStreamlit(this.value);
+    // });
+
+    // For now, let's simulate an update when the reset button is clicked
+    resetButton.addEventListener('click', function() {
+        updateStreamlit('None');
+    });
+
+    // You'll also need to call updateStreamlit whenever your selection logic changes the text
+    // in the 'selectedItems' span. For example:
+    // function updateSelectedText(newText) {
+    //     selectedItemsSpan.textContent = newText;
+    //     updateStreamlit(newText);
+    // }
+</script>
+"""
+
+components.html(selected_bar_html, height=150)
+
+# Now, in your Python code, you can access the selected value from st.session_state
+selected_value = st.session_state["selected_items"]
+
+# Display the copied value in a Streamlit text area
+st.subheader("Copied Selection in Python:")
+st.text_area("Selected Value", selected_value, height=100)
+
+
+
+
+
+
+
+
