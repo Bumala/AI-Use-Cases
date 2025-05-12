@@ -390,25 +390,24 @@ html(html_code, height=1200)
  
 
 
-html(html_code, height=1200)
 
-# Python block to read selected attributes
-import streamlit as st
-
+# Safe way to capture selected items from the URL into Python
 def get_selected_from_js():
-    selected = st.experimental_get_query_params().get("selectedAttributes", ["None"])[0]
-    if selected and selected != "None":
-        st.session_state.selected_attributes = selected.split(",")
-    else:
+    try:
+        params = st.experimental_get_query_params()
+        selected = params.get("selectedAttributes", ["None"])[0]
+        if selected and selected != "None":
+            st.session_state.selected_attributes = selected.split(",")
+        else:
+            st.session_state.selected_attributes = []
+    except Exception as e:
         st.session_state.selected_attributes = []
+        st.error(f"Failed to get selected attributes: {e}")
 
 get_selected_from_js()
 
-# Display selection below table
+# Show selected items below the HTML table
 st.write("Selected Attributes in Python:", st.session_state.get("selected_attributes", []))
-
-
-
 
 
 
