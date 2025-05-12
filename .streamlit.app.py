@@ -371,3 +371,40 @@ html_code += """
 """
 
 html(html_code, height=1200)
+
+
+
+
+# ======= DISPLAY TABLE =======
+st.markdown(interaction_js, unsafe_allow_html=True)
+html_table = generate_html_table(data, st.session_state.selected)
+html(html_table, height=800)
+
+# ======= DISPLAY TOP USE CASE BASED ON SELECTION =======
+
+if st.session_state.selected:
+    st.markdown("## Top Use Case Matching Selection")
+
+    # Extract selected attributes
+    selected_attrs = st.session_state.selected
+
+    # Compute score for each use case
+    scores = []
+    for idx, row in analysis_table.iterrows():
+        score = 0
+        for attr in selected_attrs:
+            if attr in row and pd.notna(row[attr]):
+                score += row[attr]
+        scores.append(score)
+
+    # Find index of top score
+    max_score = max(scores)
+    best_indices = [i for i, s in enumerate(scores) if s == max_score]
+
+    # Show top use case(s)
+    for i in best_indices:
+        use_case_name = analysis_table.iloc[i]["Use Case"]
+        st.success(f"**{use_case_name}** (Score: {max_score})")
+else:
+    st.info("Select attributes from the table to see the most relevant use case.")
+
