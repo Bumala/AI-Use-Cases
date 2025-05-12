@@ -4,6 +4,7 @@ from streamlit.components.v1 import html
 from streamlit_js_eval import streamlit_js_eval
 import streamlit.components.v1 as components
 from st_aggrid import AgGrid, GridOptionsBuilder, GridUpdateMode
+from streamlit_javascript import st_javascript
 
 
 
@@ -391,26 +392,22 @@ html(html_code, height=1200)
 
 
 
-# Safe way to capture selected items from the URL into Python
-def get_selected_from_js():
-    try:
-        params = st.st.query_params()
-        selected = params.get("selectedAttributes", ["None"])[0]
-        if selected and selected != "None":
-            st.session_state.selected_attributes = selected.split(",")
-        else:
-            st.session_state.selected_attributes = []
-    except Exception as e:
-        st.session_state.selected_attributes = []
-        st.error(f"Failed to get selected attributes: {e}")
+# Run JS in the frontend to fetch selectedItems and pass it to Python
+selected_js = st_javascript("""
+() => {
+    const span = document.getElementById("selectedItems");
+    if (span) {
+        return span.innerText.replace("Selected Attributes: ", "").split(", ").filter(x => x && x !== "None");
+    }
+    return [];
+}
+""")
 
-get_selected_from_js()
+# Save result to session state
+st.session_state.selected_attributes = selected_js or []
 
-# Show selected items below the HTML table
-st.write("Selected Attributes in Python:", st.session_state.get("selected_attributes", []))
-
-
-
+# Display selected attributes in Python
+st.write("Selected Attributes in Python:", st.session_state.selected_attributes)
 
 
 
