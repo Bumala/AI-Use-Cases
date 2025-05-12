@@ -267,25 +267,6 @@ html(html_code, height=1200)
 
 
 
-// Notify Streamlit backend with the current selected attributes
-window.parent.postMessage({
-    isStreamlitMessage: true,
-    type: 'updateSelectedAttributes', // New type
-    data: { selected: Array.from(selectedItems) } // Send the updated set of selected attributes
-}, '*');
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 # Sample analysis_df — replace this with your full version
