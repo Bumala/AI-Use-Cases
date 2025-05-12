@@ -269,6 +269,31 @@ analysis_table.set_index("Use Case", inplace=True)
 
 
 
+
+
+
+
+
+column_names = list(analysis_table.columns)
+st.markdown(f"""
+<script>
+    const columns = {column_names};
+</script>
+""", unsafe_allow_html=True)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 selected_bar_html = """
 <div id="resetButtonContainer" style="padding: 10px; background-color: #f1fbfe; text-align: center;">
     <button id="resetButton" style="padding: 10px 20px; background-color: #61cbf3; border: none; border-radius: 5px; cursor: pointer; font-weight: bold;">
@@ -425,9 +450,37 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
+
+
+
+
+
+
+
 # ---------- Streamlit Python Backend ----------
 # Retrieve selected attributes from the frontend
-selected_attributes = st.session_state.get("streamlitSelectedAttributes", [])
+if selected_attributes:
+    valid_attributes = [attr for attr in selected_attributes if attr in analysis_table.columns]
+    invalid_attributes = [attr for attr in selected_attributes if attr not in analysis_table.columns]
+
+    if valid_attributes:
+        # Calculate the sum for the valid selected attributes
+        summed = analysis_table[valid_attributes].sum(axis=1)
+
+        # Identify the top use case
+        top_use_case = summed.idxmax()
+
+        # Update the Top Use Case bar in the frontend
+        st.markdown(f"""
+        <script>
+            document.getElementById("topUseCase").innerText = "🚀 **Top Use Case:** {top_use_case}";
+        </script>
+        """, unsafe_allow_html=True)
+
+
+
+
+
 
 
 
