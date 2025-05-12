@@ -475,33 +475,40 @@ analysis_df = pd.DataFrame({
 
 })
 
-# --- 👇 Get selected attributes from the HTML bar using JS eval ---
-js_result = streamlit_js_eval(
-    js_expressions="document.getElementById('selectedItems')?.innerText",
-    key="selected_items_bar"
-)
+# Custom HTML snippet
+selected_bar_html = """
+<div id="resetButtonContainer" style="padding: 10px; background-color: #f1fbfe; text-align: center;">
+   <button onclick="document.getElementById('inputbox').value='';" id="resetButton" style="padding: 10px 20px; background-color: #61cbf3; border: none; border-radius: 5px; cursor: pointer; font-weight: bold;">
+       Reset Selection
+   </button>
+</div>
+<div id="selectedBar" style="margin-bottom: 10px; padding: 10px; background-color: #dceefc; border: 2px solid #61cbf3; border-radius: 8px; font-weight: bold;">
+   Selected Attributes: <span id="selectedItems">{selected}</span>
+</div>
+"""
 
-# Parse the selection string
-if js_result and js_result != "None":
-    selected_attrs = [attr.strip() for attr in js_result.split(",") if attr.strip()]
-else:
-    selected_attrs = []
+# Streamlit input
+st.markdown("### Select Attributes (comma-separated)")
+user_input = st.text_input("Enter attributes matching analysis columns:", key="inputbox")
+selected_attributes = [x.strip() for x in user_input.split(",") if x.strip()]
 
-# --- 👇 Perform use case calculation ---
-if selected_attrs:
-    valid_attrs = [attr for attr in selected_attrs if attr in analysis_df.columns]
+# Display selected attributes using HTML
+st.markdown(selected_bar_html.format(selected=", ".join(selected_attributes)), unsafe_allow_html=True)
 
-    if valid_attrs:
-        analysis_df["Score"] = analysis_df[valid_attrs].sum(axis=1)
+# Process and display result
+if selected_attributes:
+    valid_attributes = [attr for attr in selected_attributes if attr in analysis_df.columns]
+    
+    if valid_attributes:
+        analysis_df["Score"] = analysis_df[valid_attributes].sum(axis=1)
         top_idx = analysis_df["Score"].idxmax()
         top_use_case = analysis_df.loc[top_idx, "Use Case"]
         top_score = analysis_df.loc[top_idx, "Score"]
 
-        st.markdown("### 🏆 Top Use Case Based on Your Selections:")
+        st.markdown(f"### 🏆 Top Use Case Based on Your Selection:")
         st.success(f"**{top_use_case}** with a score of **{top_score}**")
     else:
-        st.warning("None of the selected attributes match the analysis table columns.")
+        st.warning("None of the entered attributes match the available analysis columns.")
 else:
-    st.info("No attributes selected yet. Click on cells to start.")
-
+    st.info("Please enter one or more attributes to evaluate use cases.")
 
