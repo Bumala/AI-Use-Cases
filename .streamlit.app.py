@@ -375,11 +375,6 @@ html(html_code, height=1200)
 
 
 
-# ======= DISPLAY TABLE =======
-st.markdown(interaction_js, unsafe_allow_html=True)
-html_table = generate_html_table(data, st.session_state.selected)
-html(html_table, height=800)
-
 # ======= DISPLAY TOP USE CASE BASED ON SELECTION =======
 
 if st.session_state.selected:
