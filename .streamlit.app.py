@@ -179,7 +179,7 @@ handle_cell_click()
 
 
 # ======= USE CASE ANALYSIS =======
-analysis_table_data {
+analysis_table_data = {
 
 
 
