@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
 from streamlit.components.v1 import html
+import json
 
 # Set page layout
 st.set_page_config(layout="wide")
@@ -264,122 +265,107 @@ analysis_table = pd.DataFrame({
 })
 
 
+analysis_table_json = json.dumps(data.to_dict(orient='records'))
 
 
+import json
 
+# Convert the DataFrame to JSON
+analysis_table_json = json.dumps(data.to_dict(orient='records'))
 
-
-
-
-selected_bar_html = """
-<div id="resetButtonContainer" style="padding: 10px; background-color: #f1fbfe; text-align: center;">
-    <button id="resetButton" style="padding: 10px 20px; background-color: #61cbf3; border: none; border-radius: 5px; cursor: pointer; font-weight: bold;">
-        Reset Selection
-    </button>
-</div>
-<div id="selectedBar" style="margin-bottom: 10px; padding: 10px; background-color: #dceefc; border: 2px solid #61cbf3; border-radius: 8px; font-weight: bold;">
-    Selected Attributes: <span id="selectedItems">None</span>
-</div>
-<!-- New Bar for Top Use Case -->
-<div id="topUseCaseBar" style="margin-top: 20px; padding: 10px; background-color: #f1fbfe; border: 2px solid #61cbf3; border-radius: 8px; font-weight: bold;">
-    Top Use Case: <span id="topUseCase">None</span>
-</div>
-"""
-
-# Wrap the table in a div container to manage zoom and scrolling
+# Embed the JSON data into the HTML
 html_code = selected_bar_html + f"""
 <div style="overflow-x: auto; width: 100%; padding: 10px; box-sizing: border-box;">
     <div class="zoomed-table">
         {generate_html_table(data, st.session_state.selected)}
     </div>
 </div>
-""" + interaction_js
-
-# Inject update script
-html_code += """
+""" + interaction_js + f"""
 <script>
-let selectedItems = new Set();
+    const analysisTable = {analysis_table_json};  // Now you have the data in JS
 
-function updateSelectedBar() {
-    const bar = document.getElementById("selectedItems");
-    const selectedText = selectedItems.size === 0 ? "None" : Array.from(selectedItems).join(", ");
-    bar.innerText = selectedText;
+    let selectedItems = new Set();
 
-    // Check if any selected word matches a column in the analysis_table
-    const selectedWords = Array.from(selectedItems);
-    const columns = ['Quality/Scope/Knowledge', 'Time Efficiency', 'Cost', 'Customer Segments', 'Value Proposition', 'Value Chain', 'Revenue Model', 'Product Innovation', 'Process Innovation', 'Business Model Innovation', 'Exploration', 'Exploitation', 'Automaton', 'Helper', 'Partner', 'Machine Learning', 'Deep Learning', 'Artificial Neural Networks', 'Natural Language Processing', 'Computer Vision', 'Robotics', 'Descriptive', 'Diagnostic', 'Predictive', 'Prescriptive', 'Description/ Summary', 'Clustering', 'Classification', 'Dependency Analysis', 'Regression', 'Customer Data', 'Machine Data', 'Business Data (Internal Data)', 'Market Data', 'Public & Regulatory Data', 'Synthetic Data', 'Front End', 'Development', 'Market Introduction', 'R&D', 'Manufacturing', 'Marketing & Sales', 'Customer Service']; // column names from analysis_table
+    function updateSelectedBar() {
+        const bar = document.getElementById("selectedItems");
+        const selectedText = selectedItems.size === 0 ? "None" : Array.from(selectedItems).join(", ");
+        bar.innerText = selectedText;
 
-    let topUseCaseText = "None"; // Default top use case text
+        // Check if any selected word matches a column in the analysis_table
+        const selectedWords = Array.from(selectedItems);
+        const columns = ['Quality/Scope/Knowledge', 'Time Efficiency', 'Cost', 'Customer Segments', 'Value Proposition', 'Value Chain', 'Revenue Model', 'Product Innovation', 'Process Innovation', 'Business Model Innovation', 'Exploration', 'Exploitation', 'Automaton', 'Helper', 'Partner', 'Machine Learning', 'Deep Learning', 'Artificial Neural Networks', 'Natural Language Processing', 'Computer Vision', 'Robotics', 'Descriptive', 'Diagnostic', 'Predictive', 'Prescriptive', 'Description/ Summary', 'Clustering', 'Classification', 'Dependency Analysis', 'Regression', 'Customer Data', 'Machine Data', 'Business Data (Internal Data)', 'Market Data', 'Public & Regulatory Data', 'Synthetic Data', 'Front End', 'Development', 'Market Introduction', 'R&D', 'Manufacturing', 'Marketing & Sales', 'Customer Service']; // column names from analysis_table
 
-    selectedWords.forEach(function(word) {
-        // Ensure we match exact column names
-        const column = columns.find(col => col.toLowerCase() === word.toLowerCase());
-        if (column) {
-            // Perform the sum and calculation for the corresponding column
-            const summed = analysis_table[column]; // Assuming analysis_table is an object with column names as keys and row sums as values
-            const topUseCase = summed.idxmax(); // Find the index of the max summed value
+        let topUseCaseText = "None"; // Default top use case text
 
-            // Update the Top Use Case display
-            topUseCaseText = `🚀 **Top Use Case for ${column}:** ${topUseCase}`;
-        }
-    });
+        selectedWords.forEach(function(word) {
+            // Ensure we match exact column names
+            const column = columns.find(col => col.toLowerCase() === word.toLowerCase());
+            if (column) {
+                // Perform the sum and calculation for the corresponding column
+                const summed = analysisTable.map(row => row[column]);
+                const topUseCase = summed.indexOf(Math.max(...summed)); // Find the index of the max summed value
 
-    // Update the Top Use Case bar with the result
-    document.getElementById("topUseCase").innerText = topUseCaseText;
-}
+                // Update the Top Use Case display
+                topUseCaseText = `🚀 **Top Use Case for ${column}:** ${topUseCase}`;
+            }
+        });
 
-function handleCellClick(element) {
-    const attr = element.getAttribute('data-attr');
-    const isSelected = element.style.backgroundColor === 'rgb(146, 208, 80)';
-
-    // Toggle visual selection
-    element.style.backgroundColor = isSelected ? element.dataset.originalColor : '#92D050';
-
-    if (!isSelected) {
-        selectedItems.add(attr);
-    } else {
-        selectedItems.delete(attr);
+        // Update the Top Use Case bar with the result
+        document.getElementById("topUseCase").innerText = topUseCaseText;
     }
 
-    updateSelectedBar();
+    function handleCellClick(element) {
+        const attr = element.getAttribute('data-attr');
+        const isSelected = element.style.backgroundColor === 'rgb(146, 208, 80)';
 
-    // Notify Streamlit backend
-    window.parent.postMessage({
-        isStreamlitMessage: true,
-        type: 'cellClick',
-        data: { attribute: attr, selected: !isSelected }
-    }, '*');
-}
+        // Toggle visual selection
+        element.style.backgroundColor = isSelected ? element.dataset.originalColor : '#92D050';
 
-document.addEventListener("DOMContentLoaded", function() {
-    // Store original background color of each cell
-    const cells = document.querySelectorAll('td');
-    cells.forEach(cell => {
-        const original = getComputedStyle(cell).backgroundColor;
-        cell.dataset.originalColor = original;
-    });
-
-    document.getElementById('resetButton').addEventListener('click', function() {
-        // Clear selections
-        selectedItems.clear();
-
-        // Restore each cell's original background color
-        cells.forEach(cell => {
-            cell.style.backgroundColor = cell.dataset.originalColor;
-        });
+        if (!isSelected) {
+            selectedItems.add(attr);
+        } else {
+            selectedItems.delete(attr);
+        }
 
         updateSelectedBar();
 
-        // Optionally notify Streamlit backend
+        // Notify Streamlit backend
         window.parent.postMessage({
             isStreamlitMessage: true,
-            type: 'resetSelection',
-            data: { reset: true }
+            type: 'cellClick',
+            data: { attribute: attr, selected: !isSelected }
         }, '*');
-    });
+    }
 
-    updateSelectedBar();
-});
+    document.addEventListener("DOMContentLoaded", function() {
+        // Store original background color of each cell
+        const cells = document.querySelectorAll('td');
+        cells.forEach(cell => {
+            const original = getComputedStyle(cell).backgroundColor;
+            cell.dataset.originalColor = original;
+        });
+
+        document.getElementById('resetButton').addEventListener('click', function() {
+            // Clear selections
+            selectedItems.clear();
+
+            // Restore each cell's original background color
+            cells.forEach(cell => {
+                cell.style.backgroundColor = cell.dataset.originalColor;
+            });
+
+            updateSelectedBar();
+
+            // Optionally notify Streamlit backend
+            window.parent.postMessage({
+                isStreamlitMessage: true,
+                type: 'resetSelection',
+                data: { reset: true }
+            }, '*');
+        });
+
+        updateSelectedBar();
+    });
 </script>
 """
 
@@ -395,3 +381,6 @@ html_code += """
 """
 
 html(html_code, height=1200)
+
+
+
