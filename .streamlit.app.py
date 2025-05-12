@@ -179,7 +179,7 @@ handle_cell_click()
 
 
 # ======= USE CASE ANALYSIS =======
-const dataTable = {
+analysis_table = pd.DataFrame({
 
 
 
@@ -262,27 +262,8 @@ const dataTable = {
 
 
 
-};
+})
 
-
-// Step 1: Get all the keys
-const keys = Object.keys(dataTable);
-
-// Step 2: Get the number of use cases
-const numUseCases = dataTable["Use Case"].length;
-
-// Step 3: Convert into array of objects
-const structuredData = [];
-
-for (let i = 0; i < numUseCases; i++) {
-    const useCaseEntry = {};
-    for (const key of keys) {
-        useCaseEntry[key] = dataTable[key][i];
-    }
-    structuredData.push(useCaseEntry);
-}
-
-console.log(structuredData);
 
 
 
@@ -410,3 +391,5 @@ html_code += """
 """
 
 html(html_code, height=1200)
+
+
