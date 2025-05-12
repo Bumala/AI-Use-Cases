@@ -179,7 +179,7 @@ handle_cell_click()
 
 
 # ======= USE CASE ANALYSIS =======
-analysis_table = pd.DataFrame({
+const dataTable = {
 
 
 
@@ -262,7 +262,7 @@ analysis_table = pd.DataFrame({
 
 
 
-})
+};
 
 
 
