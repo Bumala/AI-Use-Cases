@@ -1,17 +1,9 @@
 import streamlit as st
 import pandas as pd
 from streamlit.components.v1 import html
-import streamlit.components.v1 as components
 
 # Set page layout
 st.set_page_config(layout="wide")
-
-
-
-if "selected" not in st.session_state:
-    st.session_state.selected = []
-
-
 
 # ======= TABLE DATA =======
 data = [
@@ -186,7 +178,7 @@ handle_cell_click()
 
 
 # ======= USE CASE ANALYSIS =======
-analysis_table = pd.DataFrame({
+analysis_df = pd.DataFrame({
 
 
 
@@ -379,54 +371,3 @@ html_code += """
 """
 
 html(html_code, height=1200)
-
-
-
-def handle_js_msg(msg):
-    if msg["type"] == "cellClick":
-        attr = msg["data"]["attribute"]
-        selected = msg["data"]["selected"]
-        if selected:
-            if attr not in st.session_state.selected:
-                st.session_state.selected.append(attr)
-        else:
-            if attr in st.session_state.selected:
-                st.session_state.selected.remove(attr)
-    elif msg["type"] == "resetSelection":
-        st.session_state.selected = []
-
-
-
-
-
-
-
-
-
-
-
-
-
-components.html(html_code, height=1200)
-
-
-
-
-# ---------- Calculate and show top use case ----------
-selected_attributes = st.session_state.get("selected", [])
-
-if selected_attributes:
-    # Only keep columns from analysis_table that match selected attributes
-    valid_attributes = [attr for attr in selected_attributes if attr in analysis_table.columns]
-
-    if valid_attributes:
-        summed = analysis_table[valid_attributes].sum(axis=1)
-        top_use_case = summed.idxmax()
-        st.success(f"🚀 **Top Use Case:** {top_use_case}")
-    else:
-        st.warning("No valid attributes selected. Please select matching column names.")
-else:
-    st.info("👆 Select attributes above to see the top use case.")
-
-
-
