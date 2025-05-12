@@ -378,6 +378,8 @@ html(html_code, height=1200)
 
 
 
+
+
 # Sample analysis_df — replace this with your full version
 analysis_df = pd.DataFrame({
     "Use Case": [
@@ -472,49 +474,38 @@ analysis_df = pd.DataFrame({
 
 })
 
-# Custom HTML snippet
-selected_bar_html = """
-<div id="resetButtonContainer" style="padding: 10px; background-color: #f1fbfe; text-align: center;">
-   <button onclick="document.getElementById('inputbox').value='';" id="resetButton" style="padding: 10px 20px; background-color: #61cbf3; border: none; border-radius: 5px; cursor: pointer; font-weight: bold;">
-       Reset Selection
-   </button>
-</div>
-<div id="selectedBar" style="margin-bottom: 10px; padding: 10px; background-color: #dceefc; border: 2px solid #61cbf3; border-radius: 8px; font-weight: bold;">
-   Selected Attributes: <span id="selectedItems">{selected}</span>
-</div>
-"""
+# Set up a placeholder for selected attributes
+if "selected" not in st.session_state:
+    st.session_state.selected = []
 
-# Streamlit input
-st.markdown("### Select Attributes (comma-separated)")
-user_input = st.text_input("Enter attributes matching analysis columns:", key="inputbox")
-selected_attributes = [x.strip() for x in user_input.split(",") if x.strip()]
+# Handle frontend-to-backend messages (requires Streamlit >=1.27 with JS <-> Python communication support)
+from streamlit.components.v1 import components
 
-# Display selected attributes using HTML
-st.markdown(selected_bar_html.format(selected=", ".join(selected_attributes)), unsafe_allow_html=True)
+components.html(html_code, height=1200)
 
-# Process and display result
-if selected_attributes:
-    valid_attributes = [attr for attr in selected_attributes if attr in analysis_df.columns]
-    
-    if valid_attributes:
-        analysis_df["Score"] = analysis_df[valid_attributes].sum(axis=1)
+# Frontend event listener (simulate receiving selected attributes)
+# In a real deployment, you would update `st.session_state.selected` via a custom component or use PyScript/Bidirectional Bridge
+st.markdown("### Selected Attributes")
+st.write(st.session_state.selected)
+
+# Compute top use case based on current selections
+selected_attrs = st.session_state.selected
+
+if selected_attrs:
+    valid_attrs = [attr for attr in selected_attrs if attr in analysis_df.columns]
+
+    if valid_attrs:
+        analysis_df["Score"] = analysis_df[valid_attrs].sum(axis=1)
         top_idx = analysis_df["Score"].idxmax()
         top_use_case = analysis_df.loc[top_idx, "Use Case"]
         top_score = analysis_df.loc[top_idx, "Score"]
 
-        st.markdown(f"### 🏆 Top Use Case Based on Your Selection:")
+        st.markdown("### 🏆 Top Use Case Based on Your Selections:")
         st.success(f"**{top_use_case}** with a score of **{top_score}**")
     else:
-        st.warning("None of the entered attributes match the available analysis columns.")
+        st.warning("None of the selected attributes match the analysis table columns.")
 else:
-    st.info("Please enter one or more attributes to evaluate use cases.")
-
-
-
-
-
-
-
+    st.info("No attributes selected yet.")
 
 
 
