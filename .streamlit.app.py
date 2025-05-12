@@ -5,22 +5,6 @@ from streamlit_js_eval import streamlit_js_eval
 import streamlit.components.v1 as components
 
 
-
-
-
-
-
-# Extract current content of #selectedItems span
-selected_raw = streamlit_js_eval(js_expressions="document.getElementById('selectedItems')?.innerText", key="get_text")
-
-selected_attributes = [x.strip() for x in (selected_raw or "").split(",") if x.strip()]
-st.session_state.selected_attributes = selected_attributes
-
-
-
-
-
- 
 # Set page layout
 st.set_page_config(layout="wide")
  
