@@ -313,13 +313,19 @@ function updateSelectedBar() {
     const selectedList = Array.from(selectedItems);
     bar.innerText = selectedList.length === 0 ? "None" : selectedList.join(", ");
 
-    // ✅ Update URL to pass data to Streamlit
-    const params = new URLSearchParams(window.location.search);
-    params.set("selectedAttributes", selectedList.join(","));
-    const newUrl = window.location.pathname + "?" + params.toString();
-    window.history.replaceState({}, '', newUrl);
-
+    // ✅ Send to Streamlit backend
+    window.parent.postMessage({
+        isStreamlitMessage: true,
+        type: 'selectedAttributes',
+        selected: selectedList
+    }, '*');
 }
+
+
+
+
+
+
  
 function handleCellClick(element) {
    const attr = element.getAttribute('data-attr');
@@ -392,24 +398,20 @@ html(html_code, height=1200)
 
 
 
-# Run JS in the frontend to fetch selectedItems and pass it to Python
-selected_js = st_javascript("""
-() => {
-    const span = document.getElementById("selectedItems");
-    if (span) {
-        return span.innerText.replace("Selected Attributes: ", "").split(", ").filter(x => x && x !== "None");
+import streamlit.components.v1 as components
+
+# Add a hidden component to listen to JS messages
+components.html("""
+<script>
+window.addEventListener("message", (event) => {
+    const data = event.data;
+    if (data && data.type === "selectedAttributes" && data.isStreamlitMessage) {
+        const json = JSON.stringify(data.selected);
+        window.parent.postMessage({isStreamlitMessage: true, type: "streamlit:setComponentValue", value: json}, "*");
     }
-    return [];
-}
-""")
-
-# Save result to session state
-st.session_state.selected_attributes = selected_js or []
-
-# Display selected attributes in Python
-st.write("Selected Attributes in Python:", st.session_state.selected_attributes)
-
-
+});
+</script>
+""", height=0)
 
 
 
