@@ -1,9 +1,17 @@
 import streamlit as st
 import pandas as pd
 from streamlit.components.v1 import html
+import streamlit.components.v1 as components
 
 # Set page layout
 st.set_page_config(layout="wide")
+
+
+
+if "selected" not in st.session_state:
+    st.session_state.selected = []
+
+
 
 # ======= TABLE DATA =======
 data = [
@@ -374,8 +382,32 @@ html(html_code, height=1200)
 
 
 
+def handle_js_msg(msg):
+    if msg["type"] == "cellClick":
+        attr = msg["data"]["attribute"]
+        selected = msg["data"]["selected"]
+        if selected:
+            if attr not in st.session_state.selected:
+                st.session_state.selected.append(attr)
+        else:
+            if attr in st.session_state.selected:
+                st.session_state.selected.remove(attr)
+    elif msg["type"] == "resetSelection":
+        st.session_state.selected = []
 
 
+
+
+
+
+
+
+
+
+
+
+
+components.html(html_code, height=1200)
 
 
 
