@@ -4,3 +4,4 @@ streamlit-javascript
 pandas
 openpyxl
 numpy
+streamlit-js-eval
