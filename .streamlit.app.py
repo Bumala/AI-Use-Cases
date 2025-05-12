@@ -467,6 +467,15 @@ st.components.v1.html(html_code, height=1200)
 
 
 
+
+
+
+# Set the 'Use Case' column as the index
+analysis_df.set_index("Use Case", inplace=True)
+
+# Sample code to simulate selection (e.g., if the user selects "Quality/Scope/Knowledge" and "Time Efficiency")
+selected_attributes = ["Quality/Scope/Knowledge", "Time Efficiency"]  # This can be from st.multiselect()
+
 # ---------- Calculate and show top use case ----------
 if selected_attributes:
     # Sum the selected attributes (rows)
@@ -475,14 +484,20 @@ if selected_attributes:
     # Get the index of the row with the maximum sum (i.e., the top use case)
     top_use_case = summed.idxmax()
     
-    # Display the top use case
+    # Calculate the sum for the top use case to represent it in a progress bar
+    top_use_case_value = summed.max()
+
+    # Display the top use case as a progress bar
     st.success(f"🚀 **Top Use Case:** {top_use_case}")
+
+    # You can use a progress bar to visually indicate the score of the top use case
+    st.progress(top_use_case_value / summed.max())  # Normalized to 0-1 range for progress bar
+    
 else:
     st.info("👆 Select attributes above to see the top use case.")
 
-
-
-
+# Optionally display the selected attributes
+st.write("Selected Attributes:", selected_attributes)
 
 
 
