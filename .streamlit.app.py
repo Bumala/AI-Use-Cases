@@ -384,33 +384,20 @@ html(html_code, height=1200)
 
 
 
+import json
 
+# Assuming `selected_items` was sent from JS as a JSON array (list in Python)
+selected_items = st.experimental_get_component_value()
 
-
-# Display the selected items as Python code
-selected_items_js = """
-<script>
-// Function to get the current selected items
-function getSelectedItems() {
-    return Array.from(selectedItems).join(", ");
-}
-</script>
-"""
-
-# Get the selected items from JavaScript and display as Python
-components.html(selected_items_js, height=0)
-selected_items = components.html("""
-<script>
-document.write(getSelectedItems());
-</script>
-""", height=0)
-
-st.subheader("Selected Items (Python)")
+# If selected_items is not None or an empty string, process it
 if selected_items:
-    st.code(f"selected_items = {selected_items.split(', ')}")
-else:
-    st.code("selected_items = []")
+    try:
+        selected_items = json.loads(selected_items)  # Converts the JSON string back into a Python list
+    except json.JSONDecodeError:
+        selected_items = []  # Default to empty list if decoding fails
 
+# Show the results
+st.write(f"selected_items = {selected_items}")
 
 
 
