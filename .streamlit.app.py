@@ -267,7 +267,6 @@ analysis_table = pd.DataFrame({
 
 
 
-
 selected_bar_html = """
 <div id="resetButtonContainer" style="padding: 10px; background-color: #f1fbfe; text-align: center;">
     <button id="resetButton" style="padding: 10px 20px; background-color: #61cbf3; border: none; border-radius: 5px; cursor: pointer; font-weight: bold;">
@@ -313,8 +312,8 @@ function updateSelectedBar() {
         const column = columns.find(col => col.toLowerCase() === word.toLowerCase());
         if (column) {
             // Perform the sum and calculation for the corresponding column
-            const summed = analysis_table[column]; // Assuming analysis_table is an object with column names as keys and row sums as values
-            const topUseCase = summed.idxmax(); // Find the index of the max summed value
+            const summed = analysis_table[column].sum(axis=1);  // Assuming analysis_table is accessible in JS context
+            const topUseCase = summed.idxmax();
 
             // Update the Top Use Case display
             topUseCaseText = `🚀 **Top Use Case for ${column}:** ${topUseCase}`;
