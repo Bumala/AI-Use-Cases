@@ -1,3 +1,4 @@
+
 import streamlit as st
 import pandas as pd
 from streamlit.components.v1 import html
@@ -371,50 +372,3 @@ html_code += """
 """
 
 html(html_code, height=1200)
-
-
-
-
-
-
-
-
-
-import streamlit as st
-import streamlit.components.v1 as components
-
-<script>
-    const selectedItemsSpan = document.getElementById('selectedItems');
-    const resetButton = document.getElementById('resetButton');
-
-    // Function to update Streamlit session state
-    function updateStreamlit(value) {{
-        Streamlit.set({{ "selected_items": value }});
-    }}
-
-    // You'll need to trigger this update based on how your first text bar changes.
-    // For example, if you have an input field:
-    // const inputField = document.getElementById('yourInputFieldId');
-    // inputField.addEventListener('input', function() {{
-    //     updateStreamlit(this.value);
-    // }});
-
-    // For now, let's simulate an update when the reset button is clicked
-    resetButton.addEventListener('click', function() {{
-        updateStreamlit('None');
-    }});
-
-    // You'll also need to call updateStreamlit whenever your selection logic changes the text
-    // in the 'selectedItems' span. For example:
-    // function updateSelectedText(newText) {{
-    //     selectedItemsSpan.textContent = newText;
-    //     updateStreamlit(newText);
-    // }}
-</script>
-
-
-
-
-
-
-
