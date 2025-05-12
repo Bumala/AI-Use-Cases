@@ -377,3 +377,24 @@ html(html_code, height=1200)
 
 
 
+
+
+
+# ---------- Calculate and show top use case ----------
+selected_attributes = st.session_state.get("selected", [])
+
+if selected_attributes:
+    # Only keep columns from analysis_table that match selected attributes
+    valid_attributes = [attr for attr in selected_attributes if attr in analysis_table.columns]
+
+    if valid_attributes:
+        summed = analysis_table[valid_attributes].sum(axis=1)
+        top_use_case = summed.idxmax()
+        st.success(f"🚀 **Top Use Case:** {top_use_case}")
+    else:
+        st.warning("No valid attributes selected. Please select matching column names.")
+else:
+    st.info("👆 Select attributes above to see the top use case.")
+
+
+
