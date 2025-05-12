@@ -308,8 +308,13 @@ html_code += """
 let selectedItems = new Set();
  
 function updateSelectedBar() {
-   const bar = document.getElementById("selectedItems");
-   bar.innerText = selectedItems.size === 0 ? "None" : Array.from(selectedItems).join(", ");
+    const bar = document.getElementById("selectedItems");
+    const selectedList = Array.from(selectedItems);
+    bar.innerText = selectedList.length === 0 ? "None" : selectedList.join(", ");
+
+    // Store selected items in sessionStorage (this will persist across page reloads)
+    sessionStorage.setItem("selectedAttributes", JSON.stringify(selectedList));
+
 }
  
 function handleCellClick(element) {
