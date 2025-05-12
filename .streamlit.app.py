@@ -396,6 +396,7 @@ st.write(top_use_case_html, unsafe_allow_html=True)
 
 
 
+# Add JavaScript for interaction
 st.write("""
 <script>
     let selectedItems = new Set();
@@ -415,7 +416,8 @@ st.write("""
             return;
         }
 
-        // Add your logic for calculating the top use case here
+        // Logic for calculating the top use case
+        // Replace this with your calculation logic
         document.getElementById('topUseCase').innerText = "Calculated Top Use Case";
     }
 
@@ -425,7 +427,6 @@ st.write("""
     });
 </script>
 """, unsafe_allow_html=True)
-
 
 
 
