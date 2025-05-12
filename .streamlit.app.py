@@ -385,3 +385,29 @@ function updateSelectedBar() {
 # This picks up the value from the hidden input
 selected_raw = st.text_input("", key="selectedAttributesHidden", label_visibility="collapsed")
 selected_attributes = [x.strip() for x in selected_raw.split(",") if x.strip()]
+
+
+
+
+
+if selected_attributes:
+    valid_attributes = [attr for attr in selected_attributes if attr in analysis_df.columns]
+
+    if valid_attributes:
+        analysis_df["Score"] = analysis_df[valid_attributes].sum(axis=1)
+        top_idx = analysis_df["Score"].idxmax()
+        top_use_case = analysis_df.loc[top_idx, "Use Case"]
+        top_score = analysis_df.loc[top_idx, "Score"]
+
+        # ✅ Final output bar only
+        st.markdown(f"""
+        <div style="padding: 15px; background-color: #e6f7e6; border: 2px solid #4CAF50; border-radius: 8px; font-size: 16px;">
+            <b>🏆 Top Use Case:</b> {top_use_case} <br>
+            <b>Score:</b> {top_score}
+        </div>
+        """, unsafe_allow_html=True)
+    else:
+        st.warning("Selected attributes do not match any known columns.")
+else:
+    st.info("Select attributes to reveal the top use case.")
+
