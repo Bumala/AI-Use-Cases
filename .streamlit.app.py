@@ -362,7 +362,19 @@ analysis_df = pd.DataFrame({
 })
 
 
-# Process and display result
+# --- 👇 Get selected attributes from the HTML bar using JS eval ---
+js_result = streamlit_js_eval(
+    js_expressions="document.getElementById('selectedItems')?.innerText",
+    key="selected_items_bar"
+)
+
+# Parse the selection string
+if js_result and js_result != "None":
+    selected_attributes = [attr.strip() for attr in js_result.split(",") if attr.strip()]
+else:
+    selected_attributes = []
+
+# --- 👇 Process and display result ---
 if selected_attributes:
     valid_attributes = [attr for attr in selected_attributes if attr in analysis_df.columns]
     
@@ -377,5 +389,5 @@ if selected_attributes:
     else:
         st.warning("None of the entered attributes match the available analysis columns.")
 else:
-    st.info("Please enter one or more attributes to evaluate use cases.")
+    st.info("Please select one or more attributes to evaluate use cases.")
 
