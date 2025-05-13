@@ -121,6 +121,8 @@ analysis_table.set_index("Use Case", inplace=True)
 # ======= SESSION STATE =======
 if "selected" not in st.session_state:
     st.session_state.selected = set()
+if "reset_requested" not in st.session_state:
+    st.session_state.reset_requested = False
 
 # ======= PERFECT TABLE LAYOUT GENERATION =======
 def generate_html_table(data, selected):
@@ -208,55 +210,42 @@ def generate_html_table(data, selected):
     html += "</table>"
     return html
 
-# ======= JAVASCRIPT FOR INTERACTIVITY =======
-interaction_js = """
-<script>
-function handleCellClick(element) {
-    const attr = element.getAttribute('data-attr');
-    const isSelected = element.style.backgroundColor === 'rgb(146, 208, 80)';
-    
-    // Toggle visual selection immediately
-    element.style.backgroundColor = isSelected ? '#f1fbfe' : '#92D050';
-    
-    // Send message to Streamlit
-    window.parent.postMessage({
-        isStreamlitMessage: true,
-        type: 'cellClick',
-        data: {
-            attribute: attr,
-            selected: !isSelected
-        }
-    }, '*');
-}
-</script>
-"""
-
-# ======= HANDLE CELL CLICKS =======
-def handle_cell_click():
+# ======= HANDLE CELL CLICKS AND RESET =======
+def handle_interaction():
     if st.session_state.get('cell_click'):
         attr = st.session_state.cell_click['attribute']
         if st.session_state.cell_click['selected']:
             st.session_state.selected.add(attr)
         else:
             st.session_state.selected.discard(attr)
+        st.session_state.cell_click = None
+        st.experimental_rerun()
+    
+    if st.session_state.get('reset_requested'):
+        st.session_state.selected = set()
+        st.session_state.reset_requested = False
         st.experimental_rerun()
 
-# Initialize and handle clicks
+# Initialize and handle interactions
 st.session_state.cell_click = None
-handle_cell_click()
+handle_interaction()
 
 # ======= TOP USE CASE CALCULATION =======
 def calculate_top_use_case():
     if st.session_state.selected:
-        summed = analysis_table[list(st.session_state.selected)].sum(axis=1)
-        top_use_case = summed.idxmax()
-        st.success(f"🚀 **Top Use Case:** {top_use_case}")
+        try:
+            summed = analysis_table[list(st.session_state.selected)].sum(axis=1)
+            top_use_case = summed.idxmax()
+            st.success(f"🚀 **Top Use Case:** {top_use_case}")
+        except KeyError as e:
+            st.error(f"Error calculating top use case: {str(e)}")
     else:
         st.info("👆 Click on attributes in the table to see the top use case.")
 
 # Display the top use case
 calculate_top_use_case()
 
+# ======= HTML AND JAVASCRIPT =======
 selected_bar_html = """
 <div id="resetButtonContainer" style="padding: 10px; background-color: #f1fbfe; text-align: center;">
     <button id="resetButton" style="padding: 10px 20px; background-color: #61cbf3; border: none; border-radius: 5px; cursor: pointer; font-weight: bold;">
@@ -275,11 +264,12 @@ html_code = selected_bar_html + f"""
         {generate_html_table(data, st.session_state.selected)}
     </div>
 </div>
-""" + interaction_js
+"""
 
-# Inject update script
+# JavaScript for handling interactions
 html_code += """
 <script>
+// Track selected items
 let selectedItems = new Set();
 
 function updateSelectedBar() {
@@ -310,48 +300,74 @@ function handleCellClick(element) {
     }, '*');
 }
 
+function resetSelection() {
+    // Clear frontend selections
+    selectedItems.clear();
+    updateSelectedBar();
+    
+    // Reset all cell colors
+    document.querySelectorAll('td[data-attr]').forEach(cell => {
+        cell.style.backgroundColor = cell.dataset.originalColor;
+    });
+    
+    // Notify Streamlit backend
+    window.parent.postMessage({
+        isStreamlitMessage: true,
+        type: 'resetRequest',
+        data: { reset: true }
+    }, '*');
+}
+
 document.addEventListener("DOMContentLoaded", function() {
     // Store original background color of each cell
-    const cells = document.querySelectorAll('td');
-    cells.forEach(cell => {
+    document.querySelectorAll('td').forEach(cell => {
         const original = getComputedStyle(cell).backgroundColor;
         cell.dataset.originalColor = original;
     });
 
-    document.getElementById('resetButton').addEventListener('click', function() {
-        // Clear selections
-        selectedItems.clear();
-        st.session_state.selected.clear();
-
-        // Restore each cell's original background color
-        cells.forEach(cell => {
-            cell.style.backgroundColor = cell.dataset.originalColor;
-        });
-
-        updateSelectedBar();
-
-        // Notify Streamlit backend
-        window.parent.postMessage({
-            isStreamlitMessage: true,
-            type: 'resetSelection',
-            data: { reset: true }
-        }, '*');
+    // Initialize selected items from backend
+    selectedItems = new Set(%s);
+    updateSelectedBar();
+    
+    // Highlight initially selected cells
+    document.querySelectorAll('td[data-attr]').forEach(cell => {
+        const attr = cell.getAttribute('data-attr');
+        if (selectedItems.has(attr)) {
+            cell.style.backgroundColor = '#92D050';
+        }
     });
 
-    updateSelectedBar();
+    // Set up reset button
+    document.getElementById('resetButton').addEventListener('click', resetSelection);
+});
+
+// Listen for reset responses from Streamlit
+window.addEventListener('message', function(event) {
+    const data = event.data;
+    if (data.isStreamlitMessage && data.type === 'resetConfirmed') {
+        selectedItems.clear();
+        updateSelectedBar();
+    }
 });
 </script>
-"""
+""" % str(list(st.session_state.selected))
 
 # Apply the zoom effect to the table
 html_code += """
 <style>
 .zoomed-table {
-    transform: scale(0.75); /* Zoom out to 75% */
+    transform: scale(0.75);
     transform-origin: top center;
     width: 100%;
 }
 </style>
 """
 
+# Display the HTML component
 html(html_code, height=1200)
+
+# Handle reset requests from JavaScript
+if st.session_state.get('reset_requested'):
+    st.session_state.selected = set()
+    st.session_state.reset_requested = False
+    st.experimental_rerun()
