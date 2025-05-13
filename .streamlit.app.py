@@ -301,8 +301,14 @@ selected_bar_html = """
 
 
 
-# Initial HTML
-selected_bar_html = """
+
+
+
+
+
+
+# Render custom HTML with a fake selection area
+st.components.v1.html("""
 <div id="resetButtonContainer" style="padding: 10px; background-color: #f1fbfe; text-align: center;">
   <button id="resetButton" onclick="document.getElementById('selectedItems').innerText = 'None';" 
           style="padding: 10px 20px; background-color: #61cbf3; border: none; border-radius: 5px; cursor: pointer; font-weight: bold;">
@@ -312,16 +318,24 @@ selected_bar_html = """
 <div id="selectedBar" style="margin-bottom: 10px; padding: 10px; background-color: #dceefc; border: 2px solid #61cbf3; border-radius: 8px; font-weight: bold;">
   Selected Attributes: <span id="selectedItems">Height, Width, Depth</span>
 </div>
-"""
+""", height=150)
 
-# Render HTML
-st.components.v1.html(selected_bar_html, height=150)
+# Use JS to grab the content of selectedItems and return to Streamlit
+result = streamlit_js_eval(js_expressions="document.getElementById('selectedItems')?.innerText", key="mirror_value")
 
-# Use JS to read the span value and return it to Streamlit
-selected_value = streamlit_js_eval(js_expressions="document.getElementById('selectedItems')?.innerText", key="get_selected")
+# Mirror result to a text field
+st.text_input("Mirrored Value", value=result or "None")
 
-# Display mirrored value in Streamlit input
-st.text_input("Mirrored Value", value=selected_value or "None")
+
+
+
+
+
+
+
+
+
+
 
 
 
