@@ -8,27 +8,25 @@ st.set_page_config(layout="wide")
 # ---------- Data for the HTML table ----------
 
 data = [
-   ["Category", "Dimension", "Attributes"],
-   ["Impact (What)", "Benefits", "Quality/Scope/Knowledge", "Time Efficiency", "Cost"],
-   [None, "Focus within Business Model Navigator", "Customer Segments", "Value Proposition", "Value Chain", "Revenue Model"],
-   [None, "Aim", "Product Innovation", "Process Innovation", "Business Model Innovation"],
-   [None, "Ambidexterity", "Exploration", "Exploitation"],
-   ["Technology (How)", "AI Role", "Automaton", "Helper", "Partner"],
-   [None, "AI Concepts", "Machine Learning", "Deep Learning", "Artificial Neural Networks", "Natural Language Processing", "Computer Vision", "Robotics"],
-   [None, "Analytics Focus", "Descriptive", "Diagnostic", "Predictive", "Prescriptive"],
-   [None, "Analytics Problem", "Description/ Summary", "Clustering", "Classification", "Dependency Analysis", "Regression"],
-   [None, "Data Type", "Customer Data", "Machine Data", "Business Data (Internal Data)", "Market Data", "Public & Regulatory Data", "Synthetic Data"],
-   ["Context (Where/When)", "Innovation Phase", "Front End", "Development", "Market Introduction"],
-   [None, "Department", "R&D", "Manufacturing", "Marketing & Sales", "Customer Service"],
+    ["Category", "Dimension", "Attributes"],
+    ["Impact (What)", "Benefits", "Quality/Scope/Knowledge", "Time Efficiency", "Cost"],
+    [None, "Focus within Business Model Navigator", "Customer Segments", "Value Proposition", "Value Chain", "Revenue Model"],
+    [None, "Aim", "Product Innovation", "Process Innovation", "Business Model Innovation"],
+    [None, "Ambidexterity", "Exploration", "Exploitation"],
+    ["Technology (How)", "AI Role", "Automaton", "Helper", "Partner"],
+    [None, "AI Concepts", "Machine Learning", "Deep Learning", "Artificial Neural Networks", "Natural Language Processing", "Computer Vision", "Robotics"],
+    [None, "Analytics Focus", "Descriptive", "Diagnostic", "Predictive", "Prescriptive"],
+    [None, "Analytics Problem", "Description/ Summary", "Clustering", "Classification", "Dependency Analysis", "Regression"],
+    [None, "Data Type", "Customer Data", "Machine Data", "Business Data (Internal Data)", "Market Data", "Public & Regulatory Data", "Synthetic Data"],
+    ["Context (Where/When)", "Innovation Phase", "Front End", "Development", "Market Introduction"],
+    [None, "Department", "R&D", "Manufacturing", "Marketing & Sales", "Customer Service"],
 ]
 
-df = pd.DataFrame(data)
-
-# ---------- Load analysis table ----------
+# ---------- Analysis Table Data ----------
 
 analysis_table_data = {
-   "Use Case": [
-       "AI-infused experiments in R&D",
+    "Use Case": [
+         "AI-infused experiments in R&D",
        "AI-powered manufacturing planning in smart factories",
        "AI-driven Human-Machine Collaboration in ideation",
        "AI-enabled idea generation in the Metaverse",
@@ -59,254 +57,172 @@ analysis_table_data = {
        "AI-driven competition analysis",
        "AI-driven vehicles sales prediction"
    ],
+ 
+ 
+ 
    "Quality/Scope/Knowledge": [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2],
    "Time Efficiency": [2, 2, 2, 0, 0, 0, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 0, 2, 0, 2, 0, 2, 2, 2, 0, 0],
    "Cost": [2, 2, 0, 0, 0, 0, 2, 1, 2, 2, 0, 2, 2, 0, 2, 0, 2, 0, 2, 2, 0, 2, 0, 2, 0, 2, 0, 0, 0, 0],
+ 
    "Customer Segments": [0, 0, 0, 2, 0, 1, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 2, 2, 0, 0, 2, 2, 2, 2],
    "Value Proposition": [2, 0, 0, 2, 0, 2, 2, 2, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 0, 2, 0, 0, 2, 2, 2, 0, 0, 2, 2, 2],
    "Value Chain": [2, 2, 2, 2, 2, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 0, 0, 2, 2, 2, 2, 2, 0, 0, 0],
    "Revenue Model": [0, 0, 0, 0, 0, 2, 0, 0, 1, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 2, 0, 2],
+   
    "Product Innovation": [2, 0, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 0, 2, 2, 2, 2, 0, 2, 2, 2, 2, 1, 0, 0, 2, 0, 0, 2],
    "Process Innovation": [1, 2, 2, 0, 0, 0, 2, 2, 2, 2, 2, 2, 2, 2, 2, 0, 2, 2, 2, 2, 0, 2, 0, 2, 2, 2, 2, 2, 2, 2],
    "Business Model Innovation": [0, 0, 1, 0, 0, 2, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 1, 2, 0, 0, 0, 0, 2, 0, 2],
+   
    "Exploration": [2, 0, 2, 2, 2, 2, 2, 2, 2, 2, 1, 2, 2, 0, 2, 2, 2, 2, 2, 2, 2, 2, 0, 0, 0, 2, 2, 2, 2, 2],
    "Exploitation": [0, 2, 0, 0, 0, 0, 2, 2, 2, 0, 2, 2, 2, 2, 0, 0, 0, 0, 2, 0, 2, 0, 2, 2, 2, 0, 0, 0, 2, 2],
+   
    "Automaton": [2, 0, 2, 0, 2, 2, 2, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2],
    "Helper": [1, 0, 1, 2, 0, 0, 0, 0, 0, 0, 2, 1, 2, 2, 2, 2, 1, 2, 2, 2, 2, 0, 1, 0, 0, 0, 0, 0, 2, 0],
    "Partner": [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 0, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2],
+   
    "Machine Learning": [2, 2, 2, 2, 0, 0, 2, 0, 0, 0, 0, 0, 2, 2, 2, 0, 2, 2, 2, 2, 0, 0, 0, 2, 0, 0, 0, 2, 0, 2],
    "Deep Learning": [2, 0, 2, 0, 0, 0, 2, 0, 0, 0, 0, 0, 2, 2, 2, 0, 2, 2, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
    "Artificial Neural Networks": [0, 0, 2, 2, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 0, 0, 0, 2, 0, 2],
    "Natural Language Processing": [2, 0, 2, 2, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0],
    "Computer Vision": [0, 0, 2, 0, 0, 0, 2, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
    "Robotics": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+   
    "Descriptive": [1, 0, 0, 2, 2, 0, 0, 0, 0, 0, 2, 0, 0, 2, 0, 0, 2, 0, 0, 2, 2, 2, 2, 2, 2, 0, 2, 2, 2, 0],
    "Diagnostic": [0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 2, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 2, 2, 0, 0, 0, 0, 0],
    "Predictive": [2, 2, 2, 0, 2, 2, 2, 2, 2, 2, 0, 2, 2, 0, 2, 0, 0, 0, 2, 2, 0, 0, 2, 0, 2, 2, 0, 2, 0, 0],
-   "Prescriptive": [0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 0, 0, 0, 0, 0],
+   "Prescriptive": [0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 2, 2, 0, 0, 0, 0, 0],
+   
    "Description/ Summary": [1, 0, 0, 0, 2, 2, 0, 0, 1, 2, 0, 2, 0, 2, 0, 2, 0, 0, 2, 0, 0, 2, 0, 2, 2, 0, 0, 0, 0, 0],
    "Clustering": [0, 0, 0, 2, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 2, 2, 0, 2, 2, 2, 2],
    "Classification": [2, 0, 0, 2, 0, 0, 0, 0, 0, 2, 2, 0, 0, 2, 0, 0, 0, 0, 0, 0, 2, 2, 2, 2, 2, 0, 2, 2, 2, 2],
    "Dependency Analysis": [0, 0, 0, 0, 2, 0, 0, 0, 0, 2, 2, 0, 0, 2, 0, 0, 1, 0, 0, 2, 2, 2, 2, 2, 2, 0, 2, 2, 2, 2],
    "Regression": [1, 1, 2, 0, 2, 2, 2, 2, 2, 2, 0, 2, 2, 0, 2, 0, 2, 2, 0, 2, 0, 2, 2, 2, 2, 2, 2, 2, 2, 2],
+   
    "Customer Data": [2, 0, 2, 0, 2, 2, 2, 2, 2, 2, 2, 2, 2, 0, 2, 2, 2, 2, 2, 2, 0, 1, 1, 2, 2, 2, 2, 2, 2, 1],
    "Machine Data": [0, 1, 2, 2, 0, 0, 0, 0, 0, 2, 0, 2, 2, 0, 0, 0, 0, 0, 0, 0, 2, 0, 2, 0, 2, 0, 0, 2, 0, 1],
    "Business Data (Internal Data)": [2, 2, 2, 0, 2, 2, 2, 2, 2, 2, 2, 0, 1, 2, 2, 2, 2, 2, 2, 2, 2, 0, 1, 2, 2, 0, 0, 2, 2, 2],
    "Market Data": [2, 2, 1, 0, 2, 2, 2, 2, 2, 2, 2, 2, 2, 0, 2, 1, 2, 2, 2, 2, 2, 1, 1, 2, 2, 2, 2, 2, 2, 2],
    "Public & Regulatory Data": [0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 1, 0, 0, 0, 0, 2, 0, 2, 0, 0],
    "Synthetic Data": [2, 0, 0, 0, 0, 0, 1, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 2, 2, 2, 0, 2, 2, 2, 2],
+   
    "Front End": [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 0, 1, 1, 1, 2, 2, 2, 2, 2],
    "Development": [0, 1, 0, 0, 0, 0, 1, 1, 1, 0, 2, 2, 2, 2, 2, 1, 2, 2, 2, 1, 0, 0, 1, 1, 1, 2, 2, 1, 0, 1],
    "Market Introduction": [0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 2, 2, 2, 0, 2, 2, 2, 1],
+   
    "R&D": [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 0, 1, 1, 0, 1, 1, 0, 0, 0, 1, 0, 1, 0, 0, 0, 1, 1, 1, 1],
    "Manufacturing": [0, 1, 0, 0, 0, 0, 1, 1, 1, 0, 2, 2, 2, 2, 2, 1, 2, 2, 2, 2, 0, 0, 1, 0, 1, 0, 2, 2, 0, 1],
    "Marketing & Sales": [0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 2, 0, 2, 2, 2, 0, 2, 2, 0, 0, 2, 2, 1, 0, 0, 0, 0, 0, 0, 1],
    "Customer Service": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 1, 2, 2, 2, 2, 2, 2, 2]
+ 
+
 }
 
 analysis_table = pd.DataFrame(analysis_table_data)
 analysis_table.set_index("Use Case", inplace=True)
 
 # ======= SESSION STATE =======
-if "selected" not in st.session_state:
-    st.session_state.selected = set()
+if "selected_attrs" not in st.session_state:
+    st.session_state.selected_attrs = set()
 
 # ======= TOP USE CASE CALCULATION =======
 def calculate_top_use_case(selected_attrs):
     if selected_attrs:
-        # Filter attributes that exist in our analysis table
         valid_attrs = [attr for attr in selected_attrs if attr in analysis_table.columns]
         if valid_attrs:
             summed = analysis_table[valid_attrs].sum(axis=1)
-            top_use_case = summed.idxmax()
-            return top_use_case
+            return summed.idxmax()
     return None
 
-# Calculate current top use case
-current_top_use_case = calculate_top_use_case(st.session_state.selected)
+# ======= TABLE GENERATION =======
+def generate_html_table(data, selected_attrs):
+    # ... (keep your existing table generation code exactly as is)
+    pass
 
-# Display the top use case
+# ======= JAVASCRIPT FOR INTERACTIVITY =======
+interaction_js = f"""
+<script>
+// Track selected attributes
+let selectedAttributes = new Set({list(st.session_state.selected_attrs)});
+
+function handleCellClick(element) {{
+    const attr = element.getAttribute('data-attr');
+    
+    // Toggle selection
+    if (selectedAttributes.has(attr)) {{
+        element.style.backgroundColor = '#f1fbfe';
+        selectedAttributes.delete(attr);
+    }} else {{
+        element.style.backgroundColor = '#92D050';
+        selectedAttributes.add(attr);
+    }}
+    
+    // Update the display
+    updateSelectedDisplay();
+    
+    // Immediately trigger top use case calculation
+    calculateTopUseCase();
+}}
+
+function updateSelectedDisplay() {{
+    const displayElement = document.getElementById('selectedItemsDisplay');
+    displayElement.textContent = selectedAttributes.size > 0 ? 
+        Array.from(selectedAttributes).join(', ') : 'None';
+}}
+
+function calculateTopUseCase() {{
+    // Send current selections to Streamlit for calculation
+    window.parent.postMessage({{
+        isStreamlitMessage: true,
+        type: 'calculateTopUseCase',
+        data: Array.from(selectedAttributes)
+    }}, '*');
+}}
+
+document.addEventListener("DOMContentLoaded", function() {{
+    // Initialize selections from Python
+    const initialSelections = {list(st.session_state.selected_attrs)};
+    initialSelections.forEach(attr => {{
+        const elements = document.querySelectorAll(`td[data-attr="${{attr}}"]`);
+        elements.forEach(el => {{
+            el.style.backgroundColor = '#92D050';
+            selectedAttributes.add(attr);
+        }});
+    }});
+    updateSelectedDisplay();
+    
+    // Reset button
+    document.getElementById('resetButton').addEventListener('click', function() {{
+        document.querySelectorAll('td[data-attr]').forEach(el => {{
+            el.style.backgroundColor = '#f1fbfe';
+        }});
+        selectedAttributes.clear();
+        updateSelectedDisplay();
+        calculateTopUseCase();
+    }});
+}});
+</script>
+"""
+
+# ======= HANDLE FRONTEND MESSAGES =======
+def handle_frontend_message():
+    if st.session_state.get('frontend_message'):
+        msg = st.session_state.frontend_message
+        if msg['type'] == 'calculateTopUseCase':
+            st.session_state.selected_attrs = set(msg['data'])
+            st.experimental_rerun()
+
+# Initialize message handler
+st.session_state.frontend_message = None
+handle_frontend_message()
+
+# Display current top use case
+current_top_use_case = calculate_top_use_case(st.session_state.selected_attrs)
 if current_top_use_case:
     st.success(f"🚀 **Top Use Case:** {current_top_use_case}")
 else:
     st.info("👆 Select attributes in the table below to see the top use case.")
 
-# ======= TABLE GENERATION =======
-def generate_html_table(data, selected):
-    first_col_width = 160
-    second_col_width = 200
-    base_cell_width = 150
-    cell_height = 50
-
-    def style(width, bold=False, border_bottom=False):
-        bold_style = "font-weight: bold;" if bold else ""
-        border_bottom_style = "border-bottom: 3px solid #000000;" if border_bottom else ""
-        return f"text-align: center; vertical-align: middle; padding: 10px; border: 1px solid #000000; width: {width}px; height: {cell_height}px; {bold_style} {border_bottom_style}"
-
-    # Define colspan rules
-    colspan_2 = {
-        (1, 2), (1, 3), (1, 4),
-        (2, 2), (2, 5),
-        (3, 2), (3, 3), (3, 4),
-        (5, 2), (5, 3), (5, 4),
-        (7, 2), (7, 5),
-        (8, 4),
-        (10, 2), (10, 3), (10, 4),
-        (11, 2), (11, 5),
-    }
-
-    colspan_3 = {
-        (4, 2), (4, 3)
-    }
-
-    html = "<table style='border-spacing: 0; width: 100%; border-collapse: collapse; table-layout: fixed; border: 3px solid #000000;'>"
-
-    for i, row in enumerate(data):
-        html += "<tr>"
-        for j, val in enumerate(row):
-            if val is None:
-                continue
-
-            # Determine if this is an attribute cell that can be selected
-            is_attribute = (i > 0 and j >= 2)
-            click_attr = f"onclick='handleCellClick(this)' data-attr='{val}'" if is_attribute else ""
-            cell_class = " class='selected'" if val in st.session_state.selected and is_attribute else ""
-           
-            # Base cell style
-            bg_color = "#92D050" if val in st.session_state.selected and is_attribute else "#f1fbfe"
-            if j == 0:
-                bg_color = "#61cbf3"
-            elif j == 1:
-                bg_color = "#94dcf8"
-
-            # Header row
-            if i == 0:
-                if j == 0:
-                    html += f"<td style='{style(first_col_width, bold=True, border_bottom=True)} background-color: #E8E8E8;'>{val}</td>"
-                elif j == 1:
-                    html += f"<td style='{style(second_col_width, bold=True, border_bottom=True)} background-color: #E8E8E8;'>{val}</td>"
-                elif j == 2:
-                    html += f"<td colspan='6' style='{style(base_cell_width * 6, bold=True, border_bottom=True)} background-color: #E8E8E8;'>{val}</td>"
-           
-            # First column cells with rowspan
-            elif j == 0:
-                if i == 1:
-                    html += f"<td rowspan='4' style='{style(first_col_width, bold=True, border_bottom=True)} background-color: #61cbf3;'>{val}</td>"
-                elif i == 5:
-                    html += f"<td rowspan='5' style='{style(first_col_width, bold=True, border_bottom=True)} background-color: #61cbf3;'>{val}</td>"
-                elif i == 10:
-                    html += f"<td rowspan='2' style='{style(first_col_width, bold=True)} background-color: #61cbf3;'>{val}</td>"
-           
-            # Special formatting for certain cells
-            elif (i == 4 and j == 1) or (i == 9 and j == 1):
-                html += f"<td {click_attr}{cell_class} style='{style(base_cell_width, bold=True, border_bottom=True)} background-color: {bg_color}; cursor: pointer;'>{val}</td>"
-            elif i == 9 and j in {2, 4, 6}:
-                html += f"<td {click_attr}{cell_class} style='{style(base_cell_width)} background-color: {bg_color}; border-bottom: 3px solid #000000; cursor: pointer;'>{val}</td>"
-            elif i > 0 and j == 1:
-                html += f"<td style='{style(second_col_width, bold=True)} background-color: #94dcf8;'>{val}</td>"
-           
-            # Cells with colspan
-            elif (i, j) in colspan_3:
-                html += f"<td {click_attr}{cell_class} colspan='3' style='{style(base_cell_width * 3)} background-color: {bg_color}; border-bottom: 3px solid #000000; cursor: pointer;'>{val}</td>"
-            elif (i, j) in colspan_2:
-                html += f"<td {click_attr}{cell_class} colspan='2' style='{style(base_cell_width * 2)} background-color: {bg_color}; cursor: pointer;'>{val}</td>"
-            else:
-                html += f"<td {click_attr}{cell_class} style='{style(base_cell_width)} background-color: {bg_color}; cursor: pointer;'>{val}</td>"
-        html += "</tr>"
-
-    html += "</table>"
-    return html
-
-# ======= JAVASCRIPT FOR INTERACTIVITY =======
-interaction_js = """
-<script>
-// Track selected attributes
-let selectedAttributes = new Set();
-
-function handleCellClick(element) {
-    const attr = element.getAttribute('data-attr');
-    const isSelected = element.style.backgroundColor === 'rgb(146, 208, 80)';
-    
-    // Toggle selection
-    if (isSelected) {
-        element.style.backgroundColor = '#f1fbfe';
-        selectedAttributes.delete(attr);
-    } else {
-        element.style.backgroundColor = '#92D050';
-        selectedAttributes.add(attr);
-    }
-    
-    // Update the display
-    updateSelectedDisplay();
-    
-    // Send message to Streamlit with ALL selected attributes
-    window.parent.postMessage({
-        isStreamlitMessage: true,
-        type: 'tableSelection',
-        data: Array.from(selectedAttributes)
-    }, '*');
-}
-
-function updateSelectedDisplay() {
-    const displayElement = document.getElementById('selectedItemsDisplay');
-    if (selectedAttributes.size > 0) {
-        displayElement.textContent = Array.from(selectedAttributes).join(', ');
-    } else {
-        displayElement.textContent = 'None';
-    }
-}
-
-document.addEventListener("DOMContentLoaded", function() {
-    // Initialize selected attributes from Streamlit
-    const initialSelections = %s;
-    if (initialSelections && initialSelections.length > 0) {
-        initialSelections.forEach(attr => {
-            const elements = document.querySelectorAll(`td[data-attr="${attr}"]`);
-            elements.forEach(el => {
-                el.style.backgroundColor = '#92D050';
-                selectedAttributes.add(attr);
-            });
-        });
-        updateSelectedDisplay();
-    }
-    
-    // Reset button functionality
-    document.getElementById('resetButton').addEventListener('click', function() {
-        // Clear all selections visually
-        document.querySelectorAll('td[data-attr]').forEach(el => {
-            el.style.backgroundColor = '#f1fbfe';
-        });
-        
-        // Clear the set
-        selectedAttributes.clear();
-        updateSelectedDisplay();
-        
-        // Notify Streamlit
-        window.parent.postMessage({
-            isStreamlitMessage: true,
-            type: 'tableSelection',
-            data: []
-        }, '*');
-    });
-});
-</script>
-""" % list(st.session_state.selected)
-
-# ======= HANDLE STREAMLIT MESSAGES =======
-def handle_table_selection():
-    # Check for new messages from the frontend
-    if st.session_state.get('table_selection') is not None:
-        # Update our selected attributes
-        new_selection = set(st.session_state.table_selection)
-        if new_selection != st.session_state.selected:
-            st.session_state.selected = new_selection
-            st.experimental_rerun()
-
-# Initialize message handlers
-st.session_state.table_selection = None
-handle_table_selection()
-
-# Selected attributes display
+# Generate and display the table
 selected_bar_html = f"""
 <div id="resetButtonContainer" style="padding: 10px; background-color: #f1fbfe; text-align: center;">
   <button id="resetButton" style="padding: 10px 20px; background-color: #61cbf3; border: none; border-radius: 5px; cursor: pointer; font-weight: bold;">
@@ -314,20 +230,18 @@ selected_bar_html = f"""
   </button>
 </div>
 <div id="selectedBar" style="margin-bottom: 10px; padding: 10px; background-color: #dceefc; border: 2px solid #61cbf3; border-radius: 8px; font-weight: bold;">
-  Selected Attributes: <span id="selectedItemsDisplay">{', '.join(st.session_state.selected) if st.session_state.selected else 'None'}</span>
+  Selected Attributes: <span id="selectedItemsDisplay">{', '.join(st.session_state.selected_attrs) if st.session_state.selected_attrs else 'None'}</span>
 </div>
 """
 
-# Wrap the table in a div container to manage zoom and scrolling
 html_code = selected_bar_html + f"""
 <div style="overflow-x: auto; width: 100%; padding: 10px; box-sizing: border-box;">
   <div class="zoomed-table">
-      {generate_html_table(data, st.session_state.selected)}
+      {generate_html_table(data, st.session_state.selected_attrs)}
   </div>
 </div>
 """ + interaction_js
 
-# Apply the zoom effect to the table
 html_code += """
 <style>
 .zoomed-table {
@@ -338,21 +252,23 @@ html_code += """
 </style>
 """
 
-# Inject the HTML with a component to handle messages
-html(html_code, height=1200)
-
-# JavaScript to handle Streamlit message passing
-st.components.v1.html("""
+# Add message listener component
+components.html("""
 <script>
-// Listen for messages from the iframe content
-window.addEventListener("message", function(event) {
+const sendMessage = (type, data) => {
+    window.parent.postMessage({
+        isStreamlitMessage: true,
+        type: type,
+        data: data
+    }, '*');
+};
+
+window.addEventListener("message", (event) => {
     if (event.data.isStreamlitMessage) {
-        if (event.data.type === "tableSelection") {
-            // Send the selection data to Streamlit
-            const data = event.data.data;
-            Streamlit.setComponentValue(data);
-        }
+        Streamlit.setComponentValue(event.data);
     }
 });
 </script>
 """, height=0)
+
+html(html_code, height=1200)
