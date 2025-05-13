@@ -364,7 +364,7 @@ html_code += """
 
 
 </style>
-"""
+
 
 # Display the HTML
 html(html_code, height=1200)
