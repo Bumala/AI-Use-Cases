@@ -275,6 +275,9 @@ handle_cell_click()
  
  
 
+from streamlit.components.v1 import html
+
+# Your existing HTML/JS component (unchanged)
 selected_bar_html = """
 <div id="resetButtonContainer" style="padding: 10px; background-color: #f1fbfe; text-align: center;">
   <button id="resetButton" style="padding: 10px 20px; background-color: #61cbf3; border: none; border-radius: 5px; cursor: pointer; font-weight: bold;">
@@ -289,32 +292,35 @@ selected_bar_html = """
   const selectedItemsSpan = document.getElementById("selectedItems");
   const hiddenInput = document.getElementById("selectedAttributesInput");
   let selected = [];
-
-  function updateSelectedDisplay() {
-    selectedItemsSpan.textContent = selected.length > 0 ? selected.join(", ") : "None";
-    hiddenInput.value = selected.join(", ");
-    window.parent.postMessage({ type: "streamlit:setComponentValue", value: hiddenInput.value }, "*");
+  
+  // Function to update selections
+  function updateSelections(selectedAttributes) {
+    selected = selectedAttributes;
+    selectedItemsSpan.textContent = selected.length ? selected.join(", ") : "None";
+    hiddenInput.value = selected.join(",");
+    
+    // Send to Streamlit
+    Streamlit.setComponentValue(hiddenInput.value);
   }
-
-  document.querySelectorAll(".selectable-attribute").forEach(el => {
-    el.addEventListener("click", () => {
-      const attr = el.textContent.trim();
-      if (selected.includes(attr)) {
-        selected = selected.filter(a => a !== attr);
-      } else {
-        selected.push(attr);
-      }
-      updateSelectedDisplay();
-    });
+  
+  // Reset button handler
+  document.getElementById("resetButton").addEventListener("click", function() {
+    updateSelections([]);
   });
-
-  document.getElementById("resetButton").addEventListener("click", () => {
-    selected = [];
-    updateSelectedDisplay();
-  });
+  
+  // Initialize with empty selection
+  updateSelections([]);
 </script>
 """
 
+# Display the component and get selected values
+html(selected_bar_html, height=150)
+selected_raw = st.text_input("Selected Attributes", key="selected_attrs", type="default")
+
+# Convert to your desired selected_attributes format
+selected_attributes = []
+if selected_raw:
+    selected_attributes = [x.strip() for x in selected_raw.split(",") if x.strip()]
 
 # ---------- Selectable attribute list ----------
 
