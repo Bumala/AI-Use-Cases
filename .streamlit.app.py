@@ -301,11 +301,106 @@ document.getElementById('copyButton').addEventListener('click', function() {
 
 
 
+
+
+<script>
+let selectedItems = new Set();
+
+function updateSelectedBar() {
+    const bar = document.getElementById("selectedItems");
+    bar.innerText = selectedItems.size === 0 ? "None" : Array.from(selectedItems).join(", ");
+}
+
+function syncWithStreamlit() {
+    window.parent.postMessage({
+        isStreamlitMessage: true,
+        type: 'copyToList',
+        data: { selectedList: Array.from(selectedItems) }
+    }, '*');
+}
+
+function handleCellClick(element) {
+    const attr = element.getAttribute('data-attr');
+    const isSelected = element.style.backgroundColor === 'rgb(146, 208, 80)';
+    element.style.backgroundColor = isSelected ? element.dataset.originalColor : '#92D050';
+    if (!isSelected) {
+        selectedItems.add(attr);
+    } else {
+        selectedItems.delete(attr);
+    }
+    updateSelectedBar();
+    syncWithStreamlit();
+    window.parent.postMessage({
+        isStreamlitMessage: true,
+        type: 'cellClick',
+        data: { attribute: attr, selected: !isSelected }
+    }, '*');
+}
+
+document.addEventListener("DOMContentLoaded", function() {
+    const cells = document.querySelectorAll('td');
+    cells.forEach(cell => {
+        cell.dataset.originalColor = getComputedStyle(cell).backgroundColor;
+    });
+
+    document.getElementById('resetButton').addEventListener('click', function() {
+        selectedItems.clear();
+        cells.forEach(cell => {
+            cell.style.backgroundColor = cell.dataset.originalColor;
+        });
+        updateSelectedBar();
+        syncWithStreamlit();  // Send empty list after reset
+        window.parent.postMessage({
+            isStreamlitMessage: true,
+            type: 'resetSelection',
+            data: { reset: true }
+        }, '*');
+    });
+
+    updateSelectedBar();
+});
+</script>
+
+
+
+
+
+
+
+
+
+from streamlit_javascript import st_javascript
+
+# Automatically receive the selected attribute list from JS
+selected_from_js = st_javascript("""
+    window.addEventListener("message", (event) => {
+        if (event.data && event.data.type === "copyToList") {
+            const data = event.data.data.selectedList;
+            Streamlit.setComponentValue(data);
+        }
+    });
+""")
+
+if selected_from_js:
+    st.session_state["selected_attributes_list"] = selected_from_js
+
+
+
+
+
+
+
+
+
+
+
+
+
 selected_attributes = st.session_state.get("selected_attributes_list", [])
 
 if selected_attributes:
     valid_attributes = [attr for attr in selected_attributes if attr in analysis_table.columns]
-    
+
     if valid_attributes:
         summed = analysis_table[valid_attributes].sum(axis=1)
         top_use_case = summed.idxmax()
@@ -313,7 +408,27 @@ if selected_attributes:
     else:
         st.warning("⚠️ None of the selected attributes match the table columns.")
 else:
-    st.info("👆 Select attributes and click 'Copy to List' to calculate the top use case.")
+    st.info("👆 Click attributes in the table to calculate the top use case.")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
