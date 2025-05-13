@@ -8,25 +8,24 @@ st.set_page_config(layout="wide")
 
 # ---------- Data for the HTML table ----------
 data = [
-    ["Category", "Dimension", "Attributes"],
-    ["Impact (What)", "Benefits", "Quality/Scope/Knowledge", "Time Efficiency", "Cost"],
-    [None, "Focus within Business Model Navigator", "Customer Segments", "Value Proposition", "Value Chain", "Revenue Model"],
-    [None, "Aim", "Product Innovation", "Process Innovation", "Business Model Innovation"],
-    [None, "Ambidexterity", "Exploration", "Exploitation"],
-    ["Technology (How)", "AI Role", "Automaton", "Helper", "Partner"],
-    [None, "AI Concepts", "Machine Learning", "Deep Learning", "Artificial Neural Networks", "Natural Language Processing", "Computer Vision", "Robotics"],
-    [None, "Analytics Focus", "Descriptive", "Diagnostic", "Predictive", "Prescriptive"],
-    [None, "Analytics Problem", "Description/ Summary", "Clustering", "Classification", "Dependency Analysis", "Regression"],
-    [None, "Data Type", "Customer Data", "Machine Data", "Business Data (Internal Data)", "Market Data", "Public & Regulatory Data", "Synthetic Data"],
-    ["Context (Where/When)", "Innovation Phase", "Front End", "Development", "Market Introduction"],
-    [None, "Department", "R&D", "Manufacturing", "Marketing & Sales", "Customer Service"],
+     ["Category", "Dimension", "Attributes"],
+   ["Impact (What)", "Benefits", "Quality/Scope/Knowledge", "Time Efficiency", "Cost"],
+   [None, "Focus within Business Model Navigator", "Customer Segments", "Value Proposition", "Value Chain", "Revenue Model"],
+   [None, "Aim", "Product Innovation", "Process Innovation", "Business Model Innovation"],
+   [None, "Ambidexterity", "Exploration", "Exploitation"],
+   ["Technology (How)", "AI Role", "Automaton", "Helper", "Partner"],
+   [None, "AI Concepts", "Machine Learning", "Deep Learning", "Artificial Neural Networks", "Natural Language Processing", "Computer Vision", "Robotics"],
+   [None, "Analytics Focus", "Descriptive", "Diagnostic", "Predictive", "Prescriptive"],
+   [None, "Analytics Problem", "Description/ Summary", "Clustering", "Classification", "Dependency Analysis", "Regression"],
+   [None, "Data Type", "Customer Data", "Machine Data", "Business Data (Internal Data)", "Market Data", "Public & Regulatory Data", "Synthetic Data"],
+   ["Context (Where/When)", "Innovation Phase", "Front End", "Development", "Market Introduction"],
+   [None, "Department", "R&D", "Manufacturing", "Marketing & Sales", "Customer Service"],
 ]
 
 # ---------- Load analysis table ----------
 analysis_table_data = {
 
-"Use Case": [
-       "AI-infused experiments in R&D",
+  "AI-infused experiments in R&D",
        "AI-powered manufacturing planning in smart factories",
        "AI-driven Human-Machine Collaboration in ideation",
        "AI-enabled idea generation in the Metaverse",
@@ -115,7 +114,6 @@ analysis_table_data = {
    "Customer Service": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 1, 2, 2, 2, 2, 2, 2, 2]
  
 
-    
 }
 analysis_table = pd.DataFrame(analysis_table_data)
 analysis_table.set_index("Use Case", inplace=True)
@@ -124,27 +122,33 @@ analysis_table.set_index("Use Case", inplace=True)
 if "selected" not in st.session_state:
     st.session_state.selected = set()
 
+if "attr_multiselect" not in st.session_state:
+    st.session_state.attr_multiselect = []
+
 # Initialize selected_attributes from session state
 selected_attributes = list(st.session_state.selected)
 
 # ---------- Selectable attribute list ----------
 attribute_columns = list(analysis_table.columns)
 
-# Create display-only multiselect to show selected attributes
-selected_display = st.multiselect(
-    "Selected attributes (select in table below):",
-    attribute_columns,
-    default=selected_attributes,
-    disabled=True  # Make it display-only
-)
-
-# ---------- Calculate and show top use case ----------
-if selected_attributes:
-    summed = analysis_table[selected_attributes].sum(axis=1)
-    top_use_case = summed.idxmax()
-    st.success(f"🚀 **Top Use Case:** {top_use_case}")
-else:
-    st.info("👆 Select attributes in the table below to see the top use case.")
+# Create container for the display
+with st.container():
+    # Display-only multiselect to show selected attributes
+    selected_display = st.multiselect(
+        "Selected attributes (select in table below):",
+        attribute_columns,
+        default=st.session_state.attr_multiselect,
+        disabled=True,  # Make it display-only
+        key="attr_display"
+    )
+    
+    # ---------- Calculate and show top use case ----------
+    if selected_attributes:
+        summed = analysis_table[selected_attributes].sum(axis=1)
+        top_use_case = summed.idxmax()
+        st.success(f"🚀 **Top Use Case:** {top_use_case}")
+    else:
+        st.info("👆 Select attributes in the table below to see the top use case.")
 
 # ======= PERFECT TABLE LAYOUT GENERATION =======
 def generate_html_table(data, selected):
@@ -232,6 +236,7 @@ def generate_html_table(data, selected):
     html += "</table>"
     return html
 
+
 # ======= JAVASCRIPT FOR INTERACTIVITY =======
 interaction_js = f"""
 <script>
@@ -239,8 +244,16 @@ interaction_js = f"""
 let selectedItems = new Set({json.dumps(list(st.session_state.selected))});
 
 function updateStreamlit() {{
-    // Send selected items to Streamlit
+    // Convert to array for Streamlit
     const selections = Array.from(selectedItems);
+    
+    // Update the display immediately
+    const displayElement = parent.document.querySelector('[data-testid="stMultiSelect"] input');
+    if (displayElement) {{
+        displayElement.value = selections.join(', ');
+    }}
+    
+    // Send selected items to Streamlit
     window.parent.postMessage({{
         isStreamlitMessage: true,
         type: 'updateSelections',
@@ -248,35 +261,53 @@ function updateStreamlit() {{
     }}, '*');
 }}
 
-function handleCellClick(element) {{
-    const attr = element.getAttribute('data-attr');
-    const isSelected = element.style.backgroundColor === 'rgb(146, 208, 80)';
-    
-    // Toggle selection (allow multiple)
-    if (!isSelected) {{
-        element.style.backgroundColor = '#92D050';
-        selectedItems.add(attr);
+function handleCellClick(element, event) {{
+    // Allow Ctrl/Cmd+click for multiple selection
+    if (event.ctrlKey || event.metaKey) {{
+        const attr = element.getAttribute('data-attr');
+        const isSelected = element.style.backgroundColor === 'rgb(146, 208, 80)';
+        
+        // Toggle selection
+        if (!isSelected) {{
+            element.style.backgroundColor = '#92D050';
+            selectedItems.add(attr);
+        }} else {{
+            element.style.backgroundColor = element.dataset.originalColor;
+            selectedItems.delete(attr);
+        }}
     }} else {{
-        element.style.backgroundColor = element.dataset.originalColor;
-        selectedItems.delete(attr);
+        // Single click - toggle normally
+        const attr = element.getAttribute('data-attr');
+        const isSelected = element.style.backgroundColor === 'rgb(146, 208, 80)';
+        
+        // Toggle selection
+        if (!isSelected) {{
+            element.style.backgroundColor = '#92D050';
+            selectedItems.add(attr);
+        }} else {{
+            element.style.backgroundColor = element.dataset.originalColor;
+            selectedItems.delete(attr);
+        }}
     }}
     
-    // Update Streamlit
     updateStreamlit();
 }}
 
 document.addEventListener("DOMContentLoaded", function() {{
     // Store original background color of each cell
-    const cells = document.querySelectorAll('td');
+    const cells = document.querySelectorAll('td[data-attr]');
     cells.forEach(cell => {{
         const original = getComputedStyle(cell).backgroundColor;
         cell.dataset.originalColor = original;
         
         // Initialize selected cells
         const attr = cell.getAttribute('data-attr');
-        if (attr && selectedItems.has(attr)) {{
+        if (selectedItems.has(attr)) {{
             cell.style.backgroundColor = '#92D050';
         }}
+        
+        // Update click handler to include event
+        cell.onclick = function(e) {{ handleCellClick(this, e); }};
     }});
     
     document.getElementById('resetButton').addEventListener('click', function() {{
@@ -288,24 +319,27 @@ document.addEventListener("DOMContentLoaded", function() {{
             cell.style.backgroundColor = cell.dataset.originalColor;
         }});
         
-        // Update Streamlit
         updateStreamlit();
     }});
+    
+    // Initial update
+    updateStreamlit();
 }});
 </script>
 """
 
 # ======= HANDLE MESSAGES FROM JAVASCRIPT =======
 def handle_js_messages():
-    # Check if we have a new message from JavaScript
     if hasattr(st.session_state, 'js_message') and st.session_state.js_message:
         message = st.session_state.js_message
         if message['type'] == 'updateSelections':
-            # Update session state with new selections
+            # Update both the selected set and dropdown list
             new_selections = set(message['data'])
             if new_selections != st.session_state.selected:
                 st.session_state.selected = new_selections
-                # No need for rerun - Streamlit will automatically update
+                st.session_state.attr_multiselect = message['data']
+                # Force update the display
+                st.session_state.attr_display = message['data']
 
 # Initialize message handling
 if 'js_message' not in st.session_state:
@@ -324,27 +358,6 @@ selected_bar_html = """
 </div>
 """
 
-# JavaScript to handle Streamlit communication
-streamlit_js = """
-<script>
-// Function to handle messages from Streamlit
-function handleStreamlitMessage(event) {
-    if (event.data.isStreamlitMessage) {
-        if (event.data.type === 'updateSelections') {
-            window.parent.postMessage({
-                isStreamlitMessage: true,
-                type: 'js_message',
-                data: event.data
-            }, '*');
-        }
-    }
-}
-
-// Listen for messages from the iframe
-window.addEventListener('message', handleStreamlitMessage);
-</script>
-"""
-
 # Generate the full HTML
 html_code = selected_bar_html + f"""
 <div style="overflow-x: auto; width: 100%; padding: 10px; box-sizing: border-box;">
@@ -352,7 +365,7 @@ html_code = selected_bar_html + f"""
         {generate_html_table(data, st.session_state.selected)}
     </div>
 </div>
-""" + interaction_js + streamlit_js
+""" + interaction_js
 
 # Add styling
 html_code += """
@@ -372,3 +385,7 @@ td:hover {
 
 # Display the HTML
 html(html_code, height=1200)
+
+# Force update the display at the end
+if hasattr(st.session_state, 'attr_multiselect'):
+    st.session_state.attr_display = st.session_state.attr_multiselect
