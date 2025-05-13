@@ -23,6 +23,7 @@ data = [
 
 # ---------- Your Analysis Table Data ----------
 analysis_table_data = {
+       "Use Case" : [
     "AI-infused experiments in R&D",
        "AI-powered manufacturing planning in smart factories",
        "AI-driven Human-Machine Collaboration in ideation",
