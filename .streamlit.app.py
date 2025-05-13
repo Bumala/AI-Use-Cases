@@ -1,7 +1,7 @@
 import streamlit as st
 import pandas as pd
 from streamlit.components.v1 import html
- 
+import json
  
 # Set page layout
 st.set_page_config(layout="wide")
@@ -180,7 +180,7 @@ handle_cell_click()
  
 # ======= USE CASE ANALYSIS =======
 
-const analysis_table = [
+analysis_table = [
  {
    "Use Case": "AI-infused experiments in R&D",
    "Quality/Scope/Knowledge": 2,
