@@ -22,11 +22,9 @@ data = [
     [None, "Department", "R&D", "Manufacturing", "Marketing & Sales", "Customer Service"],
 ]
 
-df = pd.DataFrame(data)
-
 # ---------- Load analysis table ----------
 analysis_table_data = {
-     "Use Case": [
+               "Use Case": [
        "AI-infused experiments in R&D",
        "AI-powered manufacturing planning in smart factories",
        "AI-driven Human-Machine Collaboration in ideation",
@@ -116,6 +114,12 @@ analysis_table_data = {
    "Customer Service": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 1, 2, 2, 2, 2, 2, 2, 2]
  
  
+
+
+
+
+
+    
 }
 analysis_table = pd.DataFrame(analysis_table_data)
 analysis_table.set_index("Use Case", inplace=True)
@@ -146,10 +150,9 @@ with multiselect_container:
     )
 
 # Update session state when dropdown changes
-if selected_attributes != st.session_state.attr_multiselect:
-    st.session_state.attr_multiselect = selected_attributes
+if set(selected_attributes) != st.session_state.selected:
     st.session_state.selected = set(selected_attributes)
-    st.experimental_rerun()
+    st.session_state.attr_multiselect = selected_attributes
 
 # ---------- Calculate and show top use case ----------
 if selected_attributes:
@@ -251,10 +254,7 @@ interaction_js = f"""
 // Track selected items globally
 let selectedItems = new Set({json.dumps(list(st.session_state.selected))});
 
-function updateSelectedBar() {{
-    const bar = document.getElementById("selectedItems");
-    bar.innerText = selectedItems.size === 0 ? "None" : Array.from(selectedItems).join(", ");
-    
+function updateStreamlit() {{
     // Send selected items to Streamlit
     const selections = Array.from(selectedItems);
     window.parent.postMessage({{
@@ -277,7 +277,12 @@ function handleCellClick(element) {{
         selectedItems.delete(attr);
     }}
     
-    updateSelectedBar();
+    // Update selected items display
+    const bar = document.getElementById("selectedItems");
+    bar.innerText = selectedItems.size === 0 ? "None" : Array.from(selectedItems).join(", ");
+    
+    // Update Streamlit
+    updateStreamlit();
 }}
 
 document.addEventListener("DOMContentLoaded", function() {{
@@ -303,26 +308,35 @@ document.addEventListener("DOMContentLoaded", function() {{
             cell.style.backgroundColor = cell.dataset.originalColor;
         }});
         
-        updateSelectedBar();
+        // Update display
+        document.getElementById("selectedItems").innerText = "None";
+        
+        // Update Streamlit
+        updateStreamlit();
     }});
     
-    updateSelectedBar();
+    // Initialize display
+    document.getElementById("selectedItems").innerText = 
+        selectedItems.size === 0 ? "None" : Array.from(selectedItems).join(", ");
 }});
 </script>
 """
 
 # ======= HANDLE MESSAGES FROM JAVASCRIPT =======
 def handle_js_messages():
-    if st.session_state.get('js_message'):
+    # Check if we have a new message from JavaScript
+    if hasattr(st.session_state, 'js_message') and st.session_state.js_message:
         message = st.session_state.js_message
         if message['type'] == 'updateSelections':
             # Update session state with new selections
-            st.session_state.selected = set(message['data'])
-            st.session_state.attr_multiselect = message['data']
-            st.experimental_rerun()
+            new_selections = set(message['data'])
+            if new_selections != st.session_state.selected:
+                st.session_state.selected = new_selections
+                st.session_state.attr_multiselect = message['data']
 
-# Initialize and handle messages
-st.session_state.js_message = None
+# Initialize message handling
+if 'js_message' not in st.session_state:
+    st.session_state.js_message = None
 handle_js_messages()
 
 # ======= SELECTED BAR AND TABLE =======
@@ -385,12 +399,3 @@ td:hover {
 
 # Display the HTML
 html(html_code, height=1200)
-
-# Force update the multiselect widget after HTML is rendered
-with multiselect_container:
-    st.multiselect(
-        "Selected attributes (automatically synchronized with your table selections):",
-        attribute_columns,
-        default=st.session_state.attr_multiselect,
-        key="attr_multiselect_widget"
-    )
