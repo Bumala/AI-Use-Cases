@@ -324,7 +324,7 @@ selected_bar_html = """
   }
 
   // Simulate selection change (for demo); replace this with your actual selection logic
-  document.getElementById("selectedItems").innerText = "Height, Width, Depth";
+  document.getElementById("selectedItems").innerText = "Cost, Width, Depth";
   updateStreamlitInput("Height, Width, Depth");
 
   // Reset button logic
