@@ -28,7 +28,7 @@ if "selected" not in st.session_state:
 
 # ======= ANALYSIS TABLE =======
 analysis_table = [
-  {
+    {
     "Use Case": "AI-infused experiments in R&D",
     "Quality/Scope/Knowledge": 2,
     "Time Efficiency": 2,
