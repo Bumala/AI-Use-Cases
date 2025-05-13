@@ -279,67 +279,65 @@ handle_cell_click()
 
 
 
-# Your existing HTML/JS component with modifications
 from streamlit.components.v1 import html
 
-# Your HTML/JS component (unchanged)
-selected_bar_html = """
+# Initialize session state for selected attributes
+if 'selected_attributes' not in st.session_state:
+    st.session_state.selected_attributes = []
+
+# Modified HTML/JS component with proper Streamlit communication
+selected_bar_html = f"""
 <div id="resetButtonContainer" style="padding: 10px; background-color: #f1fbfe; text-align: center;">
   <button id="resetButton" style="padding: 10px 20px; background-color: #61cbf3; border: none; border-radius: 5px; cursor: pointer; font-weight: bold;">
       Reset Selection
   </button>
 </div>
 <div id="selectedBar" style="margin-bottom: 10px; padding: 10px; background-color: #dceefc; border: 2px solid #61cbf3; border-radius: 8px; font-weight: bold;">
-  Selected Attributes: <span id="selectedItems">None</span>
+  Selected Attributes: <span id="selectedItems">{', '.join(st.session_state.selected_attributes) if st.session_state.selected_attributes else 'None'}</span>
 </div>
-<input type="hidden" id="selectedAttributesInput" name="selectedAttributes" />
+<input type="hidden" id="selectedAttributesInput" name="selectedAttributes" value="{','.join(st.session_state.selected_attributes)}" />
 <script>
   const selectedItemsSpan = document.getElementById("selectedItems");
   const hiddenInput = document.getElementById("selectedAttributesInput");
-  let selected = [];
   
-  function updateSelection() {
-    selectedItemsSpan.textContent = selected.length ? selected.join(", ") : "None";
-    hiddenInput.value = selected.join(",");
-    Streamlit.setComponentValue(hiddenInput.value);
-  }
+  // Listen for reset button click
+  document.getElementById("resetButton").addEventListener("click", function() {{
+    // Send reset message to Streamlit
+    Streamlit.setComponentValue("RESET");
+  }});
   
-  document.getElementById("resetButton").addEventListener("click", function() {
-    selected = [];
-    updateSelection();
-  });
-  
-  // Initialize empty selection
-  updateSelection();
-  
-  // Listen for cell clicks from table
-  window.addEventListener("message", (event) => {
-    if (event.data.isStreamlitMessage && event.data.type === "cellClick") {
-      const attr = event.data.data.attribute;
-      if (event.data.data.selected) {
-        if (!selected.includes(attr)) selected.push(attr);
-      } else {
-        selected = selected.filter(item => item !== attr);
-      }
-      updateSelection();
-    }
-  });
+  // Listen for messages from the table
+  window.addEventListener("message", (event) => {{
+    if (event.data.isStreamlitMessage && event.data.type === "cellClick") {{
+      // Forward the message to Streamlit
+      Streamlit.setComponentValue(JSON.stringify(event.data));
+    }}
+  }});
 </script>
 """
 
-# Display component and get selections
-selected_raw = html(selected_bar_html, height=150, key="selected_attrs_component")
+# Display the component
+html(selected_bar_html, height=150)
 
-# Safely process selections
-selected_attributes = []
-if selected_raw and isinstance(selected_raw, str):
-    selected_attributes = [
-        x.strip() 
-        for x in selected_raw.split(",") 
-        if x.strip() and x.strip() in analysis_table.columns
-    ]
+# Handle component messages
+if 'component_value' in st.session_state:
+    if st.session_state.component_value == "RESET":
+        st.session_state.selected_attributes = []
+    else:
+        try:
+            data = json.loads(st.session_state.component_value)
+            attr = data['data']['attribute']
+            if data['data']['selected']:
+                if attr not in st.session_state.selected_attributes:
+                    st.session_state.selected_attributes.append(attr)
+            else:
+                st.session_state.selected_attributes = [x for x in st.session_state.selected_attributes if x != attr]
+        except:
+            pass
 
-# Show results
+# Process the selected attributes
+selected_attributes = [x for x in st.session_state.selected_attributes if x in analysis_table.columns]
+
 if selected_attributes:
     summed = analysis_table[selected_attributes].sum(axis=1)
     top_use_case = summed.idxmax()
@@ -347,6 +345,12 @@ if selected_attributes:
 else:
     st.info("👆 Select attributes above to see the top use case.")
 
+
+
+
+
+
+    
 
 
 # Display the component
