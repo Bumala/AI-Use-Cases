@@ -361,10 +361,7 @@ html_code += """
     transform-origin: top center;
     width: 100%;
 }
-td:hover {
-    box-shadow: 0 0 5px rgba(0,0,0,0.3);
-    transform: scale(1.02);
-    transition: all 0.2s ease;
+
 }
 </style>
 """
