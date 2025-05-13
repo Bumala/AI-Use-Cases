@@ -301,10 +301,8 @@ document.getElementById('copyButton').addEventListener('click', function() {
 
 
 
-# Assume this list is being set from the JavaScript side
 selected_attributes = st.session_state.get("selected_attributes_list", [])
 
-# ---------- Calculate and show top use case ----------
 if selected_attributes:
     valid_attributes = [attr for attr in selected_attributes if attr in analysis_table.columns]
     
@@ -315,7 +313,7 @@ if selected_attributes:
     else:
         st.warning("⚠️ None of the selected attributes match the table columns.")
 else:
-    st.info("👆 Select attributes in the table and click 'Copy to List' to see the top use case.")
+    st.info("👆 Select attributes and click 'Copy to List' to calculate the top use case.")
 
 
 
@@ -410,7 +408,6 @@ analysis_table_data = {
 
 analysis_table = pd.DataFrame(analysis_table_data)
 analysis_table.set_index("Use Case", inplace=True)
-
 
 
 
