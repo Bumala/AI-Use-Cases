@@ -25,8 +25,9 @@ data = [
 df = pd.DataFrame(data)
 
 # ---------- Load analysis table ----------
+analysis_table_data = {
 
-analysis_table_data = {  # keep your full data here
+
    "Use Case": [
        "AI-infused experiments in R&D",
        "AI-powered manufacturing planning in smart factories",
@@ -116,26 +117,13 @@ analysis_table_data = {  # keep your full data here
    "Marketing & Sales": [0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 2, 0, 2, 2, 2, 0, 2, 2, 0, 0, 2, 2, 1, 0, 0, 0, 0, 0, 0, 1],
    "Customer Service": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 1, 2, 2, 2, 2, 2, 2, 2]
  
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
  
+
+
+
+
+
+    
 }
 analysis_table = pd.DataFrame(analysis_table_data)
 analysis_table.set_index("Use Case", inplace=True)
@@ -150,11 +138,11 @@ selected_attributes = list(st.session_state.selected)
 # ---------- Selectable attribute list ----------
 attribute_columns = list(analysis_table.columns)
 
-# Create the multiselect widget that will stay in sync with JS selections
-multiselect_placeholder = st.empty()
+# Create container for the multiselect
+multiselect_container = st.empty()
 
 # Display the initial multiselect with current selections
-selected_attributes = multiselect_placeholder.multiselect(
+selected_attributes = multiselect_container.multiselect(
     "Selected attributes (automatically synchronized with your table selections):",
     attribute_columns,
     default=selected_attributes,
@@ -256,70 +244,70 @@ def generate_html_table(data, selected):
     return html
 
 # ======= JAVASCRIPT FOR INTERACTIVITY =======
-interaction_js = """
+interaction_js = f"""
 <script>
 // Track selected items globally
-let selectedItems = new Set();
+let selectedItems = new Set({json.dumps(list(st.session_state.selected))});
 
-function updateSelectedBar() {
+function updateSelectedBar() {{
     const bar = document.getElementById("selectedItems");
     bar.innerText = selectedItems.size === 0 ? "None" : Array.from(selectedItems).join(", ");
     
     // Send selected items to Streamlit
-    window.parent.postMessage({
+    const selections = Array.from(selectedItems);
+    window.parent.postMessage({{
         isStreamlitMessage: true,
         type: 'updateSelections',
-        data: Array.from(selectedItems)
-    }, '*');
-}
+        data: selections
+    }}, '*');
+}}
 
-function handleCellClick(element) {
+function handleCellClick(element) {{
     const attr = element.getAttribute('data-attr');
     const isSelected = element.style.backgroundColor === 'rgb(146, 208, 80)';
     
     // Toggle visual selection
     element.style.backgroundColor = isSelected ? element.dataset.originalColor : '#92D050';
     
-    if (!isSelected) {
+    if (!isSelected) {{
         selectedItems.add(attr);
-    } else {
+    }} else {{
         selectedItems.delete(attr);
-    }
+    }}
     
     updateSelectedBar();
-}
+}}
 
-document.addEventListener("DOMContentLoaded", function() {
+document.addEventListener("DOMContentLoaded", function() {{
     // Store original background color of each cell
     const cells = document.querySelectorAll('td');
-    cells.forEach(cell => {
+    cells.forEach(cell => {{
         const original = getComputedStyle(cell).backgroundColor;
         cell.dataset.originalColor = original;
         
         // Initialize selected cells
         const attr = cell.getAttribute('data-attr');
-        if (attr && %INITIAL_SELECTIONS%.includes(attr)) {
+        if (attr && selectedItems.has(attr)) {{
             cell.style.backgroundColor = '#92D050';
-            selectedItems.add(attr);
-        }
-    });
+        }}
+    }});
     
-    document.getElementById('resetButton').addEventListener('click', function() {
+    document.getElementById('resetButton').addEventListener('click', function() {{
         // Clear selections
         selectedItems.clear();
         
         // Restore each cell's original background color
-        cells.forEach(cell => {
+        cells.forEach(cell => {{
             cell.style.backgroundColor = cell.dataset.originalColor;
-        });
+        }});
         
         updateSelectedBar();
-    });
+    }});
     
     updateSelectedBar();
-});
+}});
 </script>
-""".replace("%INITIAL_SELECTIONS%", json.dumps(list(st.session_state.selected)))
+"""
 
 # ======= HANDLE MESSAGES FROM JAVASCRIPT =======
 def handle_js_messages():
@@ -328,7 +316,7 @@ def handle_js_messages():
         if message['type'] == 'updateSelections':
             # Update session state with new selections
             st.session_state.selected = set(message['data'])
-            # Force update of the multiselect widget
+            # Update the multiselect widget
             st.session_state.attr_multiselect = message['data']
             st.experimental_rerun()
 
@@ -396,3 +384,11 @@ td:hover {
 
 # Display the HTML
 html(html_code, height=1200)
+
+# Force update the multiselect widget after HTML is rendered
+multiselect_container.multiselect(
+    "Selected attributes (automatically synchronized with your table selections):",
+    attribute_columns,
+    default=list(st.session_state.selected),
+    key="attr_multiselect"
+)
