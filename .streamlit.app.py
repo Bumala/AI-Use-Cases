@@ -122,15 +122,24 @@ analysis_table_data = {  # keep your full data here
  
 analysis_table = pd.DataFrame(analysis_table_data)
 analysis_table.set_index("Use Case", inplace=True)
-
-
-
-selected_raw = st.text_input("Selected Attributes", key="selected_attributes")
-
-
-
-
-
+ 
+# ---------- Selectable attribute list ----------
+ 
+attribute_columns = list(analysis_table.columns)
+selected_attributes = st.multiselect(
+   "Select attributes (these match the table cells you want to 'click'):",
+   attribute_columns,
+)
+ 
+# ---------- Calculate and show top use case ----------
+ 
+if selected_attributes:
+   summed = analysis_table[selected_attributes].sum(axis=1)
+   top_use_case = summed.idxmax()
+   st.success(f"🚀 **Top Use Case:** {top_use_case}")
+else:
+   st.info("👆 Select attributes above to see the top use case.")
+ 
 # ---------- Generate styled HTML table ----------
  
  
@@ -274,125 +283,16 @@ handle_cell_click()
  
  
  
-
-
-
-
-
-from streamlit.components.v1 import html
-
-# Initialize session state for selected attributes
-if 'selected_attributes' not in st.session_state:
-    st.session_state.selected_attributes = []
-
-# Modified HTML/JS component with proper Streamlit communication
-selected_bar_html = f"""
+selected_bar_html = """
 <div id="resetButtonContainer" style="padding: 10px; background-color: #f1fbfe; text-align: center;">
   <button id="resetButton" style="padding: 10px 20px; background-color: #61cbf3; border: none; border-radius: 5px; cursor: pointer; font-weight: bold;">
       Reset Selection
   </button>
 </div>
 <div id="selectedBar" style="margin-bottom: 10px; padding: 10px; background-color: #dceefc; border: 2px solid #61cbf3; border-radius: 8px; font-weight: bold;">
-  Selected Attributes: <span id="selectedItems">{', '.join(st.session_state.selected_attributes) if st.session_state.selected_attributes else 'None'}</span>
+  Selected Attributes: <span id="selectedItems">None</span>
 </div>
-<input type="hidden" id="selectedAttributesInput" name="selectedAttributes" value="{','.join(st.session_state.selected_attributes)}" />
-<script>
-  const selectedItemsSpan = document.getElementById("selectedItems");
-  const hiddenInput = document.getElementById("selectedAttributesInput");
-  
-  // Listen for reset button click
-  document.getElementById("resetButton").addEventListener("click", function() {{
-    // Send reset message to Streamlit
-    Streamlit.setComponentValue("RESET");
-  }});
-  
-  // Listen for messages from the table
-  window.addEventListener("message", (event) => {{
-    if (event.data.isStreamlitMessage && event.data.type === "cellClick") {{
-      // Forward the message to Streamlit
-      Streamlit.setComponentValue(JSON.stringify(event.data));
-    }}
-  }});
-</script>
 """
-
-# Display the component
-html(selected_bar_html, height=150)
-
-# Handle component messages
-if 'component_value' in st.session_state:
-    if st.session_state.component_value == "RESET":
-        st.session_state.selected_attributes = []
-    else:
-        try:
-            data = json.loads(st.session_state.component_value)
-            attr = data['data']['attribute']
-            if data['data']['selected']:
-                if attr not in st.session_state.selected_attributes:
-                    st.session_state.selected_attributes.append(attr)
-            else:
-                st.session_state.selected_attributes = [x for x in st.session_state.selected_attributes if x != attr]
-        except:
-            pass
-
-# Process the selected attributes
-selected_attributes = [x for x in st.session_state.selected_attributes if x in analysis_table.columns]
-
-if selected_attributes:
-    summed = analysis_table[selected_attributes].sum(axis=1)
-    top_use_case = summed.idxmax()
-    st.success(f"🚀 **Top Use Case:** {top_use_case}")
-else:
-    st.info("👆 Select attributes above to see the top use case.")
-
-
-
-
-
-
-    
-
-
-# Display the component
-component_value = html(selected_bar_html, height=150)
-
-# Get the selected attributes from the component
-if component_value:
-    selected_raw = component_value
-else:
-    selected_raw = ""
-
-# Process the selected attributes
-selected_attributes = [x.strip() for x in selected_raw.split(",") if x.strip() in analysis_table.columns]
-
-if selected_attributes:
-    summed = analysis_table[selected_attributes].sum(axis=1)
-    top_use_case = summed.idxmax()
-    st.success(f"🚀 **Top Use Case:** {top_use_case}")
-else:
-    st.info("👆 Select attributes above to see the top use case.")
-
-# ---------- Selectable attribute list ----------
-
-selected_attributes = [x.strip() for x in selected_raw.split(",") if x.strip() in analysis_table.columns]
-
-if selected_attributes:
-    summed = analysis_table[selected_attributes].sum(axis=1)
-    top_use_case = summed.idxmax()
-    st.success(f"🚀 **Top Use Case:** {top_use_case}")
-else:
-    st.info("👆 Select attributes above to see the top use case.")
-
-
-
-
-
-
-
-
-
-
-
  
 # Wrap the table in a div container to manage zoom and scrolling
 html_code = selected_bar_html + f"""
@@ -480,11 +380,3 @@ html_code += """
 """
  
 html(html_code, height=1200)
-
-
-
-
-
-
-
-
