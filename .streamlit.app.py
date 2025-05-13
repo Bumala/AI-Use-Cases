@@ -24,7 +24,8 @@ data = [
 
 # ---------- Load analysis table ----------
 analysis_table_data = {
-               "Use Case": [
+
+"Use Case": [
        "AI-infused experiments in R&D",
        "AI-powered manufacturing planning in smart factories",
        "AI-driven Human-Machine Collaboration in ideation",
@@ -113,11 +114,6 @@ analysis_table_data = {
    "Marketing & Sales": [0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 2, 0, 2, 2, 2, 0, 2, 2, 0, 0, 2, 2, 1, 0, 0, 0, 0, 0, 0, 1],
    "Customer Service": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 1, 2, 2, 2, 2, 2, 2, 2]
  
- 
-
-
-
-
 
     
 }
@@ -128,31 +124,19 @@ analysis_table.set_index("Use Case", inplace=True)
 if "selected" not in st.session_state:
     st.session_state.selected = set()
 
-if "attr_multiselect" not in st.session_state:
-    st.session_state.attr_multiselect = []
-
 # Initialize selected_attributes from session state
 selected_attributes = list(st.session_state.selected)
 
 # ---------- Selectable attribute list ----------
 attribute_columns = list(analysis_table.columns)
 
-# Create container for the multiselect
-multiselect_container = st.container()
-
-# Display the initial multiselect with current selections
-with multiselect_container:
-    selected_attributes = st.multiselect(
-        "Selected attributes (automatically synchronized with your table selections):",
-        attribute_columns,
-        default=st.session_state.attr_multiselect,
-        key="attr_multiselect_widget"
-    )
-
-# Update session state when dropdown changes
-if set(selected_attributes) != st.session_state.selected:
-    st.session_state.selected = set(selected_attributes)
-    st.session_state.attr_multiselect = selected_attributes
+# Create display-only multiselect to show selected attributes
+selected_display = st.multiselect(
+    "Selected attributes (select in table below):",
+    attribute_columns,
+    default=selected_attributes,
+    disabled=True  # Make it display-only
+)
 
 # ---------- Calculate and show top use case ----------
 if selected_attributes:
@@ -160,7 +144,7 @@ if selected_attributes:
     top_use_case = summed.idxmax()
     st.success(f"🚀 **Top Use Case:** {top_use_case}")
 else:
-    st.info("👆 Select attributes by clicking cells in the table below to see the top use case.")
+    st.info("👆 Select attributes in the table below to see the top use case.")
 
 # ======= PERFECT TABLE LAYOUT GENERATION =======
 def generate_html_table(data, selected):
@@ -268,18 +252,14 @@ function handleCellClick(element) {{
     const attr = element.getAttribute('data-attr');
     const isSelected = element.style.backgroundColor === 'rgb(146, 208, 80)';
     
-    // Toggle visual selection
-    element.style.backgroundColor = isSelected ? element.dataset.originalColor : '#92D050';
-    
+    // Toggle selection (allow multiple)
     if (!isSelected) {{
+        element.style.backgroundColor = '#92D050';
         selectedItems.add(attr);
     }} else {{
+        element.style.backgroundColor = element.dataset.originalColor;
         selectedItems.delete(attr);
     }}
-    
-    // Update selected items display
-    const bar = document.getElementById("selectedItems");
-    bar.innerText = selectedItems.size === 0 ? "None" : Array.from(selectedItems).join(", ");
     
     // Update Streamlit
     updateStreamlit();
@@ -308,16 +288,9 @@ document.addEventListener("DOMContentLoaded", function() {{
             cell.style.backgroundColor = cell.dataset.originalColor;
         }});
         
-        // Update display
-        document.getElementById("selectedItems").innerText = "None";
-        
         // Update Streamlit
         updateStreamlit();
     }});
-    
-    // Initialize display
-    document.getElementById("selectedItems").innerText = 
-        selectedItems.size === 0 ? "None" : Array.from(selectedItems).join(", ");
 }});
 </script>
 """
@@ -332,7 +305,7 @@ def handle_js_messages():
             new_selections = set(message['data'])
             if new_selections != st.session_state.selected:
                 st.session_state.selected = new_selections
-                st.session_state.attr_multiselect = message['data']
+                # No need for rerun - Streamlit will automatically update
 
 # Initialize message handling
 if 'js_message' not in st.session_state:
