@@ -378,6 +378,10 @@ document.addEventListener("DOMContentLoaded", function() {
 import streamlit as st
 from streamlit.components.v1 import html
 
+# Initialize session state
+if 'selected_attributes' not in st.session_state:
+    st.session_state.selected_attributes = []
+
 # Your existing HTML code
 selected_bar_html = """
 <div id="resetButtonContainer" style="padding: 10px; background-color: #f1fbfe; text-align: center;">
@@ -390,37 +394,30 @@ selected_bar_html = """
 </div>
 """
 
-# Add this code to create a mirrored text input
-mirror_input_html = """
-<div style="margin-top: 20px;">
-  <label for="mirrorInput" style="font-weight: bold;">Mirror of Selected Attributes:</label>
-  <input type="text" id="mirrorInput" style="width: 100%; padding: 8px; margin-top: 5px; border: 2px solid #61cbf3; border-radius: 4px;" readonly>
-</div>
-
+# JavaScript to handle the mirroring and communication
+javascript = """
 <script>
-// Function to update both the selected items display and the mirror input
-function updateSelectedBar() {
-  const bar = document.getElementById("selectedItems");
-  const mirrorInput = document.getElementById("mirrorInput");
+// Store selected items
+let selectedItems = new Set();
+
+// Function to update both displays
+function updateDisplays() {
   const selectedText = selectedItems.size === 0 ? "None" : Array.from(selectedItems).join(", ");
+  document.getElementById("selectedItems").innerText = selectedText;
   
-  bar.innerText = selectedText;
-  mirrorInput.value = selectedText;
-  
-  // Send the selected items to Streamlit
+  // Send to Streamlit
   window.parent.postMessage({
       isStreamlitMessage: true,
-      type: 'selectedItemsUpdate',
-      data: { selectedItems: Array.from(selectedItems) }
+      type: 'selectedAttributesUpdate',
+      selectedItems: Array.from(selectedItems)
   }, '*');
 }
 
-// Modify your existing handleCellClick function to use the new update function
+// Modify your existing cell click handler to use updateDisplays
 function handleCellClick(element) {
   const attr = element.getAttribute('data-attr');
   const isSelected = element.style.backgroundColor === 'rgb(146, 208, 80)';
 
-  // Toggle visual selection
   element.style.backgroundColor = isSelected ? element.dataset.originalColor : '#92D050';
 
   if (!isSelected) {
@@ -429,84 +426,86 @@ function handleCellClick(element) {
       selectedItems.delete(attr);
   }
 
-  updateSelectedBar();
-
-  // Notify Streamlit backend
-  window.parent.postMessage({
-      isStreamlitMessage: true,
-      type: 'cellClick',
-      data: { attribute: attr, selected: !isSelected }
-  }, '*');
+  updateDisplays();
 }
 
-// The rest of your existing JavaScript remains the same
+// Reset button handler
+document.addEventListener("DOMContentLoaded", function() {
+  const cells = document.querySelectorAll('td');
+  cells.forEach(cell => {
+      const original = getComputedStyle(cell).backgroundColor;
+      cell.dataset.originalColor = original;
+  });
+
+  document.getElementById('resetButton').addEventListener('click', function() {
+      selectedItems.clear();
+      cells.forEach(cell => {
+          cell.style.backgroundColor = cell.dataset.originalColor;
+      });
+      updateDisplays();
+  });
+});
 </script>
 """
 
-# Combine all the HTML
-full_html = selected_bar_html + mirror_input_html + interaction_js
+# Add the mirror input display
+mirror_section = """
+<div style="margin-top: 20px; padding: 10px; background-color: #f5f5f5; border-radius: 8px;">
+  <h4 style="margin-bottom: 5px;">Python-Accessible Mirror:</h4>
+  <input type="text" id="pythonMirror" style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px;" readonly>
+</div>
 
-# Display the HTML in Streamlit
-html(full_html, height=200)
-
-# Add Python code to access the selected items
-if 'selected_attributes' not in st.session_state:
-    st.session_state.selected_attributes = []
-
-def update_selected_attributes(selected_items):
-    st.session_state.selected_attributes = selected_items
-
-# Handle the JavaScript messages
-html("""
 <script>
-// This function will be called when messages are received from the iframe
-function receiveMessage(event) {
-    if (event.data.isStreamlitMessage) {
-        if (event.data.type === 'selectedItemsUpdate') {
-            // Send the selected items to Streamlit Python
-            window.parent.streamlitAPI.updateSelectedAttributes(event.data.data.selectedItems);
-        }
-    }
+// Update the mirror input whenever selections change
+function updateDisplays() {
+  const selectedText = selectedItems.size === 0 ? "None" : Array.from(selectedItems).join(", ");
+  document.getElementById("selectedItems").innerText = selectedText;
+  document.getElementById("pythonMirror").value = selectedText;
+  
+  // Send to Streamlit
+  window.parent.postMessage({
+      isStreamlitMessage: true,
+      type: 'selectedAttributesUpdate',
+      selectedItems: Array.from(selectedItems)
+  }, '*');
 }
-window.addEventListener("message", receiveMessage, false);
 </script>
-""")
+"""
 
-# Create a Streamlit component to receive the data
-st.markdown("### Python Access to Selected Attributes")
-st.text_input("Selected Attributes in Python", value=", ".join(st.session_state.selected_attributes) if st.session_state.selected_attributes else "None", key="python_mirror")
+# Combine all components
+full_html = selected_bar_html + mirror_section + javascript
 
-# JavaScript to Python bridge
-st.components.v1.html("""
+# Display the component
+html(full_html, height=300)
+
+# Display the Python-accessible version
+st.subheader("Python Access to Selected Attributes")
+st.text_input("Selected Attributes in Python", 
+             value=", ".join(st.session_state.selected_attributes) if st.session_state.selected_attributes else "None",
+             key="python_display")
+
+# Handle the JavaScript to Python communication
+components.html("""
 <script>
-// Expose a function to update Python variables
-window.parent.streamlitAPI = {
-    updateSelectedAttributes: function(items) {
+// Listen for messages from the iframe
+window.addEventListener("message", (event) => {
+    if (event.data.isStreamlitMessage && event.data.type === 'selectedAttributesUpdate') {
         // This will trigger a Streamlit rerun with the new values
+        const data = event.data.selectedItems;
         window.parent.postMessage({
             isStreamlitMessage: true,
-            type: 'updatePythonSelected',
-            data: {selectedItems: items}
+            type: 'streamlit:setComponentValue',
+            value: data
         }, '*');
     }
-};
+});
 </script>
-""")
+""", height=0)
 
-# Handle the message in Python
-def handle_message():
-    from streamlit.runtime.scriptrunner import RerunData, RerunException
-    from streamlit.web.server.websocket_headers import _get_websocket_headers
-    
-    ctx = st.script_run_context.get_script_run_ctx()
-    if ctx and ctx.request:
-        headers = _get_websocket_headers()
-        if headers and 'selectedItems' in headers:
-            update_selected_attributes(headers['selectedItems'])
-            raise RerunData(RerunData(widget_states=None))
-
-handle_message()
-
+# Update session state when we receive new values
+if 'component_value' in st.session_state:
+    st.session_state.selected_attributes = st.session_state.component_value
+    st.session_state.python_display = ", ".join(st.session_state.selected_attributes) if st.session_state.selected_attributes else "None"
 
 
 
