@@ -142,12 +142,11 @@ multiselect_container = st.container()
  
 # Display the initial multiselect with current selections
 with multiselect_container:
-   selected_attributes = st.multiselect(
-       "Selected attributes (automatically synchronized with your table selections):",
-       attribute_columns,
-       default=st.session_state.attr_multiselect,
-       key="attr_multiselect_widget"
-   )
+   
+
+
+ 
+
  
 # Update session state when dropdown changes
 if set(selected_attributes) != st.session_state.selected:
@@ -155,12 +154,17 @@ if set(selected_attributes) != st.session_state.selected:
    st.session_state.attr_multiselect = selected_attributes
  
 # ---------- Calculate and show top use case ----------
-if selected_attributes:
-   summed = analysis_table[selected_attributes].sum(axis=1)
-   top_use_case = summed.idxmax()
-   st.success(f"🚀 **Top Use Case:** {top_use_case}")
+if st.session_state.selected:
+    selected_attributes = list(st.session_state.selected)
+    summed = analysis_table[selected_attributes].sum(axis=1)
+    top_use_case = summed.idxmax()
+    st.success(f"🚀 **Top Use Case:** {top_use_case}")
 else:
-   st.info("👆 Select attributes by clicking cells in the table below to see the top use case.")
+    st.info("👆 Select attributes by clicking cells in the table below to see the top use case.")
+
+
+
+
  
 # ======= PERFECT TABLE LAYOUT GENERATION =======
 def generate_html_table(data, selected):
