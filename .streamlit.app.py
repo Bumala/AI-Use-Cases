@@ -284,17 +284,30 @@ handle_cell_click()
  
  
  
-selected_bar_html = """
-<div id="resetButtonContainer" style="padding: 10px; background-color: #f1fbfe; text-align: center;">
-  <button id="resetButton" style="padding: 10px 20px; background-color: #61cbf3; border: none; border-radius: 5px; cursor: pointer; font-weight: bold;">
-      Reset Selection
-  </button>
-</div>
-<div id="selectedBar" style="margin-bottom: 10px; padding: 10px; background-color: #dceefc; border: 2px solid #61cbf3; border-radius: 8px; font-weight: bold;">
-  Selected Attributes: <span id="selectedItems">None</span>
-</div>
-"""
+import streamlit as st
+from streamlit_js_eval import streamlit_js_eval
 
+st.title("Mirror JS DOM to Streamlit Input")
+
+# Render a dummy HTML component with a modifiable span
+st.components.v1.html("""
+<div style="padding: 10px; background-color: #dceefc; border: 2px solid #61cbf3; border-radius: 8px; font-weight: bold;">
+  Selected Attributes: <span id="selectedItems">Height, Width, Depth</span>
+</div>
+
+<button onclick="document.getElementById('selectedItems').innerText = 'None';">
+  Reset Selection
+</button>
+""", height=150)
+
+# ✅ Evaluate the JS expression and return it to Python
+selected_value = streamlit_js_eval(
+    js_expressions="document.getElementById('selectedItems')?.innerText",
+    key="mirror_text"
+)
+
+# Mirror the value in a text input
+st.text_input("Mirrored Value from JavaScript", value=selected_value or "Loading...")
 
 
 
