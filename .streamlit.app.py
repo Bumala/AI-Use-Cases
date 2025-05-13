@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
 from streamlit.components.v1 import html
+from streamlit_js_eval import streamlit_js_eval
  
 # Set Streamlit page layout
 st.set_page_config(layout="wide")
@@ -298,8 +299,7 @@ selected_bar_html = """
 
 
 
-import streamlit as st
-from streamlit_js_eval import streamlit_js_eval
+
 
 # Initial HTML
 selected_bar_html = """
