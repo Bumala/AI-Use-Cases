@@ -316,6 +316,17 @@ selected_bar_html = """
 """
 
 
+# ---------- Selectable attribute list ----------
+
+selected_attributes = [x.strip() for x in selected_raw.split(",") if x.strip() in analysis_table.columns]
+
+if selected_attributes:
+    summed = analysis_table[selected_attributes].sum(axis=1)
+    top_use_case = summed.idxmax()
+    st.success(f"🚀 **Top Use Case:** {top_use_case}")
+else:
+    st.info("👆 Select attributes above to see the top use case.")
+
 
 
 
@@ -416,17 +427,6 @@ html(html_code, height=1200)
 
 
 
-
-# ---------- Selectable attribute list ----------
-
-selected_attributes = [x.strip() for x in selected_raw.split(",") if x.strip() in analysis_table.columns]
-
-if selected_attributes:
-    summed = analysis_table[selected_attributes].sum(axis=1)
-    top_use_case = summed.idxmax()
-    st.success(f"🚀 **Top Use Case:** {top_use_case}")
-else:
-    st.info("👆 Select attributes above to see the top use case.")
 
 
 
