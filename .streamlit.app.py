@@ -141,50 +141,103 @@ else:
 
 # ---------- Generate styled HTML table ----------
 
-def generate_html_table(df):
-    first_col_width = 160
-    second_col_width = 200
-    base_cell_width = 150
-    cell_height = 50
-
-    def style(width, bold=False):
-        bold_style = "font-weight: bold;" if bold else ""
-        return f"text-align: center; vertical-align: middle; padding: 10px; border: 1px solid #000000; width: {width}px; height: {cell_height}px; {bold_style}"
-
-    html = "<table style='border-spacing: 0; width: 100%; border-collapse: collapse; table-layout: fixed; border: 3px solid #000000;'>"
-    for i, row in df.iterrows():
-        html += "<tr>"
-        for j, val in enumerate(row):
-            if pd.isna(val):
-                continue
-            width = first_col_width if j == 0 else (second_col_width if j == 1 else base_cell_width)
-            bg_color = "#E8E8E8" if i == 0 else "#61cbf3" if j == 0 else "#94dcf8" if j == 1 else "#f1fbfe"
-            bold = i == 0 or j <=1
-            attr_name = str(val)
-            highlight = "background-color: #92D050;" if attr_name in selected_attributes else f"background-color: {bg_color};"
-            html += f"<td style='{style(width, bold)} {highlight}'>{val}</td>"
-        html += "</tr>"
-    html += "</table>"
-    return html
-
-# ---------- Show HTML table ----------
-
-st.markdown(
-    """
-    <style>
-        .center-table {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            width: 100%;
-            margin: 0 auto;
-        }
-    </style>
-    """,
-    unsafe_allow_html=True,
-)
-
-st.markdown('<div class="center-table">' + generate_html_table(df) + '</div>', unsafe_allow_html=True)
-
-
+ 
+selected_bar_html = """
+<div id="resetButtonContainer" style="padding: 10px; background-color: #f1fbfe; text-align: center;">
+   <button id="resetButton" style="padding: 10px 20px; background-color: #61cbf3; border: none; border-radius: 5px; cursor: pointer; font-weight: bold;">
+       Reset Selection
+   </button>
+</div>
+<div id="selectedBar" style="margin-bottom: 10px; padding: 10px; background-color: #dceefc; border: 2px solid #61cbf3; border-radius: 8px; font-weight: bold;">
+   Selected Attributes: <span id="selectedItems">None</span>
+</div>
+"""
+ 
+# Wrap the table in a div container to manage zoom and scrolling
+html_code = selected_bar_html + f"""
+<div style="overflow-x: auto; width: 100%; padding: 10px; box-sizing: border-box;">
+   <div class="zoomed-table">
+       {generate_html_table(data, st.session_state.selected)}
+   </div>
+</div>
+""" + interaction_js
+ 
+# Inject update script
+html_code += """
+<script>
+let selectedItems = new Set();
+ 
+function updateSelectedBar() {
+   const bar = document.getElementById("selectedItems");
+   bar.innerText = selectedItems.size === 0 ? "None" : Array.from(selectedItems).join(", ");
+}
+ 
+function handleCellClick(element) {
+   const attr = element.getAttribute('data-attr');
+   const isSelected = element.style.backgroundColor === 'rgb(146, 208, 80)';
+ 
+   // Toggle visual selection
+   element.style.backgroundColor = isSelected ? element.dataset.originalColor : '#92D050';
+ 
+   if (!isSelected) {
+       selectedItems.add(attr);
+   } else {
+       selectedItems.delete(attr);
+   }
+ 
+   updateSelectedBar();
+ 
+   // Notify Streamlit backend
+   window.parent.postMessage({
+       isStreamlitMessage: true,
+       type: 'cellClick',
+       data: { attribute: attr, selected: !isSelected }
+   }, '*');
+}
+ 
+document.addEventListener("DOMContentLoaded", function() {
+   // Store original background color of each cell
+   const cells = document.querySelectorAll('td');
+   cells.forEach(cell => {
+       const original = getComputedStyle(cell).backgroundColor;
+       cell.dataset.originalColor = original;
+   });
+ 
+   document.getElementById('resetButton').addEventListener('click', function() {
+       // Clear selections
+       selectedItems.clear();
+ 
+       // Restore each cell's original background color
+       cells.forEach(cell => {
+           cell.style.backgroundColor = cell.dataset.originalColor;
+       });
+ 
+       updateSelectedBar();
+ 
+       // Optionally notify Streamlit backend
+       window.parent.postMessage({
+           isStreamlitMessage: true,
+           type: 'resetSelection',
+           data: { reset: true }
+       }, '*');
+   });
+ 
+   updateSelectedBar();
+});
+</script>
+"""
+ 
+# Apply the zoom effect to the table
+html_code += """
+<style>
+.zoomed-table {
+   transform: scale(0.75); /* Zoom out to 75% */
+   transform-origin: top center;
+   width: 100%;
+}
+</style>
+"""
+ 
+html(html_code, height=1200)
+ 
 
