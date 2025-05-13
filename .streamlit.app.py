@@ -1623,11 +1623,21 @@ function updateSelectedBar() {
        const column = columns.find(col => col.toLowerCase() === word.toLowerCase());
        if (column) {
            // Perform the sum and calculation for the corresponding column
-           const summed = analysis_table[column].sum(axis=1);  // Assuming analysis_table is accessible in JS context
-           const topUseCase = summed.idxmax();
- 
-           // Update the Top Use Case display
-           topUseCaseText = `🚀 **Top Use Case for ${column}:** ${topUseCase}`;
+           if (analysis_table.length > 0) {
+   let maxVal = -Infinity;
+   let topUseCase = "None";
+
+   analysis_table.forEach(row => {
+       const value = row[column];
+       if (typeof value === "number" && value > maxVal) {
+           maxVal = value;
+           topUseCase = row["Use Case"];
+       }
+   });
+
+   topUseCaseText = `🚀 Top Use Case for ${column}: ${topUseCase}`;
+}
+
        }
    });
  
