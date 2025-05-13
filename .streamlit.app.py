@@ -122,14 +122,28 @@ analysis_table_data = {  # keep your full data here
  
 analysis_table = pd.DataFrame(analysis_table_data)
 analysis_table.set_index("Use Case", inplace=True)
- 
+
+
+
+
+
+
+
 # ---------- Selectable attribute list ----------
- 
-attribute_columns = list(analysis_table.columns)
-selected_attributes = st.multiselect(
-   "Select attributes (these match the table cells you want to 'click'):",
-   attribute_columns,
-)
+
+selected_attributes = [x.strip() for x in selected_raw.split(",") if x.strip() in analysis_table.columns]
+
+if selected_attributes:
+    summed = analysis_table[selected_attributes].sum(axis=1)
+    top_use_case = summed.idxmax()
+    st.success(f"🚀 **Top Use Case:** {top_use_case}")
+else:
+    st.info("👆 Select attributes above to see the top use case.")
+
+
+
+
+
  
 # ---------- Calculate and show top use case ----------
  
@@ -283,6 +297,7 @@ handle_cell_click()
  
  
  
+
 selected_bar_html = """
 <div id="resetButtonContainer" style="padding: 10px; background-color: #f1fbfe; text-align: center;">
   <button id="resetButton" style="padding: 10px 20px; background-color: #61cbf3; border: none; border-radius: 5px; cursor: pointer; font-weight: bold;">
@@ -292,7 +307,48 @@ selected_bar_html = """
 <div id="selectedBar" style="margin-bottom: 10px; padding: 10px; background-color: #dceefc; border: 2px solid #61cbf3; border-radius: 8px; font-weight: bold;">
   Selected Attributes: <span id="selectedItems">None</span>
 </div>
+<input type="hidden" id="selectedAttributesInput" name="selectedAttributes" />
+<script>
+  const selectedItemsSpan = document.getElementById("selectedItems");
+  const hiddenInput = document.getElementById("selectedAttributesInput");
+  let selected = [];
+
+  function updateSelectedDisplay() {
+    selectedItemsSpan.textContent = selected.length > 0 ? selected.join(", ") : "None";
+    hiddenInput.value = selected.join(", ");
+    window.parent.postMessage({ type: "streamlit:setComponentValue", value: hiddenInput.value }, "*");
+  }
+
+  document.querySelectorAll(".selectable-attribute").forEach(el => {
+    el.addEventListener("click", () => {
+      const attr = el.textContent.trim();
+      if (selected.includes(attr)) {
+        selected = selected.filter(a => a !== attr);
+      } else {
+        selected.push(attr);
+      }
+      updateSelectedDisplay();
+    });
+  });
+
+  document.getElementById("resetButton").addEventListener("click", () => {
+    selected = [];
+    updateSelectedDisplay();
+  });
+</script>
 """
+
+
+
+
+
+
+
+
+
+
+
+
  
 # Wrap the table in a div container to manage zoom and scrolling
 html_code = selected_bar_html + f"""
