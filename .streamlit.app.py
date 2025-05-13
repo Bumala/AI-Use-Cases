@@ -26,7 +26,7 @@ df = pd.DataFrame(data)
 
 # ---------- Load analysis table ----------
 
-analysis_table_data = {  # keep your full data here
+analysis_table_data = {
    "Use Case": [
        "AI-infused experiments in R&D",
        "AI-powered manufacturing planning in smart factories",
@@ -59,56 +59,45 @@ analysis_table_data = {  # keep your full data here
        "AI-driven competition analysis",
        "AI-driven vehicles sales prediction"
    ],
-
-    "Quality/Scope/Knowledge": [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2],
+   "Quality/Scope/Knowledge": [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2],
    "Time Efficiency": [2, 2, 2, 0, 0, 0, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 0, 2, 0, 2, 0, 2, 2, 2, 0, 0],
    "Cost": [2, 2, 0, 0, 0, 0, 2, 1, 2, 2, 0, 2, 2, 0, 2, 0, 2, 0, 2, 2, 0, 2, 0, 2, 0, 2, 0, 0, 0, 0],
-
    "Customer Segments": [0, 0, 0, 2, 0, 1, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 2, 2, 0, 0, 2, 2, 2, 2],
    "Value Proposition": [2, 0, 0, 2, 0, 2, 2, 2, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 0, 2, 0, 0, 2, 2, 2, 0, 0, 2, 2, 2],
    "Value Chain": [2, 2, 2, 2, 2, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 0, 0, 2, 2, 2, 2, 2, 0, 0, 0],
    "Revenue Model": [0, 0, 0, 0, 0, 2, 0, 0, 1, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 2, 0, 2],
-   
    "Product Innovation": [2, 0, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 0, 2, 2, 2, 2, 0, 2, 2, 2, 2, 1, 0, 0, 2, 0, 0, 2],
    "Process Innovation": [1, 2, 2, 0, 0, 0, 2, 2, 2, 2, 2, 2, 2, 2, 2, 0, 2, 2, 2, 2, 0, 2, 0, 2, 2, 2, 2, 2, 2, 2],
    "Business Model Innovation": [0, 0, 1, 0, 0, 2, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 1, 2, 0, 0, 0, 0, 2, 0, 2],
-   
    "Exploration": [2, 0, 2, 2, 2, 2, 2, 2, 2, 2, 1, 2, 2, 0, 2, 2, 2, 2, 2, 2, 2, 2, 0, 0, 0, 2, 2, 2, 2, 2],
    "Exploitation": [0, 2, 0, 0, 0, 0, 2, 2, 2, 0, 2, 2, 2, 2, 0, 0, 0, 0, 2, 0, 2, 0, 2, 2, 2, 0, 0, 0, 2, 2],
-   
    "Automaton": [2, 0, 2, 0, 2, 2, 2, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2],
    "Helper": [1, 0, 1, 2, 0, 0, 0, 0, 0, 0, 2, 1, 2, 2, 2, 2, 1, 2, 2, 2, 2, 0, 1, 0, 0, 0, 0, 0, 2, 0],
    "Partner": [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 0, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2],
-   
    "Machine Learning": [2, 2, 2, 2, 0, 0, 2, 0, 0, 0, 0, 0, 2, 2, 2, 0, 2, 2, 2, 2, 0, 0, 0, 2, 0, 0, 0, 2, 0, 2],
    "Deep Learning": [2, 0, 2, 0, 0, 0, 2, 0, 0, 0, 0, 0, 2, 2, 2, 0, 2, 2, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
    "Artificial Neural Networks": [0, 0, 2, 2, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 0, 0, 0, 2, 0, 2],
    "Natural Language Processing": [2, 0, 2, 2, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0],
    "Computer Vision": [0, 0, 2, 0, 0, 0, 2, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
    "Robotics": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-   
    "Descriptive": [1, 0, 0, 2, 2, 0, 0, 0, 0, 0, 2, 0, 0, 2, 0, 0, 2, 0, 0, 2, 2, 2, 2, 2, 2, 0, 2, 2, 2, 0],
    "Diagnostic": [0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 2, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 2, 2, 0, 0, 0, 0, 0],
    "Predictive": [2, 2, 2, 0, 2, 2, 2, 2, 2, 2, 0, 2, 2, 0, 2, 0, 0, 0, 2, 2, 0, 0, 2, 0, 2, 2, 0, 2, 0, 0],
    "Prescriptive": [0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 0, 0, 0, 0, 0],
-   
    "Description/ Summary": [1, 0, 0, 0, 2, 2, 0, 0, 1, 2, 0, 2, 0, 2, 0, 2, 0, 0, 2, 0, 0, 2, 0, 2, 2, 0, 0, 0, 0, 0],
    "Clustering": [0, 0, 0, 2, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 2, 2, 0, 2, 2, 2, 2],
    "Classification": [2, 0, 0, 2, 0, 0, 0, 0, 0, 2, 2, 0, 0, 2, 0, 0, 0, 0, 0, 0, 2, 2, 2, 2, 2, 0, 2, 2, 2, 2],
    "Dependency Analysis": [0, 0, 0, 0, 2, 0, 0, 0, 0, 2, 2, 0, 0, 2, 0, 0, 1, 0, 0, 2, 2, 2, 2, 2, 2, 0, 2, 2, 2, 2],
    "Regression": [1, 1, 2, 0, 2, 2, 2, 2, 2, 2, 0, 2, 2, 0, 2, 0, 2, 2, 0, 2, 0, 2, 2, 2, 2, 2, 2, 2, 2, 2],
-   
    "Customer Data": [2, 0, 2, 0, 2, 2, 2, 2, 2, 2, 2, 2, 2, 0, 2, 2, 2, 2, 2, 2, 0, 1, 1, 2, 2, 2, 2, 2, 2, 1],
    "Machine Data": [0, 1, 2, 2, 0, 0, 0, 0, 0, 2, 0, 2, 2, 0, 0, 0, 0, 0, 0, 0, 2, 0, 2, 0, 2, 0, 0, 2, 0, 1],
    "Business Data (Internal Data)": [2, 2, 2, 0, 2, 2, 2, 2, 2, 2, 2, 0, 1, 2, 2, 2, 2, 2, 2, 2, 2, 0, 1, 2, 2, 0, 0, 2, 2, 2],
    "Market Data": [2, 2, 1, 0, 2, 2, 2, 2, 2, 2, 2, 2, 2, 0, 2, 1, 2, 2, 2, 2, 2, 1, 1, 2, 2, 2, 2, 2, 2, 2],
    "Public & Regulatory Data": [0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 1, 0, 0, 0, 0, 2, 0, 2, 0, 0],
    "Synthetic Data": [2, 0, 0, 0, 0, 0, 1, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 2, 2, 2, 0, 2, 2, 2, 2],
-   
    "Front End": [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 0, 1, 1, 1, 2, 2, 2, 2, 2],
    "Development": [0, 1, 0, 0, 0, 0, 1, 1, 1, 0, 2, 2, 2, 2, 2, 1, 2, 2, 2, 1, 0, 0, 1, 1, 1, 2, 2, 1, 0, 1],
    "Market Introduction": [0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 2, 2, 2, 0, 2, 2, 2, 1],
-   
    "R&D": [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 0, 1, 1, 0, 1, 1, 0, 0, 0, 1, 0, 1, 0, 0, 0, 1, 1, 1, 1],
    "Manufacturing": [0, 1, 0, 0, 0, 0, 1, 1, 1, 0, 2, 2, 2, 2, 2, 1, 2, 2, 2, 2, 0, 0, 1, 0, 1, 0, 2, 2, 0, 1],
    "Marketing & Sales": [0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 2, 0, 2, 2, 2, 0, 2, 2, 0, 0, 2, 2, 1, 0, 0, 0, 0, 0, 0, 1],
@@ -118,29 +107,31 @@ analysis_table_data = {  # keep your full data here
 analysis_table = pd.DataFrame(analysis_table_data)
 analysis_table.set_index("Use Case", inplace=True)
 
-# ---------- Top Use Case Calculation ----------
-
-def calculate_top_use_case(selected_attributes):
-    if selected_attributes:
-        summed = analysis_table[list(selected_attributes)].sum(axis=1)
-        top_use_case = summed.idxmax()
-        return top_use_case
-    return None
-
 # ======= SESSION STATE =======
 if "selected" not in st.session_state:
     st.session_state.selected = set()
 
-# Calculate top use case based on current selections
-top_use_case = calculate_top_use_case(st.session_state.selected)
+# ======= TOP USE CASE CALCULATION =======
+def calculate_top_use_case(selected_attrs):
+    if selected_attrs:
+        # Filter attributes that exist in our analysis table
+        valid_attrs = [attr for attr in selected_attrs if attr in analysis_table.columns]
+        if valid_attrs:
+            summed = analysis_table[valid_attrs].sum(axis=1)
+            top_use_case = summed.idxmax()
+            return top_use_case
+    return None
+
+# Calculate current top use case
+current_top_use_case = calculate_top_use_case(st.session_state.selected)
 
 # Display the top use case
-if top_use_case:
-    st.success(f"🚀 **Top Use Case:** {top_use_case}")
+if current_top_use_case:
+    st.success(f"🚀 **Top Use Case:** {current_top_use_case}")
 else:
     st.info("👆 Select attributes in the table below to see the top use case.")
 
-# ======= PERFECT TABLE LAYOUT GENERATION =======
+# ======= TABLE GENERATION =======
 def generate_html_table(data, selected):
     first_col_width = 160
     second_col_width = 200
@@ -229,97 +220,91 @@ def generate_html_table(data, selected):
 # ======= JAVASCRIPT FOR INTERACTIVITY =======
 interaction_js = """
 <script>
+// Track selected attributes
+let selectedAttributes = new Set();
+
 function handleCellClick(element) {
-  const attr = element.getAttribute('data-attr');
-  const isSelected = element.style.backgroundColor === 'rgb(146, 208, 80)';
- 
-  // Toggle visual selection immediately
-  element.style.backgroundColor = isSelected ? '#f1fbfe' : '#92D050';
- 
-  // Send message to Streamlit
-  window.parent.postMessage({
-      isStreamlitMessage: true,
-      type: 'cellClick',
-      data: {
-          attribute: attr,
-          selected: !isSelected
-      }
-  }, '*');
-  
-  // Update the selected items display
-  updateSelectedItemsDisplay();
+    const attr = element.getAttribute('data-attr');
+    const isSelected = element.style.backgroundColor === 'rgb(146, 208, 80)';
+    
+    // Toggle selection
+    if (isSelected) {
+        element.style.backgroundColor = '#f1fbfe';
+        selectedAttributes.delete(attr);
+    } else {
+        element.style.backgroundColor = '#92D050';
+        selectedAttributes.add(attr);
+    }
+    
+    // Update the display
+    updateSelectedDisplay();
+    
+    // Send message to Streamlit with ALL selected attributes
+    window.parent.postMessage({
+        isStreamlitMessage: true,
+        type: 'tableSelection',
+        data: Array.from(selectedAttributes)
+    }, '*');
 }
 
-function updateSelectedItemsDisplay() {
-  const selectedCells = document.querySelectorAll('td[data-attr]');
-  const selectedItems = [];
-  
-  selectedCells.forEach(cell => {
-    if (cell.style.backgroundColor === 'rgb(146, 208, 80)') {
-      selectedItems.push(cell.getAttribute('data-attr'));
+function updateSelectedDisplay() {
+    const displayElement = document.getElementById('selectedItemsDisplay');
+    if (selectedAttributes.size > 0) {
+        displayElement.textContent = Array.from(selectedAttributes).join(', ');
+    } else {
+        displayElement.textContent = 'None';
     }
-  });
-  
-  const displayElement = document.getElementById('selectedItemsDisplay');
-  if (selectedItems.length > 0) {
-    displayElement.innerHTML = selectedItems.join(', ');
-  } else {
-    displayElement.innerHTML = 'None';
-  }
 }
 
 document.addEventListener("DOMContentLoaded", function() {
-  // Initialize selected items display
-  updateSelectedItemsDisplay();
-  
-  // Store original background color of each cell
-  const cells = document.querySelectorAll('td');
-  cells.forEach(cell => {
-      const original = getComputedStyle(cell).backgroundColor;
-      cell.dataset.originalColor = original;
-  });
-
-  document.getElementById('resetButton').addEventListener('click', function() {
-      // Clear selections
-      const selectedCells = document.querySelectorAll('td[data-attr]');
-      selectedCells.forEach(cell => {
-          cell.style.backgroundColor = cell.dataset.originalColor;
-      });
-      
-      // Notify Streamlit backend
-      window.parent.postMessage({
-          isStreamlitMessage: true,
-          type: 'resetSelection',
-          data: { reset: true }
-      }, '*');
-      
-      // Update the display
-      updateSelectedItemsDisplay();
-  });
+    // Initialize selected attributes from Streamlit
+    const initialSelections = %s;
+    if (initialSelections && initialSelections.length > 0) {
+        initialSelections.forEach(attr => {
+            const elements = document.querySelectorAll(`td[data-attr="${attr}"]`);
+            elements.forEach(el => {
+                el.style.backgroundColor = '#92D050';
+                selectedAttributes.add(attr);
+            });
+        });
+        updateSelectedDisplay();
+    }
+    
+    // Reset button functionality
+    document.getElementById('resetButton').addEventListener('click', function() {
+        // Clear all selections visually
+        document.querySelectorAll('td[data-attr]').forEach(el => {
+            el.style.backgroundColor = '#f1fbfe';
+        });
+        
+        // Clear the set
+        selectedAttributes.clear();
+        updateSelectedDisplay();
+        
+        // Notify Streamlit
+        window.parent.postMessage({
+            isStreamlitMessage: true,
+            type: 'tableSelection',
+            data: []
+        }, '*');
+    });
 });
 </script>
-"""
+""" % list(st.session_state.selected)
 
-# ======= HANDLE CELL CLICKS =======
-def handle_cell_click():
-    if st.session_state.get('cell_click'):
-        attr = st.session_state.cell_click['attribute']
-        if st.session_state.cell_click['selected']:
-            st.session_state.selected.add(attr)
-        else:
-            st.session_state.selected.discard(attr)
-        st.experimental_rerun()
+# ======= HANDLE STREAMLIT MESSAGES =======
+def handle_table_selection():
+    # Check for new messages from the frontend
+    if st.session_state.get('table_selection') is not None:
+        # Update our selected attributes
+        new_selection = set(st.session_state.table_selection)
+        if new_selection != st.session_state.selected:
+            st.session_state.selected = new_selection
+            st.experimental_rerun()
 
-def handle_reset_selection():
-    if st.session_state.get('reset_selection'):
-        st.session_state.selected = set()
-        st.experimental_rerun()
-
-# Initialize and handle clicks
-st.session_state.cell_click = None
-st.session_state.reset_selection = None
-handle_cell_click()
-handle_reset_selection()
+# Initialize message handlers
+st.session_state.table_selection = None
+handle_table_selection()
 
 # Selected attributes display
 selected_bar_html = f"""
@@ -346,11 +331,28 @@ html_code = selected_bar_html + f"""
 html_code += """
 <style>
 .zoomed-table {
-  transform: scale(0.75); /* Zoom out to 75% */
+  transform: scale(0.75);
   transform-origin: top center;
   width: 100%;
 }
 </style>
 """
 
+# Inject the HTML with a component to handle messages
 html(html_code, height=1200)
+
+# JavaScript to handle Streamlit message passing
+st.components.v1.html("""
+<script>
+// Listen for messages from the iframe content
+window.addEventListener("message", function(event) {
+    if (event.data.isStreamlitMessage) {
+        if (event.data.type === "tableSelection") {
+            // Send the selection data to Streamlit
+            const data = event.data.data;
+            Streamlit.setComponentValue(data);
+        }
+    }
+});
+</script>
+""", height=0)
