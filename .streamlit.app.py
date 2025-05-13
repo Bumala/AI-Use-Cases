@@ -7,30 +7,25 @@ import json
 st.set_page_config(layout="wide")
 
 # ---------- Data for the HTML table ----------
-
 data = [
-   ["Category", "Dimension", "Attributes"],
-   ["Impact (What)", "Benefits", "Quality/Scope/Knowledge", "Time Efficiency", "Cost"],
-   [None, "Focus within Business Model Navigator", "Customer Segments", "Value Proposition", "Value Chain", "Revenue Model"],
-   [None, "Aim", "Product Innovation", "Process Innovation", "Business Model Innovation"],
-   [None, "Ambidexterity", "Exploration", "Exploitation"],
-   ["Technology (How)", "AI Role", "Automaton", "Helper", "Partner"],
-   [None, "AI Concepts", "Machine Learning", "Deep Learning", "Artificial Neural Networks", "Natural Language Processing", "Computer Vision", "Robotics"],
-   [None, "Analytics Focus", "Descriptive", "Diagnostic", "Predictive", "Prescriptive"],
-   [None, "Analytics Problem", "Description/ Summary", "Clustering", "Classification", "Dependency Analysis", "Regression"],
-   [None, "Data Type", "Customer Data", "Machine Data", "Business Data (Internal Data)", "Market Data", "Public & Regulatory Data", "Synthetic Data"],
-   ["Context (Where/When)", "Innovation Phase", "Front End", "Development", "Market Introduction"],
-   [None, "Department", "R&D", "Manufacturing", "Marketing & Sales", "Customer Service"],
+    ["Category", "Dimension", "Attributes"],
+    ["Impact (What)", "Benefits", "Quality/Scope/Knowledge", "Time Efficiency", "Cost"],
+    [None, "Focus within Business Model Navigator", "Customer Segments", "Value Proposition", "Value Chain", "Revenue Model"],
+    [None, "Aim", "Product Innovation", "Process Innovation", "Business Model Innovation"],
+    [None, "Ambidexterity", "Exploration", "Exploitation"],
+    ["Technology (How)", "AI Role", "Automaton", "Helper", "Partner"],
+    [None, "AI Concepts", "Machine Learning", "Deep Learning", "Artificial Neural Networks", "Natural Language Processing", "Computer Vision", "Robotics"],
+    [None, "Analytics Focus", "Descriptive", "Diagnostic", "Predictive", "Prescriptive"],
+    [None, "Analytics Problem", "Description/ Summary", "Clustering", "Classification", "Dependency Analysis", "Regression"],
+    [None, "Data Type", "Customer Data", "Machine Data", "Business Data (Internal Data)", "Market Data", "Public & Regulatory Data", "Synthetic Data"],
+    ["Context (Where/When)", "Innovation Phase", "Front End", "Development", "Market Introduction"],
+    [None, "Department", "R&D", "Manufacturing", "Marketing & Sales", "Customer Service"],
 ]
 
-df = pd.DataFrame(data)
-
 # ---------- Load analysis table ----------
-
 analysis_table_data = {
-   
-  "Use Case" : [
-  "AI-infused experiments in R&D",
+               "Use Case": [
+       "AI-infused experiments in R&D",
        "AI-powered manufacturing planning in smart factories",
        "AI-driven Human-Machine Collaboration in ideation",
        "AI-enabled idea generation in the Metaverse",
@@ -118,19 +113,56 @@ analysis_table_data = {
    "Marketing & Sales": [0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 2, 0, 2, 2, 2, 0, 2, 2, 0, 0, 2, 2, 1, 0, 0, 0, 0, 0, 0, 1],
    "Customer Service": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 1, 2, 2, 2, 2, 2, 2, 2]
  
+ 
 
+
+
+
+
+    
 }
-
 analysis_table = pd.DataFrame(analysis_table_data)
 analysis_table.set_index("Use Case", inplace=True)
 
 # ======= SESSION STATE =======
-if "selected_attrs" not in st.session_state:
-    st.session_state.selected_attrs = []
-if "current_selection" not in st.session_state:
-    st.session_state.current_selection = "None"
+if "selected" not in st.session_state:
+    st.session_state.selected = set()
 
-# ======= TABLE GENERATION =======
+if "attr_multiselect" not in st.session_state:
+    st.session_state.attr_multiselect = []
+
+# Initialize selected_attributes from session state
+selected_attributes = list(st.session_state.selected)
+
+# ---------- Selectable attribute list ----------
+attribute_columns = list(analysis_table.columns)
+
+# Create container for the multiselect
+multiselect_container = st.container()
+
+# Display the initial multiselect with current selections
+with multiselect_container:
+    selected_attributes = st.multiselect(
+        "Selected attributes (automatically synchronized with your table selections):",
+        attribute_columns,
+        default=st.session_state.attr_multiselect,
+        key="attr_multiselect_widget"
+    )
+
+# Update session state when dropdown changes
+if set(selected_attributes) != st.session_state.selected:
+    st.session_state.selected = set(selected_attributes)
+    st.session_state.attr_multiselect = selected_attributes
+
+# ---------- Calculate and show top use case ----------
+if selected_attributes:
+    summed = analysis_table[selected_attributes].sum(axis=1)
+    top_use_case = summed.idxmax()
+    st.success(f"🚀 **Top Use Case:** {top_use_case}")
+else:
+    st.info("👆 Select attributes by clicking cells in the table below to see the top use case.")
+
+# ======= PERFECT TABLE LAYOUT GENERATION =======
 def generate_html_table(data, selected):
     first_col_width = 160
     second_col_width = 200
@@ -216,172 +248,154 @@ def generate_html_table(data, selected):
     html += "</table>"
     return html
 
-# ======= TOP USE CASE CALCULATION =======
-def calculate_top_use_case(selected_attrs):
-    if not selected_attrs or selected_attrs == ["None"]:
-        return None
-    
-    valid_attrs = [attr for attr in selected_attrs if attr in analysis_table.columns]
-    
-    if not valid_attrs:
-        return None
-    
-    try:
-        summed = analysis_table[valid_attrs].sum(axis=1)
-        return summed.idxmax()
-    except Exception as e:
-        st.error(f"Error calculating top use case: {str(e)}")
-        return None
-
-# ======= MAIN APP =======
-# Display the top use case
-top_use_case = calculate_top_use_case(st.session_state.selected_attrs)
-if top_use_case:
-    st.success(f"🚀 **Top Use Case:** {top_use_case}")
-else:
-    st.info("👆 Click on attributes in the table to see the top use case")
-
-# JavaScript to extract selected items from the bar
-js_code = f"""
+# ======= JAVASCRIPT FOR INTERACTIVITY =======
+interaction_js = f"""
 <script>
-// Track selected items
-let selectedItems = {json.dumps(st.session_state.selected_attrs)};
+// Track selected items globally
+let selectedItems = new Set({json.dumps(list(st.session_state.selected))});
 
-function updateSelectedBar() {{
-    const bar = document.getElementById("selectedItems");
-    if (selectedItems.length === 0 || (selectedItems.length === 1 && selectedItems[0] === "None")) {{
-        bar.innerText = "None";
-    }} else {{
-        bar.innerText = selectedItems.join(", ");
-    }}
-    
-    // Send current selection to Python
+function updateStreamlit() {{
+    // Send selected items to Streamlit
+    const selections = Array.from(selectedItems);
     window.parent.postMessage({{
         isStreamlitMessage: true,
-        type: 'selectionUpdate',
-        data: {{ 
-            selected: selectedItems,
-            selectionText: bar.innerText
-        }}
+        type: 'updateSelections',
+        data: selections
     }}, '*');
 }}
 
 function handleCellClick(element) {{
     const attr = element.getAttribute('data-attr');
     const isSelected = element.style.backgroundColor === 'rgb(146, 208, 80)';
-
+    
     // Toggle visual selection
     element.style.backgroundColor = isSelected ? element.dataset.originalColor : '#92D050';
-
-    // Update selected items
+    
     if (!isSelected) {{
-        if (!selectedItems.includes(attr)) {{
-            if (selectedItems[0] === "None") {{
-                selectedItems = [attr];
-            }} else {{
-                selectedItems.push(attr);
-            }}
-        }}
+        selectedItems.add(attr);
     }} else {{
-        selectedItems = selectedItems.filter(item => item !== attr);
-        if (selectedItems.length === 0) {{
-            selectedItems = ["None"];
-        }}
+        selectedItems.delete(attr);
     }}
-
-    updateSelectedBar();
-}}
-
-function resetSelection() {{
-    // Clear selections
-    selectedItems = ["None"];
     
-    // Reset all cell colors
-    document.querySelectorAll('td[data-attr]').forEach(cell => {{
-        cell.style.backgroundColor = cell.dataset.originalColor;
-    }});
+    // Update selected items display
+    const bar = document.getElementById("selectedItems");
+    bar.innerText = selectedItems.size === 0 ? "None" : Array.from(selectedItems).join(", ");
     
-    updateSelectedBar();
+    // Update Streamlit
+    updateStreamlit();
 }}
 
 document.addEventListener("DOMContentLoaded", function() {{
     // Store original background color of each cell
-    document.querySelectorAll('td').forEach(cell => {{
+    const cells = document.querySelectorAll('td');
+    cells.forEach(cell => {{
         const original = getComputedStyle(cell).backgroundColor;
         cell.dataset.originalColor = original;
-    }});
-
-    // Initialize selected items
-    updateSelectedBar();
-    
-    // Highlight initially selected cells
-    document.querySelectorAll('td[data-attr]').forEach(cell => {{
+        
+        // Initialize selected cells
         const attr = cell.getAttribute('data-attr');
-        if (selectedItems.includes(attr)) {{
+        if (attr && selectedItems.has(attr)) {{
             cell.style.backgroundColor = '#92D050';
         }}
     }});
-
-    // Set up reset button
-    document.getElementById('resetButton').addEventListener('click', resetSelection);
-}});
-
-// Listen for messages from Streamlit
-window.addEventListener('message', function(event) {{
-    const data = event.data;
-    if (data.isStreamlitMessage && data.type === 'initialSelection') {{
-        selectedItems = data.data.selected || ["None"];
-        updateSelectedBar();
-    }}
+    
+    document.getElementById('resetButton').addEventListener('click', function() {{
+        // Clear selections
+        selectedItems.clear();
+        
+        // Restore each cell's original background color
+        cells.forEach(cell => {{
+            cell.style.backgroundColor = cell.dataset.originalColor;
+        }});
+        
+        // Update display
+        document.getElementById("selectedItems").innerText = "None";
+        
+        // Update Streamlit
+        updateStreamlit();
+    }});
+    
+    // Initialize display
+    document.getElementById("selectedItems").innerText = 
+        selectedItems.size === 0 ? "None" : Array.from(selectedItems).join(", ");
 }});
 </script>
 """
 
-# HTML layout
-html_layout = f"""
+# ======= HANDLE MESSAGES FROM JAVASCRIPT =======
+def handle_js_messages():
+    # Check if we have a new message from JavaScript
+    if hasattr(st.session_state, 'js_message') and st.session_state.js_message:
+        message = st.session_state.js_message
+        if message['type'] == 'updateSelections':
+            # Update session state with new selections
+            new_selections = set(message['data'])
+            if new_selections != st.session_state.selected:
+                st.session_state.selected = new_selections
+                st.session_state.attr_multiselect = message['data']
+
+# Initialize message handling
+if 'js_message' not in st.session_state:
+    st.session_state.js_message = None
+handle_js_messages()
+
+# ======= SELECTED BAR AND TABLE =======
+selected_bar_html = """
 <div id="resetButtonContainer" style="padding: 10px; background-color: #f1fbfe; text-align: center;">
     <button id="resetButton" style="padding: 10px 20px; background-color: #61cbf3; border: none; border-radius: 5px; cursor: pointer; font-weight: bold;">
         Reset Selection
     </button>
 </div>
 <div id="selectedBar" style="margin-bottom: 10px; padding: 10px; background-color: #dceefc; border: 2px solid #61cbf3; border-radius: 8px; font-weight: bold;">
-    Selected Attributes: <span id="selectedItems">{', '.join(st.session_state.selected_attrs) if st.session_state.selected_attrs else 'None'}</span>
+    Selected Attributes: <span id="selectedItems">None</span>
 </div>
+"""
+
+# JavaScript to handle Streamlit communication
+streamlit_js = """
+<script>
+// Function to handle messages from Streamlit
+function handleStreamlitMessage(event) {
+    if (event.data.isStreamlitMessage) {
+        if (event.data.type === 'updateSelections') {
+            window.parent.postMessage({
+                isStreamlitMessage: true,
+                type: 'js_message',
+                data: event.data
+            }, '*');
+        }
+    }
+}
+
+// Listen for messages from the iframe
+window.addEventListener('message', handleStreamlitMessage);
+</script>
+"""
+
+# Generate the full HTML
+html_code = selected_bar_html + f"""
 <div style="overflow-x: auto; width: 100%; padding: 10px; box-sizing: border-box;">
     <div class="zoomed-table">
-        {generate_html_table(data)}
+        {generate_html_table(data, st.session_state.selected)}
     </div>
 </div>
-{js_code}
+""" + interaction_js + streamlit_js
+
+# Add styling
+html_code += """
 <style>
-.zoomed-table {{
+.zoomed-table {
     transform: scale(0.75);
     transform-origin: top center;
     width: 100%;
-}}
+}
+td:hover {
+    box-shadow: 0 0 5px rgba(0,0,0,0.3);
+    transform: scale(1.02);
+    transition: all 0.2s ease;
+}
 </style>
 """
 
-# Handle messages from JavaScript
-if st.session_state.get('selection_update'):
-    new_selection = st.session_state.selection_update.get('selected', [])
-    st.session_state.selected_attrs = new_selection if new_selection != ["None"] else []
-    st.session_state.current_selection = st.session_state.selection_update.get('selectionText', 'None')
-    st.experimental_rerun()
-
-# Display the component
-html(html_layout, height=1200)
-
-# Initialize component with current selection
-html(f"""
-<script>
-window.parent.postMessage({{
-    isStreamlitMessage: true,
-    type: 'initialSelection',
-    data: {{ 
-        selected: {json.dumps(st.session_state.selected_attrs)},
-        selectionText: "{', '.join(st.session_state.selected_attrs) if st.session_state.selected_attrs else 'None'}"
-    }}
-}}, '*');
-</script>
-""")
+# Display the HTML
+html(html_code, height=1200)
