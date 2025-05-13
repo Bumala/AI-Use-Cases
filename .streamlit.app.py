@@ -1,5 +1,6 @@
 import streamlit as st
 import pandas as pd
+from streamlit.components.v1 import html
 
 # Set Streamlit page layout
 st.set_page_config(layout="wide")
