@@ -180,7 +180,7 @@ handle_cell_click()
  
 # ======= USE CASE ANALYSIS =======
 
-const analysis_table = [
+analysis_table = [
  {
    "Use Case": "AI-infused experiments in R&D",
    "Quality/Scope/Knowledge": 2,
@@ -1563,6 +1563,20 @@ const analysis_table = [
  },
 ];
 
+
+
+analysis_table_json = json.dumps(analysis_table)
+
+
+
+
+html_code = analysis_table_js + selected_bar_html + f"""
+<div style="overflow-x: auto; width: 100%; padding: 10px; box-sizing: border-box;">
+    <div class="zoomed-table">
+        {generate_html_table(data, st.session_state.selected)}
+    </div>
+</div>
+""" + interaction_js
 
 
 
