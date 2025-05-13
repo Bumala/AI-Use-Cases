@@ -293,6 +293,75 @@ selected_bar_html = """
   Selected Attributes: <span id="selectedItems">None</span>
 </div>
 """
+
+
+
+
+
+
+
+
+
+# HTML snippet
+selected_bar_html = """
+<div id="resetButtonContainer" style="padding: 10px; background-color: #f1fbfe; text-align: center;">
+  <button id="resetButton" style="padding: 10px 20px; background-color: #61cbf3; border: none; border-radius: 5px; cursor: pointer; font-weight: bold;">
+      Reset Selection
+  </button>
+</div>
+<div id="selectedBar" style="margin-bottom: 10px; padding: 10px; background-color: #dceefc; border: 2px solid #61cbf3; border-radius: 8px; font-weight: bold;">
+  Selected Attributes: <span id="selectedItems">None</span>
+</div>
+<script>
+  const streamlitDoc = window.parent.document;
+
+  function updateStreamlitInput(value) {
+      const input = streamlitDoc.querySelector('input[data-testid="stTextInput"]');
+      if (input) {
+          input.value = value;
+          input.dispatchEvent(new Event('input', { bubbles: true }));
+      }
+  }
+
+  // Simulate selection change (for demo); replace this with your actual selection logic
+  document.getElementById("selectedItems").innerText = "Height, Width, Depth";
+  updateStreamlitInput("Height, Width, Depth");
+
+  // Reset button logic
+  document.getElementById("resetButton").onclick = () => {
+      document.getElementById("selectedItems").innerText = "None";
+      updateStreamlitInput("None");
+  };
+</script>
+"""
+
+st.markdown("### Mirrored Text Input (from selected bar)")
+mirrored_text = st.text_input("Selected Attributes")
+
+html(selected_bar_html, height=200)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
  
 # Wrap the table in a div container to manage zoom and scrolling
 html_code = selected_bar_html + f"""
