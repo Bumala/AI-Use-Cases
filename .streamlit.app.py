@@ -381,14 +381,24 @@ html_code = f"""
  
 # Add styling
 html_code += """
+<div style="overflow-x: auto; width: 100%; padding: 10px; box-sizing: border-box;">
+    <div class="zoomed-table">
+        {generate_html_table(data, st.session_state.selected)}
+    </div>
+</div>
 <style>
 .zoomed-table {
-   transform: scale(0.75);
-   transform-origin: top center;
-   width: 100%;
+    transform: scale(0.75);
+    transform-origin: top center;
+    width: 100%;
 }
-
+td:hover {
+    box-shadow: 0 0 5px rgba(0,0,0,0.3);
+    transform: scale(1.02);
+    transition: all 0.2s ease;
+}
 </style>
+"""  
 
  
 # Display the HTML
