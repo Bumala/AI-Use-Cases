@@ -1,6 +1,6 @@
 import streamlit as st
 import pandas as pd
-from streamlit.components.v1 import html as st_html
+from streamlit.components.v1 import html
 import json
 
 # Set Streamlit page layout
@@ -24,7 +24,7 @@ data = [
 
 # ---------- Load analysis table ----------
 analysis_table_data = {
-    "Use Case": [
+               "Use Case": [
        "AI-infused experiments in R&D",
        "AI-powered manufacturing planning in smart factories",
        "AI-driven Human-Machine Collaboration in ideation",
@@ -114,6 +114,12 @@ analysis_table_data = {
    "Customer Service": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 1, 2, 2, 2, 2, 2, 2, 2]
  
  
+
+
+
+
+
+    
 }
 analysis_table = pd.DataFrame(analysis_table_data)
 analysis_table.set_index("Use Case", inplace=True)
@@ -131,24 +137,30 @@ selected_attributes = list(st.session_state.selected)
 # ---------- Selectable attribute list ----------
 attribute_columns = list(analysis_table.columns)
 
-# Create container for the display
-with st.container():
-    # Display-only multiselect to show selected attributes
-    selected_display = st.multiselect(
-        "Selected attributes (select in table below):",
+# Create container for the multiselect
+multiselect_container = st.container()
+
+# Display the initial multiselect with current selections
+with multiselect_container:
+    selected_attributes = st.multiselect(
+        "Selected attributes (automatically synchronized with your table selections):",
         attribute_columns,
         default=st.session_state.attr_multiselect,
-        disabled=True,
-        key="attr_display"
+        key="attr_multiselect_widget"
     )
-    
-    # ---------- Calculate and show top use case ----------
-    if selected_attributes:
-        summed = analysis_table[selected_attributes].sum(axis=1)
-        top_use_case = summed.idxmax()
-        st.success(f"🚀 **Top Use Case:** {top_use_case}")
-    else:
-        st.info("👆 Select attributes in the table below to see the top use case.")
+
+# Update session state when dropdown changes
+if set(selected_attributes) != st.session_state.selected:
+    st.session_state.selected = set(selected_attributes)
+    st.session_state.attr_multiselect = selected_attributes
+
+# ---------- Calculate and show top use case ----------
+if selected_attributes:
+    summed = analysis_table[selected_attributes].sum(axis=1)
+    top_use_case = summed.idxmax()
+    st.success(f"🚀 **Top Use Case:** {top_use_case}")
+else:
+    st.info("👆 Select attributes by clicking cells in the table below to see the top use case.")
 
 # ======= PERFECT TABLE LAYOUT GENERATION =======
 def generate_html_table(data, selected):
@@ -188,7 +200,7 @@ def generate_html_table(data, selected):
 
             # Determine if this is an attribute cell that can be selected
             is_attribute = (i > 0 and j >= 2)
-            click_attr = f"onclick='handleCellClick(this, event)' data-attr='{val}'" if is_attribute else ""
+            click_attr = f"onclick='handleCellClick(this)' data-attr='{val}'" if is_attribute else ""
             cell_class = " class='selected'" if val in selected and is_attribute else ""
            
             # Base cell style
@@ -243,57 +255,46 @@ interaction_js = f"""
 let selectedItems = new Set({json.dumps(list(st.session_state.selected))});
 
 function updateStreamlit() {{
-    // Send message to Streamlit component
+    // Send selected items to Streamlit
     const selections = Array.from(selectedItems);
-    const message = {{
+    window.parent.postMessage({{
         isStreamlitMessage: true,
         type: 'updateSelections',
         data: selections
-    }};
-    
-    // Send message through the proper channel
-    window.parent.postMessage(message, '*');
+    }}, '*');
 }}
 
-function handleCellClick(element, event) {{
+function handleCellClick(element) {{
     const attr = element.getAttribute('data-attr');
     const isSelected = element.style.backgroundColor === 'rgb(146, 208, 80)';
     
-    // Allow multiple selection with Ctrl/Cmd key
-    if (!event.ctrlKey && !event.metaKey && !isSelected) {{
-        // If not holding Ctrl/Cmd and selecting new item, clear others
-        document.querySelectorAll('td[data-attr]').forEach(cell => {{
-            cell.style.backgroundColor = cell.dataset.originalColor;
-        }});
-        selectedItems.clear();
-    }}
+    // Toggle visual selection
+    element.style.backgroundColor = isSelected ? element.dataset.originalColor : '#92D050';
     
-    // Toggle selection
     if (!isSelected) {{
-        element.style.backgroundColor = '#92D050';
         selectedItems.add(attr);
     }} else {{
-        element.style.backgroundColor = element.dataset.originalColor;
         selectedItems.delete(attr);
     }}
     
-    // Update the selected items display
-    document.getElementById("selectedItems").innerText = 
-        selectedItems.size === 0 ? "None" : Array.from(selectedItems).join(", ");
+    // Update selected items display
+    const bar = document.getElementById("selectedItems");
+    bar.innerText = selectedItems.size === 0 ? "None" : Array.from(selectedItems).join(", ");
     
+    // Update Streamlit
     updateStreamlit();
 }}
 
 document.addEventListener("DOMContentLoaded", function() {{
     // Store original background color of each cell
-    const cells = document.querySelectorAll('td[data-attr]');
+    const cells = document.querySelectorAll('td');
     cells.forEach(cell => {{
         const original = getComputedStyle(cell).backgroundColor;
         cell.dataset.originalColor = original;
         
         // Initialize selected cells
         const attr = cell.getAttribute('data-attr');
-        if (selectedItems.has(attr)) {{
+        if (attr && selectedItems.has(attr)) {{
             cell.style.backgroundColor = '#92D050';
         }}
     }});
@@ -310,6 +311,7 @@ document.addEventListener("DOMContentLoaded", function() {{
         // Update display
         document.getElementById("selectedItems").innerText = "None";
         
+        // Update Streamlit
         updateStreamlit();
     }});
     
@@ -322,17 +324,19 @@ document.addEventListener("DOMContentLoaded", function() {{
 
 # ======= HANDLE MESSAGES FROM JAVASCRIPT =======
 def handle_js_messages():
-    # Get the latest message from component
-    if hasattr(st.session_state, '_component_messages'):
-        for message in st.session_state._component_messages:
-            if message.get('type') == 'updateSelections':
-                new_selections = set(message['data'])
-                if new_selections != st.session_state.selected:
-                    st.session_state.selected = new_selections
-                    st.session_state.attr_multiselect = message['data']
-                    st.rerun()
+    # Check if we have a new message from JavaScript
+    if hasattr(st.session_state, 'js_message') and st.session_state.js_message:
+        message = st.session_state.js_message
+        if message['type'] == 'updateSelections':
+            # Update session state with new selections
+            new_selections = set(message['data'])
+            if new_selections != st.session_state.selected:
+                st.session_state.selected = new_selections
+                st.session_state.attr_multiselect = message['data']
 
 # Initialize message handling
+if 'js_message' not in st.session_state:
+    st.session_state.js_message = None
 handle_js_messages()
 
 # ======= SELECTED BAR AND TABLE =======
@@ -347,6 +351,27 @@ selected_bar_html = """
 </div>
 """
 
+# JavaScript to handle Streamlit communication
+streamlit_js = """
+<script>
+// Function to handle messages from Streamlit
+function handleStreamlitMessage(event) {
+    if (event.data.isStreamlitMessage) {
+        if (event.data.type === 'updateSelections') {
+            window.parent.postMessage({
+                isStreamlitMessage: true,
+                type: 'js_message',
+                data: event.data
+            }, '*');
+        }
+    }
+}
+
+// Listen for messages from the iframe
+window.addEventListener('message', handleStreamlitMessage);
+</script>
+"""
+
 # Generate the full HTML
 html_code = selected_bar_html + f"""
 <div style="overflow-x: auto; width: 100%; padding: 10px; box-sizing: border-box;">
@@ -354,7 +379,7 @@ html_code = selected_bar_html + f"""
         {generate_html_table(data, st.session_state.selected)}
     </div>
 </div>
-""" + interaction_js
+""" + interaction_js + streamlit_js
 
 # Add styling
 html_code += """
@@ -372,9 +397,5 @@ td:hover {
 </style>
 """
 
-# Display the HTML with proper component handling
-st_html(html_code, height=1200)
-
-# Force update the display at the end
-if hasattr(st.session_state, 'attr_multiselect'):
-    st.session_state.attr_display = st.session_state.attr_multiselect
+# Display the HTML
+html(html_code, height=1200)
