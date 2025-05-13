@@ -180,7 +180,7 @@ handle_cell_click()
  
 # ======= USE CASE ANALYSIS =======
 
-analysis_table = [
+const analysis_table = [
  {
    "Use Case": "AI-infused experiments in R&D",
    "Quality/Scope/Knowledge": 2,
@@ -1561,7 +1561,7 @@ analysis_table = [
    "Marketing & Sales": 1,
    "Customer Service": 0
  },
-]
+];
 
 
 
@@ -1704,5 +1704,58 @@ html_code += """
 html(html_code, height=1200)
  
  
- 
- 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ function calculateTopUseCase(columnName) {
+    let maxSum = 0;
+    let topUseCase = "None";
+
+    analysis_table.forEach(row => {
+        if (row[columnName] > maxSum) {
+            maxSum = row[columnName];
+            topUseCase = row["Use Case"];
+        }
+    });
+
+    return topUseCase;
+}
+
+
+
+
+
+
+
+
+
+
+
+function updateSelectedBar() {
+    const bar = document.getElementById("selectedItems");
+    const selectedText = selectedItems.size === 0 ? "None" : Array.from(selectedItems).join(", ");
+    bar.innerText = selectedText;
+
+    let topUseCaseText = "None";
+
+    if (selectedItems.size > 0) {
+        selectedItems.forEach(attribute => {
+            const topUseCase = calculateTopUseCase(attribute);
+            topUseCaseText = `🚀 Top Use Case for ${attribute}: ${topUseCase}`;
+        });
+    }
+
+    document.getElementById("topUseCase").innerText = topUseCaseText;
+}
