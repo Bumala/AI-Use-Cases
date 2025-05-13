@@ -125,6 +125,7 @@ analysis_table.set_index("Use Case", inplace=True)
 
 
 
+selected_raw = st.text_input("Selected Attributes", key="selected_attributes")
 
 
 
