@@ -24,6 +24,89 @@ data = [
 
 df = pd.DataFrame(data)
 
+
+
+
+<script>
+let selectedItems = new Set();
+
+function updateSelectedBar() {
+    const bar = document.getElementById("selectedItems");
+    const selectedText = selectedItems.size === 0 ? "None" : Array.from(selectedItems).join(", ");
+    bar.innerText = selectedText;
+
+    // Send selected attributes to Streamlit
+    window.parent.postMessage({
+        isStreamlitMessage: true,
+        type: 'updateSelectedAttributes',
+        data: Array.from(selectedItems)  // Send selected attributes as an array
+    }, '*');
+}
+
+function handleCellClick(element) {
+    const attr = element.getAttribute('data-attr');
+    const isSelected = element.style.backgroundColor === 'rgb(146, 208, 80)';
+
+    // Toggle visual selection
+    element.style.backgroundColor = isSelected ? element.dataset.originalColor : '#92D050';
+
+    if (!isSelected) {
+        selectedItems.add(attr);
+    } else {
+        selectedItems.delete(attr);
+    }
+
+    updateSelectedBar();
+}
+
+document.addEventListener("DOMContentLoaded", function() {
+    const cells = document.querySelectorAll('td');
+    cells.forEach(cell => {
+        const original = getComputedStyle(cell).backgroundColor;
+        cell.dataset.originalColor = original;
+    });
+
+    document.getElementById('resetButton').addEventListener('click', function() {
+        selectedItems.clear();
+        cells.forEach(cell => {
+            cell.style.backgroundColor = cell.dataset.originalColor;
+        });
+        updateSelectedBar();
+    });
+
+    updateSelectedBar();
+});
+</script>
+
+
+
+
+
+
+
+
+
+# Add a placeholder for JavaScript messages
+if "selected_attributes" not in st.session_state:
+    st.session_state.selected_attributes = []
+
+# Listen for messages from JavaScript
+st.experimental_data_editor("selected_attributes")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 # ---------- Load analysis table ----------
 
 analysis_table_data = {  # keep your full data here
@@ -133,12 +216,35 @@ selected_attributes = st.multiselect(
 
 # ---------- Calculate and show top use case ----------
 
-if selected_attributes:
-    summed = analysis_table[selected_attributes].sum(axis=1)
+
+
+
+
+# Check if there are selected attributes
+if st.session_state.selected_attributes:
+    summed = analysis_table[st.session_state.selected_attributes].sum(axis=1)
     top_use_case = summed.idxmax()
     st.success(f"🚀 **Top Use Case:** {top_use_case}")
 else:
     st.info("👆 Select attributes above to see the top use case.")
+
+
+
+
+
+
+
+
+
+
+
+
+#if selected_attributes:
+   # summed = analysis_table[selected_attributes].sum(axis=1)
+   # top_use_case = summed.idxmax()
+  #  st.success(f"🚀 **Top Use Case:** {top_use_case}")
+#else:
+   # st.info("👆 Select attributes above to see the top use case.")
 
 # ---------- Generate styled HTML table ----------
 
