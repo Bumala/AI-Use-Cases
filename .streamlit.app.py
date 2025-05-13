@@ -362,7 +362,7 @@ html_code += """
     width: 100%;
 }
 
-}
+
 </style>
 """
 
