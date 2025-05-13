@@ -352,7 +352,14 @@ handle_js_messages()
 
 
 
-
+function updateStreamlit() {
+    const selections = Array.from(selectedItems); // Convert Set to Array
+    window.parent.postMessage({
+        isStreamlitMessage: true,
+        type: 'updateSelections',
+        data: selections
+    }, '*'); // Send the selections to Streamlit
+}
 
 
 
