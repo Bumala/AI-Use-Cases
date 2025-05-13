@@ -372,3 +372,48 @@ html_code += """
 """
 
 html(html_code, height=1200)
+
+
+
+
+
+# Add a button to copy the selected items into a list
+html_code += """
+<div id="copyButtonContainer" style="padding: 10px; text-align: center;">
+   <button id="copyButton" style="padding: 10px 20px; background-color: #61cbf3; border: none; border-radius: 5px; cursor: pointer; font-weight: bold;">
+       Copy to List
+   </button>
+</div>
+"""
+
+# Modify the JavaScript to handle copying the selected items to a list
+html_code += """
+<script>
+document.getElementById('copyButton').addEventListener('click', function() {
+   const selectedList = Array.from(selectedItems);  // Convert Set to Array
+   
+   // Log the selected list for testing or further usage
+   console.log("Selected Items List:", selectedList);
+
+   // Optionally, notify Streamlit backend with the current selected list
+   window.parent.postMessage({
+       isStreamlitMessage: true,
+       type: 'copyToList',
+       data: { selectedList: selectedList }
+   }, '*');
+});
+</script>
+"""
+
+
+
+
+
+
+
+
+
+
+
+
+
