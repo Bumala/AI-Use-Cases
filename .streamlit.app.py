@@ -142,7 +142,12 @@ multiselect_container = st.container()
  
 # Display the initial multiselect with current selections
 with multiselect_container:
-   
+   selected_attributes = st.multiselect(
+    "Selected attributes (automatically synchronized with your table selections):",
+    attribute_columns,
+    default=st.session_state.attr_multiselect,
+    key="attr_multiselect_widget"
+)
 
 
  
