@@ -298,66 +298,30 @@ selected_bar_html = """
 
 
 
+import streamlit as st
+from streamlit_js_eval import streamlit_js_eval
 
-
-
-
-# HTML snippet
+# Initial HTML
 selected_bar_html = """
 <div id="resetButtonContainer" style="padding: 10px; background-color: #f1fbfe; text-align: center;">
-  <button id="resetButton" style="padding: 10px 20px; background-color: #61cbf3; border: none; border-radius: 5px; cursor: pointer; font-weight: bold;">
+  <button id="resetButton" onclick="document.getElementById('selectedItems').innerText = 'None';" 
+          style="padding: 10px 20px; background-color: #61cbf3; border: none; border-radius: 5px; cursor: pointer; font-weight: bold;">
       Reset Selection
   </button>
 </div>
 <div id="selectedBar" style="margin-bottom: 10px; padding: 10px; background-color: #dceefc; border: 2px solid #61cbf3; border-radius: 8px; font-weight: bold;">
-  Selected Attributes: <span id="selectedItems">None</span>
+  Selected Attributes: <span id="selectedItems">Height, Width, Depth</span>
 </div>
-<script>
-  const streamlitDoc = window.parent.document;
-
-  function updateStreamlitInput(value) {
-      const input = streamlitDoc.querySelector('input[data-testid="stTextInput"]');
-      if (input) {
-          input.value = value;
-          input.dispatchEvent(new Event('input', { bubbles: true }));
-      }
-  }
-
-  // Simulate selection change (for demo); replace this with your actual selection logic
-  document.getElementById("selectedItems").innerText = "Cost, Width, Depth";
-  updateStreamlitInput("Height, Width, Depth");
-
-  // Reset button logic
-  document.getElementById("resetButton").onclick = () => {
-      document.getElementById("selectedItems").innerText = "None";
-      updateStreamlitInput("None");
-  };
-</script>
 """
 
-st.markdown("### Mirrored Text Input (from selected bar)")
-mirrored_text = st.text_input("Selected Attributes")
+# Render HTML
+st.components.v1.html(selected_bar_html, height=150)
 
-html(selected_bar_html, height=200)
+# Use JS to read the span value and return it to Streamlit
+selected_value = streamlit_js_eval(js_expressions="document.getElementById('selectedItems')?.innerText", key="get_selected")
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+# Display mirrored value in Streamlit input
+st.text_input("Mirrored Value", value=selected_value or "None")
 
 
 
