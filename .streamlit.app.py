@@ -275,9 +275,12 @@ handle_cell_click()
  
  
 
-from streamlit.components.v1 import html
+
 
 # Your existing HTML/JS component (unchanged)
+from streamlit.components.v1 import html
+
+# Your existing HTML/JS component with modifications
 selected_bar_html = """
 <div id="resetButtonContainer" style="padding: 10px; background-color: #f1fbfe; text-align: center;">
   <button id="resetButton" style="padding: 10px 20px; background-color: #61cbf3; border: none; border-radius: 5px; cursor: pointer; font-weight: bold;">
@@ -299,7 +302,7 @@ selected_bar_html = """
     selectedItemsSpan.textContent = selected.length ? selected.join(", ") : "None";
     hiddenInput.value = selected.join(",");
     
-    // Send to Streamlit
+    // Send to Streamlit - THIS IS THE CRITICAL LINE THAT WAS MISSING
     Streamlit.setComponentValue(hiddenInput.value);
   }
   
@@ -308,19 +311,46 @@ selected_bar_html = """
     updateSelections([]);
   });
   
+  // Listen for cell clicks from your table
+  window.addEventListener("message", (event) => {
+    if (event.data.isStreamlitMessage && event.data.type === "cellClick") {
+      const attr = event.data.data.attribute;
+      const isSelected = event.data.data.selected;
+      
+      if (isSelected) {
+        if (!selected.includes(attr)) {
+          selected.push(attr);
+        }
+      } else {
+        selected = selected.filter(item => item !== attr);
+      }
+      updateSelections(selected);
+    }
+  });
+  
   // Initialize with empty selection
   updateSelections([]);
 </script>
 """
 
-# Display the component and get selected values
-html(selected_bar_html, height=150)
-selected_raw = st.text_input("Selected Attributes", key="selected_attrs", type="default")
+# Display the component
+component_value = html(selected_bar_html, height=150)
 
-# Convert to your desired selected_attributes format
-selected_attributes = []
-if selected_raw:
-    selected_attributes = [x.strip() for x in selected_raw.split(",") if x.strip()]
+# Get the selected attributes from the component
+if component_value:
+    selected_raw = component_value
+else:
+    selected_raw = ""
+
+# Process the selected attributes
+selected_attributes = [x.strip() for x in selected_raw.split(",") if x.strip() in analysis_table.columns]
+
+if selected_attributes:
+    summed = analysis_table[selected_attributes].sum(axis=1)
+    top_use_case = summed.idxmax()
+    st.success(f"🚀 **Top Use Case:** {top_use_case}")
+else:
+    st.info("👆 Select attributes above to see the top use case.")
 
 # ---------- Selectable attribute list ----------
 
