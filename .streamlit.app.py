@@ -1,12 +1,11 @@
 import streamlit as st
 import pandas as pd
-from streamlit.components.v1 import html
-import json
 
-# Set page layout
+# Set Streamlit page layout
 st.set_page_config(layout="wide")
 
-# ======= TABLE DATA =======
+# ---------- Data for the HTML table ----------
+
 data = [
     ["Category", "Dimension", "Attributes"],
     ["Impact (What)", "Benefits", "Quality/Scope/Knowledge", "Time Efficiency", "Cost"],
@@ -22,1648 +21,170 @@ data = [
     [None, "Department", "R&D", "Manufacturing", "Marketing & Sales", "Customer Service"],
 ]
 
-# ======= SESSION STATE =======
-if "selected" not in st.session_state:
-    st.session_state.selected = set()
+df = pd.DataFrame(data)
 
-# ======= ANALYSIS TABLE =======
-analysis_table = [
-    {
-    "Use Case": "AI-infused experiments in R&D",
-    "Quality/Scope/Knowledge": 2,
-    "Time Efficiency": 2,
-    "Cost": 2,
-    "Customer Segments": 0,
-    "Value Proposition": 2,
-    "Value Chain": 2,
-    "Revenue Model": 0,
-    "Product Innovation": 2,
-    "Process Innovation": 1,
-    "Business Model Innovation": 0,
-    "Exploration": 2,
-    "Exploitation": 0,
-    "Automaton": 2,
-    "Helper": 1,
-    "Partner": 2,
-    "Machine Learning": 2,
-    "Deep Learning": 2,
-    "Artificial Neural Networks": 0,
-    "Natural Language Processing": 2,
-    "Computer Vision": 0,
-    "Robotics": 0,
-    "Descriptive": 1,
-    "Diagnostic": 0,
-    "Predictive": 2,
-    "Prescriptive": 0,
-    "Description/ Summary": 1,
-    "Clustering": 0,
-    "Classification": 2,
-    "Dependency Analysis": 0,
-    "Regression": 1,
-    "Customer Data": 2,
-    "Machine Data": 0,
-    "Business Data (Internal Data)": 2,
-    "Market Data": 2,
-    "Public & Regulatory Data": 0,
-    "Synthetic Data": 2,
-    "Front End": 2,
-    "Development": 0,
-    "Market Introduction": 0,
-    "R&D": 2,
-    "Manufacturing": 0,
-    "Marketing & Sales": 0,
-    "Customer Service": 0
-  },
-  {
-    "Use Case": "AI-powered manufacturing planning in smart factories",
-    "Quality/Scope/Knowledge": 2,
-    "Time Efficiency": 2,
-    "Cost": 2,
-    "Customer Segments": 0,
-    "Value Proposition": 0,
-    "Value Chain": 2,
-    "Revenue Model": 0,
-    "Product Innovation": 0,
-    "Process Innovation": 2,
-    "Business Model Innovation": 0,
-    "Exploration": 0,
-    "Exploitation": 2,
-    "Automaton": 0,
-    "Helper": 0,
-    "Partner": 2,
-    "Machine Learning": 2,
-    "Deep Learning": 0,
-    "Artificial Neural Networks": 0,
-    "Natural Language Processing": 0,
-    "Computer Vision": 0,
-    "Robotics": 0,
-    "Descriptive": 0,
-    "Diagnostic": 0,
-    "Predictive": 2,
-    "Prescriptive": 0,
-    "Description/ Summary": 0,
-    "Clustering": 0,
-    "Classification": 0,
-    "Dependency Analysis": 0,
-    "Regression": 1,
-    "Customer Data": 0,
-    "Machine Data": 1,
-    "Business Data (Internal Data)": 2,
-    "Market Data": 2,
-    "Public & Regulatory Data": 0,
-    "Synthetic Data": 0,
-    "Front End": 2,
-    "Development": 1,
-    "Market Introduction": 0,
-    "R&D": 2,
-    "Manufacturing": 1,
-    "Marketing & Sales": 0,
-    "Customer Service": 0
-  },
-  {
-    "Use Case": "AI-driven Human-Machine Collaboration in ideation",
-    "Quality/Scope/Knowledge": 2,
-    "Time Efficiency": 2,
-    "Cost": 0,
-    "Customer Segments": 0,
-    "Value Proposition": 0,
-    "Value Chain": 2,
-    "Revenue Model": 0,
-    "Product Innovation": 2,
-    "Process Innovation": 2,
-    "Business Model Innovation": 1,
-    "Exploration": 2,
-    "Exploitation": 0,
-    "Automaton": 2,
-    "Helper": 1,
-    "Partner": 2,
-    "Machine Learning": 2,
-    "Deep Learning": 2,
-    "Artificial Neural Networks": 2,
-    "Natural Language Processing": 2,
-    "Computer Vision": 2,
-    "Robotics": 0,
-    "Descriptive": 0,
-    "Diagnostic": 0,
-    "Predictive": 2,
-    "Prescriptive": 0,
-    "Description/ Summary": 0,
-    "Clustering": 0,
-    "Classification": 0,
-    "Dependency Analysis": 0,
-    "Regression": 2,
-    "Customer Data": 2,
-    "Machine Data": 2,
-    "Business Data (Internal Data)": 2,
-    "Market Data": 1,
-    "Public & Regulatory Data": 0,
-    "Synthetic Data": 0,
-    "Front End": 2,
-    "Development": 0,
-    "Market Introduction": 0,
-    "R&D": 2,
-    "Manufacturing": 0,
-    "Marketing & Sales": 0,
-    "Customer Service": 0
-  },
-  {
-    "Use Case": "AI-enabled idea generation in the Metaverse",
-    "Quality/Scope/Knowledge": 2,
-    "Time Efficiency": 0,
-    "Cost": 0,
-    "Customer Segments": 2,
-    "Value Proposition": 2,
-    "Value Chain": 2,
-    "Revenue Model": 0,
-    "Product Innovation": 2,
-    "Process Innovation": 0,
-    "Business Model Innovation": 0,
-    "Exploration": 2,
-    "Exploitation": 0,
-    "Automaton": 0,
-    "Helper": 2,
-    "Partner": 2,
-    "Machine Learning": 2,
-    "Deep Learning": 0,
-    "Artificial Neural Networks": 2,
-    "Natural Language Processing": 2,
-    "Computer Vision": 0,
-    "Robotics": 0,
-    "Descriptive": 2,
-    "Diagnostic": 0,
-    "Predictive": 0,
-    "Prescriptive": 0,
-    "Description/ Summary": 0,
-    "Clustering": 2,
-    "Classification": 2,
-    "Dependency Analysis": 0,
-    "Regression": 0,
-    "Customer Data": 0,
-    "Machine Data": 2,
-    "Business Data (Internal Data)": 0,
-    "Market Data": 0,
-    "Public & Regulatory Data": 0,
-    "Synthetic Data": 0,
-    "Front End": 2,
-    "Development": 0,
-    "Market Introduction": 0,
-    "R&D": 2,
-    "Manufacturing": 0,
-    "Marketing & Sales": 0,
-    "Customer Service": 0
-  },
-  {
-    "Use Case": "AI-optimized patent analysis",
-    "Quality/Scope/Knowledge": 2,
-    "Time Efficiency": 0,
-    "Cost": 0,
-    "Customer Segments": 0,
-    "Value Proposition": 0,
-    "Value Chain": 2,
-    "Revenue Model": 0,
-    "Product Innovation": 2,
-    "Process Innovation": 0,
-    "Business Model Innovation": 0,
-    "Exploration": 2,
-    "Exploitation": 0,
-    "Automaton": 2,
-    "Helper": 0,
-    "Partner": 2,
-    "Machine Learning": 0,
-    "Deep Learning": 0,
-    "Artificial Neural Networks": 0,
-    "Natural Language Processing": 0,
-    "Computer Vision": 0,
-    "Robotics": 0,
-    "Descriptive": 2,
-    "Diagnostic": 0,
-    "Predictive": 2,
-    "Prescriptive": 0,
-    "Description/ Summary": 2,
-    "Clustering": 0,
-    "Classification": 0,
-    "Dependency Analysis": 2,
-    "Regression": 2,
-    "Customer Data": 2,
-    "Machine Data": 0,
-    "Business Data (Internal Data)": 2,
-    "Market Data": 2,
-    "Public & Regulatory Data": 0,
-    "Synthetic Data": 0,
-    "Front End": 2,
-    "Development": 0,
-    "Market Introduction": 0,
-    "R&D": 2,
-    "Manufacturing": 0,
-    "Marketing & Sales": 0,
-    "Customer Service": 0
-  },
-  {
-    "Use Case": "AI-powered forecasting of the technology life cycle of EVs (S-Curve)",
-    "Quality/Scope/Knowledge": 2,
-    "Time Efficiency": 0,
-    "Cost": 0,
-    "Customer Segments": 1,
-    "Value Proposition": 2,
-    "Value Chain": 1,
-    "Revenue Model": 2,
-    "Product Innovation": 2,
-    "Process Innovation": 0,
-    "Business Model Innovation": 2,
-    "Exploration": 2,
-    "Exploitation": 0,
-    "Automaton": 2,
-    "Helper": 0,
-    "Partner": 2,
-    "Machine Learning": 0,
-    "Deep Learning": 0,
-    "Artificial Neural Networks": 0,
-    "Natural Language Processing": 0,
-    "Computer Vision": 0,
-    "Robotics": 0,
-    "Descriptive": 0,
-    "Diagnostic": 0,
-    "Predictive": 2,
-    "Prescriptive": 0,
-    "Description/ Summary": 2,
-    "Clustering": 0,
-    "Classification": 0,
-    "Dependency Analysis": 0,
-    "Regression": 2,
-    "Customer Data": 2,
-    "Machine Data": 0,
-    "Business Data (Internal Data)": 2,
-    "Market Data": 2,
-    "Public & Regulatory Data": 2,
-    "Synthetic Data": 0,
-    "Front End": 2,
-    "Development": 0,
-    "Market Introduction": 2,
-    "R&D": 2,
-    "Manufacturing": 0,
-    "Marketing & Sales": 2,
-    "Customer Service": 0
-  },
-  {
-    "Use Case": "AI-enabled bionic digital twin production planning",
-    "Quality/Scope/Knowledge": 2,
-    "Time Efficiency": 2,
-    "Cost": 2,
-    "Customer Segments": 0,
-    "Value Proposition": 2,
-    "Value Chain": 2,
-    "Revenue Model": 0,
-    "Product Innovation": 2,
-    "Process Innovation": 2,
-    "Business Model Innovation": 0,
-    "Exploration": 2,
-    "Exploitation": 2,
-    "Automaton": 2,
-    "Helper": 0,
-    "Partner": 2,
-    "Machine Learning": 2,
-    "Deep Learning": 2,
-    "Artificial Neural Networks": 0,
-    "Natural Language Processing": 0,
-    "Computer Vision": 2,
-    "Robotics": 0,
-    "Descriptive": 0,
-    "Diagnostic": 1,
-    "Predictive": 2,
-    "Prescriptive": 1,
-    "Description/ Summary": 0,
-    "Clustering": 0,
-    "Classification": 0,
-    "Dependency Analysis": 0,
-    "Regression": 2,
-    "Customer Data": 2,
-    "Machine Data": 0,
-    "Business Data (Internal Data)": 2,
-    "Market Data": 2,
-    "Public & Regulatory Data": 0,
-    "Synthetic Data": 1,
-    "Front End": 2,
-    "Development": 1,
-    "Market Introduction": 0,
-    "R&D": 2,
-    "Manufacturing": 1,
-    "Marketing & Sales": 0,
-    "Customer Service": 0
-  },
-  {
-    "Use Case": "AI-infused Human-Robot Collaboration planning",
-    "Quality/Scope/Knowledge": 2,
-    "Time Efficiency": 2,
-    "Cost": 1,
-    "Customer Segments": 0,
-    "Value Proposition": 2,
-    "Value Chain": 2,
-    "Revenue Model": 0,
-    "Product Innovation": 2,
-    "Process Innovation": 2,
-    "Business Model Innovation": 0,
-    "Exploration": 2,
-    "Exploitation": 2,
-    "Automaton": 2,
-    "Helper": 0,
-    "Partner": 2,
-    "Machine Learning": 0,
-    "Deep Learning": 0,
-    "Artificial Neural Networks": 0,
-    "Natural Language Processing": 0,
-    "Computer Vision": 0,
-    "Robotics": 0,
-    "Descriptive": 0,
-    "Diagnostic": 1,
-    "Predictive": 2,
-    "Prescriptive": 1,
-    "Description/ Summary": 0,
-    "Clustering": 0,
-    "Classification": 0,
-    "Dependency Analysis": 0,
-    "Regression": 2,
-    "Customer Data": 2,
-    "Machine Data": 0,
-    "Business Data (Internal Data)": 2,
-    "Market Data": 2,
-    "Public & Regulatory Data": 0,
-    "Synthetic Data": 1,
-    "Front End": 2,
-    "Development": 1,
-    "Market Introduction": 0,
-    "R&D": 2,
-    "Manufacturing": 1,
-    "Marketing & Sales": 0,
-    "Customer Service": 0
-  },
-  {
-    "Use Case": "AI-powered material flow planning",
-    "Quality/Scope/Knowledge": 2,
-    "Time Efficiency": 2,
-    "Cost": 2,
-    "Customer Segments": 0,
-    "Value Proposition": 1,
-    "Value Chain": 2,
-    "Revenue Model": 1,
-    "Product Innovation": 2,
-    "Process Innovation": 2,
-    "Business Model Innovation": 0,
-    "Exploration": 2,
-    "Exploitation": 2,
-    "Automaton": 2,
-    "Helper": 0,
-    "Partner": 2,
-    "Machine Learning": 0,
-    "Deep Learning": 0,
-    "Artificial Neural Networks": 0,
-    "Natural Language Processing": 2,
-    "Computer Vision": 2,
-    "Robotics": 0,
-    "Descriptive": 0,
-    "Diagnostic": 1,
-    "Predictive": 2,
-    "Prescriptive": 0,
-    "Description/ Summary": 1,
-    "Clustering": 0,
-    "Classification": 0,
-    "Dependency Analysis": 0,
-    "Regression": 2,
-    "Customer Data": 2,
-    "Machine Data": 0,
-    "Business Data (Internal Data)": 2,
-    "Market Data": 2,
-    "Public & Regulatory Data": 0,
-    "Synthetic Data": 0,
-    "Front End": 2,
-    "Development": 1,
-    "Market Introduction": 0,
-    "R&D": 2,
-    "Manufacturing": 1,
-    "Marketing & Sales": 0,
-    "Customer Service": 0
-  },
-  {
-    "Use Case": "AI-assisted ideation",
-    "Quality/Scope/Knowledge": 2,
-    "Time Efficiency": 2,
-    "Cost": 2,
-    "Customer Segments": 0,
-    "Value Proposition": 2,
-    "Value Chain": 2,
-    "Revenue Model": 1,
-    "Product Innovation": 2,
-    "Process Innovation": 2,
-    "Business Model Innovation": 0,
-    "Exploration": 2,
-    "Exploitation": 0,
-    "Automaton": 0,
-    "Helper": 0,
-    "Partner": 2,
-    "Machine Learning": 0,
-    "Deep Learning": 0,
-    "Artificial Neural Networks": 0,
-    "Natural Language Processing": 0,
-    "Computer Vision": 0,
-    "Robotics": 0,
-    "Descriptive": 0,
-    "Diagnostic": 0,
-    "Predictive": 2,
-    "Prescriptive": 0,
-    "Description/ Summary": 2,
-    "Clustering": 1,
-    "Classification": 2,
-    "Dependency Analysis": 2,
-    "Regression": 2,
-    "Customer Data": 2,
-    "Machine Data": 2,
-    "Business Data (Internal Data)": 2,
-    "Market Data": 2,
-    "Public & Regulatory Data": 0,
-    "Synthetic Data": 0,
-    "Front End": 2,
-    "Development": 0,
-    "Market Introduction": 0,
-    "R&D": 2,
-    "Manufacturing": 0,
-    "Marketing & Sales": 0,
-    "Customer Service": 0
-  },
-  {
-    "Use Case": "AI-driven interactive collaborative innovation",
-    "Quality/Scope/Knowledge": 2,
-    "Time Efficiency": 2,
-    "Cost": 0,
-    "Customer Segments": 2,
-    "Value Proposition": 2,
-    "Value Chain": 2,
-    "Revenue Model": 0,
-    "Product Innovation": 2,
-    "Process Innovation": 2,
-    "Business Model Innovation": 1,
-    "Exploration": 1,
-    "Exploitation": 2,
-    "Automaton": 0,
-    "Helper": 2,
-    "Partner": 0,
-    "Machine Learning": 0,
-    "Deep Learning": 0,
-    "Artificial Neural Networks": 2,
-    "Natural Language Processing": 0,
-    "Computer Vision": 0,
-    "Robotics": 0,
-    "Descriptive": 2,
-    "Diagnostic": 0,
-    "Predictive": 0,
-    "Prescriptive": 0,
-    "Description/ Summary": 0,
-    "Clustering": 0,
-    "Classification": 2,
-    "Dependency Analysis": 2,
-    "Regression": 0,
-    "Customer Data": 2,
-    "Machine Data": 0,
-    "Business Data (Internal Data)": 2,
-    "Market Data": 2,
-    "Public & Regulatory Data": 0,
-    "Synthetic Data": 1,
-    "Front End": 2,
-    "Development": 2,
-    "Market Introduction": 2,
-    "R&D": 1,
-    "Manufacturing": 2,
-    "Marketing & Sales": 2,
-    "Customer Service": 2
-  },
-  {
-    "Use Case": "AI-based digital twin for lithium-ion battery development",
-    "Quality/Scope/Knowledge": 2,
-    "Time Efficiency": 2,
-    "Cost": 2,
-    "Customer Segments": 0,
-    "Value Proposition": 2,
-    "Value Chain": 2,
-    "Revenue Model": 0,
-    "Product Innovation": 2,
-    "Process Innovation": 2,
-    "Business Model Innovation": 0,
-    "Exploration": 2,
-    "Exploitation": 2,
-    "Automaton": 0,
-    "Helper": 1,
-    "Partner": 2,
-    "Machine Learning": 0,
-    "Deep Learning": 0,
-    "Artificial Neural Networks": 0,
-    "Natural Language Processing": 0,
-    "Computer Vision": 0,
-    "Robotics": 0,
-    "Descriptive": 0,
-    "Diagnostic": 2,
-    "Predictive": 2,
-    "Prescriptive": 2,
-    "Description/ Summary": 2,
-    "Clustering": 0,
-    "Classification": 0,
-    "Dependency Analysis": 0,
-    "Regression": 2,
-    "Customer Data": 2,
-    "Machine Data": 2,
-    "Business Data (Internal Data)": 0,
-    "Market Data": 2,
-    "Public & Regulatory Data": 0,
-    "Synthetic Data": 0,
-    "Front End": 1,
-    "Development": 2,
-    "Market Introduction": 0,
-    "R&D": 0,
-    "Manufacturing": 2,
-    "Marketing & Sales": 0,
-    "Customer Service": 0
-  },
-  {
-    "Use Case": "AI- and Genetic Algorithms-based vehicle design",
-    "Quality/Scope/Knowledge": 2,
-    "Time Efficiency": 2,
-    "Cost": 2,
-    "Customer Segments": 0,
-    "Value Proposition": 2,
-    "Value Chain": 2,
-    "Revenue Model": 0,
-    "Product Innovation": 2,
-    "Process Innovation": 2,
-    "Business Model Innovation": 0,
-    "Exploration": 2,
-    "Exploitation": 2,
-    "Automaton": 0,
-    "Helper": 2,
-    "Partner": 2,
-    "Machine Learning": 2,
-    "Deep Learning": 2,
-    "Artificial Neural Networks": 0,
-    "Natural Language Processing": 0,
-    "Computer Vision": 0,
-    "Robotics": 0,
-    "Descriptive": 0,
-    "Diagnostic": 0,
-    "Predictive": 2,
-    "Prescriptive": 0,
-    "Description/ Summary": 0,
-    "Clustering": 0,
-    "Classification": 0,
-    "Dependency Analysis": 0,
-    "Regression": 2,
-    "Customer Data": 2,
-    "Machine Data": 2,
-    "Business Data (Internal Data)": 1,
-    "Market Data": 2,
-    "Public & Regulatory Data": 0,
-    "Synthetic Data": 0,
-    "Front End": 2,
-    "Development": 2,
-    "Market Introduction": 0,
-    "R&D": 1,
-    "Manufacturing": 2,
-    "Marketing & Sales": 2,
-    "Customer Service": 0
-  },
-  {
-    "Use Case": "AI-augmented visual inspections",
-    "Quality/Scope/Knowledge": 2,
-    "Time Efficiency": 2,
-    "Cost": 0,
-    "Customer Segments": 0,
-    "Value Proposition": 2,
-    "Value Chain": 2,
-    "Revenue Model": 1,
-    "Product Innovation": 0,
-    "Process Innovation": 2,
-    "Business Model Innovation": 0,
-    "Exploration": 0,
-    "Exploitation": 2,
-    "Automaton": 0,
-    "Helper": 2,
-    "Partner": 2,
-    "Machine Learning": 2,
-    "Deep Learning": 2,
-    "Artificial Neural Networks": 0,
-    "Natural Language Processing": 0,
-    "Computer Vision": 0,
-    "Robotics": 0,
-    "Descriptive": 2,
-    "Diagnostic": 0,
-    "Predictive": 0,
-    "Prescriptive": 0,
-    "Description/ Summary": 2,
-    "Clustering": 0,
-    "Classification": 2,
-    "Dependency Analysis": 2,
-    "Regression": 0,
-    "Customer Data": 0,
-    "Machine Data": 0,
-    "Business Data (Internal Data)": 2,
-    "Market Data": 0,
-    "Public & Regulatory Data": 0,
-    "Synthetic Data": 0,
-    "Front End": 2,
-    "Development": 2,
-    "Market Introduction": 0,
-    "R&D": 1,
-    "Manufacturing": 2,
-    "Marketing & Sales": 2,
-    "Customer Service": 0
-  },
-  {
-    "Use Case": "AI-optimized scenario engineering",
-    "Quality/Scope/Knowledge": 2,
-    "Time Efficiency": 2,
-    "Cost": 2,
-    "Customer Segments": 0,
-    "Value Proposition": 2,
-    "Value Chain": 2,
-    "Revenue Model": 0,
-    "Product Innovation": 2,
-    "Process Innovation": 2,
-    "Business Model Innovation": 0,
-    "Exploration": 2,
-    "Exploitation": 0,
-    "Automaton": 0,
-    "Helper": 2,
-    "Partner": 2,
-    "Machine Learning": 2,
-    "Deep Learning": 2,
-    "Artificial Neural Networks": 0,
-    "Natural Language Processing": 0,
-    "Computer Vision": 0,
-    "Robotics": 0,
-    "Descriptive": 0,
-    "Diagnostic": 0,
-    "Predictive": 2,
-    "Prescriptive": 0,
-    "Description/ Summary": 0,
-    "Clustering": 0,
-    "Classification": 0,
-    "Dependency Analysis": 0,
-    "Regression": 2,
-    "Customer Data": 2,
-    "Machine Data": 0,
-    "Business Data (Internal Data)": 2,
-    "Market Data": 2,
-    "Public & Regulatory Data": 0,
-    "Synthetic Data": 0,
-    "Front End": 2,
-    "Development": 2,
-    "Market Introduction": 0,
-    "R&D": 0,
-    "Manufacturing": 2,
-    "Marketing & Sales": 2,
-    "Customer Service": 0
-  },
-  {
-    "Use Case": "AI-driven design process",
-    "Quality/Scope/Knowledge": 2,
-    "Time Efficiency": 2,
-    "Cost": 0,
-    "Customer Segments": 0,
-    "Value Proposition": 2,
-    "Value Chain": 2,
-    "Revenue Model": 0,
-    "Product Innovation": 2,
-    "Process Innovation": 0,
-    "Business Model Innovation": 0,
-    "Exploration": 2,
-    "Exploitation": 0,
-    "Automaton": 0,
-    "Helper": 2,
-    "Partner": 2,
-    "Machine Learning": 0,
-    "Deep Learning": 0,
-    "Artificial Neural Networks": 0,
-    "Natural Language Processing": 0,
-    "Computer Vision": 0,
-    "Robotics": 0,
-    "Descriptive": 0,
-    "Diagnostic": 0,
-    "Predictive": 0,
-    "Prescriptive": 2,
-    "Description/ Summary": 2,
-    "Clustering": 0,
-    "Classification": 0,
-    "Dependency Analysis": 0,
-    "Regression": 0,
-    "Customer Data": 2,
-    "Machine Data": 0,
-    "Business Data (Internal Data)": 2,
-    "Market Data": 1,
-    "Public & Regulatory Data": 0,
-    "Synthetic Data": 0,
-    "Front End": 2,
-    "Development": 1,
-    "Market Introduction": 0,
-    "R&D": 1,
-    "Manufacturing": 1,
-    "Marketing & Sales": 0,
-    "Customer Service": 0
-  },
-  {
-    "Use Case": "AI- and Bio-inspired Design",
-    "Quality/Scope/Knowledge": 2,
-    "Time Efficiency": 2,
-    "Cost": 2,
-    "Customer Segments": 0,
-    "Value Proposition": 2,
-    "Value Chain": 2,
-    "Revenue Model": 0,
-    "Product Innovation": 2,
-    "Process Innovation": 2,
-    "Business Model Innovation": 0,
-    "Exploration": 2,
-    "Exploitation": 0,
-    "Automaton": 0,
-    "Helper": 1,
-    "Partner": 2,
-    "Machine Learning": 2,
-    "Deep Learning": 2,
-    "Artificial Neural Networks": 0,
-    "Natural Language Processing": 0,
-    "Computer Vision": 0,
-    "Robotics": 0,
-    "Descriptive": 2,
-    "Diagnostic": 0,
-    "Predictive": 0,
-    "Prescriptive": 0,
-    "Description/ Summary": 0,
-    "Clustering": 2,
-    "Classification": 0,
-    "Dependency Analysis": 1,
-    "Regression": 2,
-    "Customer Data": 2,
-    "Machine Data": 0,
-    "Business Data (Internal Data)": 2,
-    "Market Data": 2,
-    "Public & Regulatory Data": 0,
-    "Synthetic Data": 0,
-    "Front End": 2,
-    "Development": 2,
-    "Market Introduction": 0,
-    "R&D": 1,
-    "Manufacturing": 2,
-    "Marketing & Sales": 2,
-    "Customer Service": 0
-  },
-  {
-    "Use Case": "AI-assisted quality control of the bumper warpage",
-    "Quality/Scope/Knowledge": 2,
-    "Time Efficiency": 2,
-    "Cost": 0,
-    "Customer Segments": 0,
-    "Value Proposition": 2,
-    "Value Chain": 2,
-    "Revenue Model": 0,
-    "Product Innovation": 2,
-    "Process Innovation": 2,
-    "Business Model Innovation": 0,
-    "Exploration": 2,
-    "Exploitation": 0,
-    "Automaton": 0,
-    "Helper": 2,
-    "Partner": 2,
-    "Machine Learning": 2,
-    "Deep Learning": 2,
-    "Artificial Neural Networks": 0,
-    "Natural Language Processing": 0,
-    "Computer Vision": 0,
-    "Robotics": 0,
-    "Descriptive": 0,
-    "Diagnostic": 0,
-    "Predictive": 0,
-    "Prescriptive": 0,
-    "Description/ Summary": 0,
-    "Clustering": 0,
-    "Classification": 0,
-    "Dependency Analysis": 0,
-    "Regression": 2,
-    "Customer Data": 2,
-    "Machine Data": 0,
-    "Business Data (Internal Data)": 2,
-    "Market Data": 2,
-    "Public & Regulatory Data": 0,
-    "Synthetic Data": 0,
-    "Front End": 2,
-    "Development": 2,
-    "Market Introduction": 0,
-    "R&D": 0,
-    "Manufacturing": 2,
-    "Marketing & Sales": 2,
-    "Customer Service": 0
-  },
-  {
-    "Use Case": "AI-enabled predictive maintenance",
-    "Quality/Scope/Knowledge": 2,
-    "Time Efficiency": 2,
-    "Cost": 2,
-    "Customer Segments": 0,
-    "Value Proposition": 0,
-    "Value Chain": 2,
-    "Revenue Model": 0,
-    "Product Innovation": 0,
-    "Process Innovation": 2,
-    "Business Model Innovation": 0,
-    "Exploration": 2,
-    "Exploitation": 2,
-    "Automaton": 0,
-    "Helper": 2,
-    "Partner": 2,
-    "Machine Learning": 2,
-    "Deep Learning": 2,
-    "Artificial Neural Networks": 0,
-    "Natural Language Processing": 0,
-    "Computer Vision": 0,
-    "Robotics": 0,
-    "Descriptive": 0,
-    "Diagnostic": 2,
-    "Predictive": 2,
-    "Prescriptive": 0,
-    "Description/ Summary": 2,
-    "Clustering": 0,
-    "Classification": 0,
-    "Dependency Analysis": 0,
-    "Regression": 0,
-    "Customer Data": 2,
-    "Machine Data": 0,
-    "Business Data (Internal Data)": 2,
-    "Market Data": 2,
-    "Public & Regulatory Data": 2,
-    "Synthetic Data": 0,
-    "Front End": 2,
-    "Development": 2,
-    "Market Introduction": 0,
-    "R&D": 0,
-    "Manufacturing": 2,
-    "Marketing & Sales": 0,
-    "Customer Service": 0
-  },
-  {
-    "Use Case": "AI-optimized braking system test",
-    "Quality/Scope/Knowledge": 2,
-    "Time Efficiency": 2,
-    "Cost": 2,
-    "Customer Segments": 0,
-    "Value Proposition": 2,
-    "Value Chain": 2,
-    "Revenue Model": 0,
-    "Product Innovation": 2,
-    "Process Innovation": 2,
-    "Business Model Innovation": 0,
-    "Exploration": 2,
-    "Exploitation": 0,
-    "Automaton": 0,
-    "Helper": 2,
-    "Partner": 2,
-    "Machine Learning": 2,
-    "Deep Learning": 2,
-    "Artificial Neural Networks": 0,
-    "Natural Language Processing": 0,
-    "Computer Vision": 0,
-    "Robotics": 0,
-    "Descriptive": 2,
-    "Diagnostic": 0,
-    "Predictive": 2,
-    "Prescriptive": 0,
-    "Description/ Summary": 0,
-    "Clustering": 0,
-    "Classification": 0,
-    "Dependency Analysis": 2,
-    "Regression": 2,
-    "Customer Data": 2,
-    "Machine Data": 0,
-    "Business Data (Internal Data)": 2,
-    "Market Data": 2,
-    "Public & Regulatory Data": 0,
-    "Synthetic Data": 1,
-    "Front End": 2,
-    "Development": 1,
-    "Market Introduction": 0,
-    "R&D": 0,
-    "Manufacturing": 2,
-    "Marketing & Sales": 0,
-    "Customer Service": 2
-  },
-  {
-    "Use Case": "AI-based identification of consumer adoption stage",
-    "Quality/Scope/Knowledge": 2,
-    "Time Efficiency": 0,
-    "Cost": 0,
-    "Customer Segments": 2,
-    "Value Proposition": 0,
-    "Value Chain": 0,
-    "Revenue Model": 1,
-    "Product Innovation": 2,
-    "Process Innovation": 0,
-    "Business Model Innovation": 2,
-    "Exploration": 2,
-    "Exploitation": 2,
-    "Automaton": 1,
-    "Helper": 2,
-    "Partner": 2,
-    "Machine Learning": 0,
-    "Deep Learning": 0,
-    "Artificial Neural Networks": 0,
-    "Natural Language Processing": 0,
-    "Computer Vision": 0,
-    "Robotics": 0,
-    "Descriptive": 2,
-    "Diagnostic": 0,
-    "Predictive": 0,
-    "Prescriptive": 0,
-    "Description/ Summary": 0,
-    "Clustering": 2,
-    "Classification": 2,
-    "Dependency Analysis": 2,
-    "Regression": 0,
-    "Customer Data": 0,
-    "Machine Data": 2,
-    "Business Data (Internal Data)": 2,
-    "Market Data": 2,
-    "Public & Regulatory Data": 1,
-    "Synthetic Data": 0,
-    "Front End": 2,
-    "Development": 0,
-    "Market Introduction": 2,
-    "R&D": 1,
-    "Manufacturing": 0,
-    "Marketing & Sales": 2,
-    "Customer Service": 0
-  },
-  {
-    "Use Case": "AI-powered marketing campaign",
-    "Quality/Scope/Knowledge": 2,
-    "Time Efficiency": 2,
-    "Cost": 2,
-    "Customer Segments": 2,
-    "Value Proposition": 0,
-    "Value Chain": 0,
-    "Revenue Model": 0,
-    "Product Innovation": 2,
-    "Process Innovation": 2,
-    "Business Model Innovation": 1,
-    "Exploration": 2,
-    "Exploitation": 0,
-    "Automaton": 2,
-    "Helper": 0,
-    "Partner": 2,
-    "Machine Learning": 0,
-    "Deep Learning": 0,
-    "Artificial Neural Networks": 0,
-    "Natural Language Processing": 0,
-    "Computer Vision": 0,
-    "Robotics": 0,
-    "Descriptive": 2,
-    "Diagnostic": 0,
-    "Predictive": 0,
-    "Prescriptive": 0,
-    "Description/ Summary": 2,
-    "Clustering": 0,
-    "Classification": 2,
-    "Dependency Analysis": 2,
-    "Regression": 2,
-    "Customer Data": 1,
-    "Machine Data": 0,
-    "Business Data (Internal Data)": 0,
-    "Market Data": 1,
-    "Public & Regulatory Data": 0,
-    "Synthetic Data": 0,
-    "Front End": 0,
-    "Development": 0,
-    "Market Introduction": 2,
-    "R&D": 0,
-    "Manufacturing": 0,
-    "Marketing & Sales": 2,
-    "Customer Service": 0
-  },
-  {
-    "Use Case": "AI-driven relationship marketing",
-    "Quality/Scope/Knowledge": 2,
-    "Time Efficiency": 0,
-    "Cost": 0,
-    "Customer Segments": 2,
-    "Value Proposition": 2,
-    "Value Chain": 2,
-    "Revenue Model": 0,
-    "Product Innovation": 2,
-    "Process Innovation": 0,
-    "Business Model Innovation": 2,
-    "Exploration": 0,
-    "Exploitation": 2,
-    "Automaton": 2,
-    "Helper": 1,
-    "Partner": 2,
-    "Machine Learning": 0,
-    "Deep Learning": 0,
-    "Artificial Neural Networks": 2,
-    "Natural Language Processing": 0,
-    "Computer Vision": 0,
-    "Robotics": 0,
-    "Descriptive": 2,
-    "Diagnostic": 0,
-    "Predictive": 2,
-    "Prescriptive": 0,
-    "Description/ Summary": 0,
-    "Clustering": 0,
-    "Classification": 2,
-    "Dependency Analysis": 2,
-    "Regression": 2,
-    "Customer Data": 1,
-    "Machine Data": 2,
-    "Business Data (Internal Data)": 1,
-    "Market Data": 1,
-    "Public & Regulatory Data": 0,
-    "Synthetic Data": 0,
-    "Front End": 1,
-    "Development": 1,
-    "Market Introduction": 2,
-    "R&D": 1,
-    "Manufacturing": 1,
-    "Marketing & Sales": 1,
-    "Customer Service": 0
-  },
-  {
-    "Use Case": "AI-assisted customer service in after-sales",
-    "Quality/Scope/Knowledge": 2,
-    "Time Efficiency": 2,
-    "Cost": 2,
-    "Customer Segments": 2,
-    "Value Proposition": 2,
-    "Value Chain": 2,
-    "Revenue Model": 0,
-    "Product Innovation": 1,
-    "Process Innovation": 2,
-    "Business Model Innovation": 0,
-    "Exploration": 0,
-    "Exploitation": 2,
-    "Automaton": 2,
-    "Helper": 0,
-    "Partner": 2,
-    "Machine Learning": 0,
-    "Deep Learning": 0,
-    "Artificial Neural Networks": 2,
-    "Natural Language Processing": 0,
-    "Computer Vision": 0,
-    "Robotics": 0,
-    "Descriptive": 2,
-    "Diagnostic": 0,
-    "Predictive": 0,
-    "Prescriptive": 0,
-    "Description/ Summary": 2,
-    "Clustering": 2,
-    "Classification": 2,
-    "Dependency Analysis": 2,
-    "Regression": 2,
-    "Customer Data": 2,
-    "Machine Data": 0,
-    "Business Data (Internal Data)": 0,
-    "Market Data": 2,
-    "Public & Regulatory Data": 0,
-    "Synthetic Data": 2,
-    "Front End": 1,
-    "Development": 1,
-    "Market Introduction": 2,
-    "R&D": 0,
-    "Manufacturing": 0,
-    "Marketing & Sales": 0,
-    "Customer Service": 1
-  },
-  {
-    "Use Case": "AI-enabled battery monitoring",
-    "Quality/Scope/Knowledge": 2,
-    "Time Efficiency": 2,
-    "Cost": 2,
-    "Customer Segments": 2,
-    "Value Proposition": 2,
-    "Value Chain": 2,
-    "Revenue Model": 0,
-    "Product Innovation": 0,
-    "Process Innovation": 2,
-    "Business Model Innovation": 0,
-    "Exploration": 0,
-    "Exploitation": 2,
-    "Automaton": 2,
-    "Helper": 0,
-    "Partner": 2,
-    "Machine Learning": 2,
-    "Deep Learning": 0,
-    "Artificial Neural Networks": 2,
-    "Natural Language Processing": 0,
-    "Computer Vision": 0,
-    "Robotics": 0,
-    "Descriptive": 2,
-    "Diagnostic": 2,
-    "Predictive": 0,
-    "Prescriptive": 2,
-    "Description/ Summary": 2,
-    "Clustering": 2,
-    "Classification": 2,
-    "Dependency Analysis": 2,
-    "Regression": 2,
-    "Customer Data": 2,
-    "Machine Data": 2,
-    "Business Data (Internal Data)": 2,
-    "Market Data": 2,
-    "Public & Regulatory Data": 0,
-    "Synthetic Data": 2,
-    "Front End": 1,
-    "Development": 1,
-    "Market Introduction": 2,
-    "R&D": 0,
-    "Manufacturing": 0,
-    "Marketing & Sales": 0,
-    "Customer Service": 1
-  },
-  {
-    "Use Case": "AI-assisted staff training",
-    "Quality/Scope/Knowledge": 2,
-    "Time Efficiency": 0,
-    "Cost": 0,
-    "Customer Segments": 0,
-    "Value Proposition": 0,
-    "Value Chain": 2,
-    "Revenue Model": 0,
-    "Product Innovation": 0,
-    "Process Innovation": 2,
-    "Business Model Innovation": 0,
-    "Exploration": 2,
-    "Exploitation": 0,
-    "Automaton": 2,
-    "Helper": 0,
-    "Partner": 2,
-    "Machine Learning": 0,
-    "Deep Learning": 0,
-    "Artificial Neural Networks": 0,
-    "Natural Language Processing": 2,
-    "Computer Vision": 0,
-    "Robotics": 0,
-    "Descriptive": 0,
-    "Diagnostic": 0,
-    "Predictive": 2,
-    "Prescriptive": 0,
-    "Description/ Summary": 0,
-    "Clustering": 0,
-    "Classification": 2,
-    "Dependency Analysis": 2,
-    "Regression": 2,
-    "Customer Data": 2,
-    "Machine Data": 0,
-    "Business Data (Internal Data)": 0,
-    "Market Data": 2,
-    "Public & Regulatory Data": 2,
-    "Synthetic Data": 0,
-    "Front End": 2,
-    "Development": 2,
-    "Market Introduction": 0,
-    "R&D": 0,
-    "Manufacturing": 0,
-    "Marketing & Sales": 0,
-    "Customer Service": 2
-  },
-  {
-    "Use Case": "AI-driven predictive quality models for customer defects",
-    "Quality/Scope/Knowledge": 2,
-    "Time Efficiency": 2,
-    "Cost": 0,
-    "Customer Segments": 2,
-    "Value Proposition": 0,
-    "Value Chain": 2,
-    "Revenue Model": 0,
-    "Product Innovation": 2,
-    "Process Innovation": 2,
-    "Business Model Innovation": 0,
-    "Exploration": 2,
-    "Exploitation": 0,
-    "Automaton": 2,
-    "Helper": 0,
-    "Partner": 2,
-    "Machine Learning": 0,
-    "Deep Learning": 0,
-    "Artificial Neural Networks": 0,
-    "Natural Language Processing": 0,
-    "Computer Vision": 0,
-    "Robotics": 0,
-    "Descriptive": 0,
-    "Diagnostic": 0,
-    "Predictive": 0,
-    "Prescriptive": 0,
-    "Description/ Summary": 0,
-    "Clustering": 2,
-    "Classification": 2,
-    "Dependency Analysis": 2,
-    "Regression": 2,
-    "Customer Data": 2,
-    "Machine Data": 0,
-    "Business Data (Internal Data)": 0,
-    "Market Data": 2,
-    "Public & Regulatory Data": 0,
-    "Synthetic Data": 2,
-    "Front End": 2,
-    "Development": 2,
-    "Market Introduction": 2,
-    "R&D": 1,
-    "Manufacturing": 2,
-    "Marketing & Sales": 0,
-    "Customer Service": 2
-  },
-  {
-    "Use Case": "AI-powered customer satisfaction analysis",
-    "Quality/Scope/Knowledge": 2,
-    "Time Efficiency": 2,
-    "Cost": 0,
-    "Customer Segments": 2,
-    "Value Proposition": 0,
-    "Value Chain": 0,
-    "Revenue Model": 0,
-    "Product Innovation": 2,
-    "Process Innovation": 2,
-    "Business Model Innovation": 0,
-    "Exploration": 2,
-    "Exploitation": 0,
-    "Automaton": 2,
-    "Helper": 0,
-    "Partner": 2,
-    "Machine Learning": 0,
-    "Deep Learning": 0,
-    "Artificial Neural Networks": 0,
-    "Natural Language Processing": 0,
-    "Computer Vision": 0,
-    "Robotics": 0,
-    "Descriptive": 2,
-    "Diagnostic": 0,
-    "Predictive": 2,
-    "Prescriptive": 0,
-    "Description/ Summary": 0,
-    "Clustering": 2,
-    "Classification": 2,
-    "Dependency Analysis": 2,
-    "Regression": 2,
-    "Customer Data": 2,
-    "Machine Data": 0,
-    "Business Data (Internal Data)": 0,
-    "Market Data": 2,
-    "Public & Regulatory Data": 0,
-    "Synthetic Data": 2,
-    "Front End": 2,
-    "Development": 1,
-    "Market Introduction": 2,
-    "R&D": 1,
-    "Manufacturing": 0,
-    "Marketing & Sales": 0,
-    "Customer Service": 2
-  },
-  {
-    "Use Case": "AI-driven competition analysis",
-    "Quality/Scope/Knowledge": 2,
-    "Time Efficiency": 0,
-    "Cost": 0,
-    "Customer Segments": 2,
-    "Value Proposition": 2,
-    "Value Chain": 0,
-    "Revenue Model": 0,
-    "Product Innovation": 0,
-    "Process Innovation": 2,
-    "Business Model Innovation": 0,
-    "Exploration": 2,
-    "Exploitation": 2,
-    "Automaton": 2,
-    "Helper": 2,
-    "Partner": 2,
-    "Machine Learning": 0,
-    "Deep Learning": 0,
-    "Artificial Neural Networks": 0,
-    "Natural Language Processing": 0,
-    "Computer Vision": 0,
-    "Robotics": 0,
-    "Descriptive": 2,
-    "Diagnostic": 0,
-    "Predictive": 0,
-    "Prescriptive": 0,
-    "Description/ Summary": 0,
-    "Clustering": 2,
-    "Classification": 2,
-    "Dependency Analysis": 2,
-    "Regression": 2,
-    "Customer Data": 2,
-    "Machine Data": 0,
-    "Business Data (Internal Data)": 2,
-    "Market Data": 2,
-    "Public & Regulatory Data": 0,
-    "Synthetic Data": 2,
-    "Front End": 2,
-    "Development": 0,
-    "Market Introduction": 2,
-    "R&D": 1,
-    "Manufacturing": 0,
-    "Marketing & Sales": 0,
-    "Customer Service": 0
-  },
-  {
-    "Use Case": "AI-driven vehicles sales prediction",
-    "Quality/Scope/Knowledge": 2,
-    "Time Efficiency": 0,
-    "Cost": 0,
-    "Customer Segments": 2,
-    "Value Proposition": 2,
-    "Value Chain": 0,
-    "Revenue Model": 2,
-    "Product Innovation": 2,
-    "Process Innovation": 2,
-    "Business Model Innovation": 2,
-    "Exploration": 2,
-    "Exploitation": 2,
-    "Automaton": 2,
-    "Helper": 0,
-    "Partner": 2,
-    "Machine Learning": 2,
-    "Deep Learning": 0,
-    "Artificial Neural Networks": 2,
-    "Natural Language Processing": 0,
-    "Computer Vision": 0,
-    "Robotics": 0,
-    "Descriptive": 0,
-    "Diagnostic": 0,
-    "Predictive": 0,
-    "Prescriptive": 0,
-    "Description/ Summary": 0,
-    "Clustering": 2,
-    "Classification": 2,
-    "Dependency Analysis": 2,
-    "Regression": 2,
-    "Customer Data": 1,
-    "Machine Data": 1,
-    "Business Data (Internal Data)": 2,
-    "Market Data": 2,
-    "Public & Regulatory Data": 0,
-    "Synthetic Data": 2,
-    "Front End": 2,
-    "Development": 1,
-    "Market Introduction": 1,
-    "R&D": 1,
-    "Manufacturing": 1,
-    "Marketing & Sales": 1,
-    "Customer Service": 0
-    },
-    # ... (include all other use cases from your original code)
-]
+# ---------- Load analysis table ----------
 
-# Convert analysis_table to JSON for JavaScript
-analysis_table_json = json.dumps(analysis_table)
+analysis_table_data = {  # keep your full data here
+    "Use Case": [
+        "AI-infused experiments in R&D",
+        "AI-powered manufacturing planning in smart factories",
+        "AI-driven Human-Machine Collaboration in ideation",
+        "AI-enabled idea generation in the Metaverse",
+        "AI-optimized patent analysis",
+        "AI-powered forecasting of the technology life cycle of EVs (S-Curve)",
+        "AI-enabled bionic digital twin production planning",
+        "AI-infused Human-Robot Collaboration planning",
+        "AI-powered material flow planning",
+        "AI-assisted ideation",
+        "AI-driven interactive collaborative innovation",
+        "AI-based digital twin for lithium-ion battery development",
+        "AI- and Genetic Algorithms-based vehicle design",
+        "AI-augmented visual inspections",
+        "AI-optimized scenario engineering",
+        "AI-driven design process",
+        "AI- and Bio-inspired Design",
+        "AI-assisted quality control of the bumper warpage",
+        "AI-enabled predictive maintenance",
+        "AI-optimized braking system test",
+        "AI-based identification of consumer adoption stage",
+        "AI-powered marketing campaign",
+        "AI-driven relationship marketing",
+        "AI-assisted customer service in after-sales",
+        "AI-enabled battery monitoring",
+        "AI-assisted staff training",
+        "AI-driven predictive quality models for customer defects",
+        "AI-powered customer satisfaction analysis",
+        "AI-driven competition analysis",
+        "AI-driven vehicles sales prediction"
+    ],
 
-# ======= PERFECT TABLE LAYOUT GENERATION =======
-def generate_html_table(data, selected):
+
+
+    "Quality/Scope/Knowledge": [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2],
+    "Time Efficiency": [2, 2, 2, 0, 0, 0, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 0, 2, 0, 2, 0, 2, 2, 2, 0, 0],
+    "Cost": [2, 2, 0, 0, 0, 0, 2, 1, 2, 2, 0, 2, 2, 0, 2, 0, 2, 0, 2, 2, 0, 2, 0, 2, 0, 2, 0, 0, 0, 0],
+
+    "Customer Segments": [0, 0, 0, 2, 0, 1, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 2, 2, 0, 0, 2, 2, 2, 2],
+    "Value Proposition": [2, 0, 0, 2, 0, 2, 2, 2, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 0, 2, 0, 0, 2, 2, 2, 0, 0, 2, 2, 2],
+    "Value Chain": [2, 2, 2, 2, 2, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 0, 0, 2, 2, 2, 2, 2, 0, 0, 0],
+    "Revenue Model": [0, 0, 0, 0, 0, 2, 0, 0, 1, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 2, 0, 2],
+    
+    "Product Innovation": [2, 0, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 0, 2, 2, 2, 2, 0, 2, 2, 2, 2, 1, 0, 0, 2, 0, 0, 2],
+    "Process Innovation": [1, 2, 2, 0, 0, 0, 2, 2, 2, 2, 2, 2, 2, 2, 2, 0, 2, 2, 2, 2, 0, 2, 0, 2, 2, 2, 2, 2, 2, 2],
+    "Business Model Innovation": [0, 0, 1, 0, 0, 2, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 1, 2, 0, 0, 0, 0, 2, 0, 2],
+    
+    "Exploration": [2, 0, 2, 2, 2, 2, 2, 2, 2, 2, 1, 2, 2, 0, 2, 2, 2, 2, 2, 2, 2, 2, 0, 0, 0, 2, 2, 2, 2, 2],
+    "Exploitation": [0, 2, 0, 0, 0, 0, 2, 2, 2, 0, 2, 2, 2, 2, 0, 0, 0, 0, 2, 0, 2, 0, 2, 2, 2, 0, 0, 0, 2, 2],
+    
+    "Automaton": [2, 0, 2, 0, 2, 2, 2, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2],
+    "Helper": [1, 0, 1, 2, 0, 0, 0, 0, 0, 0, 2, 1, 2, 2, 2, 2, 1, 2, 2, 2, 2, 0, 1, 0, 0, 0, 0, 0, 2, 0],
+    "Partner": [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 0, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2],
+    
+    "Machine Learning": [2, 2, 2, 2, 0, 0, 2, 0, 0, 0, 0, 0, 2, 2, 2, 0, 2, 2, 2, 2, 0, 0, 0, 2, 0, 0, 0, 2, 0, 2],
+    "Deep Learning": [2, 0, 2, 0, 0, 0, 2, 0, 0, 0, 0, 0, 2, 2, 2, 0, 2, 2, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    "Artificial Neural Networks": [0, 0, 2, 2, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 0, 0, 0, 2, 0, 2],
+    "Natural Language Processing": [2, 0, 2, 2, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0],
+    "Computer Vision": [0, 0, 2, 0, 0, 0, 2, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    "Robotics": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    
+    "Descriptive": [1, 0, 0, 2, 2, 0, 0, 0, 0, 0, 2, 0, 0, 2, 0, 0, 2, 0, 0, 2, 2, 2, 2, 2, 2, 0, 2, 2, 2, 0],
+    "Diagnostic": [0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 2, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 2, 2, 0, 0, 0, 0, 0],
+    "Predictive": [2, 2, 2, 0, 2, 2, 2, 2, 2, 2, 0, 2, 2, 0, 2, 0, 0, 0, 2, 2, 0, 0, 2, 0, 2, 2, 0, 2, 0, 0],
+    "Prescriptive": [0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 2, 2, 0, 0, 0, 0, 0],
+    
+    "Description/ Summary": [1, 0, 0, 0, 2, 2, 0, 0, 1, 2, 0, 2, 0, 2, 0, 2, 0, 0, 2, 0, 0, 2, 0, 2, 2, 0, 0, 0, 0, 0],
+    "Clustering": [0, 0, 0, 2, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 2, 2, 0, 2, 2, 2, 2],
+    "Classification": [2, 0, 0, 2, 0, 0, 0, 0, 0, 2, 2, 0, 0, 2, 0, 0, 0, 0, 0, 0, 2, 2, 2, 2, 2, 0, 2, 2, 2, 2],
+    "Dependency Analysis": [0, 0, 0, 0, 2, 0, 0, 0, 0, 2, 2, 0, 0, 2, 0, 0, 1, 0, 0, 2, 2, 2, 2, 2, 2, 0, 2, 2, 2, 2],
+    "Regression": [1, 1, 2, 0, 2, 2, 2, 2, 2, 2, 0, 2, 2, 0, 2, 0, 2, 2, 0, 2, 0, 2, 2, 2, 2, 2, 2, 2, 2, 2],
+    
+    "Customer Data": [2, 0, 2, 0, 2, 2, 2, 2, 2, 2, 2, 2, 2, 0, 2, 2, 2, 2, 2, 2, 0, 1, 1, 2, 2, 2, 2, 2, 2, 1],
+    "Machine Data": [0, 1, 2, 2, 0, 0, 0, 0, 0, 2, 0, 2, 2, 0, 0, 0, 0, 0, 0, 0, 2, 0, 2, 0, 2, 0, 0, 2, 0, 1],
+    "Business Data (Internal Data)": [2, 2, 2, 0, 2, 2, 2, 2, 2, 2, 2, 0, 1, 2, 2, 2, 2, 2, 2, 2, 2, 0, 1, 2, 2, 0, 0, 2, 2, 2],
+    "Market Data": [2, 2, 1, 0, 2, 2, 2, 2, 2, 2, 2, 2, 2, 0, 2, 1, 2, 2, 2, 2, 2, 1, 1, 2, 2, 2, 2, 2, 2, 2],
+    "Public & Regulatory Data": [0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 1, 0, 0, 0, 0, 2, 0, 2, 0, 0],
+    "Synthetic Data": [2, 0, 0, 0, 0, 0, 1, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 2, 2, 2, 0, 2, 2, 2, 2],
+    
+    "Front End": [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 0, 1, 1, 1, 2, 2, 2, 2, 2],
+    "Development": [0, 1, 0, 0, 0, 0, 1, 1, 1, 0, 2, 2, 2, 2, 2, 1, 2, 2, 2, 1, 0, 0, 1, 1, 1, 2, 2, 1, 0, 1],
+    "Market Introduction": [0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 2, 2, 2, 0, 2, 2, 2, 1],
+    
+    "R&D": [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 0, 1, 1, 0, 1, 1, 0, 0, 0, 1, 0, 1, 0, 0, 0, 1, 1, 1, 1],
+    "Manufacturing": [0, 1, 0, 0, 0, 0, 1, 1, 1, 0, 2, 2, 2, 2, 2, 1, 2, 2, 2, 2, 0, 0, 1, 0, 1, 0, 2, 2, 0, 1],
+    "Marketing & Sales": [0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 2, 0, 2, 2, 2, 0, 2, 2, 0, 0, 2, 2, 1, 0, 0, 0, 0, 0, 0, 1],
+    "Customer Service": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 1, 2, 2, 2, 2, 2, 2, 2]
+
+
+    
+}
+
+analysis_table = pd.DataFrame(analysis_table_data)
+analysis_table.set_index("Use Case", inplace=True)
+
+# ---------- Selectable attribute list ----------
+
+attribute_columns = list(analysis_table.columns)
+selected_attributes = st.multiselect(
+    "Select attributes (these match the table cells you want to 'click'):",
+    attribute_columns,
+)
+
+# ---------- Calculate and show top use case ----------
+
+if selected_attributes:
+    summed = analysis_table[selected_attributes].sum(axis=1)
+    top_use_case = summed.idxmax()
+    st.success(f"🚀 **Top Use Case:** {top_use_case}")
+else:
+    st.info("👆 Select attributes above to see the top use case.")
+
+# ---------- Generate styled HTML table ----------
+
+def generate_html_table(df):
     first_col_width = 160
     second_col_width = 200
     base_cell_width = 150
     cell_height = 50
 
-    def style(width, bold=False, border_bottom=False):
+    def style(width, bold=False):
         bold_style = "font-weight: bold;" if bold else ""
-        border_bottom_style = "border-bottom: 3px solid #000000;" if border_bottom else ""
-        return f"text-align: center; vertical-align: middle; padding: 10px; border: 1px solid #000000; width: {width}px; height: {cell_height}px; {bold_style} {border_bottom_style}"
-
-    # Define colspan rules
-    colspan_2 = {
-        (1, 2), (1, 3), (1, 4),
-        (2, 2), (2, 5),
-        (3, 2), (3, 3), (3, 4), 
-        (5, 2), (5, 3), (5, 4),
-        (7, 2), (7, 5),
-        (8, 4),
-        (10, 2), (10, 3), (10, 4),
-        (11, 2), (11, 5), 
-    }
-
-    colspan_3 = {
-        (4, 2), (4, 3)
-    }
+        return f"text-align: center; vertical-align: middle; padding: 10px; border: 1px solid #000000; width: {width}px; height: {cell_height}px; {bold_style}"
 
     html = "<table style='border-spacing: 0; width: 100%; border-collapse: collapse; table-layout: fixed; border: 3px solid #000000;'>"
-
-    for i, row in enumerate(data):
+    for i, row in df.iterrows():
         html += "<tr>"
         for j, val in enumerate(row):
-            if val is None:
+            if pd.isna(val):
                 continue
-
-            # Determine if this is an attribute cell that can be selected
-            is_attribute = (i > 0 and j >= 2) 
-            click_attr = f"onclick='handleCellClick(this)' data-attr='{val}'" if is_attribute else ""
-            cell_class = " class='selected'" if val in st.session_state.selected and is_attribute else ""
-            
-            # Base cell style
-            bg_color = "#92D050" if val in st.session_state.selected and is_attribute else "#f1fbfe"
-            if j == 0:
-                bg_color = "#61cbf3"
-            elif j == 1:
-                bg_color = "#94dcf8"
-
-            # Header row
-            if i == 0:
-                if j == 0:
-                    html += f"<td style='{style(first_col_width, bold=True, border_bottom=True)} background-color: #E8E8E8;'>{val}</td>"
-                elif j == 1:
-                    html += f"<td style='{style(second_col_width, bold=True, border_bottom=True)} background-color: #E8E8E8;'>{val}</td>"
-                elif j == 2:
-                    html += f"<td colspan='6' style='{style(base_cell_width * 6, bold=True, border_bottom=True)} background-color: #E8E8E8;'>{val}</td>"
-            
-            # First column cells with rowspan
-            elif j == 0:
-                if i == 1:
-                    html += f"<td rowspan='4' style='{style(first_col_width, bold=True, border_bottom=True)} background-color: #61cbf3;'>{val}</td>"
-                elif i == 5:
-                    html += f"<td rowspan='5' style='{style(first_col_width, bold=True, border_bottom=True)} background-color: #61cbf3;'>{val}</td>"
-                elif i == 10:
-                    html += f"<td rowspan='2' style='{style(first_col_width, bold=True)} background-color: #61cbf3;'>{val}</td>"
-            
-            # Special formatting for certain cells
-            elif (i == 4 and j == 1) or (i == 9 and j == 1):
-                html += f"<td {click_attr}{cell_class} style='{style(base_cell_width, bold=True, border_bottom=True)} background-color: {bg_color}; cursor: pointer;'>{val}</td>"
-            elif i == 9 and j in {2, 4, 6}:
-                html += f"<td {click_attr}{cell_class} style='{style(base_cell_width)} background-color: {bg_color}; border-bottom: 3px solid #000000; cursor: pointer;'>{val}</td>"
-            elif i > 0 and j == 1:
-                html += f"<td style='{style(second_col_width, bold=True)} background-color: #94dcf8;'>{val}</td>"
-            
-            # Cells with colspan
-            elif (i, j) in colspan_3:
-                html += f"<td {click_attr}{cell_class} colspan='3' style='{style(base_cell_width * 3)} background-color: {bg_color}; border-bottom: 3px solid #000000; cursor: pointer;'>{val}</td>"
-            elif (i, j) in colspan_2:
-                html += f"<td {click_attr}{cell_class} colspan='2' style='{style(base_cell_width * 2)} background-color: {bg_color}; cursor: pointer;'>{val}</td>"
-            else:
-                html += f"<td {click_attr}{cell_class} style='{style(base_cell_width)} background-color: {bg_color}; cursor: pointer;'>{val}</td>"
+            width = first_col_width if j == 0 else (second_col_width if j == 1 else base_cell_width)
+            bg_color = "#E8E8E8" if i == 0 else "#61cbf3" if j == 0 else "#94dcf8" if j == 1 else "#f1fbfe"
+            bold = i == 0 or j <=1
+            attr_name = str(val)
+            highlight = "background-color: #92D050;" if attr_name in selected_attributes else f"background-color: {bg_color};"
+            html += f"<td style='{style(width, bold)} {highlight}'>{val}</td>"
         html += "</tr>"
-
     html += "</table>"
     return html
 
-# ======= JAVASCRIPT FOR INTERACTIVITY =======
-interaction_js = f"""
-<script>
-// Make analysis_table available in JavaScript
-const analysis_table = {analysis_table_json};
+# ---------- Show HTML table ----------
 
-function handleCellClick(element) {{
-    const attr = element.getAttribute('data-attr');
-    const isSelected = element.style.backgroundColor === 'rgb(146, 208, 80)';
-    
-    // Toggle visual selection immediately
-    element.style.backgroundColor = isSelected ? element.dataset.originalColor : '#92D050';
-    
-    // Send message to Streamlit
-    window.parent.postMessage({{
-        isStreamlitMessage: true,
-        type: 'cellClick',
-        data: {{
-            attribute: attr,
-            selected: !isSelected
-        }}
-    }}, '*');
-    
-    // Update the selected items display
-    updateSelectedBar();
-}}
+st.markdown(
+    """
+    <style>
+        .center-table {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            margin: 0 auto;
+        }
+    </style>
+    """,
+    unsafe_allow_html=True,
+)
 
-function calculateTopUseCase(selectedAttributes) {{
-    if (selectedAttributes.length === 0) {{
-        return "None";
-    }}
-    
-    // Calculate scores for each use case based on selected attributes
-    const useCaseScores = analysis_table.map(useCase => {{
-        let score = 0;
-        selectedAttributes.forEach(attr => {{
-            // Find matching column (case insensitive)
-            const matchingColumn = Object.keys(useCase).find(
-                col => col.toLowerCase() === attr.toLowerCase()
-            );
-            
-            if (matchingColumn) {{
-                score += useCase[matchingColumn] || 0;
-            }}
-        }});
-        return {{
-            name: useCase["Use Case"],
-            score: score
-        }};
-    }});
-    
-    // Sort by score descending
-    useCaseScores.sort((a, b) => b.score - a.score);
-    
-    // Return the top use case if any has a score > 0
-    if (useCaseScores.length > 0 && useCaseScores[0].score > 0) {{
-        return `${{useCaseScores[0].name}} (Score: ${{useCaseScores[0].score}})`;
-    }}
-    
-    return "None (no matching use cases found)";
-}}
+st.markdown('<div class="center-table">' + generate_html_table(df) + '</div>', unsafe_allow_html=True)
 
-function updateSelectedBar() {{
-    const selectedElements = document.querySelectorAll('.selected');
-    const selectedAttributes = Array.from(selectedElements).map(el => el.getAttribute('data-attr'));
-    
-    const selectedBar = document.getElementById("selectedItems");
-    selectedBar.innerText = selectedAttributes.length > 0 ? selectedAttributes.join(", ") : "None";
-    
-    // Calculate and display top use case
-    const topUseCase = calculateTopUseCase(selectedAttributes);
-    document.getElementById("topUseCase").innerText = topUseCase;
-}}
 
-document.addEventListener("DOMContentLoaded", function() {{
-    // Store original background color of each cell
-    const cells = document.querySelectorAll('td');
-    cells.forEach(cell => {{
-        const original = getComputedStyle(cell).backgroundColor;
-        cell.dataset.originalColor = original;
-    }});
 
-    document.getElementById('resetButton').addEventListener('click', function() {{
-        // Clear all selected cells
-        const selectedCells = document.querySelectorAll('.selected');
-        selectedCells.forEach(cell => {{
-            cell.style.backgroundColor = cell.dataset.originalColor;
-            cell.classList.remove('selected');
-        }});
-        
-        // Notify Streamlit backend
-        window.parent.postMessage({{
-            isStreamlitMessage: true,
-            type: 'resetSelection',
-            data: {{ reset: true }}
-        }}, '*');
-        
-        // Update the display
-        updateSelectedBar();
-    }});
-    
-    // Initial update
-    updateSelectedBar();
-}});
-</script>
-"""
-
-# ======= HANDLE CELL CLICKS =======
-def handle_cell_click():
-    if st.session_state.get('cell_click'):
-        attr = st.session_state.cell_click['attribute']
-        if st.session_state.cell_click['selected']:
-            st.session_state.selected.add(attr)
-        else:
-            st.session_state.selected.discard(attr)
-        st.experimental_rerun()
-
-def handle_reset_selection():
-    if st.session_state.get('reset_selection'):
-        st.session_state.selected = set()
-        st.experimental_rerun()
-
-# Initialize and handle clicks
-st.session_state.cell_click = None
-st.session_state.reset_selection = None
-handle_cell_click()
-handle_reset_selection()
-
-# ======= HTML COMPONENTS =======
-selected_bar_html = """
-<div id="resetButtonContainer" style="padding: 10px; background-color: #f1fbfe; text-align: center;">
-    <button id="resetButton" style="padding: 10px 20px; background-color: #61cbf3; border: none; border-radius: 5px; cursor: pointer; font-weight: bold;">
-        Reset Selection
-    </button>
-</div>
-<div id="selectedBar" style="margin-bottom: 10px; padding: 10px; background-color: #dceefc; border: 2px solid #61cbf3; border-radius: 8px; font-weight: bold;">
-    Selected Attributes: <span id="selectedItems">None</span>
-</div>
-<div id="topUseCaseBar" style="margin-top: 20px; padding: 10px; background-color: #f1fbfe; border: 2px solid #61cbf3; border-radius: 8px; font-weight: bold;">
-    Top Use Case: <span id="topUseCase">None</span>
-</div>
-"""
-
-# Wrap the table in a div container to manage zoom and scrolling
-html_code = selected_bar_html + f"""
-<div style="overflow-x: auto; width: 100%; padding: 10px; box-sizing: border-box;">
-    <div class="zoomed-table">
-        {generate_html_table(data, st.session_state.selected)}
-    </div>
-</div>
-""" + interaction_js
-
-# Apply the zoom effect to the table
-html_code += """
-<style>
-.zoomed-table {
-    transform: scale(0.75); /* Zoom out to 75% */
-    transform-origin: top center;
-    width: 100%;
-}
-.selected {
-    background-color: #92D050 !important;
-}
-</style>
-"""
-
-html(html_code, height=1200)
