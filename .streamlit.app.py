@@ -1560,8 +1560,43 @@ analysis_table = [
    "Manufacturing": 1,
    "Marketing & Sales": 1,
    "Customer Service": 0
- }
-];
+ },
+]
+
+
+
+
+
+
+
+
+
+
+
+
+
+# Serialize the analysis_table to JSON
+analysis_table_json = json.dumps(analysis_table)
+
+# HTML and JavaScript for frontend
+html_code = f"""
+<script>
+    // Parse the analysis_table JSON passed from Python
+    const analysis_table = JSON.parse('{analysis_table_json}');
+
+    // Example of summing values for a specific column
+    function calculateColumnSum(columnName) {
+        return analysis_table.reduce((sum, row) => sum + (row[columnName] || 0), 0);
+    }
+
+    // Calculate the sum for "Quality/Scope/Knowledge"
+    const qualitySum = calculateColumnSum("Quality/Scope/Knowledge");
+    console.log("Sum of Quality/Scope/Knowledge:", qualitySum);
+
+    // Inject the result into your Streamlit app (or use it as needed)
+    document.body.innerHTML += `<p>Sum of Quality/Scope/Knowledge: ${qualitySum}</p>`;
+</script>
+"""
  
  
  
