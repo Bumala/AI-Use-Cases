@@ -367,7 +367,174 @@ document.addEventListener("DOMContentLoaded", function() {
 });
 </script>
 """
- 
+
+
+
+
+
+
+
+
+import streamlit as st
+from streamlit.components.v1 import html
+
+# Your existing HTML code
+selected_bar_html = """
+<div id="resetButtonContainer" style="padding: 10px; background-color: #f1fbfe; text-align: center;">
+  <button id="resetButton" style="padding: 10px 20px; background-color: #61cbf3; border: none; border-radius: 5px; cursor: pointer; font-weight: bold;">
+      Reset Selection
+  </button>
+</div>
+<div id="selectedBar" style="margin-bottom: 10px; padding: 10px; background-color: #dceefc; border: 2px solid #61cbf3; border-radius: 8px; font-weight: bold;">
+  Selected Attributes: <span id="selectedItems">None</span>
+</div>
+"""
+
+# Add this code to create a mirrored text input
+mirror_input_html = """
+<div style="margin-top: 20px;">
+  <label for="mirrorInput" style="font-weight: bold;">Mirror of Selected Attributes:</label>
+  <input type="text" id="mirrorInput" style="width: 100%; padding: 8px; margin-top: 5px; border: 2px solid #61cbf3; border-radius: 4px;" readonly>
+</div>
+
+<script>
+// Function to update both the selected items display and the mirror input
+function updateSelectedBar() {
+  const bar = document.getElementById("selectedItems");
+  const mirrorInput = document.getElementById("mirrorInput");
+  const selectedText = selectedItems.size === 0 ? "None" : Array.from(selectedItems).join(", ");
+  
+  bar.innerText = selectedText;
+  mirrorInput.value = selectedText;
+  
+  // Send the selected items to Streamlit
+  window.parent.postMessage({
+      isStreamlitMessage: true,
+      type: 'selectedItemsUpdate',
+      data: { selectedItems: Array.from(selectedItems) }
+  }, '*');
+}
+
+// Modify your existing handleCellClick function to use the new update function
+function handleCellClick(element) {
+  const attr = element.getAttribute('data-attr');
+  const isSelected = element.style.backgroundColor === 'rgb(146, 208, 80)';
+
+  // Toggle visual selection
+  element.style.backgroundColor = isSelected ? element.dataset.originalColor : '#92D050';
+
+  if (!isSelected) {
+      selectedItems.add(attr);
+  } else {
+      selectedItems.delete(attr);
+  }
+
+  updateSelectedBar();
+
+  // Notify Streamlit backend
+  window.parent.postMessage({
+      isStreamlitMessage: true,
+      type: 'cellClick',
+      data: { attribute: attr, selected: !isSelected }
+  }, '*');
+}
+
+// The rest of your existing JavaScript remains the same
+</script>
+"""
+
+# Combine all the HTML
+full_html = selected_bar_html + mirror_input_html + interaction_js
+
+# Display the HTML in Streamlit
+html(full_html, height=200)
+
+# Add Python code to access the selected items
+if 'selected_attributes' not in st.session_state:
+    st.session_state.selected_attributes = []
+
+def update_selected_attributes(selected_items):
+    st.session_state.selected_attributes = selected_items
+
+# Handle the JavaScript messages
+html("""
+<script>
+// This function will be called when messages are received from the iframe
+function receiveMessage(event) {
+    if (event.data.isStreamlitMessage) {
+        if (event.data.type === 'selectedItemsUpdate') {
+            // Send the selected items to Streamlit Python
+            window.parent.streamlitAPI.updateSelectedAttributes(event.data.data.selectedItems);
+        }
+    }
+}
+window.addEventListener("message", receiveMessage, false);
+</script>
+""")
+
+# Create a Streamlit component to receive the data
+st.markdown("### Python Access to Selected Attributes")
+st.text_input("Selected Attributes in Python", value=", ".join(st.session_state.selected_attributes) if st.session_state.selected_attributes else "None", key="python_mirror")
+
+# JavaScript to Python bridge
+st.components.v1.html("""
+<script>
+// Expose a function to update Python variables
+window.parent.streamlitAPI = {
+    updateSelectedAttributes: function(items) {
+        // This will trigger a Streamlit rerun with the new values
+        window.parent.postMessage({
+            isStreamlitMessage: true,
+            type: 'updatePythonSelected',
+            data: {selectedItems: items}
+        }, '*');
+    }
+};
+</script>
+""")
+
+# Handle the message in Python
+def handle_message():
+    from streamlit.runtime.scriptrunner import RerunData, RerunException
+    from streamlit.web.server.websocket_headers import _get_websocket_headers
+    
+    ctx = st.script_run_context.get_script_run_ctx()
+    if ctx and ctx.request:
+        headers = _get_websocket_headers()
+        if headers and 'selectedItems' in headers:
+            update_selected_attributes(headers['selectedItems'])
+            raise RerunData(RerunData(widget_states=None))
+
+handle_message()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 # Apply the zoom effect to the table
 html_code += """
 <style>
