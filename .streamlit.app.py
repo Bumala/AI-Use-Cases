@@ -277,10 +277,12 @@ handle_cell_click()
 
 
 
-# Your existing HTML/JS component (unchanged)
-from streamlit.components.v1 import html
+
 
 # Your existing HTML/JS component with modifications
+from streamlit.components.v1 import html
+
+# Your HTML/JS component (unchanged)
 selected_bar_html = """
 <div id="resetButtonContainer" style="padding: 10px; background-color: #f1fbfe; text-align: center;">
   <button id="resetButton" style="padding: 10px 20px; background-color: #61cbf3; border: none; border-radius: 5px; cursor: pointer; font-weight: bold;">
@@ -296,42 +298,56 @@ selected_bar_html = """
   const hiddenInput = document.getElementById("selectedAttributesInput");
   let selected = [];
   
-  // Function to update selections
-  function updateSelections(selectedAttributes) {
-    selected = selectedAttributes;
+  function updateSelection() {
     selectedItemsSpan.textContent = selected.length ? selected.join(", ") : "None";
     hiddenInput.value = selected.join(",");
-    
-    // Send to Streamlit - THIS IS THE CRITICAL LINE THAT WAS MISSING
     Streamlit.setComponentValue(hiddenInput.value);
   }
   
-  // Reset button handler
   document.getElementById("resetButton").addEventListener("click", function() {
-    updateSelections([]);
+    selected = [];
+    updateSelection();
   });
   
-  // Listen for cell clicks from your table
+  // Initialize empty selection
+  updateSelection();
+  
+  // Listen for cell clicks from table
   window.addEventListener("message", (event) => {
     if (event.data.isStreamlitMessage && event.data.type === "cellClick") {
       const attr = event.data.data.attribute;
-      const isSelected = event.data.data.selected;
-      
-      if (isSelected) {
-        if (!selected.includes(attr)) {
-          selected.push(attr);
-        }
+      if (event.data.data.selected) {
+        if (!selected.includes(attr)) selected.push(attr);
       } else {
         selected = selected.filter(item => item !== attr);
       }
-      updateSelections(selected);
+      updateSelection();
     }
   });
-  
-  // Initialize with empty selection
-  updateSelections([]);
 </script>
 """
+
+# Display component and get selections
+selected_raw = html(selected_bar_html, height=150, key="selected_attrs_component")
+
+# Safely process selections
+selected_attributes = []
+if selected_raw and isinstance(selected_raw, str):
+    selected_attributes = [
+        x.strip() 
+        for x in selected_raw.split(",") 
+        if x.strip() and x.strip() in analysis_table.columns
+    ]
+
+# Show results
+if selected_attributes:
+    summed = analysis_table[selected_attributes].sum(axis=1)
+    top_use_case = summed.idxmax()
+    st.success(f"🚀 **Top Use Case:** {top_use_case}")
+else:
+    st.info("👆 Select attributes above to see the top use case.")
+
+
 
 # Display the component
 component_value = html(selected_bar_html, height=150)
