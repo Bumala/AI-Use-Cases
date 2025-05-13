@@ -166,6 +166,41 @@ handle_cell_click()
 
 
 
+# Assume this list is being set from the JavaScript side
+selected_attributes = st.session_state.get("selected_attributes_list", [])
+
+# ---------- Calculate and show top use case ----------
+if selected_attributes:
+    valid_attributes = [attr for attr in selected_attributes if attr in analysis_table.columns]
+    
+    if valid_attributes:
+        summed = analysis_table[valid_attributes].sum(axis=1)
+        top_use_case = summed.idxmax()
+        st.success(f"🚀 **Top Use Case:** {top_use_case}")
+    else:
+        st.warning("⚠️ None of the selected attributes match the table columns.")
+else:
+    st.info("👆 Select attributes in the table and click 'Copy to List' to see the top use case.")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -179,7 +214,7 @@ handle_cell_click()
 
 
 # ======= USE CASE ANALYSIS =======
-analysis_df = pd.DataFrame({
+analysis_table_data = {
 
 
 
@@ -262,10 +297,12 @@ analysis_df = pd.DataFrame({
 
 
 
-})
+}
 
 
 
+analysis_table = pd.DataFrame(analysis_table_data)
+analysis_table.set_index("Use Case", inplace=True)
 
 
 
