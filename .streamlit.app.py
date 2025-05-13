@@ -339,17 +339,7 @@ if 'js_message' not in st.session_state:
     st.session_state.js_message = None
 handle_js_messages()
 
-# ======= SELECTED BAR AND TABLE =======
-selected_bar_html = """
-<div id="resetButtonContainer" style="padding: 10px; background-color: #f1fbfe; text-align: center;">
-    <button id="resetButton" style="padding: 10px 20px; background-color: #61cbf3; border: none; border-radius: 5px; cursor: pointer; font-weight: bold;">
-        Reset Selection
-    </button>
-</div>
-<div id="selectedBar" style="margin-bottom: 10px; padding: 10px; background-color: #dceefc; border: 2px solid #61cbf3; border-radius: 8px; font-weight: bold;">
-    Selected Attributes: <span id="selectedItems">None</span>
-</div>
-"""
+
 
 # JavaScript to handle Streamlit communication
 streamlit_js = """
