@@ -203,14 +203,6 @@ if set(selected_attributes) != st.session_state.selected:
 
 
  
-# ---------- Calculate and show top use case ----------
-if selected_attributes:
-  summed = analysis_table[selected_attributes].sum(axis=1)
-  top_use_case = summed.idxmax()
-  st.success(f" **Relevant Use Case:** {top_use_case}")
-else:
-  st.info("The relevant use case is displayed here")
-
 
 
 
@@ -457,7 +449,31 @@ html(html_code, height=1200)
 
 
 
-import streamlit as st
+
+# ---------- Calculate and show top use case ----------
+if selected_attributes:
+  summed = analysis_table[selected_attributes].sum(axis=1)
+  top_use_case = summed.idxmax()
+  st.success(f" **Relevant Use Case:** {top_use_case}")
+else:
+  st.info("The relevant use case is displayed here")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 # Dictionary mapping use cases to their clusters
 use_case_to_cluster = {
@@ -497,16 +513,13 @@ use_case_to_cluster = {
     "AI-driven vehicles sales prediction": "Cluster 5: AI in Strategic Forecasting"
 }
 
-# Simulating the selected use case (this could be dynamically selected by the user in your app)
-selected_use_case = "AI-powered manufacturing planning in smart factories"  # Example use case
+
 
 # ---------- Display Information Based on Selected Use Case ----------
-if selected_use_case:
-    # Display the selected use case in the first box
-    st.success(f" **Relevant Use Case:** {selected_use_case}")
+if top_use_case:
     
     # Display the cluster information for the selected use case in the second box
-    cluster_name = use_case_to_cluster.get(selected_use_case, "Unknown Cluster")
+    cluster_name = use_case_to_cluster.get(top_use_case, "Unknown Cluster")
     cluster_info = f"The selected use case belongs to: {cluster_name}."
     st.text_area("Cluster Information", cluster_info, height=150)
     
