@@ -177,7 +177,7 @@ st.markdown(
     <style>
     /* Reduce the height of the dropdown options */
     div[data-baseweb="menu"] {
-        max-height: 100px; /* Adjust this value to restrict the height */
+        max-height: 50px; /* Adjust this value to restrict the height */
         overflow-y: auto; /* Add scroll if content exceeds height */
     }
     </style>
