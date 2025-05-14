@@ -1,7 +1,6 @@
 import streamlit as st
 import pandas as pd
 from streamlit.components.v1 import html
-import streamlit.components.v1 as components
  
 # Set Streamlit page layout
 st.set_page_config(layout="wide")
@@ -123,57 +122,26 @@ analysis_table_data = {  # keep your full data here
  
 analysis_table = pd.DataFrame(analysis_table_data)
 analysis_table.set_index("Use Case", inplace=True)
-
-# Function to handle user selection in Python
-if "user_selection" not in st.session_state:
-    st.session_state["user_selection"] = []
-
-# Display the current selection
-st.write(f"User Selection: {st.session_state['user_selection']}")
-
-# Embed JavaScript
-components.html(
-    f"""
-    <script>
-        function sendSelection(selection) {{
-            // Send data to Streamlit using a hidden input element
-            const streamlitInput = window.parent.document.querySelector('input[data-testid="stTextInput"]');
-            if (streamlitInput) {{
-                streamlitInput.value = selection;
-                streamlitInput.dispatchEvent(new Event('input', {{ bubbles: true }}));
-            }}
-            console.log('User Selection:', selection);
-        }}
-        // Example usage
-        sendSelection('Quality/Scope/Knowledge', 'Time Efficiency', 'Cost', 'Customer Segments', 'Value Proposition', 'Value Chain', 'Revenue Model', 'Product Innovation', 'Process Innovation', 'Business Model Innovation', 'Exploration', 'Exploitation', 'Automaton', 'Helper', 'Partner', 'Machine Learning', 'Deep Learning', 'Artificial Neural Networks', 'Natural Language Processing', 'Computer Vision', 'Robotics', 'Descriptive', 'Diagnostic', 'Predictive', 'Prescriptive', 'Description/ Summary', 'Clustering', 'Classification', 'Dependency Analysis', 'Regression', 'Customer Data', 'Machine Data', 'Business Data (Internal Data)', 'Market Data', 'Public & Regulatory Data', 'Synthetic Data', 'Front End', 'Development', 'Market Introduction', 'R&D', 'Manufacturing', 'Marketing & Sales', 'Customer Service'
-);  // Update this value dynamically based on JS interactions
-    </script>
-    """,
-    height=0,
+ 
+# ---------- Selectable attribute list ----------
+ 
+attribute_columns = list(analysis_table.columns)
+selected_attributes = st.multiselect(
+   "Select attributes (these match the table cells you want to 'click'):",
+   attribute_columns,
 )
-
-# Dynamically update selected attributes based on user input
-selected_attribute = st.text_input(
-    "Hidden Input (for JS communication)", key="user_selection", label_visibility="hidden"
-)
-
-# Convert the single selection to a list (if needed)
-if selected_attribute and selected_attribute not in st.session_state["user_selection"]:
-    st.session_state["user_selection"].append(selected_attribute)
-
-# Calculate and display the top use case based on selected attributes
-if st.session_state["user_selection"]:
-    try:
-        summed = analysis_table[st.session_state["user_selection"]].sum(axis=1)
-        top_use_case = summed.idxmax()
-        st.success(f"🚀 **Top Use Case:** {top_use_case}")
-    except KeyError:
-        st.error("Selected attribute is not valid. Please choose a valid attribute.")
+ 
+# ---------- Calculate and show top use case ----------
+ 
+if selected_attributes:
+   summed = analysis_table[selected_attributes].sum(axis=1)
+   top_use_case = summed.idxmax()
+   st.success(f"🚀 **Top Use Case:** {top_use_case}")
 else:
-    st.info("👆 Select attributes above to see the top use case.")
-
-
-
+   st.info("👆 Select attributes above to see the top use case.")
+ 
+# ---------- Generate styled HTML table ----------
+ 
  
 # ======= SESSION STATE =======
 if "selected" not in st.session_state:
@@ -412,18 +380,3 @@ html_code += """
 """
  
 html(html_code, height=1200)
-
-
-components.html(
-    """
-    <h1>Test Component</h1>
-    <script>
-        console.log("This is a test.");
-    </script>
-    """,
-    height=200,
-)
-
-
-
-
