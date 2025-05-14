@@ -145,7 +145,8 @@ components.html(
             console.log('User Selection:', selection);
         }}
         // Example usage
-        sendSelection('Quality/Scope/Knowledge');  // Update this value dynamically based on JS interactions
+        sendSelection('Quality/Scope/Knowledge', 'Time Efficiency', 'Cost', 'Customer Segments', 'Value Proposition', 'Value Chain', 'Revenue Model', 'Product Innovation', 'Process Innovation', 'Business Model Innovation', 'Exploration', 'Exploitation', 'Automaton', 'Helper', 'Partner', 'Machine Learning', 'Deep Learning', 'Artificial Neural Networks', 'Natural Language Processing', 'Computer Vision', 'Robotics', 'Descriptive', 'Diagnostic', 'Predictive', 'Prescriptive', 'Description/ Summary', 'Clustering', 'Classification', 'Dependency Analysis', 'Regression', 'Customer Data', 'Machine Data', 'Business Data (Internal Data)', 'Market Data', 'Public & Regulatory Data', 'Synthetic Data', 'Front End', 'Development', 'Market Introduction', 'R&D', 'Manufacturing', 'Marketing & Sales', 'Customer Service'
+);  // Update this value dynamically based on JS interactions
     </script>
     """,
     height=0,
