@@ -387,18 +387,35 @@ html(html_code, height=1200)
 
 
 
-
 import streamlit as st
 import streamlit.components.v1 as components
 
+# Function to handle user selection in Python
+if "user_selection" not in st.session_state:
+    st.session_state["user_selection"] = "No selection yet"
+
+# Display the current selection
+st.write(f"User Selection: {st.session_state['user_selection']}")
+
 # Embed JavaScript
-components.html("""
+components.html(
+    f"""
     <script>
-        function sendSelection(selection) {
-            // Add logic to send data to Python (e.g., via WebSocket or REST API)
+        function sendSelection(selection) {{
+            // Send data to Streamlit using a hidden input element
+            const streamlitInput = window.parent.document.querySelector('input[data-testid="stTextInput"]');
+            if (streamlitInput) {{
+                streamlitInput.value = selection;
+                streamlitInput.dispatchEvent(new Event('input', {{ bubbles: true }}));
+            }}
             console.log('User Selection:', selection);
-        }
+        }}
         // Example usage
         sendSelection('Selected Option');
     </script>
-""")
+    """,
+    height=0,
+)
+
+# Display the user selection dynamically
+selection = st.text_input("Hidden Input (for JS communication)", key="user_selection", label_visibility="hidden")
