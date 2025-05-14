@@ -125,58 +125,11 @@ analysis_table.set_index("Use Case", inplace=True)
  
 # ---------- Selectable attribute list ----------
  
-<script>
-    // Function to send selected items to Streamlit
-    function sendSelectedItemsToStreamlit() {
-        const selectedSpan = document.getElementById("selectedItems");
-        const selectedText = selectedSpan.innerText; // Get content from <span>
-        const selectedArray = selectedText === "None" ? [] : selectedText.split(", "); // Convert to array
-
-        // Send the selections to Streamlit
-        window.parent.postMessage({
-            isStreamlitMessage: true,
-            type: 'updateSelections',
-            data: selectedArray
-        }, '*');
-    }
-
-    // Add a listener to update Streamlit when span content is updated
-    document.addEventListener("DOMContentLoaded", function () {
-        const selectedSpan = document.getElementById("selectedItems");
-
-        // Watch for changes to the span content
-        const observer = new MutationObserver(function () {
-            sendSelectedItemsToStreamlit();
-        });
-
-        observer.observe(selectedSpan, { characterData: true, subtree: true, childList: true });
-    });
-</script>
-
-
-
-
-
-
-
-
-def handle_js_messages():
-    # Check if we have a new message from JavaScript
-    if hasattr(st.session_state, 'js_message') and st.session_state.js_message:
-        message = st.session_state.js_message
-        if message['type'] == 'updateSelections':
-            # Update session state with new selections
-            new_selections = set(message['data'])
-            if new_selections != st.session_state.selected:
-                st.session_state.selected = new_selections
-
-
-
-
-
-
-
-
+attribute_columns = list(analysis_table.columns)
+selected_attributes = st.multiselect(
+   "Select attributes (these match the table cells you want to 'click'):",
+   attribute_columns,
+)
  
 # ---------- Calculate and show top use case ----------
  
@@ -427,12 +380,6 @@ html_code += """
 """
  
 html(html_code, height=1200)
- 
- 
- 
- 
- 
- 
  
  
  
