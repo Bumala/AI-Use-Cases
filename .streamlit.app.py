@@ -453,3 +453,148 @@ html_code += """
  
 # Display the HTML
 html(html_code, height=1200)
+
+
+
+
+
+
+
+
+import streamlit as st
+import plotly.graph_objs as go
+import pandas as pd
+import numpy as np
+import base64
+
+# ---------- Load background image ----------
+background_image_path = "Bildschirmfoto 2025-02-10 um 10.24.59.png"
+
+def image_to_base64(path):
+    with open(path, "rb") as f:
+        data = f.read()
+    return f"data:image/png;base64,{base64.b64encode(data).decode()}"
+
+bg_image_uri = image_to_base64(background_image_path)
+
+# ---------- Generate dummy use cases ----------
+def generate_use_cases(stage, x_range, y_range):
+    return pd.DataFrame({
+        "x": np.random.uniform(x_range[0], x_range[1], 10),
+        "y": np.random.uniform(y_range[0], y_range[1], 10),
+        "stage": stage,
+        "description": [f"{stage} Use Case #{i+1}" for i in range(10)]
+    })
+
+# Funnel stages
+front_end = generate_use_cases("Front End", (0.1, 0.3), (0.6, 1.0))
+development = generate_use_cases("Development", (0.4, 0.6), (0.4, 0.8))
+market_intro = generate_use_cases("Market Introduction", (0.7, 0.9), (0.3, 0.7))
+df = pd.concat([front_end, development, market_intro]).reset_index(drop=True)
+
+# ---------- Simulated selection + calculation ----------
+selected_attributes = st.multiselect("Select Attributes", options=["Attr 1", "Attr 2", "Attr 3"])
+analysis_table = pd.DataFrame(np.random.randint(0, 10, size=(len(df), len(selected_attributes))),
+                              columns=selected_attributes)
+analysis_table["description"] = df["description"]
+
+# ---------- Calculate top use case ----------
+top_use_case = None
+if selected_attributes:
+    summed = analysis_table[selected_attributes].sum(axis=1)
+    top_idx = summed.idxmax()
+    top_use_case = analysis_table.loc[top_idx, "description"]
+    st.success(f"**Relevant Use Case:** {top_use_case}")
+else:
+    st.info("Select attributes to identify the most relevant use case.")
+
+# ---------- Build Plotly figure ----------
+fig = go.Figure()
+
+# CASE 1: BEFORE SELECTION – show all use case dots
+if not selected_attributes:
+    fig.add_trace(go.Scatter(
+        x=df["x"],
+        y=df["y"],
+        mode="markers",
+        marker=dict(size=10, color="steelblue", opacity=0.7),
+        text=df["description"],
+        hoverinfo="text",
+        showlegend=False
+    ))
+
+# CASE 2: AFTER SELECTION – show only top use case
+elif top_use_case:
+    top_row = df[df["description"] == top_use_case].iloc[0]
+
+    # Dot
+    fig.add_trace(go.Scatter(
+        x=[top_row["x"]],
+        y=[top_row["y"]],
+        mode="markers",
+        marker=dict(size=14, color='crimson'),
+        text=[top_row["description"]],
+        hoverinfo='text',
+        showlegend=False
+    ))
+
+    # Line
+    fig.add_trace(go.Scatter(
+        x=[top_row["x"], top_row["x"]],
+        y=[top_row["y"], top_row["y"] - 0.1],
+        mode='lines',
+        line=dict(color='gray', dash='dot'),
+        hoverinfo='skip',
+        showlegend=False
+    ))
+
+    # Text box
+    fig.add_trace(go.Scatter(
+        x=[top_row["x"]],
+        y=[top_row["y"] - 0.12],
+        text=[f"🔍 {top_row['description']}"],
+        mode='text',
+        textposition="top center",
+        hoverinfo='skip',
+        showlegend=False
+    ))
+
+# ---------- Layout and background ----------
+fig.update_layout(
+    height=600,
+    width=1000,
+    xaxis=dict(showgrid=False, zeroline=False, visible=False, range=[0, 1]),
+    yaxis=dict(showgrid=False, zeroline=False, visible=False, range=[0, 1.2]),
+    images=[dict(
+        source=bg_image_uri,
+        xref="paper", yref="paper",
+        x=0, y=1,
+        sizex=1, sizey=1,
+        xanchor="left", yanchor="top",
+        sizing="stretch",
+        opacity=1.0,
+        layer="below"
+    )],
+    plot_bgcolor='white',
+    margin=dict(l=20, r=20, t=40, b=20),
+    title="Interactive Funnel with Use Cases"
+)
+
+# ---------- Show figure ----------
+st.plotly_chart(fig, use_container_width=True)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
