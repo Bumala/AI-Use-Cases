@@ -175,10 +175,9 @@ if set(selected_attributes) != st.session_state.selected:
 st.markdown(
     """
     <style>
-    /* Target the dropdown menu directly */
     div[role="listbox"] {
-        max-height: 50px; /* Adjust this value to restrict the height */
-        overflow-y: auto; /* Add scroll if content exceeds height */
+        max-height: 50px !important; /* Force the height limit */
+        overflow-y: auto !important; /* Ensure scroll is applied */
     }
     </style>
     """,
