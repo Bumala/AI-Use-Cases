@@ -122,26 +122,56 @@ analysis_table_data = {  # keep your full data here
  
 analysis_table = pd.DataFrame(analysis_table_data)
 analysis_table.set_index("Use Case", inplace=True)
- 
-# ---------- Selectable attribute list ----------
- 
-attribute_columns = list(analysis_table.columns)
-selected_attributes = st.multiselect(
-   "Select attributes (these match the table cells you want to 'click'):",
-   attribute_columns,
+
+# Function to handle user selection in Python
+if "user_selection" not in st.session_state:
+    st.session_state["user_selection"] = []
+
+# Display the current selection
+st.write(f"User Selection: {st.session_state['user_selection']}")
+
+# Embed JavaScript
+components.html(
+    f"""
+    <script>
+        function sendSelection(selection) {{
+            // Send data to Streamlit using a hidden input element
+            const streamlitInput = window.parent.document.querySelector('input[data-testid="stTextInput"]');
+            if (streamlitInput) {{
+                streamlitInput.value = selection;
+                streamlitInput.dispatchEvent(new Event('input', {{ bubbles: true }}));
+            }}
+            console.log('User Selection:', selection);
+        }}
+        // Example usage
+        sendSelection('Quality/Scope/Knowledge');  // Update this value dynamically based on JS interactions
+    </script>
+    """,
+    height=0,
 )
- 
-# ---------- Calculate and show top use case ----------
- 
-if selected_attributes:
-   summed = analysis_table[selected_attributes].sum(axis=1)
-   top_use_case = summed.idxmax()
-   st.success(f"🚀 **Top Use Case:** {top_use_case}")
+
+# Dynamically update selected attributes based on user input
+selected_attribute = st.text_input(
+    "Hidden Input (for JS communication)", key="user_selection", label_visibility="hidden"
+)
+
+# Convert the single selection to a list (if needed)
+if selected_attribute and selected_attribute not in st.session_state["user_selection"]:
+    st.session_state["user_selection"].append(selected_attribute)
+
+# Calculate and display the top use case based on selected attributes
+if st.session_state["user_selection"]:
+    try:
+        summed = analysis_table[st.session_state["user_selection"]].sum(axis=1)
+        top_use_case = summed.idxmax()
+        st.success(f"🚀 **Top Use Case:** {top_use_case}")
+    except KeyError:
+        st.error("Selected attribute is not valid. Please choose a valid attribute.")
 else:
-   st.info("👆 Select attributes above to see the top use case.")
- 
-# ---------- Generate styled HTML table ----------
- 
+    st.info("👆 Select attributes above to see the top use case.")
+
+
+
  
 # ======= SESSION STATE =======
 if "selected" not in st.session_state:
@@ -387,35 +417,3 @@ html(html_code, height=1200)
 
 
 
-import streamlit as st
-import streamlit.components.v1 as components
-
-# Function to handle user selection in Python
-if "user_selection" not in st.session_state:
-    st.session_state["user_selection"] = "No selection yet"
-
-# Display the current selection
-st.write(f"User Selection: {st.session_state['user_selection']}")
-
-# Embed JavaScript
-components.html(
-    f"""
-    <script>
-        function sendSelection(selection) {{
-            // Send data to Streamlit using a hidden input element
-            const streamlitInput = window.parent.document.querySelector('input[data-testid="stTextInput"]');
-            if (streamlitInput) {{
-                streamlitInput.value = selection;
-                streamlitInput.dispatchEvent(new Event('input', {{ bubbles: true }}));
-            }}
-            console.log('User Selection:', selection);
-        }}
-        // Example usage
-        sendSelection('Selected Option');
-    </script>
-    """,
-    height=0,
-)
-
-# Display the user selection dynamically
-selection = st.text_input("Hidden Input (for JS communication)", key="user_selection", label_visibility="hidden")
