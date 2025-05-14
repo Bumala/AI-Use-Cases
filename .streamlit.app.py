@@ -153,6 +153,44 @@ with multiselect_container:
 if set(selected_attributes) != st.session_state.selected:
   st.session_state.selected = set(selected_attributes)
   st.session_state.attr_multiselect = selected_attributes
+
+
+
+
+
+
+
+# Inject custom CSS to reduce dropdown size
+st.markdown(
+    """
+    <style>
+    /* Reduce the height of the dropdown options */
+    div[data-baseweb="select"] > div {
+        max-height: 100px; /* Adjust this value to restrict the height */
+        overflow-y: auto; /* Add scroll if content exceeds height */
+    }
+
+    </style>
+    """,
+    unsafe_allow_html=True,
+)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
  
 # ---------- Calculate and show top use case ----------
 if selected_attributes:
