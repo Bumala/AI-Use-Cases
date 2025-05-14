@@ -172,21 +172,6 @@ if set(selected_attributes) != st.session_state.selected:
 
 
 
-# Inject custom CSS to reduce dropdown size
-st.markdown(
-    """
-    <style>
-    /* Target the dropdown menu directly */
-    div[role="listbox"] {
-        max-height: 50px !important; /* Adjust this value */
-        overflow-y: auto !important; /* Add scroll if content exceeds height */
-    }
-    </style>
-    """,
-    unsafe_allow_html=True,
-)
-
-
 
 
 
