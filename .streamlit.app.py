@@ -383,7 +383,7 @@ html_code = f"""
 html_code += """
 <div style="overflow-x: auto; width: 100%; padding: 10px; box-sizing: border-box;">
    <div class="zoomed-table">
-       {generate_html_table(data, st.session_state.selected)}
+  
    </div>
 </div>
 <style>
