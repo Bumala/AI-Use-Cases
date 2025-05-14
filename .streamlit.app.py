@@ -151,14 +151,41 @@ multiselect_container = st.container()
 
 
 
+
+
+
+
+
+
 # Display the first drop down list with current selections
 with multiselect_container:
-  selected_attributes = st.multiselect(
-      "Select attributes in the drop down list below to identify the relevant use case and cluster:",
-      attribute_columns,
-      default=st.session_state.attr_multiselect,
-      key="attr_multiselect_widget"
-  )
+    # Add a styled sentence above the dropdown
+    st.markdown(
+        """
+        <p style="font-size:18px; font-weight:bold; color:black;">
+            Select attributes in the drop down list below to identify the relevant use case and cluster:
+        </p>
+        """,
+        unsafe_allow_html=True,
+    )
+
+    # Render the multiselect dropdown
+    selected_attributes = st.multiselect(
+        "",
+        attribute_columns,
+        default=st.session_state.attr_multiselect,
+        key="attr_multiselect_widget"
+    )
+
+
+
+
+
+
+
+
+
+
  
 # Update session state when dropdown changes
 if set(selected_attributes) != st.session_state.selected:
