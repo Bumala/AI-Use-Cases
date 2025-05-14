@@ -176,11 +176,10 @@ st.markdown(
     """
     <style>
     /* Reduce the height of the dropdown options */
-    div[data-baseweb="select"] > div {
-        max-height: 5px; /* Adjust this value to restrict the height */
+    div[data-baseweb="menu"] {
+        max-height: 100px; /* Adjust this value to restrict the height */
         overflow-y: auto; /* Add scroll if content exceeds height */
     }
-
     </style>
     """,
     unsafe_allow_html=True,
