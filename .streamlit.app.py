@@ -162,7 +162,7 @@ with multiselect_container:
     # Add a styled sentence above the dropdown
     st.markdown(
         """
-        <p style="font-size:18px; font-weight:bold; color:black;margin-bottom: 1px;">
+        <p style="font-size:18px; font-weight:bold; color:black;margin-bottom: 0.5px;">
             Select attributes in the drop down list below to identify the relevant use case and cluster:
         </p>
         """,
