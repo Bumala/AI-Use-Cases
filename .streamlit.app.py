@@ -380,3 +380,37 @@ html_code += """
 """
  
 html(html_code, height=1200)
+
+
+
+from flask import Flask, render_template
+from flask_socketio import SocketIO, emit
+
+app = Flask(__name__)
+socketio = SocketIO(app)
+
+@socketio.on('user_selection')
+def handle_user_selection(data):
+    # Perform calculation
+    top_use_case = {"use_case": "Example Use Case", "score": 95}
+    emit('use_case_result', top_use_case)
+
+if __name__ == '__main__':
+    socketio.run(app)
+
+
+
+
+
+
+
+
+const socket = io('http://127.0.0.1:5000');
+
+// Send user selection to the backend
+socket.emit('user_selection', { selection: 'Selected Option' });
+
+// Listen for the calculation result
+socket.on('use_case_result', (data) => {
+    console.log('Top Use Case:', data);
+});
