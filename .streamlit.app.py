@@ -180,9 +180,9 @@ if set(selected_attributes) != st.session_state.selected:
 if selected_attributes:
   summed = analysis_table[selected_attributes].sum(axis=1)
   top_use_case = summed.idxmax()
-  st.success(f"🚀 **Top Use Case:** {top_use_case}")
+  st.success(f" **Relevant Use Case:** {top_use_case}")
 else:
-  st.info("👆 Select attributes by clicking cells in the table below to see the top use case.")
+  st.info("Select attributes in the drop down list above to identify the relevant use case and cluster.")
 
 
 
