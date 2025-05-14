@@ -457,156 +457,62 @@ html(html_code, height=1200)
 
 
 
-
-
-
 import streamlit as st
-import plotly.graph_objs as go
-import pandas as pd
-import numpy as np
 
-# ---------- Generate Dummy Use Cases ----------
-def generate_use_cases(stage, x_range, y_range):
-    return pd.DataFrame({
-        "x": np.random.uniform(x_range[0], x_range[1], 10),
-        "y": np.random.uniform(y_range[0], y_range[1], 10),
-        "stage": stage,
-        "description": [f"{stage} Use Case #{i+1}" for i in range(10)]
-    })
-
-# Funnel stages
-front_end = generate_use_cases("Front End", (0.1, 0.3), (0.6, 1.0))
-development = generate_use_cases("Development", (0.4, 0.6), (0.4, 0.8))
-market_intro = generate_use_cases("Market Introduction", (0.7, 0.9), (0.3, 0.7))
-df = pd.concat([front_end, development, market_intro]).reset_index(drop=True)
-
-# ---------- Simulated selection + calculation ----------
-selected_attributes = st.multiselect("Select Attributes", options=["Attr 1", "Attr 2", "Attr 3"])
-analysis_table = pd.DataFrame(np.random.randint(0, 10, size=(len(df), len(selected_attributes))),
-                              columns=selected_attributes)
-analysis_table["description"] = df["description"]
-
-# ---------- Calculate top use case ----------
-top_use_case = None
-if selected_attributes:
-    summed = analysis_table[selected_attributes].sum(axis=1)
-    top_idx = summed.idxmax()
-    top_use_case = analysis_table.loc[top_idx, "description"]
-    st.success(f"**Relevant Use Case:** {top_use_case}")
-else:
-    st.info("Select attributes to identify the most relevant use case.")
-
-# ---------- Build Plotly Figure ----------
-fig = go.Figure()
-
-# CASE 1: BEFORE SELECTION – show all use case dots
-if not selected_attributes:
-    # Funnel chart setup
-    fig.add_trace(go.Funnel(
-        y=["Front End", "Development", "Market Introduction"],
-        x=[120, 90, 50],  # Example funnel values
-        textinfo="value+percent initial",
-        marker=dict(color=["blue", "green", "red"]),
-    ))
-
-    # Show all use case dots with clickable functionality
-    fig.add_trace(go.Scatter(
-        x=df["x"],
-        y=df["y"],
-        mode="markers",
-        marker=dict(size=10, color="steelblue", opacity=0.7),
-        text=df["description"],
-        hoverinfo="text",
-        showlegend=False,
-        customdata=df["description"],  # Attach custom data to each point (use case description)
-        name="Use Case Dots"
-    ))
-
-# CASE 2: AFTER SELECTION – show only top use case
-elif top_use_case:
-    top_row = df[df["description"] == top_use_case].iloc[0]
-
-    # Funnel chart setup
-    fig.add_trace(go.Funnel(
-        y=["Front End", "Development", "Market Introduction"],
-        x=[120, 90, 50],  # Example funnel values
-        textinfo="value+percent initial",
-        marker=dict(color=["blue", "green", "red"]),
-    ))
-
-    # Dot for the top use case
-    fig.add_trace(go.Scatter(
-        x=[top_row["x"]],
-        y=[top_row["y"]],
-        mode="markers",
-        marker=dict(size=14, color='crimson'),
-        text=[top_row["description"]],
-        hoverinfo='text',
-        showlegend=False
-    ))
-
-    # Line from the top use case to the funnel
-    fig.add_trace(go.Scatter(
-        x=[top_row["x"], top_row["x"]],
-        y=[top_row["y"], top_row["y"] - 0.1],
-        mode='lines',
-        line=dict(color='gray', dash='dot'),
-        hoverinfo='skip',
-        showlegend=False
-    ))
-
-    # Text box for the top use case
-    fig.add_trace(go.Scatter(
-        x=[top_row["x"]],
-        y=[top_row["y"] - 0.12],
-        text=[f"🔍 {top_row['description']}"],
-        mode='text',
-        textposition="top center",
-        hoverinfo='skip',
-        showlegend=False
-    ))
-
-# ---------- Add Custom Background (Shapes) ----------
-fig.update_layout(
-    title="Interactive Funnel with Use Cases",
-    height=600,
-    width=1000,
-    xaxis=dict(showgrid=False, zeroline=False, visible=False, range=[0, 1]),
-    yaxis=dict(showgrid=False, zeroline=False, visible=False, range=[0, 1.2]),
-    plot_bgcolor='white',  # Set plot background color
-    paper_bgcolor='lightgray',  # Set paper background color
-    shapes=[
-        dict(
-            type="rect",
-            x0=0, x1=1, y0=0, y1=1,
-            xref="paper", yref="paper",
-            fillcolor="rgba(0, 0, 255, 0.1)",  # Light blue background
-            line=dict(width=0),
-            layer="below"
-        ),
-    ],
-    margin=dict(l=40, r=40, t=40, b=40),
-)
-
-# ---------- Show Plotly Figure in Streamlit ----------
-plotly_chart = st.plotly_chart(fig, use_container_width=True)
-
-# ---------- Handle Dot Clicks ----------
-# If the user clicks on any of the dots, show the information in the sidebar or main area
-click_data = st.session_state.get("click_data", None)
-
-if click_data:
-    clicked_description = click_data['points'][0]['customdata']
-    st.sidebar.write(f"**Clicked Use Case:** {clicked_description}")
+# Dictionary mapping use cases to their clusters
+use_case_to_cluster = {
+    "AI-powered manufacturing planning in smart factories": "Cluster 1: Ideation and Intelligent Planning in Automotive",
+    "AI-driven Human-Machine Collaboration in ideation": "Cluster 1: Ideation and Intelligent Planning in Automotive",
+    "AI-enabled bionic digital twin production planning": "Cluster 1: Ideation and Intelligent Planning in Automotive",
+    "AI-infused Human-Robot Collaboration planning": "Cluster 1: Ideation and Intelligent Planning in Automotive",
+    "AI-powered material flow planning": "Cluster 1: Ideation and Intelligent Planning in Automotive",
+    "AI-based digital twin for lithium-ion battery development": "Cluster 1: Ideation and Intelligent Planning in Automotive",
+    "AI-enabled predictive maintenance": "Cluster 1: Ideation and Intelligent Planning in Automotive",
+    "AI-driven predictive quality models for customer defects": "Cluster 1: Ideation and Intelligent Planning in Automotive",
     
-# Update the session state with the latest click data
-def handle_click(trace, points, selector):
-    if points.point_inds:
-        st.session_state["click_data"] = points
-        st.experimental_rerun()  # Rerun the app to reflect new data
+    "AI- and Genetic Algorithms-based vehicle design": "Cluster 2: AI-optimized design and quality in Automotive",
+    "AI-augmented visual inspections": "Cluster 2: AI-optimized design and quality in Automotive",
+    "AI-optimized scenario engineering": "Cluster 2: AI-optimized design and quality in Automotive",
+    "AI-driven design process": "Cluster 2: AI-optimized design and quality in Automotive",
+    "AI- and Bio-inspired Design": "Cluster 2: AI-optimized design and quality in Automotive",
+    "AI-assisted quality control of the bumper warpage": "Cluster 2: AI-optimized design and quality in Automotive",
+    "AI-optimized braking system test": "Cluster 2: AI-optimized design and quality in Automotive",
+    
+    "AI-enabled idea generation in the Metaverse": "Cluster 3: AI-driven Customer-Centric Innovation in Automotive",
+    "AI-driven interactive collaborative innovation": "Cluster 3: AI-driven Customer-Centric Innovation in Automotive",
+    "AI-based identification of consumer adoption stage": "Cluster 3: AI-driven Customer-Centric Innovation in Automotive",
+    "AI-powered marketing campaign": "Cluster 3: AI-driven Customer-Centric Innovation in Automotive",
+    "AI-driven relationship marketing": "Cluster 3: AI-driven Customer-Centric Innovation in Automotive",
+    "AI-powered customer satisfaction analysis": "Cluster 3: AI-driven Customer-Centric Innovation in Automotive",
+    "AI-driven competition analysis": "Cluster 3: AI-driven Customer-Centric Innovation in Automotive",
+    
+    "AI-assisted customer service in after-sales": "Cluster 4: AI in Automotive Customer Service",
+    "AI-enabled battery monitoring": "Cluster 4: AI in Automotive Customer Service",
+    "AI-assisted staff training": "Cluster 4: AI in Automotive Customer Service",
+    
+    "AI-infused experiments in R&D": "Cluster 5: AI in Strategic Forecasting",
+    "AI-optimized patent analysis": "Cluster 5: AI in Strategic Forecasting",
+    "AI-powered forecasting of the technology life cycle of EVs (S-Curve)": "Cluster 5: AI in Strategic Forecasting",
+    "AI-assisted ideation": "Cluster 5: AI in Strategic Forecasting",
+    "AI-driven vehicles sales prediction": "Cluster 5: AI in Strategic Forecasting"
+}
 
-# Set the click callback to handle the event
-fig.data[0].on_click(handle_click)
+# Simulating the selected use case (this could be dynamically selected by the user in your app)
+selected_use_case = "AI-powered manufacturing planning in smart factories"  # Example use case
+
+# ---------- Display Information Based on Selected Use Case ----------
+if selected_use_case:
+    # Display the selected use case in the first box
+    st.success(f" **Relevant Use Case:** {selected_use_case}")
+    
+    # Display the cluster information for the selected use case in the second box
+    cluster_name = use_case_to_cluster.get(selected_use_case, "Unknown Cluster")
+    cluster_info = f"The selected use case belongs to: {cluster_name}."
+    st.text_area("Cluster Information", cluster_info, height=150)
+    
+    # You can include more dynamic information here if needed, such as descriptions or further details of the cluster.
+else:
+    st.info("Please select a use case to display relevant information.")
 
 
 
