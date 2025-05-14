@@ -136,6 +136,10 @@ selected_attributes = list(st.session_state.selected)
  
 # ---------- Selectable attribute list ----------
 attribute_columns = list(analysis_table.columns)
+selected_attributes = st.multiselect(
+   "Select attributes (these match the table cells you want to 'click'):",
+   attribute_columns,
+)
  
 # Create container for the multiselect
 multiselect_container = st.container()
