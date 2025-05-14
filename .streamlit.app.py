@@ -112,18 +112,16 @@ analysis_table_data = {
  "Manufacturing": [0, 1, 0, 0, 0, 0, 1, 1, 1, 0, 2, 2, 2, 2, 2, 1, 2, 2, 2, 2, 0, 0, 1, 0, 1, 0, 2, 2, 0, 1],
  "Marketing & Sales": [0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 2, 0, 2, 2, 2, 0, 2, 2, 0, 0, 2, 2, 1, 0, 0, 0, 0, 0, 0, 1],
  "Customer Service": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 1, 2, 2, 2, 2, 2, 2, 2]
- 
- 
- 
- 
- 
- 
- 
- 
 }
+
+
 analysis_table = pd.DataFrame(analysis_table_data)
 analysis_table.set_index("Use Case", inplace=True)
- 
+
+
+
+
+
 # ======= SESSION STATE =======
 if "selected" not in st.session_state:
   st.session_state.selected = set()
@@ -133,13 +131,26 @@ if "attr_multiselect" not in st.session_state:
  
 # Initialize selected_attributes from session state
 selected_attributes = list(st.session_state.selected)
- 
+
+
+
+
+
+
 # ---------- Selectable attribute list ----------
 attribute_columns = list(analysis_table.columns)
- 
+
+
+
+
+
 # Create container for the multiselect
 multiselect_container = st.container()
- 
+
+
+
+
+
 # Display the initial multiselect with current selections
 with multiselect_container:
   selected_attributes = st.multiselect(
@@ -166,7 +177,7 @@ st.markdown(
     <style>
     /* Reduce the height of the dropdown options */
     div[data-baseweb="select"] > div {
-        max-height: 100px; /* Adjust this value to restrict the height */
+        max-height: 50px; /* Adjust this value to restrict the height */
         overflow-y: auto; /* Add scroll if content exceeds height */
     }
 
@@ -174,19 +185,6 @@ st.markdown(
     """,
     unsafe_allow_html=True,
 )
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -199,7 +197,12 @@ if selected_attributes:
   st.success(f"🚀 **Top Use Case:** {top_use_case}")
 else:
   st.info("👆 Select attributes by clicking cells in the table below to see the top use case.")
- 
+
+
+
+
+
+
 # ======= PERFECT TABLE LAYOUT GENERATION =======
 def generate_html_table(data, selected):
   first_col_width = 160
