@@ -460,24 +460,12 @@ html(html_code, height=1200)
 
 
 
-
 import streamlit as st
 import plotly.graph_objs as go
 import pandas as pd
 import numpy as np
-import base64
 
-# ---------- Load background image ----------
-background_image_path = "Bildschirmfoto 2025-02-10 um 10.24.59.png"
-
-def image_to_base64(path):
-    with open(path, "rb") as f:
-        data = f.read()
-    return f"data:image/png;base64,{base64.b64encode(data).decode()}"
-
-bg_image_uri = image_to_base64(background_image_path)
-
-# ---------- Generate dummy use cases ----------
+# ---------- Generate Dummy Use Cases ----------
 def generate_use_cases(stage, x_range, y_range):
     return pd.DataFrame({
         "x": np.random.uniform(x_range[0], x_range[1], 10),
@@ -508,11 +496,20 @@ if selected_attributes:
 else:
     st.info("Select attributes to identify the most relevant use case.")
 
-# ---------- Build Plotly figure ----------
+# ---------- Build Plotly Figure ----------
 fig = go.Figure()
 
 # CASE 1: BEFORE SELECTION – show all use case dots
 if not selected_attributes:
+    # Funnel chart setup
+    fig.add_trace(go.Funnel(
+        y=["Front End", "Development", "Market Introduction"],
+        x=[120, 90, 50],  # Example funnel values
+        textinfo="value+percent initial",
+        marker=dict(color=["blue", "green", "red"]),
+    ))
+
+    # Show all use case dots with clickable functionality
     fig.add_trace(go.Scatter(
         x=df["x"],
         y=df["y"],
@@ -520,14 +517,24 @@ if not selected_attributes:
         marker=dict(size=10, color="steelblue", opacity=0.7),
         text=df["description"],
         hoverinfo="text",
-        showlegend=False
+        showlegend=False,
+        customdata=df["description"],  # Attach custom data to each point (use case description)
+        name="Use Case Dots"
     ))
 
 # CASE 2: AFTER SELECTION – show only top use case
 elif top_use_case:
     top_row = df[df["description"] == top_use_case].iloc[0]
 
-    # Dot
+    # Funnel chart setup
+    fig.add_trace(go.Funnel(
+        y=["Front End", "Development", "Market Introduction"],
+        x=[120, 90, 50],  # Example funnel values
+        textinfo="value+percent initial",
+        marker=dict(color=["blue", "green", "red"]),
+    ))
+
+    # Dot for the top use case
     fig.add_trace(go.Scatter(
         x=[top_row["x"]],
         y=[top_row["y"]],
@@ -538,7 +545,7 @@ elif top_use_case:
         showlegend=False
     ))
 
-    # Line
+    # Line from the top use case to the funnel
     fig.add_trace(go.Scatter(
         x=[top_row["x"], top_row["x"]],
         y=[top_row["y"], top_row["y"] - 0.1],
@@ -548,7 +555,7 @@ elif top_use_case:
         showlegend=False
     ))
 
-    # Text box
+    # Text box for the top use case
     fig.add_trace(go.Scatter(
         x=[top_row["x"]],
         y=[top_row["y"] - 0.12],
@@ -559,31 +566,47 @@ elif top_use_case:
         showlegend=False
     ))
 
-# ---------- Layout and background ----------
+# ---------- Add Custom Background (Shapes) ----------
 fig.update_layout(
+    title="Interactive Funnel with Use Cases",
     height=600,
     width=1000,
     xaxis=dict(showgrid=False, zeroline=False, visible=False, range=[0, 1]),
     yaxis=dict(showgrid=False, zeroline=False, visible=False, range=[0, 1.2]),
-    images=[dict(
-        source=bg_image_uri,
-        xref="paper", yref="paper",
-        x=0, y=1,
-        sizex=1, sizey=1,
-        xanchor="left", yanchor="top",
-        sizing="stretch",
-        opacity=1.0,
-        layer="below"
-    )],
-    plot_bgcolor='white',
-    margin=dict(l=20, r=20, t=40, b=20),
-    title="Interactive Funnel with Use Cases"
+    plot_bgcolor='white',  # Set plot background color
+    paper_bgcolor='lightgray',  # Set paper background color
+    shapes=[
+        dict(
+            type="rect",
+            x0=0, x1=1, y0=0, y1=1,
+            xref="paper", yref="paper",
+            fillcolor="rgba(0, 0, 255, 0.1)",  # Light blue background
+            line=dict(width=0),
+            layer="below"
+        ),
+    ],
+    margin=dict(l=40, r=40, t=40, b=40),
 )
 
-# ---------- Show figure ----------
-st.plotly_chart(fig, use_container_width=True)
+# ---------- Show Plotly Figure in Streamlit ----------
+plotly_chart = st.plotly_chart(fig, use_container_width=True)
 
+# ---------- Handle Dot Clicks ----------
+# If the user clicks on any of the dots, show the information in the sidebar or main area
+click_data = st.session_state.get("click_data", None)
 
+if click_data:
+    clicked_description = click_data['points'][0]['customdata']
+    st.sidebar.write(f"**Clicked Use Case:** {clicked_description}")
+    
+# Update the session state with the latest click data
+def handle_click(trace, points, selector):
+    if points.point_inds:
+        st.session_state["click_data"] = points
+        st.experimental_rerun()  # Rerun the app to reflect new data
+
+# Set the click callback to handle the event
+fig.data[0].on_click(handle_click)
 
 
 
