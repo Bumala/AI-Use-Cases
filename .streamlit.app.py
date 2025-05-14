@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
 from streamlit.components.v1 import html
+import streamlit.components.v1 as components
  
 # Set Streamlit page layout
 st.set_page_config(layout="wide")
@@ -412,7 +413,15 @@ html_code += """
 html(html_code, height=1200)
 
 
-
+components.html(
+    """
+    <h1>Test Component</h1>
+    <script>
+        console.log("This is a test.");
+    </script>
+    """,
+    height=200,
+)
 
 
 
