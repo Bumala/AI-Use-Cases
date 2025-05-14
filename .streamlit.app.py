@@ -154,7 +154,7 @@ multiselect_container = st.container()
 # Display the initial multiselect with current selections
 with multiselect_container:
   selected_attributes = st.multiselect(
-      "Selected attributes (automatically synchronized with your table selections):",
+      "Select attributes in the drop down list below to identify the relevant use case and cluster.:",
       attribute_columns,
       default=st.session_state.attr_multiselect,
       key="attr_multiselect_widget"
@@ -182,7 +182,7 @@ if selected_attributes:
   top_use_case = summed.idxmax()
   st.success(f" **Relevant Use Case:** {top_use_case}")
 else:
-  st.info("Select attributes in the drop down list above to identify the relevant use case and cluster.")
+  st.info("The relevant use case is displayed here")
 
 
 
