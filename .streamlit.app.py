@@ -151,10 +151,10 @@ multiselect_container = st.container()
 
 
 
-# Display the initial multiselect with current selections
+# Display the first drop down list with current selections
 with multiselect_container:
   selected_attributes = st.multiselect(
-      "Select attributes in the drop down list below to identify the relevant use case and cluster.:",
+      "Select attributes in the drop down list below to identify the relevant use case and cluster:",
       attribute_columns,
       default=st.session_state.attr_multiselect,
       key="attr_multiselect_widget"
