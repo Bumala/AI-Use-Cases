@@ -457,9 +457,11 @@ if selected_attributes:
     
 
     # Display top use case inside a styled box
-    st.markdown ("Relevant AI Use Case")
+    
     st.markdown(
         f"""
+        <div style="margin-top: 1em;">
+        <label style="font-weight: 600;"> Relevant AI Use Case </label><br>
         <div style="
             background-color: #92D050;
             padding: 10px;
@@ -470,8 +472,8 @@ if selected_attributes:
             color: #000;
             white-space: pre-wrap;
             margin-top: 1em;
-        ">
-             {top_use_case}
+        ">   {top_use_case}
+             
         </div>
         """,
         unsafe_allow_html=True
