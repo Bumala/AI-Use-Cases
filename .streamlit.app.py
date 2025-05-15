@@ -553,7 +553,7 @@ if top_use_case:
             padding: 10px;
             border: 1px solid #ccc;
             border-radius: 8px;
-            font-family: 'Segoe UI', 'Roboto', 'Helvetica Neue', sans-serif;
+            font-family: 'Segoe UI', 'Roboto', 'Helvetica Neue', sans-serif, !important;
             font-size: 14px;
         " readonly>{copyable_text}</textarea>
     </div>
