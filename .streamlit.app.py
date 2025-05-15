@@ -535,26 +535,20 @@ cluster_details = {
 
 
 
-# ---------- Display Information Based on Selected Use Case ----------
 if top_use_case:
     # Fetch the cluster name for the selected use case
     cluster_name = use_case_to_cluster.get(top_use_case, "Unknown Cluster")
-    
-    # Debugging outputs
-    st.write(f"Debug: top_use_case = {top_use_case}")
-    st.write(f"Debug: cluster_name = {cluster_name}")
-    
-    # Fetch detailed information for the cluster
     cluster_info = cluster_details.get(cluster_name, "Detailed information about this cluster is not available.")
     
-    # Debugging output for cluster info
-    st.write(f"Debug: cluster_info = {cluster_info}")
-    
-    # Display clean, structured cluster information
-st.subheader("Cluster Information")
-st.markdown(f"**Use Case Cluster:** {cluster_name}")
-st.write(cluster_info)
+    # Clean display
+    st.subheader("Cluster Information")
+    st.markdown(f"**Use Case Cluster:** {cluster_name}")
+    st.write(cluster_info)
 
+    # Optional copyable text area
+    copyable_text = f"{cluster_name}\n\n{cluster_info}"
+    st.markdown("---")
+    st.text_area("📋 Copyable Cluster Info", copyable_text, height=150)
 else:
     st.info("Please select a use case to display relevant information.")
 
