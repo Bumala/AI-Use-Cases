@@ -452,7 +452,7 @@ html(html_code, height=700)
 use_case_descriptions = {
     "AI-infused experiments in R&D": "This use case focuses on integrating AI into experimental R&D processes to accelerate discovery and optimize results.",
     "AI-powered manufacturing planning in smart factories": "This use case enables intelligent scheduling, resource allocation, and process optimization using AI in smart factories.",
-    # Add more as needed...
+    "AI-infused experiments in R&D": "This use case balaalalalalalallala.",
 }
 
 
