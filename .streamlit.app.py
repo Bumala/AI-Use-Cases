@@ -443,7 +443,7 @@ html_code += """
  
  
 # Display the HTML
-html(html_code, height=600)
+html(html_code, height=700)
 
 
 
