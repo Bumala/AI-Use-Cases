@@ -462,20 +462,6 @@ else:
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 # Dictionary mapping use cases to their clusters
 use_case_to_cluster = {
     "AI-powered manufacturing planning in smart factories": "Cluster 1: Ideation and Intelligent Planning in Automotive",
@@ -515,16 +501,53 @@ use_case_to_cluster = {
 }
 
 
+# Dictionary mapping clusters to detailed information
+cluster_details = {
+    "Cluster 1: Ideation and Intelligent Planning in Automotive": (
+        "Focuses on using AI for ideation and intelligent planning in the automotive industry. "
+        "This includes material flow planning, predictive maintenance, and more innovative approaches."
+    ),
+    "Cluster 2: AI-optimized design and quality in Automotive": (
+        "Centers on leveraging AI to optimize design processes and ensure quality. "
+        "Examples include visual inspections, bio-inspired designs, and scenario engineering."
+    ),
+    "Cluster 3: AI-driven Customer-Centric Innovation in Automotive": (
+        "Aims at driving customer-centric innovations in the automotive sector using AI. "
+        "Applications include marketing campaigns, customer satisfaction analysis, and competition analysis."
+    ),
+    "Cluster 4: AI in Automotive Customer Service": (
+        "Focuses on enhancing customer service in automotive with AI tools. "
+        "This includes battery monitoring, staff training, and after-sales service improvements."
+    ),
+    "Cluster 5: AI in Strategic Forecasting": (
+        "Involves AI applications in strategic forecasting and planning. "
+        "Examples include patent analysis, technology lifecycle forecasting, and sales prediction."
+    )
+}
+
+
+
+
+
+
+
+
+
+
 
 # ---------- Display Information Based on Selected Use Case ----------
 if top_use_case:
-    
-    # Display the cluster information for the selected use case in the second box
+    # Fetch the cluster name for the selected use case
     cluster_name = use_case_to_cluster.get(top_use_case, "Unknown Cluster")
-    cluster_info = f"The selected use case belongs to: {cluster_name}."
-    st.text_area("Cluster Information", cluster_info, height=150)
     
-    # You can include more dynamic information here if needed, such as descriptions or further details of the cluster.
+    # Fetch detailed information for the cluster
+    cluster_info = cluster_details.get(cluster_name, "Detailed information about this cluster is not available.")
+    
+    # Combine the details into a single message
+    display_info = f"The selected use case belongs to: {cluster_name}.\n\nDetails:\n{cluster_info}"
+    
+    # Display the information in the Cluster Information box
+    st.text_area("Cluster Information", display_info, height=150)
 else:
     st.info("Please select a use case to display relevant information.")
 
