@@ -545,11 +545,11 @@ if top_use_case:
     st.markdown(
     f"""
     <div style="margin-top: 1em;">
-        <label style="font-weight: 600;">📋 Copyable Cluster Info</label><br>
+        <label style="font-weight: 600;"> Cluster Information </label><br>
         <textarea rows="10" style="
             width: 100%;
             background-color: #fff9c4;
-            color: #000;
+            color: #E8E8E8;
             padding: 10px;
             border: 1px solid #ccc;
             border-radius: 8px;
