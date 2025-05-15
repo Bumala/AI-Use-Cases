@@ -462,7 +462,7 @@ if selected_attributes:
         f"""
         <div style="margin-top: 1em;">
         <label style="font-weight: 600;"> Relevant AI Use Case </label><br>
-        <textarea rows="10" style="
+        <div style="
             background-color: #92D050;
             padding: 10px;
             border-radius: 8px;
@@ -472,7 +472,7 @@ if selected_attributes:
             color: #000;
             white-space: pre-wrap;
            "> {top_use_case} 
-            
+            </div>
         </div>
         """,
         unsafe_allow_html=True
