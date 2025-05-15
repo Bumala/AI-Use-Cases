@@ -520,7 +520,7 @@ use_case_to_cluster = {
     "AI-enabled battery monitoring": "Cluster 4: AI in Automotive Customer Service",
     "AI-assisted staff training": "Cluster 4: AI in Automotive Customer Service",
     
-    "AI-infused experiments in R&D": "Cluster 5: AI in Strategic Forecasting",
+    "AI-infused experiments in R&D": "<b>Cluster 5: AI in Strategic Forecasting</b>",
     "AI-optimized patent analysis": "Cluster 5: AI in Strategic Forecasting",
     "AI-powered forecasting of the technology life cycle of EVs (S-Curve)": "Cluster 5: AI in Strategic Forecasting",
     "AI-assisted ideation": "Cluster 5: AI in Strategic Forecasting",
