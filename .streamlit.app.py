@@ -546,7 +546,7 @@ cluster_details = {
         "Focuses on enhancing customer service in automotive with AI tools. "
         "This includes battery monitoring, staff training, and after-sales service improvements."
     ),
-    "Cluster 5: AI in Strategic Forecasting": (
+    "<b>Cluster 5: AI in Strategic Forecasting</b>": (
         "Involves AI applications in strategic forecasting and planning. "
         "Examples include patent analysis, technology lifecycle forecasting, and sales prediction."
     )
