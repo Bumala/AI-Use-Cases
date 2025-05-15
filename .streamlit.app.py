@@ -35,7 +35,8 @@ analysis_table_data = {
      "AI-infused Human-Robot Collaboration planning",
      "AI-powered material flow planning",
      "AI-assisted ideation",
-     "AI-driven interactive collaborative innovation",
+     "AI-driven interactive collaborative innovation
+     jjjjjjjjjjjj",
      "AI-based digital twin for lithium-ion battery development",
      "AI- and Genetic Algorithms-based vehicle design",
      "AI-augmented visual inspections",
