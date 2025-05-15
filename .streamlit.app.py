@@ -548,7 +548,7 @@ if top_use_case:
         <label style="font-weight: 600;"> Cluster Information </label><br>
         <textarea rows="10" style="
             width: 100%;
-            background-color: #FAFAFA;
+            background-color: #F5F5F5;
             color: #000;
             padding: 10px;
             border: 1px solid #ccc;
