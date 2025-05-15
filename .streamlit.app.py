@@ -450,38 +450,40 @@ html(html_code, height=1200)
 
 
 
-code_snippet = '''# ---------- Calculate and show top use case ----------
+# ---------- Calculate and show top use case ----------
 if selected_attributes:
-  summed = analysis_table[selected_attributes].sum(axis=1)
-  top_use_case = summed.idxmax()
-  st.success(f" **Relevant Use Case:** {top_use_case}")
-else:
-  top_use_case = None  # Default value if no attributes are selected
-  st.info("The relevant use case is displayed here")
-'''
+    summed = analysis_table[selected_attributes].sum(axis=1)
+    top_use_case = summed.idxmax()
 
-bg_color = "#F0F0F0"  # Change this to any HEX color you want
+    # Custom background color for the display box
+    bg_color = "#F0F0F0"  # Change to any light color you want
 
-st.markdown(
-    f"""
-    <div style="margin-top: 1em;">
-        <label style="font-weight: 600;">📋 Code Snippet</label><br>
-        <textarea rows="10" style="
-            width: 100%;
+    # Display top use case inside a styled box
+    st.markdown(
+        f"""
+        <div style="
             background-color: {bg_color};
-            color: #000;
-            padding: 10px;
-            border: 1px solid #ccc;
+            padding: 15px;
             border-radius: 8px;
-            font-family: 'Courier New', Courier, monospace;
-            font-size: 14px;
+            border: 1px solid #ccc;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-size: 16px;
+            color: #000;
             white-space: pre-wrap;
-            overflow-wrap: break-word;
-        " readonly>{code_snippet}</textarea>
-    </div>
-    """,
-    unsafe_allow_html=True
-)
+            margin-top: 1em;
+        ">
+            **Relevant Use Case:** {top_use_case}
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
+else:
+    top_use_case = None  # Default value if no attributes are selected
+    st.info("The relevant use case is displayed here")
+
+
+
+
 
 
 
