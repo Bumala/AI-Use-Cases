@@ -550,11 +550,11 @@ if top_use_case:
     # Debugging output for cluster info
     st.write(f"Debug: cluster_info = {cluster_info}")
     
-    # Combine the details into a single message
-    display_info = f"The selected use case belongs to: {cluster_name}.\n\nDetails:\n{cluster_info}"
-    
-    # Display the information in the Cluster Information box
-    st.text_area("Cluster Information", display_info, height=150)
+    # Display clean, structured cluster information
+st.subheader("Cluster Information")
+st.markdown(f"**Use Case Cluster:** {cluster_name}")
+st.write(cluster_info)
+
 else:
     st.info("Please select a use case to display relevant information.")
 
