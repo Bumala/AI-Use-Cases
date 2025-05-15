@@ -540,8 +540,15 @@ if top_use_case:
     # Fetch the cluster name for the selected use case
     cluster_name = use_case_to_cluster.get(top_use_case, "Unknown Cluster")
     
+    # Debugging outputs
+    st.write(f"Debug: top_use_case = {top_use_case}")
+    st.write(f"Debug: cluster_name = {cluster_name}")
+    
     # Fetch detailed information for the cluster
     cluster_info = cluster_details.get(cluster_name, "Detailed information about this cluster is not available.")
+    
+    # Debugging output for cluster info
+    st.write(f"Debug: cluster_info = {cluster_info}")
     
     # Combine the details into a single message
     display_info = f"The selected use case belongs to: {cluster_name}.\n\nDetails:\n{cluster_info}"
