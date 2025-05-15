@@ -463,7 +463,7 @@ if selected_attributes:
             background-color: #92D050;
             padding: 10px;
             border-radius: 8px;
-            border: 1px solid #ccc;
+            border: 1px solid #000;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             font-size: 14px;
             color: #000;
