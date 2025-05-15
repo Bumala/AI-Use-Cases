@@ -545,10 +545,7 @@ if top_use_case:
     st.markdown(f"**Use Case Cluster:** {cluster_name}")
     st.write(cluster_info)
 
-    # Optional copyable text area
-    copyable_text = f"{cluster_name}\n\n{cluster_info}"
-    st.markdown("---")
-    st.text_area("📋 Copyable Cluster Info", copyable_text, height=150)
+    
 else:
     st.info("Please select a use case to display relevant information.")
 
