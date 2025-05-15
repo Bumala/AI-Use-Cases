@@ -25,7 +25,7 @@ data = [
 # ---------- Load analysis table ----------
 analysis_table_data = {
              "Use Case": [
-     "<b>AI-infused experiments in R&D</b><br>This information deschribes the use case. Moreover the jjjjjjjj",
+     "AI-infused experiments in R&D<br>This information deschribes the use case. Moreover the jjjjjjjj",
      "AI-powered manufacturing planning in smart factories",
      "AI-driven Human-Machine Collaboration in ideation",
      "AI-enabled idea generation in the Metaverse",
@@ -520,7 +520,7 @@ use_case_to_cluster = {
     "AI-enabled battery monitoring": "Cluster 4: AI in Automotive Customer Service",
     "AI-assisted staff training": "Cluster 4: AI in Automotive Customer Service",
     
-    "<b>AI-infused experiments in R&D</b>": "<b>Cluster 5: AI in Strategic Forecasting</b>",
+    "AI-infused experiments in R&D": "Cluster 5: AI in Strategic Forecasting",
     "AI-optimized patent analysis": "Cluster 5: AI in Strategic Forecasting",
     "AI-powered forecasting of the technology life cycle of EVs (S-Curve)": "Cluster 5: AI in Strategic Forecasting",
     "AI-assisted ideation": "Cluster 5: AI in Strategic Forecasting",
