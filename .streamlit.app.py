@@ -472,7 +472,8 @@ if selected_attributes:
             color: #000;
             white-space: pre-wrap;
             margin-top: 1em;
-        ">   {top_use_case}
+            {top_use_case}
+        ">   
              
         </div>
         """,
