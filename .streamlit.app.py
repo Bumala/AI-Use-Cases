@@ -472,7 +472,7 @@ if selected_attributes:
             color: #000;
             white-space: pre-wrap;
         ">  {top_use_case} 
-             
+             </div>
         </div>
         """,
         unsafe_allow_html=True
