@@ -540,10 +540,27 @@ if top_use_case:
     cluster_name = use_case_to_cluster.get(top_use_case, "Unknown Cluster")
     cluster_info = cluster_details.get(cluster_name, "Detailed information about this cluster is not available.")
     
-    # Clean display
-    st.subheader("Cluster Information")
-    st.markdown(f"**Use Case Cluster:** {cluster_name}")
-    st.write(cluster_info)
+    copyable_text = f"{cluster_name}\n\n{cluster_info}"
+    st.markdown("---")
+    st.markdown(
+    f"""
+    <div style="margin-top: 1em;">
+        <label style="font-weight: 600;">📋 Copyable Cluster Info</label><br>
+        <textarea rows="10" style="
+            width: 100%;
+            background-color: #fff9c4;
+            color: #000;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            font-family: monospace;
+            font-size: 14px;
+        " readonly>{copyable_text}</textarea>
+    </div>
+    """,
+    unsafe_allow_html=True
+)
+
 
     
 else:
