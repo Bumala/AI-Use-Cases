@@ -25,7 +25,7 @@ data = [
 # ---------- Load analysis table ----------
 analysis_table_data = {
              "Use Case": [
-     "AI-infused experiments in R&D",
+     "AI-infused experiments in R&D<br><br>This information deschribes the use case. Moreover the jjjjjjjj",
      "AI-powered manufacturing planning in smart factories",
      "AI-driven Human-Machine Collaboration in ideation",
      "AI-enabled idea generation in the Metaverse",
