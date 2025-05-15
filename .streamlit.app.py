@@ -449,6 +449,43 @@ html(html_code, height=700)
 
 
 
+use_case_descriptions = {
+    "AI-infused experiments in R&D": "This use case focuses on integrating AI into experimental R&D processes to accelerate discovery and optimize results.",
+    "AI-powered manufacturing planning in smart factories": "This use case enables intelligent scheduling, resource allocation, and process optimization using AI in smart factories.",
+    # Add more as needed...
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# Combine the title and the paragraph with spacing
+use_case_info = f"{top_use_case}<br><br>{use_case_descriptions.get(top_use_case, '')}"
+
+
+
+
+
+
+
+
+
+
+
 # ---------- Calculate and show top use case ----------
 if selected_attributes:
     summed = analysis_table[selected_attributes].sum(axis=1)
@@ -471,7 +508,7 @@ if selected_attributes:
             font-size: 14px;
             color: #000;
             white-space: pre-wrap;
-           "> {top_use_case} 
+           "> {use_case_info} 
             </div>
         </div>
         """,
