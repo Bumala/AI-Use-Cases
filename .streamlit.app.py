@@ -385,8 +385,7 @@ if 'js_message' not in st.session_state:
   st.session_state.js_message = None
 handle_js_messages()
  
-# ======= SELECTED BAR AND TABLE =======
- 
+
  
  
  
@@ -455,24 +454,23 @@ if selected_attributes:
     summed = analysis_table[selected_attributes].sum(axis=1)
     top_use_case = summed.idxmax()
 
-    # Custom background color for the display box
-    bg_color = "#F0F0F0"  # Change to any light color you want
+    
 
     # Display top use case inside a styled box
     st.markdown(
         f"""
         <div style="
-            background-color: {bg_color};
-            padding: 15px;
+            background-color: #92D050;
+            padding: 10px;
             border-radius: 8px;
             border: 1px solid #ccc;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            font-size: 16px;
+            font-size: 14px;
             color: #000;
             white-space: pre-wrap;
             margin-top: 1em;
         ">
-            **Relevant Use Case:** {top_use_case}
+            Relevant Use Case: {top_use_case}
         </div>
         """,
         unsafe_allow_html=True
