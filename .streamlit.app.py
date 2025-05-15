@@ -456,7 +456,7 @@ if selected_attributes:
   top_use_case = summed.idxmax()
   st.success(f" **Relevant Use Case:** {top_use_case}")
 else:
- top_use_case = None  # Default value if no attributes are selected
+  top_use_case = None  # Default value if no attributes are selected
   st.info("The relevant use case is displayed here")
 
 
