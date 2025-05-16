@@ -672,7 +672,7 @@ if top_use_case:
         title_text="Significance Level",
         range=[0, 2]
         title_font=dict(color='black'),
-        automargin=True,
+        
     )
     fig.update_xaxes(
     title_text="Attributes",
