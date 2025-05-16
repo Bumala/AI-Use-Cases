@@ -450,7 +450,7 @@ if selected_attributes:
     st.markdown(
         f"""
         <div style="margin-top: 1em;">
-        <label style="font-weight: 600;"> Most relevant AI Use Case </label><br>
+        <label style="font-weight: 700; color: #000;"> Most relevant AI Use Case </label><br>
         <div style="
             background-color: #A8E060; 
             padding: 10px;
@@ -595,7 +595,7 @@ if top_use_case:
     st.markdown(
     f"""
     <div style="margin-top: 1em;">
-        <label style="font-weight: 600;"> Cluster Information </label><br>
+        <label style="font-weight: 700; color: #000;"> Cluster Information </label><br>
         <textarea rows="10" style="
             width: 100%;
             background-color: #F5F5F5;
@@ -638,7 +638,7 @@ if selected_attributes:
     st.markdown(
         f"""
         <div style="margin-top: 1em;">
-            <label style="font-weight: 600;"> Other relevant AI Use Cases</label><br>
+            <label style="font-weight: 700; color: #000;"> Other relevant AI Use Cases</label><br>
             <div style="
                 background-color: #FAEBD8; 
                 padding: 10px;
