@@ -155,7 +155,7 @@ with multiselect_container:
     st.markdown(
         """
         <p style="font-size:18px; font-weight:bold; color:black;margin-bottom: 0px;">
-            Select as many attributes from the drop down list below as you want to identify the relevant AI use cases in automotive and clusters. The more attributes you select, the more precise the most relevant AI use case will be depicted. If you select less than three attributes, please consider the section with other relevant use cases further down this page:
+            Select as many attributes as you like from the dropdown list below to identify relevant AI use cases and clusters in automotive. The more attributes you choose, the more accurately the most relevant AI use case will be displayed. If you select fewer than three attributes, please refer to the section with additional relevant use cases further down this page.
         </p>
         """,
         unsafe_allow_html=True,
@@ -474,7 +474,8 @@ else:
 
 #------------------------------------------------------------------------ Top use case graph display ------------------------------------------------------------------------------
 
-# Ensure 'top_use_case' holds the index of your selected use case
+st.header("Significance Levels of the most relevant AI use case in Automotive)
+
 if top_use_case:
     # Get all attribute columns for the selected top use case
     attribute_columns = list(analysis_table.columns)
@@ -590,7 +591,7 @@ if top_use_case:
     cluster_name = use_case_to_cluster.get(top_use_case, "Unknown Cluster")
     cluster_info = cluster_details.get(cluster_name, "Detailed information about this cluster is not available.")
     
-    copyable_text = f"<b>{cluster_name}</b>\n\n{cluster_info}"
+    copyable_text = f"<strong>{cluster_name}</strong>\n\n{cluster_info}"
     st.markdown(
     f"""
     <div style="margin-top: 1em;">
