@@ -491,17 +491,6 @@ if selected_attributes:
     top_use_case = summed.idxmax()
 
 
-
-
-# Combine the title and the paragraph with spacing
-use_case_info = f"{top_use_case}<br><br>{use_case_descriptions.get(top_use_case, '')}"
-
-
-
-
-
-
-
  
 
     # Display top use case inside a styled box
@@ -530,6 +519,8 @@ else:
 
 
 
+# Combine the title and the paragraph with spacing
+use_case_info = f"{top_use_case}<br><br>{use_case_descriptions.get(top_use_case, '')}"
 
 
 
