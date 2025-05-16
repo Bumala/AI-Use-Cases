@@ -676,9 +676,10 @@ if top_use_case:
     title_text="Attributes",
     automargin=True,
     title_standoff=5  # Lower value brings title closer to axis
+    tickangle=20
 )
     fig.update_layout(
-    margin=dict(b=40)  # Adjust bottom margin (try 20-60)
+    margin=dict(b=60)  # Adjust bottom margin (try 20-60)
 )
     st.plotly_chart(fig, use_container_width=True)
 
