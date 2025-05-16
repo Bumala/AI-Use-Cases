@@ -513,7 +513,7 @@ if top_use_case:
     tickfont=dict(color='black'),
 )
     fig.update_layout(
-    margin=dict(b=40)  # Adjust bottom margin (try 20-60)
+    margin=dict(t=0, b=40)  # Adjust bottom margin (try 20-60)
 )
     st.plotly_chart(fig, use_container_width=True)
 
