@@ -427,10 +427,6 @@ html(html_code, height=700)
 
 
 
-
-
-
-
 #-------------------------------------------------------- Top use case selection and display --------------------------------------------------------------------------------------
 
 #------------------------- AI use case description ---------------------------------
@@ -442,17 +438,10 @@ use_case_descriptions = {
 
 
 
-
-
-
 # ------------------------ Calculate and show top use case -----------------------
 if selected_attributes:
     summed = analysis_table[selected_attributes].sum(axis=1)
     top_use_case = summed.idxmax()
-
-
-
-
 
     # Combine the title and the paragraph with spacing
     use_case_info = f"{top_use_case}<br><br>{use_case_descriptions.get(top_use_case, '')}"
@@ -483,12 +472,7 @@ else:
 
 
 
-
-
-
-
-
-#------------------------------------------------- Top use case graph display -----------------------------------------------------------------------------------------------------
+#------------------------------------------------------------------------ Top use case graph display ------------------------------------------------------------------------------
 
 # Ensure 'top_use_case' holds the index of your selected use case
 if top_use_case:
@@ -528,9 +512,6 @@ if top_use_case:
     margin=dict(b=40)  # Adjust bottom margin (try 20-60)
 )
     st.plotly_chart(fig, use_container_width=True)
-
-
-
 
 
 
@@ -598,11 +579,6 @@ cluster_details = {
         "Examples include patent analysis, technology lifecycle forecasting, and sales prediction."
     )
 }
-
-
-
-
-
 
 
 
