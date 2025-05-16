@@ -5,13 +5,12 @@ import json
 import plotly.graph_objects as go
 
 
-
-
- 
+#----------------------------------------------------------------- Streamlit page layout ------------------------------------------------------------------------------------------
 # Set Streamlit page layout
 st.set_page_config(layout="wide")
- 
-# ---------- Data for the HTML table ----------
+
+
+#----------------------------------------------------------------- Table for category, dimension and attributes -------------------------------------------------------------------
 data = [
   ["Category", "Dimension", "Attributes"],
   ["Impact (What)", "Benefits", "Quality/Scope/Knowledge", "Time Efficiency", "Cost"],
@@ -26,8 +25,9 @@ data = [
   ["Context (Where/When)", "Innovation Phase", "Front End", "Development", "Market Introduction"],
   [None, "Department", "R&D", "Manufacturing", "Marketing & Sales", "Customer Service"],
 ]
- 
-# ---------- Load analysis table ----------
+
+
+#--------------------------------------------------------------------------------- Analysis table ---------------------------------------------------------------------------------
 analysis_table_data = {
              "Use Case": [
      "AI-infused experiments in R&D",
@@ -61,8 +61,6 @@ analysis_table_data = {
      "AI-driven competition analysis",
      "AI-driven vehicles sales prediction"
  ],
- 
- 
  
  "Quality/Scope/Knowledge": [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2],
  "Time Efficiency": [2, 2, 2, 0, 0, 0, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 0, 2, 0, 2, 0, 2, 2, 2, 0, 0],
@@ -127,7 +125,7 @@ analysis_table.set_index("Use Case", inplace=True)
 
 
 
-# ======= SESSION STATE =======
+# ----------------------------------------------------------------------------------------- Session state -----------------------------------------------------------------------
 if "selected" not in st.session_state:
   st.session_state.selected = set()
  
@@ -142,23 +140,12 @@ selected_attributes = list(st.session_state.selected)
 
 
 
-# ---------- Selectable attribute list ----------
+#------------------------------------------------------------------------------ First drop down list for selectable attributes ----------------------------------------------------
 attribute_columns = list(analysis_table.columns)
-
-
-
 
 
 # Create container for the multiselect
 multiselect_container = st.container()
-
-
-
-
-
-
-
-
 
 
 
@@ -185,12 +172,6 @@ with multiselect_container:
 
 
 
-
-
-
-
-
-
  
 # Update session state when dropdown changes
 if set(selected_attributes) != st.session_state.selected:
@@ -201,19 +182,7 @@ if set(selected_attributes) != st.session_state.selected:
 
 
 
-
-
-
-
-
-
- 
-
-
-
-
-
-# ======= PERFECT TABLE LAYOUT GENERATION =======
+#-------------------------------------------------------------------------------- Table layout ------------------------------------------------------------------------------------
 def generate_html_table(data, selected):
   first_col_width = 160
   second_col_width = 200
@@ -298,8 +267,14 @@ def generate_html_table(data, selected):
  
   html += "</table>"
   return html
- 
-# ======= JAVASCRIPT FOR INTERACTIVITY =======
+
+
+
+
+
+#----------------------------------------------------------------- Python, Javascript, Streamlit Communication --------------------------------------------------------------------
+
+#------------------ Javascript for interactivity ---------------------------------- 
 interaction_js = f"""
 <script>
 // Track selected items globally
@@ -373,7 +348,7 @@ document.addEventListener("DOMContentLoaded", function() {{
 </script>
 """
  
-# ======= HANDLE MESSAGES FROM JAVASCRIPT =======
+#-------------------------- Handle messages from Javascript --------------------
 def handle_js_messages():
   # Check if we have a new message from JavaScript
   if hasattr(st.session_state, 'js_message') and st.session_state.js_message:
@@ -398,7 +373,7 @@ handle_js_messages()
  
  
  
-# JavaScript to handle Streamlit communication
+#--------------------------- JavaScript to handle Streamlit communication--------
 streamlit_js = """
 <script>
 // Function to handle messages from Streamlit
@@ -454,6 +429,11 @@ html(html_code, height=700)
 
 
 
+
+
+#-------------------------------------------------------- Top use case selection and display --------------------------------------------------------------------------------------
+
+#------------------------- AI use case description ---------------------------------
 use_case_descriptions = {
     "AI-infused experiments in R&D": "This use case focuses on integrating AI into experimental R&D processes to accelerate discovery and optimize results.",
     "AI-powered manufacturing planning in smart factories": "This use case enables intelligent scheduling, resource allocation, and process optimization using AI in smart factories.",
@@ -465,32 +445,7 @@ use_case_descriptions = {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-# ---------- Calculate and show top use case ----------
+# ------------------------ Calculate and show top use case -----------------------
 if selected_attributes:
     summed = analysis_table[selected_attributes].sum(axis=1)
     top_use_case = summed.idxmax()
@@ -533,6 +488,53 @@ else:
 
 
 
+#------------------------------------------------- Top use case graph display -----------------------------------------------------------------------------------------------------
+
+# Ensure 'top_use_case' holds the index of your selected use case
+if top_use_case:
+    # Get all attribute columns for the selected top use case
+    attribute_columns = list(analysis_table.columns)
+    all_values = analysis_table.loc[top_use_case, attribute_columns]
+
+    fig = go.Figure(data=[
+        go.Bar(
+            x=attribute_columns,
+            y=all_values,
+            marker_color=[
+                '#92D050' if v == 2 else '#FFD966' if v == 1 else '#D9D9D9'
+                for v in all_values
+            ],
+        )
+    ])
+
+    fig.update_yaxes(
+        tickvals=[0, 1, 2],
+        ticktext=["Low", "Moderate", "High"],
+        title_text="Significance Level",
+        range=[0, 2],
+        title_font=dict(color='black'),
+        tickfont=dict(color='black'),
+        
+    )
+    fig.update_xaxes(
+    title_text="Attributes",
+    automargin=True,
+    title_standoff=30,  # Lower value brings title closer to axis
+    tickangle=50,
+    title_font=dict(color='black'),
+    tickfont=dict(color='black'),
+)
+    fig.update_layout(
+    margin=dict(b=40)  # Adjust bottom margin (try 20-60)
+)
+    st.plotly_chart(fig, use_container_width=True)
+
+
+
+
+
+
+#----------------------------------------------------------------------------------- Cluster Analysis -----------------------------------------------------------------------------
 
 # Dictionary mapping use cases to their clusters
 use_case_to_cluster = {
@@ -573,7 +575,7 @@ use_case_to_cluster = {
 }
 
 
-# Dictionary mapping clusters to detailed information
+#---------------- Dictionary mapping clusters to detailed information --------------------------------------------
 cluster_details = {
     "Cluster 1: Ideation and Intelligent Planning in Automotive": (
         "Focuses on using AI for ideation and intelligent planning in the automotive industry. "
@@ -584,14 +586,14 @@ cluster_details = {
         "Examples include visual inspections, bio-inspired designs, and scenario engineering."
     ),
     "Cluster 3: AI-driven Customer-Centric Innovation in Automotive": (
-        "Aims at driving customer-centric innovations in the automotive sector using AI. "
+        "Aims at driving customer-centric innovations in the automotive sector using AI. Applications include marketing campaigns, customer satisfaction analysis, and competition analysis "
         "Applications include marketing campaigns, customer satisfaction analysis, and competition analysis."
     ),
     "Cluster 4: AI in Automotive Customer Service": (
         "Focuses on enhancing customer service in automotive with AI tools. "
         "This includes battery monitoring, staff training, and after-sales service improvements."
     ),
-    "<b>Cluster 5: AI in Strategic Forecasting</b>": (
+    "Cluster 5: AI in Strategic Forecasting": (
         "Involves AI applications in strategic forecasting and planning. "
         "Examples include patent analysis, technology lifecycle forecasting, and sales prediction."
     )
@@ -605,7 +607,7 @@ cluster_details = {
 
 
 
-
+#-------------------------------- Selection of Clusters ----------------------------------------------------------
 
 if top_use_case:
     # Fetch the cluster name for the selected use case
@@ -649,44 +651,6 @@ else:
 
 
 
-# Ensure 'top_use_case' holds the index of your selected use case
-if top_use_case:
-    # Get all attribute columns for the selected top use case
-    attribute_columns = list(analysis_table.columns)
-    all_values = analysis_table.loc[top_use_case, attribute_columns]
-
-    fig = go.Figure(data=[
-        go.Bar(
-            x=attribute_columns,
-            y=all_values,
-            marker_color=[
-                '#92D050' if v == 2 else '#FFD966' if v == 1 else '#D9D9D9'
-                for v in all_values
-            ],
-        )
-    ])
-
-    fig.update_yaxes(
-        tickvals=[0, 1, 2],
-        ticktext=["Low", "Moderate", "High"],
-        title_text="Significance Level",
-        range=[0, 2],
-        title_font=dict(color='black'),
-        tickfont=dict(color='black'),
-        
-    )
-    fig.update_xaxes(
-    title_text="Attributes",
-    automargin=True,
-    title_standoff=30,  # Lower value brings title closer to axis
-    tickangle=50,
-    title_font=dict(color='black'),
-    tickfont=dict(color='black'),
-)
-    fig.update_layout(
-    margin=dict(b=40)  # Adjust bottom margin (try 20-60)
-)
-    st.plotly_chart(fig, use_container_width=True)
 
 
 
