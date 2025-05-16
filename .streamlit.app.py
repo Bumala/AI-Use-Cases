@@ -671,12 +671,16 @@ if top_use_case:
         ticktext=["Low", "Moderate", "High"],
         title_text="Significance Level",
         range=[0, 2]
+        title_font=dict(color='black'),
+        automargin=True,
     )
     fig.update_xaxes(
     title_text="Attributes",
     automargin=True,
     title_standoff=30,  # Lower value brings title closer to axis
     tickangle=50
+    title_font=dict(color='black'),
+    automargin=True,
 )
     fig.update_layout(
     margin=dict(b=40)  # Adjust bottom margin (try 20-60)
