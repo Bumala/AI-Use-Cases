@@ -444,7 +444,7 @@ if selected_attributes:
     top_use_case = summed.idxmax()
 
     # Combine the title and the paragraph with spacing
-    use_case_info = f"{top_use_case}<br><br>{use_case_descriptions.get(top_use_case, '')}"
+    use_case_info = f"<b>{top_use_case}</b><br><br>{use_case_descriptions.get(top_use_case, '')}"
 
     # Display top use case inside a styled box
     st.markdown(
@@ -601,7 +601,7 @@ if top_use_case:
             background-color: #F5F5F5;
             color: #000;
             padding: 10px;
-            border: 1px solid #ccc;
+            border: 1px solid #000;
             border-radius: 8px;
             font-family: 'Segoe UI', 'Roboto', 'Helvetica Neue', sans-serif, !important;
             font-size: 14px;
@@ -632,7 +632,7 @@ if selected_attributes:
         description = use_case_descriptions.get(use_case, "")
         use_cases_info += f"<b>{use_case}</b><br>{description}<br><br>"
 
-    # Strip the trailing <br><br> for a clean finish (optional)
+    # Strip the trailing <br><br> for a clean finish 
     use_cases_info = use_cases_info.rstrip("<br><br>")
 
     st.markdown(
