@@ -599,7 +599,6 @@ if top_use_case:
     f"""
     <div style="margin-top: 1em;">
         <label style="font-weight: 700; color: #000;"> Cluster Information </label><br>
-        <span style="font-weight:700; font-size:14px;">{cluster_name}</span><br>
         <div style="
             width: 100%;
             background-color: #F5F5F5;
@@ -609,7 +608,7 @@ if top_use_case:
             border-radius: 8px;
             font-family: 'Segoe UI', 'Roboto', 'Helvetica Neue', sans-serif, !important;
             font-size: 14px;
-        ">{cluster_info}</textarea>
+        "><b>{cluster_name}</b><br>{cluster_info}</textarea>
     </div>
     """,
     unsafe_allow_html=True
