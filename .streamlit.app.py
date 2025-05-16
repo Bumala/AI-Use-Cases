@@ -649,19 +649,20 @@ else:
 
 
 
-
-# Assuming analysis_table is your DataFrame and top_use_case is the index of the selected use case
+# Ensure 'top_use_case' holds the index of your selected use case
 if top_use_case:
-    # Get all attribute columns for the top use case
-    # Exclude any index or non-attribute columns if necessary
+    # Get all attribute columns for the selected top use case
     attribute_columns = list(analysis_table.columns)
-    top_values = analysis_table.loc[top_use_case, attribute_columns]
+    all_values = analysis_table.loc[top_use_case, attribute_columns]
 
     fig = go.Figure(data=[
         go.Bar(
             x=attribute_columns,
-            y=top_values,
-            marker_color=['#92D050' if v==2 else '#FFD966' if v==1 else '#D9D9D9' for v in top_values],
+            y=all_values,
+            marker_color=[
+                '#92D050' if v == 2 else '#FFD966' if v == 1 else '#D9D9D9'
+                for v in all_values
+            ],
         )
     ])
 
@@ -674,7 +675,6 @@ if top_use_case:
     fig.update_xaxes(title_text="Attributes")
 
     st.plotly_chart(fig, use_container_width=True)
-
 
 
 
