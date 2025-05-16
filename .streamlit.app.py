@@ -592,14 +592,15 @@ cluster_details = {
 if top_use_case:
     # Fetch the cluster name for the selected use case
     cluster_name = use_case_to_cluster.get(top_use_case, "Unknown Cluster")
-    cluster_info = cluster_details.get(<b>cluster_name </b>, "Detailed information about this cluster is not available.")
+    cluster_info = cluster_details.get(cluster_name, "Detailed information about this cluster is not available.")
     
   
     st.markdown(
     f"""
     <div style="margin-top: 1em;">
         <label style="font-weight: 700; color: #000;"> Cluster Information </label><br>
-        <textarea rows="10" style="
+        <span style="font-weight:700; font-size:14px;">{cluster_name}</span><br>
+        <div style="
             width: 100%;
             background-color: #F5F5F5;
             color: #000;
