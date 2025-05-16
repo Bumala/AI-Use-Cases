@@ -590,16 +590,27 @@ cluster_details = {
 #-------------------------------- Selection of Clusters ----------------------------------------------------------
 
 if top_use_case:
-    # Fetch the cluster name for the selected use case
     cluster_name = use_case_to_cluster.get(top_use_case, "Unknown Cluster")
     cluster_info = cluster_details.get(cluster_name, "Detailed information about this cluster is not available.")
-    
+
     st.markdown(
         f"""
         <div style="margin-top: 1em;">
             <label style="font-weight: 700; color: #000;">Cluster Information</label><br>
-            <span style="font-weight:bold;">{cluster_name}</span><br><br>
-            <span>{cluster_info}</span>
+            <div style="
+                width: 100%;
+                background-color: #F5F5F5;
+                color: #000;
+                padding: 10px;
+                border: 1px solid #000;
+                border-radius: 8px;
+                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                font-size: 14px;
+                margin-top: 0.5em;
+            ">
+                <span style="font-weight:bold;">{cluster_name}</span><br><br>
+                <span>{cluster_info}</span>
+            </div>
         </div>
         """,
         unsafe_allow_html=True
