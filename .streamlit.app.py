@@ -491,7 +491,7 @@ if selected_attributes:
     top_use_case = summed.idxmax()
 
     # Display top use case inside a styled box
-     st.markdown(
+    st.markdown(
         f"""
         <div style="margin-top: 1em;">
         <label style="font-weight: 600;"> Relevant AI Use Case </label><br>
