@@ -475,7 +475,7 @@ else:
 #------------------------------------------------------------------------ Top use case graph display ------------------------------------------------------------------------------
 
 st.markdown(
-    "<h3 style='font-size:14px; font-weight:700;'>Significance levels of attributes for the most relevant AI use case in automotive, based on the user's selection</h3>", 
+    "<h3 style='font-size:18px; font-weight:700; margin-bottom:0.2em; margin-top:0;'>Significance levels of attributes for the most relevant AI use case in automotive, based on the user's selection</h3>", 
     unsafe_allow_html=True
 )
 
