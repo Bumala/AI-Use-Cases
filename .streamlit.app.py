@@ -155,7 +155,7 @@ with multiselect_container:
     st.markdown(
         """
         <p style="font-size:18px; font-weight:bold; color:black;margin-bottom: 0px;">
-            Select attributes in the drop down list below to identify the relevant use case and cluster:
+            Select as many attributes from the drop down list below as you want to identify the relevant AI use cases in automotive and clusters. The more attributes you select, the more precise the most relevant AI use case will be depicted. If you select less than three attributes, please consider the section with other relevant use cases further down this page:
         </p>
         """,
         unsafe_allow_html=True,
