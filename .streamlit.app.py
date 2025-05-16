@@ -660,7 +660,7 @@ if selected_attributes:
         unsafe_allow_html=True
     )
     
-  else:
+else:
     top_5_use_cases = None  # Default value if no attributes are selected
     st.info("The relevant use case is displayed here")
 
