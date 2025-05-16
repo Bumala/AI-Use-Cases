@@ -594,7 +594,7 @@ if top_use_case:
     cluster_name = use_case_to_cluster.get(top_use_case, "Unknown Cluster")
     cluster_info = cluster_details.get(cluster_name, "Detailed information about this cluster is not available.")
     
-  cluster_text = f"<b>{cluster_name}</b>\n\n{cluster_info}"
+    cluster_text = f"<b>{cluster_name}</b>\n\n{cluster_info}"
 
 st.markdown(
     f"""
