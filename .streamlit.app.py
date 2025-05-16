@@ -670,7 +670,7 @@ if top_use_case:
         tickvals=[0, 1, 2],
         ticktext=["Low", "Moderate", "High"],
         title_text="Significance Level",
-        range=[0, 2]
+        range=[0, 2],
         title_font=dict(color='black'),
         
     )
