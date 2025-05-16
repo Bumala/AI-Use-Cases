@@ -596,7 +596,7 @@ if top_use_case:
     
     cluster_text = f"<b>{cluster_name}</b>\n\n{cluster_info}"
 
-st.markdown(
+    st.markdown(
     f"""
     <div style="margin-top: 1em;">
         <label style="font-weight: 700; color: #000;">Cluster Information</label><br>
