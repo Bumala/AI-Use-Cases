@@ -450,7 +450,7 @@ if selected_attributes:
     st.markdown(
         f"""
         <div style="margin-top: 1em;">
-        <label style="font-weight: 600;"> Relevant AI Use Case </label><br>
+        <label style="font-weight: 600;"> Most relevant AI Use Case </label><br>
         <div style="
             background-color: #A8E060; 
             padding: 10px;
@@ -615,6 +615,47 @@ if top_use_case:
     
 else:
     st.info("Please select a use case to display relevant information.")
+
+
+
+
+
+
+# -------------------------------------------------------------------- Calculate and show other relevant use case -------------------------------------------------------------------------
+if selected_attributes:
+    summed = analysis_table[selected_attributes].sum(axis=1)
+    top_5_use_cases = summed.nlargest(5).index  # Get indices of top 5 use cases
+
+    # Build a single string for all use cases, separated by <br><br>
+    use_cases_info = ""
+    for use_case in top_5_use_cases:
+        description = use_case_descriptions.get(use_case, "")
+        use_cases_info += f"<b>{use_case}</b><br>{description}<br><br>"
+
+    # Strip the trailing <br><br> for a clean finish (optional)
+    use_cases_info = use_cases_info.rstrip("<br><br>")
+
+    st.markdown(
+        f"""
+        <div style="margin-top: 1em;">
+            <label style="font-weight: 600;">Relevant AI Use Cases</label><br>
+            <div style="
+                background-color: #DDF969; 
+                padding: 10px;
+                border-radius: 8px;
+                border: 1px solid #000;
+                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                font-size: 14px;
+                color: #000;
+                white-space: pre-wrap;
+            ">{use_cases_info}</div>
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
+else:
+    top_5_use_cases = None  # Default value if no attributes are selected
+    st.info("The relevant use case is displayed here")
 
 
 
