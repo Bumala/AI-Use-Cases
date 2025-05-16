@@ -656,7 +656,7 @@ if selected_attributes:
                 white-space: pre-wrap;
             ">{use_cases_info}</div>
         </div>
-        """,
+        """
         unsafe_allow_html=True
     )
 else:
