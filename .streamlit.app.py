@@ -679,8 +679,7 @@ if top_use_case:
     automargin=True,
     title_standoff=30,  # Lower value brings title closer to axis
     tickangle=50,
-    title_font=dict(color='black'),
-    automargin=True,
+    title_font=dict(color='black')
 )
     fig.update_layout(
     margin=dict(b=40)  # Adjust bottom margin (try 20-60)
