@@ -617,7 +617,7 @@ else:
 
 
 
- st.markdown("---")
+ 
 
 
 # -------------------------------------------------------------------- Calculate and show other relevant use case -------------------------------------------------------------------------
@@ -633,7 +633,8 @@ if selected_attributes:
 
     # Strip the trailing <br><br> for a clean finish 
     use_cases_info = use_cases_info.rstrip("<br><br>")
-
+  
+    st.markdown("---")
     st.markdown(
         f"""
         <div style="margin-top: 1em;">
