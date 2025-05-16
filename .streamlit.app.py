@@ -474,7 +474,7 @@ else:
 
 #------------------------------------------------------------------------ Top use case graph display ------------------------------------------------------------------------------
 
-st.header("Significance Levels of the most relevant AI use case in Automotive)
+st.header("Significance levels of attributes for the most relevant AI use case in automotive, based on the user's selection")
 
 if top_use_case:
     # Get all attribute columns for the selected top use case
