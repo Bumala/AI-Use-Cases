@@ -475,7 +475,7 @@ else:
 #------------------------------------------------------------------------ Top use case graph display ------------------------------------------------------------------------------
 
 st.markdown(
-    "<h3 style='font-size:18px; font-weight:700; margin-bottom:0; margin-top:2;'>Significance levels of attributes for the most relevant AI use case in automotive, based on the user's selection</h3>", 
+    "<h3 style='font-size:18px; font-weight:700; margin-bottom:0; margin-top:10; text-align:center;'>Significance levels of attributes for the most relevant AI use case in automotive, based on the user's selection</h3>", 
     unsafe_allow_html=True
 )
 
@@ -592,9 +592,9 @@ cluster_details = {
 if top_use_case:
     # Fetch the cluster name for the selected use case
     cluster_name = use_case_to_cluster.get(top_use_case, "Unknown Cluster")
-    cluster_info = cluster_details.get(cluster_name, "Detailed information about this cluster is not available.")
+    cluster_info = cluster_details.get(<b>cluster_name </b>, "Detailed information about this cluster is not available.")
     
-    copyable_text = f"<strong>{cluster_name}</strong>\n\n{cluster_info}"
+  
     st.markdown(
     f"""
     <div style="margin-top: 1em;">
@@ -608,7 +608,7 @@ if top_use_case:
             border-radius: 8px;
             font-family: 'Segoe UI', 'Roboto', 'Helvetica Neue', sans-serif, !important;
             font-size: 14px;
-        " readonly>{copyable_text}</textarea>
+        ">{cluster_info}</textarea>
     </div>
     """,
     unsafe_allow_html=True
