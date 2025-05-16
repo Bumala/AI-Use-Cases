@@ -606,7 +606,6 @@ if top_use_case:
                 border-radius: 8px;
                 font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
                 font-size: 14px;
-                margin-top: 0.5em;
             ">
                 <span style="font-weight:bold;">{cluster_name}</span><br><br>
                 <span>{cluster_info}</span>
