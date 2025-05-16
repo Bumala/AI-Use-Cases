@@ -590,8 +590,7 @@ if top_use_case:
     cluster_name = use_case_to_cluster.get(top_use_case, "Unknown Cluster")
     cluster_info = cluster_details.get(cluster_name, "Detailed information about this cluster is not available.")
     
-    copyable_text = f"{cluster_name}\n\n{cluster_info}"
-    st.markdown("---")
+    copyable_text = f"<b>{cluster_name}</b>\n\n{cluster_info}"
     st.markdown(
     f"""
     <div style="margin-top: 1em;">
@@ -618,7 +617,7 @@ else:
 
 
 
-
+ st.markdown("---")
 
 
 # -------------------------------------------------------------------- Calculate and show other relevant use case -------------------------------------------------------------------------
