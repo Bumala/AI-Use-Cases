@@ -678,7 +678,7 @@ if top_use_case:
     title_text="Attributes",
     automargin=True,
     title_standoff=30,  # Lower value brings title closer to axis
-    tickangle=50
+    tickangle=50,
     title_font=dict(color='black'),
     automargin=True,
 )
