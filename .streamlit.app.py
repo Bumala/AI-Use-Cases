@@ -675,7 +675,7 @@ if top_use_case:
     fig.update_xaxes(
     title_text="Attributes",
     automargin=True,
-    title_standoff=5  # Lower value brings title closer to axis
+    title_standoff=5,  # Lower value brings title closer to axis
     tickangle=20
 )
     fig.update_layout(
