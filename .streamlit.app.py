@@ -607,7 +607,7 @@ if top_use_case:
                 font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
                 font-size: 14px;
             ">
-                <span style="font-weight:bold;">{cluster_name}</span><br><br>
+                <span style="font-weight:bold;">{cluster_name}</span><br>
                 <span>{cluster_info}</span>
             </div>
         </div>
