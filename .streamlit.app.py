@@ -474,7 +474,10 @@ else:
 
 #------------------------------------------------------------------------ Top use case graph display ------------------------------------------------------------------------------
 
-st.header("Significance levels of attributes for the most relevant AI use case in automotive, based on the user's selection")
+st.markdown(
+    "<h3 style='font-size:14px; font-weight:700;'>Significance levels of attributes for the most relevant AI use case in automotive, based on the user's selection</h3>", 
+    unsafe_allow_html=True
+)
 
 if top_use_case:
     # Get all attribute columns for the selected top use case
