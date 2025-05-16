@@ -676,7 +676,7 @@ if top_use_case:
     title_text="Attributes",
     automargin=True,
     title_standoff=5,  # Lower value brings title closer to axis
-    tickangle=20
+    tickangle=45
 )
     fig.update_layout(
     margin=dict(b=40)  # Adjust bottom margin (try 20-60)
