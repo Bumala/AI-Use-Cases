@@ -490,11 +490,8 @@ if selected_attributes:
     summed = analysis_table[selected_attributes].sum(axis=1)
     top_use_case = summed.idxmax()
 
-
- 
-
     # Display top use case inside a styled box
-st.markdown(
+     st.markdown(
         f"""
         <div style="margin-top: 1em;">
         <label style="font-weight: 600;"> Relevant AI Use Case </label><br>
