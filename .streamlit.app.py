@@ -490,6 +490,13 @@ if selected_attributes:
     summed = analysis_table[selected_attributes].sum(axis=1)
     top_use_case = summed.idxmax()
 
+
+
+
+
+    # Combine the title and the paragraph with spacing
+    use_case_info = f"{top_use_case}<br><br>{use_case_descriptions.get(top_use_case, '')}"
+
     # Display top use case inside a styled box
     st.markdown(
         f"""
@@ -516,8 +523,6 @@ else:
 
 
 
-# Combine the title and the paragraph with spacing
-use_case_info = f"{top_use_case}<br><br>{use_case_descriptions.get(top_use_case, '')}"
 
 
 
