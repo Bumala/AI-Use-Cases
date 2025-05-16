@@ -638,9 +638,9 @@ if selected_attributes:
     st.markdown(
         f"""
         <div style="margin-top: 1em;">
-            <label style="font-weight: 600;">Relevant AI Use Cases</label><br>
+            <label style="font-weight: 600;"> Other relevant AI Use Cases</label><br>
             <div style="
-                background-color: #DDF969; 
+                background-color: #B8D050; 
                 padding: 10px;
                 border-radius: 8px;
                 border: 1px solid #000;
