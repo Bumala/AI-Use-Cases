@@ -2,6 +2,11 @@ import streamlit as st
 import pandas as pd
 from streamlit.components.v1 import html
 import json
+import plotly.graph_objects as go
+
+
+
+
  
 # Set Streamlit page layout
 st.set_page_config(layout="wide")
@@ -636,6 +641,39 @@ else:
 
 
 
+
+
+
+
+
+
+
+# Assuming you already have:
+# analysis_table: DataFrame with use cases as index, attributes as columns
+# top_use_case: the index label of your selected top use case (string)
+# selected_attributes: list of attribute names selected by the user
+
+if selected_attributes and top_use_case:
+    # Get the values for the selected attributes for the top use case
+    top_values = analysis_table.loc[top_use_case, selected_attributes]
+    
+    fig = go.Figure(data=[
+        go.Bar(
+            x=selected_attributes,
+            y=top_values,
+            marker_color=['#92D050' if v==2 else '#FFD966' if v==1 else '#D9D9D9' for v in top_values],
+        )
+    ])
+
+    fig.update_yaxes(
+        tickvals=[0, 1, 2],
+        ticktext=["Low", "Medium", "High"],
+        title_text="Significance Level",
+        range=[-0.5, 2.5]
+    )
+    fig.update_xaxes(title_text="Attributes")
+
+    st.plotly_chart(fig, use_container_width=True)
 
 
 
