@@ -648,18 +648,18 @@ else:
 
 
 
-# Assuming you already have:
-# analysis_table: DataFrame with use cases as index, attributes as columns
-# top_use_case: the index label of your selected top use case (string)
-# selected_attributes: list of attribute names selected by the user
 
-if selected_attributes and top_use_case:
-    # Get the values for the selected attributes for the top use case
-    top_values = analysis_table.loc[top_use_case, selected_attributes]
-    
+
+# Assuming analysis_table is your DataFrame and top_use_case is the index of the selected use case
+if top_use_case:
+    # Get all attribute columns for the top use case
+    # Exclude any index or non-attribute columns if necessary
+    attribute_columns = list(analysis_table.columns)
+    top_values = analysis_table.loc[top_use_case, attribute_columns]
+
     fig = go.Figure(data=[
         go.Bar(
-            x=selected_attributes,
+            x=attribute_columns,
             y=top_values,
             marker_color=['#92D050' if v==2 else '#FFD966' if v==1 else '#D9D9D9' for v in top_values],
         )
