@@ -668,9 +668,9 @@ if top_use_case:
 
     fig.update_yaxes(
         tickvals=[0, 1, 2],
-        ticktext=["Low", "Medium", "High"],
+        ticktext=["Low", "Moderate", "High"],
         title_text="Significance Level",
-        range=[-0.5, 2.5]
+        range=[0, 2]
     )
     fig.update_xaxes(title_text="Attributes")
 
