@@ -682,8 +682,8 @@ const w = canvas.width;
 const h = canvas.height;
  
 // Trumpet parameters
-const bellLength = w * 0.1;  // Bell takes 30% of width
-const tubeLength = w * 0.9;  // Tube takes 70%
+const bellLength = w * 0.3;  // Bell takes 30% of width
+const tubeLength = w * 0.7;  // Tube takes 70%
 const startDiameter = 300;   // Starting diameter at bell
 const endDiameter = 40;      // Ending diameter at mouthpiece
  
@@ -847,7 +847,7 @@ ctx.beginPath();
 ctx.moveTo(points.bellStart.x, points.bellStart.y);
 ctx.bezierCurveTo(
   points.bellStart.x + w * 0.1, points.bellStart.y + 40,
-  points.bellEnd.x - w * 0.1, points.bellEnd.y - 0,
+  points.bellEnd.x - w * 0.1, points.bellEnd.y - 10,
   points.bellEnd.x, points.bellEnd.y
 );
  
@@ -862,7 +862,7 @@ ctx.lineTo(points.bellBottomEnd.x, points.bellBottomEnd.y);
  
 // Bottom bell curve (mirror of top)
 ctx.bezierCurveTo(
-  points.bellBottomEnd.x - w * 0.1, points.bellBottomEnd.y + 0,
+  points.bellBottomEnd.x - w * 0.1, points.bellBottomEnd.y + 10,
   points.bellBottomStart.x + w * 0.1, points.bellBottomStart.y - 40,
   points.bellBottomStart.x, points.bellBottomStart.y
 );
