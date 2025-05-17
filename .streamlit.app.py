@@ -748,7 +748,7 @@ def funnel_plot(neck_length, cone_length, start_diameter, end_diameter, color, o
                 x: [...x, ...x.slice().reverse()],
                 y: [...diameter, ...diameter.map(d => -d).reverse()],
                 fill: 'toself',
-                fillcolor: '{color.replace(")", ", " + String(opacity) + ")").replace("rgb", "rgba")}',
+                fillcolor: '{color.replace(")", ", " + String(opacity) + ")").replace("rgb", "rgba").replace("#", "rgba(").replace(")", ", 1)")}',
                 line: {{ color: '{color}' }},
                 type: 'scatter',
                 name: '{name} Body',
@@ -780,8 +780,8 @@ def display_funnels():
 
 
     # Create the HTML code for the two funnel plots
-    funnel_html_dark = funnel_plot(neck_length=2, cone_length=8, start_diameter=0.1, end_diameter=2, color='darkblue', opacity=0.8, name = "Dark Blue")
-    funnel_html_light = funnel_plot(neck_length=2.2, cone_length=7.8, start_diameter=0.15, end_diameter=2.3, color='lightblue', opacity=0.5, name="Light Blue") #slightly different parameters so the funnels are not exactly on top of each other.
+    funnel_html_dark = funnel_plot(neck_length=2, cone_length=8, start_diameter=0.1, end_diameter=2, color='#00008b', opacity=0.8, name = "Dark Blue")
+    funnel_html_light = funnel_plot(neck_length=2.2, cone_length=7.8, start_diameter=0.15, end_diameter=2.3, color='#add8e6', opacity=0.5, name="Light Blue") #slightly different parameters so the funnels are not exactly on top of each other.
 
     # Display the plots using components.html, use height that fills the page.
     components.html(funnel_html_light, height=600) # The light blue one should be added first, so it is in the background.
