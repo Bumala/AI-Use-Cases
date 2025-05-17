@@ -737,16 +737,6 @@ def create_trumpet_plot():
         height=500
     )
 
-    return fig
-
-# Streamlit app
-st.title("Trumpet Shape Visualization")
-st.markdown("""
-This shows a trumpet profile with:
-- Parabolic bell section (left)
-- Linearly tapering tube section (right)
-""")
-
 trumpet_fig = create_trumpet_plot()
 st.plotly_chart(trumpet_fig, use_container_width=True)
  
