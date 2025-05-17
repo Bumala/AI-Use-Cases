@@ -684,8 +684,8 @@ const h = canvas.height;
 // Trumpet parameters
 const bellLength = w * 0.2;  // Bell takes 30% of width
 const tubeLength = w * 0.8;  // Tube takes 70%
-const startDiameter = 400;   // Starting diameter at bell
-const endDiameter = 100;      // Ending diameter at mouthpiece
+const startDiameter = 300;   // Starting diameter at bell
+const endDiameter = 90;      // Ending diameter at mouthpiece
  
 // Inner funnel points (dark blue)
 const innerFunnelPoints = {
@@ -699,12 +699,12 @@ const innerFunnelPoints = {
  
 // Outer funnel points (light blue cloud) - 20px larger
 const outerFunnelPoints = {
- bellStart: {x: -20, y: h/2 - (startDiameter + 40)/2},
+ bellStart: {x: -80, y: h/2 - (startDiameter + 40)/2},
  bellEnd: {x: bellLength - 20, y: h/2 - (startDiameter * 0.7 + 40)/2},
- tubeEnd: {x: w + 20, y: h/2 - (endDiameter + 20)/2},
- mouthBottom: {x: w + 20, y: h/2 + (endDiameter + 20)/2},
+ tubeEnd: {x: w + 80, y: h/2 - (endDiameter + 20)/2},
+ mouthBottom: {x: w + 80, y: h/2 + (endDiameter + 20)/2},
  bellBottomEnd: {x: bellLength - 20, y: h/2 + (startDiameter * 0.7 + 40)/2},
- bellBottomStart: {x: -20, y: h/2 + (startDiameter + 40)/2}
+ bellBottomStart: {x: -80, y: h/2 + (startDiameter + 40)/2}
 };
  
 const sectionColors = ['#3498db', '#2874a6', '#1b4f72'];
