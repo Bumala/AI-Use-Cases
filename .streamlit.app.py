@@ -736,7 +736,7 @@ def create_trumpet_plot():
         autosize=True,
         height=500
     )
-
+return fig
 trumpet_fig = create_trumpet_plot()
 st.plotly_chart(trumpet_fig, use_container_width=True)
  
