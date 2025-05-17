@@ -748,7 +748,7 @@ def funnel_plot(neck_length, cone_length, start_diameter, end_diameter, color, o
                 x: [...x, ...x.slice().reverse()],
                 y: [...diameter, ...diameter.map(d => -d).reverse()],
                 fill: 'toself',
-                fillcolor: 'rgba({int(color[1:3], 16)}, {int(color[3:5], 16)}, {int(color[5:7], 16)}, {opacity})', // Convert hex to rgba
+                fillcolor: '{color.replace(")", ", " + String(opacity) + ")").replace("rgb", "rgba")}',
                 line: {{ color: '{color}' }},
                 type: 'scatter',
                 name: '{name} Body',
@@ -770,8 +770,6 @@ def funnel_plot(neck_length, cone_length, start_diameter, end_diameter, color, o
     </html>
     """
     return html_code
-
-
 
 
 
