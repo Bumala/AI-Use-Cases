@@ -669,87 +669,292 @@ else:
 
 #------------------------------------------------------------------------------------------------------------- Funnel image -------------------------------------------------------------------------------------------------------------------
 
-import streamlit as st
-import plotly.graph_objects as go
-
-def create_trumpet_plot():
-    # Define x range (length of trumpet)
-    nPoints = 500
-    totalLength = 10
-    x = [totalLength * i / (nPoints - 1) for i in range(nPoints)]
-
-    # Parameters
-    bellLength = 3
-    tubeLength = 7
-
-    # Calculate diameter
-    diameter = []
-    for val in x:
-        if val < bellLength:
-            # Bell curve (mirrored parabola)
-            diameter.append(0.2 * (bellLength - val)**2 + 0.5)
-        else:
-            # Tube section (linear decrease)
-            progress = (val - bellLength) / tubeLength
-            diameter.append(0.5 + (0.1 - 0.5) * progress)
-
-    # Create Plotly figure
-    fig = go.Figure()
-
-    # Add filled area
-    fig.add_trace(go.Scatter(
-        x=x + x[::-1],  # x, then reversed x
-        y=diameter + [-d for d in diameter[::-1]],  # upper, then reversed lower
-        fill='toself',
-        fillcolor='rgba(255, 215, 0, 0.6)',
-        line=dict(color='goldenrod'),
-        name='Trumpet Body'
-    ))
-
-    # Add upper and lower edges
-    fig.add_trace(go.Scatter(
-        x=x,
-        y=diameter,
-        line=dict(color='goldenrod'),
-        name='Upper edge'
-    ))
-    
-    fig.add_trace(go.Scatter(
-        x=x,
-        y=[-d for d in diameter],
-        line=dict(color='goldenrod'),
-        name='Lower edge'
-    ))
-
-    # Update layout
-    fig.update_layout(
-        title="Trumpet: Bell on Left, Mouthpiece on Right, Decreasing Tube",
-        xaxis=dict(
-            scaleanchor="y",
-            showgrid=False,
-            zeroline=False,
-            visible=False
-        ),
-        yaxis=dict(
-            showgrid=False,
-            zeroline=False,
-            visible=False
-        ),
-        showlegend=False,
-        autosize=True,
-        height=500
-    )
-
-    return fig
-
-# Streamlit app
-st.title("Trumpet Shape Visualization")
-st.markdown("""
-This shows a trumpet profile with:
-- Parabolic bell section (left)
-- Linearly tapering tube section (right)
-""")
-
-trumpet_fig = create_trumpet_plot()
-st.plotly_chart(trumpet_fig, use_container_width=True)
-
+html_code = """
+<canvas id="funnelCanvas" width="1000" height="450" style="width: 100%; height: auto; background: white;"></canvas>
+ 
+<script>
+const canvas = document.getElementById('funnelCanvas');
+const ctx = canvas.getContext('2d');
+canvas.width = canvas.offsetWidth;
+canvas.height = 450;
+ 
+const w = canvas.width;
+const h = canvas.height;
+ 
+// Trumpet parameters
+const bellLength = w * 0.4;  // Bell takes 30% of width
+const tubeLength = w * 0.6;  // Tube takes 70%
+const startDiameter = 200;   // Starting diameter at bell
+const endDiameter = 30;      // Ending diameter at mouthpiece
+ 
+// Inner funnel points (dark blue)
+const innerFunnelPoints = {
+bellStart: {x: 0, y: h/2 - startDiameter/2},
+bellEnd: {x: bellLength, y: h/2 - (startDiameter * 0.7)/2},
+tubeEnd: {x: w, y: h/2 - endDiameter/2},
+mouthBottom: {x: w, y: h/2 + endDiameter/2},
+bellBottomEnd: {x: bellLength, y: h/2 + (startDiameter * 0.7)/2},
+bellBottomStart: {x: 0, y: h/2 + startDiameter/2}
+};
+ 
+// Outer funnel points (light blue cloud) - 20px larger
+const outerFunnelPoints = {
+bellStart: {x: -20, y: h/2 - (startDiameter + 70)/2},
+bellEnd: {x: bellLength - 20, y: h/2 - (startDiameter * 0.7 + 40)/2},
+tubeEnd: {x: w + 20, y: h/2 - (endDiameter + 20)/2},
+mouthBottom: {x: w + 20, y: h/2 + (endDiameter + 20)/2},
+bellBottomEnd: {x: bellLength - 20, y: h/2 + (startDiameter * 0.7 + 40)/2},
+bellBottomStart: {x: -20, y: h/2 + (startDiameter + 70)/2}
+};
+ 
+const sectionColors = ['#3498db', '#2874a6', '#1b4f72'];
+const outerColor = 'rgba(135, 206, 250, 0.3)';
+ 
+// Text positions for the sections
+const textPositions = [
+{text: 'Bell Section', x: w * 0.15, y: h/2 - 60},
+{text: 'Tube Section', x: w * 0.65, y: h/2 - 40},
+{text: 'Mouthpiece', x: w * 0.9, y: h/2 - 20}
+];
+ 
+// Generate random colors for dots
+function generateColor() {
+const colors = ['#e74c3c', '#2ecc71', '#f1c40f', '#3498db', '#9b59b6', '#1abc9c', '#e67e22', '#d35400', '#34495e', '#7f8c8d'];
+return colors[Math.floor(Math.random() * colors.length)];
+}
+ 
+// Particle classes
+class Dot {
+constructor(x, y, dx, dy, radius, color, bounds) {
+  this.x = x;
+  this.y = y;
+  this.dx = dx;
+  this.dy = dy;
+  this.radius = radius;
+  this.color = color;
+  this.bounds = bounds;
+}
+ 
+move() {
+  this.x += this.dx;
+  this.y += this.dy;
+ 
+  if (this.x - this.radius < this.bounds.xMin || this.x + this.radius > this.bounds.xMax) {
+    this.dx = -this.dx;
+  }
+  if (this.y - this.radius < this.bounds.yMin || this.y + this.radius > this.bounds.yMax) {
+    this.dy = -this.dy;
+  }
+}
+ 
+draw(ctx) {
+  ctx.beginPath();
+  ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+  ctx.fillStyle = this.color;
+  ctx.fill();
+}
+}
+ 
+class SmallDot {
+constructor(x, y, dx, dy, radius, color, bounds) {
+  this.x = x;
+  this.y = y;
+  this.dx = dx;
+  this.dy = dy;
+  this.radius = radius;
+  this.color = color;
+  this.bounds = bounds;
+}
+ 
+move() {
+  this.x += this.dx;
+  this.y += this.dy;
+  if (this.x < this.bounds.xMin) this.x = this.bounds.xMax;
+  if (this.x > this.bounds.xMax) this.x = this.bounds.xMin;
+  if (this.y < this.bounds.yMin) this.y = this.bounds.yMax;
+  if (this.y > this.bounds.yMax) this.y = this.bounds.yMin;
+}
+ 
+draw(ctx) {
+  ctx.beginPath();
+  ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+  ctx.fillStyle = this.color;
+  ctx.fill();
+}
+}
+ 
+// Section bounds for dots
+const sectionBounds = [
+{xMin: innerFunnelPoints.bellStart.x, xMax: innerFunnelPoints.bellEnd.x,
+ yMin: innerFunnelPoints.bellStart.y-20, yMax: innerFunnelPoints.bellBottomStart.y},
+{xMin: innerFunnelPoints.bellEnd.x, xMax: innerFunnelPoints.tubeEnd.x,
+ yMin: innerFunnelPoints.bellStart.y, yMax: innerFunnelPoints.bellBottomStart.y+20}
+];
+ 
+const marketIntroOuterBounds = {
+xMin: outerFunnelPoints.bellEnd.x,
+xMax: outerFunnelPoints.tubeEnd.x,
+yMin: outerFunnelPoints.bellStart.y,
+yMax: outerFunnelPoints.bellBottomStart.y
+};
+ 
+let sectionDots = [];
+let outerSmallDots = [];
+let cloudOffset = 0;
+let cloudDirection = 1;
+ 
+function randomBetween(min, max) {
+return Math.random() * (max - min) + min;
+}
+ 
+// Initialize dots
+function initDots() {
+sectionDots = [];
+for (let i = 0; i < 2; i++) {
+  for (let j = 0; j < 15; j++) {
+    sectionDots.push(new Dot(
+      randomBetween(sectionBounds[i].xMin + 10, sectionBounds[i].xMax - 10),
+      randomBetween(sectionBounds[i].yMin + 10, sectionBounds[i].yMax - 10),
+      (Math.random() - 0.5) * 1.5,
+      (Math.random() - 0.5) * 1.5,
+      5,
+      generateColor(),
+      sectionBounds[i]
+    ));
+  }
+}
+ 
+outerSmallDots = [];
+for (let i = 0; i < 80; i++) {
+  outerSmallDots.push(new SmallDot(
+    randomBetween(marketIntroOuterBounds.xMin, marketIntroOuterBounds.xMax),
+    randomBetween(marketIntroOuterBounds.yMin, marketIntroOuterBounds.yMax),
+    (Math.random() - 0.5) * 0.15,
+    (Math.random() - 0.5) * 0.15,
+    1.5,
+    'rgba(10, 40, 80, 0.3)',
+    marketIntroOuterBounds
+  ));
+}
+}
+ 
+// Trumpet-shaped drawing function
+function drawTrumpetFunnel(points, color) {
+ctx.fillStyle = color;
+ctx.beginPath();
+ 
+// Bell curve (top)
+ctx.moveTo(points.bellStart.x, points.bellStart.y);
+ctx.bezierCurveTo(
+  points.bellStart.x + w * 0.1, points.bellStart.y + 40,
+  points.bellEnd.x - w * 0.1, points.bellEnd.y - 20,
+  points.bellEnd.x, points.bellEnd.y
+);
+ 
+// Tube section (linear taper)
+ctx.lineTo(points.tubeEnd.x, points.tubeEnd.y);
+ 
+// Mouthpiece (right end)
+ctx.lineTo(points.mouthBottom.x, points.mouthBottom.y);
+ 
+// Bottom tube section (linear taper)
+ctx.lineTo(points.bellBottomEnd.x, points.bellBottomEnd.y);
+ 
+// Bottom bell curve (mirror of top)
+ctx.bezierCurveTo(
+  points.bellBottomEnd.x - w * 0.1, points.bellBottomEnd.y + 20,
+  points.bellBottomStart.x + w * 0.1, points.bellBottomStart.y - 40,
+  points.bellBottomStart.x, points.bellBottomStart.y
+);
+ 
+ctx.closePath();
+ctx.fill();
+}
+ 
+function drawOuterFunnel() {
+cloudOffset += 0.3 * cloudDirection;
+if (cloudOffset > 6 || cloudOffset < -6) cloudDirection *= -1;
+ 
+ctx.save();
+ctx.shadowColor = 'rgba(135, 206, 250, 0.5)';
+ctx.shadowBlur = 20 + cloudOffset*2;
+drawTrumpetFunnel(outerFunnelPoints, outerColor);
+ctx.restore();
+}
+ 
+function drawInnerFunnel() {
+drawTrumpetFunnel(innerFunnelPoints, '#154360');
+}
+ 
+function drawSectionLines() {
+ctx.strokeStyle = "white";
+ctx.lineWidth = 2;
+ctx.setLineDash([6, 6]);
+ 
+ctx.beginPath();
+// Bell to tube divider
+ctx.moveTo(innerFunnelPoints.bellEnd.x, innerFunnelPoints.bellEnd.y);
+ctx.lineTo(innerFunnelPoints.bellBottomEnd.x, innerFunnelPoints.bellBottomEnd.y);
+ 
+ctx.stroke();
+ctx.setLineDash([]);
+}
+ 
+function drawLabels() {
+ctx.fillStyle = "white";
+ctx.font = "bold 22px Arial";
+ctx.textAlign = "center";
+textPositions.forEach(pos => {
+  ctx.fillText(pos.text, pos.x, pos.y);
+});
+}
+ 
+function drawSectionDots() {
+sectionDots.forEach(dot => {
+  dot.draw(ctx);
+});
+}
+ 
+function moveSectionDots() {
+sectionDots.forEach(dot => {
+  dot.move();
+});
+}
+ 
+function drawOuterSmallDots() {
+outerSmallDots.forEach(dot => {
+  dot.draw(ctx);
+});
+}
+ 
+function moveOuterSmallDots() {
+outerSmallDots.forEach(dot => {
+  dot.move();
+});
+}
+ 
+function animate() {
+ctx.clearRect(0, 0, w, h);
+drawOuterFunnel();
+drawOuterSmallDots();
+drawInnerFunnel();
+drawSectionLines();
+drawLabels();
+drawSectionDots();
+moveSectionDots();
+moveOuterSmallDots();
+requestAnimationFrame(animate);
+}
+ 
+initDots();
+animate();
+ 
+window.addEventListener('resize', function() {
+canvas.width = canvas.offsetWidth;
+// Update dynamic positions if needed
+});
+</script>
+"""
+ 
+st.title("AI in Innovation Management")
+components.html(html_code, height=500)
