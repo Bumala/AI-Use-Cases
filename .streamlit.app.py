@@ -624,11 +624,11 @@ else:
 # -------------------------------------------------------------------- Calculate and show other relevant use case -------------------------------------------------------------------------
 if selected_attributes:
     summed = analysis_table[selected_attributes].sum(axis=1)
-    top_5_use_cases = summed.nlargest(5).index  # Get indices of top 5 use cases
+    top_6_use_cases = summed.nlargest(6).index[1:]  # Get indices of top 6 use cases
 
-    # Build a single string for all use cases, separated by <br><br>
+    # single string for all use cases, separated by <br><br>
     use_cases_info = ""
-    for use_case in top_5_use_cases:
+    for use_case in top_6_use_cases:
         description = use_case_descriptions.get(use_case, "")
         use_cases_info += f"<b>{use_case}</b><br>{description}<br><br>"
 
@@ -656,7 +656,7 @@ if selected_attributes:
     )
     
 else:
-    top_5_use_cases = None  # Default value if no attributes are selected
+    top_6_use_cases = None  # Default value if no attributes are selected
     st.info("The relevant use case is displayed here")
 
 
