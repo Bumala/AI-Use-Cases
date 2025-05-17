@@ -682,8 +682,8 @@ const w = canvas.width;
 const h = canvas.height;
  
 // Trumpet parameters
-const bellLength = w * 0.5;  // Bell takes 30% of width
-const tubeLength = w * 0.5;  // Tube takes 70%
+const bellLength = w * 0.4;  // Bell takes 30% of width
+const tubeLength = w * 0.6;  // Tube takes 70%
 const startDiameter = 200;   // Starting diameter at bell
 const endDiameter = 30;      // Ending diameter at mouthpiece
  
@@ -699,12 +699,12 @@ const innerFunnelPoints = {
  
 // Outer funnel points (light blue cloud) - 20px larger
 const outerFunnelPoints = {
- bellStart: {x: -20, y: h/2 - (startDiameter + 40)/2},
+ bellStart: {x: -20, y: h/2 - (startDiameter + 70)/2},
  bellEnd: {x: bellLength - 20, y: h/2 - (startDiameter * 0.7 + 40)/2},
  tubeEnd: {x: w + 20, y: h/2 - (endDiameter + 20)/2},
  mouthBottom: {x: w + 20, y: h/2 + (endDiameter + 20)/2},
  bellBottomEnd: {x: bellLength - 20, y: h/2 + (startDiameter * 0.7 + 40)/2},
- bellBottomStart: {x: -20, y: h/2 + (startDiameter + 40)/2}
+ bellBottomStart: {x: -20, y: h/2 + (startDiameter + 70)/2}
 };
  
 const sectionColors = ['#3498db', '#2874a6', '#1b4f72'];
@@ -786,9 +786,9 @@ class SmallDot {
 // Section bounds for dots
 const sectionBounds = [
  {xMin: innerFunnelPoints.bellStart.x, xMax: innerFunnelPoints.bellEnd.x,
-  yMin: innerFunnelPoints.bellStart.y, yMax: innerFunnelPoints.bellBottomStart.y},
+  yMin: innerFunnelPoints.bellStart.y-20, yMax: innerFunnelPoints.bellBottomStart.y},
  {xMin: innerFunnelPoints.bellEnd.x, xMax: innerFunnelPoints.tubeEnd.x,
-  yMin: innerFunnelPoints.bellStart.y, yMax: innerFunnelPoints.bellBottomStart.y}
+  yMin: innerFunnelPoints.bellStart.y, yMax: innerFunnelPoints.bellBottomStart.y+20}
 ];
  
 const marketIntroOuterBounds = {
