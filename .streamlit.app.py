@@ -682,8 +682,8 @@ const w = canvas.width;
 const h = canvas.height;
  
 // Trumpet parameters
-const bellLength = w * 0.3;  // Bell takes 30% of width
-const tubeLength = w * 0.7;  // Tube takes 70%
+const bellLength = w * 0.7;  // Bell takes 30% of width
+const tubeLength = w * 0.3;  // Tube takes 70%
 const startDiameter = 300;   // Starting diameter at bell
 const endDiameter = 40;      // Ending diameter at mouthpiece
  
