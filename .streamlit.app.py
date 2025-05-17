@@ -669,91 +669,86 @@ else:
 
 #------------------------------------------------------------------------------------------------------------- Funnel image -------------------------------------------------------------------------------------------------------------------
 
-html_code = """
-<canvas id="funnelCanvas" width="1000" height="450" style="width: 100%; height: auto; background: white;"></canvas>
+def create_trumpet_plot():
+    # Define x range (length of trumpet)
+    nPoints = 500
+    totalLength = 10
+    x = [totalLength * i / (nPoints - 1) for i in range(nPoints)]
 
-<script>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <title>Trumpet Shape Plot</title>
-  <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
-</head>
-<body>
-  <div id="plot"></div>
-  <script>
-    // Define x range (length of trumpet)
-    const nPoints = 500;
-    const totalLength = 10;
-    const x = Array.from({ length: nPoints }, (_, i) => (totalLength * i) / (nPoints - 1));
+    # Parameters
+    bellLength = 3
+    tubeLength = 7
 
-    // Parameters
-    const bellLength = 3;
-    const tubeLength = 7;
+    # Calculate diameter
+    diameter = []
+    for val in x:
+        if val < bellLength:
+            # Bell curve (mirrored parabola)
+            diameter.append(0.2 * (bellLength - val)**2 + 0.5)
+        else:
+            # Tube section (linear decrease)
+            progress = (val - bellLength) / tubeLength
+            diameter.append(0.5 + (0.1 - 0.5) * progress)
 
-    // Initialize diameter array
-    let diameter = new Array(nPoints);
+    # Create Plotly figure
+    fig = go.Figure()
 
-    // Calculate diameter for bell (mirrored parabola)
-    for (let i = 0; i < nPoints; i++) {
-      if (x[i] < bellLength) {
-        diameter[i] = 0.2 * Math.pow(bellLength - x[i], 2) + 0.5; // base throat diameter = 0.5
-      }
-    }
+    # Add filled area
+    fig.add_trace(go.Scatter(
+        x=x + x[::-1],  # x, then reversed x
+        y=diameter + [-d for d in diameter[::-1]],  # upper, then reversed lower
+        fill='toself',
+        fillcolor='rgba(255, 215, 0, 0.6)',
+        line=dict(color='goldenrod'),
+        name='Trumpet Body'
+    ))
 
-    // Calculate diameter for tube (linear decrease)
-    const tubeStartIndex = x.findIndex(val => val >= bellLength);
-    const startDiameter = diameter[tubeStartIndex - 1];
-    const endDiameter = 0.1;
+    # Add upper and lower edges
+    fig.add_trace(go.Scatter(
+        x=x,
+        y=diameter,
+        line=dict(color='goldenrod'),
+        name='Upper edge'
+    ))
+    
+    fig.add_trace(go.Scatter(
+        x=x,
+        y=[-d for d in diameter],
+        line=dict(color='goldenrod'),
+        name='Lower edge'
+    ))
 
-    for (let i = tubeStartIndex; i < nPoints; i++) {
-      diameter[i] = startDiameter + ((endDiameter - startDiameter) * (i - tubeStartIndex)) / (nPoints - tubeStartIndex - 1);
-    }
+    # Update layout
+    fig.update_layout(
+        title="Trumpet: Bell on Left, Mouthpiece on Right, Decreasing Tube",
+        xaxis=dict(
+            scaleanchor="y",
+            showgrid=False,
+            zeroline=False,
+            visible=False
+        ),
+        yaxis=dict(
+            showgrid=False,
+            zeroline=False,
+            visible=False
+        ),
+        showlegend=False,
+        autosize=True,
+        height=500
+    )
 
-    // Prepare data for Plotly plot
-    const traceUpper = {
-      x: x,
-      y: diameter,
-      mode: 'lines',
-      line: { color: 'goldenrod' },
-      name: 'Upper edge',
-    };
+    return fig
 
-    const traceLower = {
-      x: x,
-      y: diameter.map(d => -d),
-      mode: 'lines',
-      line: { color: 'goldenrod' },
-      name: 'Lower edge',
-    };
+# Streamlit app
+st.title("Trumpet Shape Visualization")
+st.markdown("""
+This shows a trumpet profile with:
+- Parabolic bell section (left)
+- Linearly tapering tube section (right)
+""")
 
-    const traceFill = {
-      x: [...x, ...x.slice().reverse()],
-      y: [...diameter, ...diameter.map(d => -d).reverse()],
-      fill: 'toself',
-      fillcolor: 'rgba(255, 215, 0, 0.6)', // gold with transparency
-      line: { color: 'goldenrod' },
-      type: 'scatter',
-      name: 'Trumpet Body',
-      showlegend: false,
-    };
-
-    const layout = {
-      title: "Trumpet: Bell on Left, Mouthpiece on Right, Decreasing Tube",
-      xaxis: { scaleanchor: 'y', showgrid: false, zeroline: false, visible: false },
-      yaxis: { showgrid: false, zeroline: false, visible: false },
-      showlegend: false,
-      autosize: true,
-    };
-
-    Plotly.newPlot('plot', [traceFill, traceUpper, traceLower], layout);
-  </script>
-</body>
-</html>
-
-</script>
-"""
+trumpet_fig = create_trumpet_plot()
+st.plotly_chart(trumpet_fig, use_container_width=True)
  
 st.title("AI in Innovation Management")
 components.html(html_code, height=500)
