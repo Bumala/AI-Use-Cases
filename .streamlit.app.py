@@ -500,7 +500,7 @@ if top_use_case:
         ticktext=["Low", "Moderate", "High"],
         title_text="Significance Level",
         range=[0, 2],
-        title_font=dict(family='Arial', color='black'),
+        title_font=dict(family='Arial Bold', color='black'),
         tickfont=dict(color='black'),
         
     )
@@ -509,7 +509,7 @@ if top_use_case:
     automargin=True,
     title_standoff=30,  # Lower value brings title closer to axis
     tickangle=50,
-    title_font=dict(family='Arial', color='black'),
+    title_font=dict(family='Arial Bold', color='black'),
     tickfont=dict(color='black'),
 )
     fig.update_layout(
