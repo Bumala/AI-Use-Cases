@@ -669,6 +669,9 @@ else:
 
 #------------------------------------------------------------------------------------------------------------- Funnel image -------------------------------------------------------------------------------------------------------------------
 
+import streamlit as st
+import plotly.graph_objects as go
+
 def create_trumpet_plot():
     # Define x range (length of trumpet)
     nPoints = 500
@@ -736,17 +739,17 @@ def create_trumpet_plot():
         autosize=True,
         height=500
     )
-  
-return fig
+
+    return fig
 
 # Streamlit app
 st.title("Trumpet Shape Visualization")
 st.markdown("""
-
+This shows a trumpet profile with:
+- Parabolic bell section (left)
+- Linearly tapering tube section (right)
 """)
 
 trumpet_fig = create_trumpet_plot()
 st.plotly_chart(trumpet_fig, use_container_width=True)
- 
-st.title("AI in Innovation Management")
-components.html(html_code, height=500)
+
