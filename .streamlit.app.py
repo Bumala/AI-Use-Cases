@@ -736,6 +736,7 @@ def create_trumpet_plot():
         autosize=True,
         height=500
     )
+  
 return fig
 
 # Streamlit app
