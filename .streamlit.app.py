@@ -3,14 +3,15 @@ import pandas as pd
 from streamlit.components.v1 import html
 import json
 import plotly.graph_objects as go
+import streamlit.components.v1 as components
 
 
-#----------------------------------------------------------------- Streamlit page layout ------------------------------------------------------------------------------------------
+#------------------------------------------------------------------------------------------------------ Streamlit page layout -------------------------------------------------------------------------------------------------------------------
 # Set Streamlit page layout
 st.set_page_config(layout="wide")
 
 
-#----------------------------------------------------------------- Table for category, dimension and attributes -------------------------------------------------------------------
+#-------------------------------------------------------------------------------------------- Table for category, dimension and attributes -----------------------------------------------------------------------------------------------------
 data = [
   ["Category", "Dimension", "Attributes"],
   ["Impact (What)", "Benefits", "Quality/Scope/Knowledge", "Time Efficiency", "Cost"],
@@ -27,7 +28,7 @@ data = [
 ]
 
 
-#--------------------------------------------------------------------------------- Analysis table ---------------------------------------------------------------------------------
+#---------------------------------------------------------------------------------------------------------- Analysis table ----------------------------------------------------------------------------------------------------------------------
 analysis_table_data = {
              "Use Case": [
      "AI-infused experiments in R&D",
@@ -125,7 +126,7 @@ analysis_table.set_index("Use Case", inplace=True)
 
 
 
-# ----------------------------------------------------------------------------------------- Session state -----------------------------------------------------------------------
+# ------------------------------------------------------------------------------------------------------- Session state ------------------------------------------------------------------------------------------------------------------------
 if "selected" not in st.session_state:
   st.session_state.selected = set()
  
@@ -140,7 +141,7 @@ selected_attributes = list(st.session_state.selected)
 
 
 
-#------------------------------------------------------------------------------ First drop down list for selectable attributes ----------------------------------------------------
+#---------------------------------------------------------------------------------------------------------- First drop down list for selectable attributes -------------------------------------------------------------------------------------
 attribute_columns = list(analysis_table.columns)
 
 
@@ -182,7 +183,7 @@ if set(selected_attributes) != st.session_state.selected:
 
 
 
-#-------------------------------------------------------------------------------- Table layout ------------------------------------------------------------------------------------
+#--------------------------------------------------------------------------------------------------------- Table layout ------------------------------------------------------------------------------------------------------------------------
 def generate_html_table(data, selected):
   first_col_width = 160
   second_col_width = 200
@@ -272,7 +273,7 @@ def generate_html_table(data, selected):
 
 
 
-#----------------------------------------------------------------- Python, Javascript, Streamlit Communication --------------------------------------------------------------------
+#----------------------------------------------------------------------------------------------- Python, Javascript, Streamlit Communication ---------------------------------------------------------------------------------------------------
 
 #------------------ Javascript for interactivity ---------------------------------- 
 interaction_js = f"""
@@ -427,7 +428,7 @@ html(html_code, height=700)
 
 
 
-#-------------------------------------------------------- Top use case selection and display --------------------------------------------------------------------------------------
+#------------------------------------------------------------------------------------------ Top use case selection and display ------------------------------------------------------------------------------------------------------------------
 
 #------------------------- AI use case description ---------------------------------
 use_case_descriptions = {
@@ -438,7 +439,7 @@ use_case_descriptions = {
 
 
 
-# ------------------------ Calculate and show top use case -----------------------
+# ---------------------------- Calculate and show top use case -----------------------
 if selected_attributes:
     summed = analysis_table[selected_attributes].sum(axis=1)
     top_use_case = summed.idxmax()
@@ -472,7 +473,7 @@ else:
 
 
 
-#------------------------------------------------------------------------ Top use case graph display ------------------------------------------------------------------------------
+#------------------------------------------------------------------------------------------------- Top use case graph display ------------------------------------------------------------------------------------------------------------------
 
 st.markdown(
     "<h3 style='font-size:18px; font-weight:700; margin-bottom:0; margin-top:2em; text-align:center;'>Significance levels of attributes for the most relevant AI use case in automotive, based on the user's selection</h3>", 
@@ -519,7 +520,7 @@ if top_use_case:
 
 
 
-#----------------------------------------------------------------------------------- Cluster Analysis -----------------------------------------------------------------------------
+#-------------------------------------------------------------------------------------------------------- Cluster Analysis --------------------------------------------------------------------------------------------------------------------
 
 # Dictionary mapping use cases to their clusters
 use_case_to_cluster = {
@@ -560,7 +561,7 @@ use_case_to_cluster = {
 }
 
 
-#---------------- Dictionary mapping clusters to detailed information --------------------------------------------
+#---------------- Dictionary mapping clusters to detailed information -------------------------------------
 cluster_details = {
     "Cluster 1: Ideation and Intelligent Planning in Automotive": (
         "Focuses on using AI for ideation and intelligent planning in the automotive industry. "
@@ -587,7 +588,7 @@ cluster_details = {
 
 
 
-#-------------------------------- Selection of Clusters ----------------------------------------------------------
+#-------------------------------- Selection of Clusters ------------------------------------------------
 
 if top_use_case:
     cluster_name = use_case_to_cluster.get(top_use_case, "Unknown Cluster")
@@ -621,7 +622,7 @@ else:
  
 
 
-# -------------------------------------------------------------------- Calculate and show other relevant use case -------------------------------------------------------------------------
+# -------------------------------------------------------------------------------------------------- Calculate and show other relevant use case --------------------------------------------------------------------------------------------------
 if selected_attributes:
     summed = analysis_table[selected_attributes].sum(axis=1)
     top_6_use_cases = summed.nlargest(6).index[1:]  # Get indices of top 6 use cases
@@ -659,6 +660,287 @@ else:
     top_6_use_cases = None  # Default value if no attributes are selected
     st.info("Please select the attributes above to display relevant information.")
 
+
+
+
+
+
+
+
+#------------------------------------------------------------------------------------------------------------- Funnel image -------------------------------------------------------------------------------------------------------------------
+
+html_code = """
+<canvas id="funnelCanvas" width="1000" height="450" style="width: 100%; height: auto; background: white;"></canvas>
+
+<script>
+const canvas = document.getElementById('funnelCanvas');
+const ctx = canvas.getContext('2d');
+canvas.width = canvas.offsetWidth;
+canvas.height = 450;
+
+const w = canvas.width;
+const h = canvas.height;
+
+// Funnel points for inner funnel (dark blue)
+const innerFunnelPoints = {
+  topLeft: {x: 100, y: 120},
+  midLeft: {x: 310, y: 120},
+  midRight: {x: 690, y: 150},
+  marketStart: {x: 820, y: 150},
+  rightTop: {x: 940, y: 160},
+  rightBottom: {x: 940, y: 290},
+  marketEnd: {x: 820, y: 290},
+  midRightBottom: {x: 690, y: 280},
+  midLeftBottom: {x: 310, y: 280},
+  bottomLeft: {x: 100, y: 280}
+};
+
+// Funnel points for outer funnel (light blue cloud)
+const outerFunnelPoints = {
+  topLeft: {x: 60, y: 80},
+  midLeft: {x: 270, y: 80},
+  midRight: {x: 730, y: 130},
+  marketStart: {x: 840, y: 130},
+  rightTop: {x: 980, y: 140},
+  rightBottom: {x: 980, y: 330},
+  marketEnd: {x: 840, y: 330},
+  midRightBottom: {x: 730, y: 320},
+  midLeftBottom: {x: 270, y: 320},
+  bottomLeft: {x: 60, y: 320}
+};
+
+const sectionColors = ['#3498db', '#2874a6', '#1b4f72'];
+const outerColor = 'rgba(135, 206, 250, 0.3)';  // Light blue with transparency
+
+// Text positions for the sections
+const textPositions = [
+  {text: 'Front End', x: 200, y: 200},
+  {text: 'Development', x: 500, y: 200},
+  {text: 'Market Introduction', x: 880, y: 210}
+];
+
+// Generate random colors for dots in sections
+function generateColor() {
+  const colors = ['#e74c3c', '#2ecc71', '#f1c40f', '#3498db', '#9b59b6', '#1abc9c', '#e67e22', '#d35400', '#34495e', '#7f8c8d'];
+  return colors[Math.floor(Math.random() * colors.length)];
+}
+
+// Particle classes
+class Dot {
+  constructor(x, y, dx, dy, radius, color, bounds) {
+    this.x = x;
+    this.y = y;
+    this.dx = dx;
+    this.dy = dy;
+    this.radius = radius;
+    this.color = color;
+    this.bounds = bounds;  // {xMin, xMax, yMin, yMax}
+  }
+  
+  move() {
+    this.x += this.dx;
+    this.y += this.dy;
+    
+    if (this.x - this.radius < this.bounds.xMin || this.x + this.radius > this.bounds.xMax) {
+      this.dx = -this.dx;
+    }
+    if (this.y - this.radius < this.bounds.yMin || this.y + this.radius > this.bounds.yMax) {
+      this.dy = -this.dy;
+    }
+  }
+  
+  draw(ctx) {
+    ctx.beginPath();
+    ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+    ctx.fillStyle = this.color;
+    ctx.fill();
+  }
+}
+
+class SmallDot {
+  constructor(x, y, dx, dy, radius, color, bounds) {
+    this.x = x;
+    this.y = y;
+    this.dx = dx;
+    this.dy = dy;
+    this.radius = radius;
+    this.color = color;
+    this.bounds = bounds;
+  }
+  move() {
+    this.x += this.dx;
+    this.y += this.dy;
+
+    // Wrap around to simulate floating cloud
+    if (this.x < this.bounds.xMin) this.x = this.bounds.xMax;
+    if (this.x > this.bounds.xMax) this.x = this.bounds.xMin;
+    if (this.y < this.bounds.yMin) this.y = this.bounds.yMax;
+    if (this.y > this.bounds.yMax) this.y = this.bounds.yMin;
+  }
+  draw(ctx) {
+    ctx.beginPath();
+    ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+    ctx.fillStyle = this.color;
+    ctx.fill();
+  }
+}
+
+// Create section bounds for dots (rectangular approx of funnel sections inside inner funnel)
+const sectionBounds = [
+  {xMin: innerFunnelPoints.topLeft.x, xMax: innerFunnelPoints.midLeft.x, yMin: innerFunnelPoints.topLeft.y, yMax: innerFunnelPoints.bottomLeft.y},  // Front End
+  {xMin: innerFunnelPoints.midLeft.x, xMax: innerFunnelPoints.midRight.x, yMin: innerFunnelPoints.topLeft.y, yMax: innerFunnelPoints.bottomLeft.y},  // Development
+  {xMin: innerFunnelPoints.marketStart.x, xMax: innerFunnelPoints.rightTop.x, yMin: innerFunnelPoints.topLeft.y, yMax: innerFunnelPoints.bottomLeft.y}  // Market Introduction (slim)
+];
+
+// Market Introduction bounds on outer funnel for small dots ONLY
+const marketIntroOuterBounds = {
+  xMin: outerFunnelPoints.marketStart.x,
+  xMax: outerFunnelPoints.rightTop.x,
+  yMin: outerFunnelPoints.topLeft.y,
+  yMax: outerFunnelPoints.bottomLeft.y
+};
+
+let sectionDots = [];
+let outerSmallDots = [];
+
+function randomBetween(min, max) {
+  return Math.random() * (max - min) + min;
+}
+
+// Initialize dots
+function initDots() {
+  sectionDots = [];
+  for (let i = 0; i < 3; i++) {
+    for (let j = 0; j < 10; j++) {
+      sectionDots.push(new Dot(
+        randomBetween(sectionBounds[i].xMin + 10, sectionBounds[i].xMax - 10),
+        randomBetween(sectionBounds[i].yMin + 10, sectionBounds[i].yMax - 10),
+        (Math.random() - 0.5) * 1.5,
+        (Math.random() - 0.5) * 1.5,
+        5,
+        generateColor(),
+        sectionBounds[i]
+      ));
+    }
+  }
+  
+  outerSmallDots = [];
+  for (let i = 0; i < 80; i++) {
+    outerSmallDots.push(new SmallDot(
+      randomBetween(marketIntroOuterBounds.xMin, marketIntroOuterBounds.xMax),
+      randomBetween(marketIntroOuterBounds.yMin, marketIntroOuterBounds.yMax),
+      (Math.random() - 0.5) * 0.15,
+      (Math.random() - 0.5) * 0.15,
+      1.5,
+      'rgba(10, 40, 80, 0.3)',  // very dark blue but transparent
+      marketIntroOuterBounds
+    ));
+  }
+}
+
+// Draw outer funnel with a floating cloud effect
+let cloudOffset = 0;
+let cloudDirection = 1;
+
+function drawOuterFunnel() {
+  cloudOffset += 0.3 * cloudDirection;
+  if (cloudOffset > 6 || cloudOffset < -6) cloudDirection *= -1;
+  
+  ctx.save();
+  ctx.shadowColor = 'rgba(135, 206, 250, 0.5)';
+  ctx.shadowBlur = 20 + cloudOffset*2;
+  
+  ctx.fillStyle = outerColor;
+  ctx.beginPath();
+  ctx.moveTo(outerFunnelPoints.topLeft.x, outerFunnelPoints.topLeft.y + cloudOffset/2);
+  ctx.lineTo(outerFunnelPoints.midLeft.x, outerFunnelPoints.midLeft.y + cloudOffset/3);
+  ctx.lineTo(outerFunnelPoints.midRight.x, outerFunnelPoints.midRight.y + cloudOffset/5);
+  ctx.lineTo(outerFunnelPoints.marketStart.x, outerFunnelPoints.marketStart.y);
+  ctx.lineTo(outerFunnelPoints.rightTop.x, outerFunnelPoints.rightTop.y - cloudOffset/3);
+  ctx.lineTo(outerFunnelPoints.rightBottom.x, outerFunnelPoints.rightBottom.y - cloudOffset/2);
+  ctx.lineTo(outerFunnelPoints.marketEnd.x, outerFunnelPoints.marketEnd.y - cloudOffset/4);
+  ctx.lineTo(outerFunnelPoints.midRightBottom.x, outerFunnelPoints.midRightBottom.y - cloudOffset/6);
+  ctx.lineTo(outerFunnelPoints.midLeftBottom.x, outerFunnelPoints.midLeftBottom.y - cloudOffset/4);
+  ctx.lineTo(outerFunnelPoints.bottomLeft.x, outerFunnelPoints.bottomLeft.y - cloudOffset/3);
+  ctx.closePath();
+  ctx.fill();
+  ctx.restore();
+}
+
+// Draw inner funnel
+function drawInnerFunnel() {
+  ctx.fillStyle = '#154360';
+  ctx.beginPath();
+  ctx.moveTo(innerFunnelPoints.topLeft.x, innerFunnelPoints.topLeft.y);
+  ctx.lineTo(innerFunnelPoints.midLeft.x, innerFunnelPoints.midLeft.y);
+  ctx.lineTo(innerFunnelPoints.midRight.x, innerFunnelPoints.midRight.y);
+  ctx.lineTo(innerFunnelPoints.marketStart.x, innerFunnelPoints.marketStart.y);
+  ctx.lineTo(innerFunnelPoints.rightTop.x, innerFunnelPoints.rightTop.y);
+  ctx.lineTo(innerFunnelPoints.rightBottom.x, innerFunnelPoints.rightBottom.y);
+  ctx.lineTo(innerFunnelPoints.marketEnd.x, innerFunnelPoints.marketEnd.y);
+  ctx.lineTo(innerFunnelPoints.midRightBottom.x, innerFunnelPoints.midRightBottom.y);
+  ctx.lineTo(innerFunnelPoints.midLeftBottom.x, innerFunnelPoints.midLeftBottom.y);
+  ctx.lineTo(innerFunnelPoints.bottomLeft.x, innerFunnelPoints.bottomLeft.y);
+  ctx.closePath();
+  ctx.fill();
+}
+
+// Draw section lines (white dashed)
+function drawSectionLines() {
+  ctx.strokeStyle = "white";
+  ctx.lineWidth = 2;
+  ctx.setLineDash([6, 6]);
+  
+  ctx.beginPath();
+  ctx.moveTo(innerFunnelPoints.midLeft.x, innerFunnelPoints.midLeft.y);
+  ctx.lineTo(innerFunnelPoints.midLeftBottom.x, innerFunnelPoints.midLeftBottom.y);
+  
+  ctx.moveTo(innerFunnelPoints.midRight.x, innerFunnelPoints.midRight.y);
+  ctx.lineTo(innerFunnelPoints.midRightBottom.x, innerFunnelPoints.midRightBottom.y);
+  
+  ctx.stroke();
+  ctx.setLineDash([]);
+}
+
+// Draw section labels
+function drawLabels() {
+  ctx.fillStyle = "white";
+  ctx.font = "bold 22px Arial";
+  ctx.textAlign = "center";
+  textPositions.forEach(pos => {
+    ctx.fillText(pos.text, pos.x, pos.y);
+  });
+}
+
+// Draw all dots in sections
+function drawSectionDots() {
+  sectionDots.forEach(dot => {
+    dot.draw(ctx);
+  });
+}
+
+// Move all dots in sections
+function moveSectionDots() {
+  sectionDots.forEach(dot => {
+    dot.move();
+  });
+}
+
+// Draw outer small dots (dark blue points) only in Market Introduction outer funnel section
+function drawOuterSmallDots() {
+  outerSmallDots.forEach(dot => {
+    dot.draw(ctx);
+  });
+}
+
+// Move outer small dots slowly
+function moveOuterSmallDots() {
+  outerSmallDots.forEach(dot => {
+    dot.move();
+  });
+}
+
+function animate() {
 
 
 
