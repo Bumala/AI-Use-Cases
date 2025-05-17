@@ -938,7 +938,6 @@ function animate() {
 initDots();
 animate();
 </script>
-
 """
  
 st.title("Animated Funnel Visualization")
