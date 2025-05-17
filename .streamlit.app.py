@@ -862,7 +862,7 @@ function drawTrumpetFunnel(points, color) {
   
   // Bottom bell curve (mirror of top)
   ctx.bezierCurveTo(
-    points.bellBottomEnd.x - w * 0.1, points.bellBottomEnd.y + 20,
+    points.bellBottomEnd.x - w * 0.1, points.bellBottomEnd.y + 80,
     points.bellBottomStart.x + w * 0.1, points.bellBottomStart.y - 40,
     points.bellBottomStart.x, points.bellBottomStart.y
   );
