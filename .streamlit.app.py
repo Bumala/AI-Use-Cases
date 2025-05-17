@@ -686,13 +686,15 @@ const h = canvas.height;
 const innerFunnelPoints = {
   topLeft: {x: 60, y: 120},
   midLeft: {x: 270, y: 120},
-  midRight: {x: 690, y: 150},
-  marketStart: {x: 820, y: 150},
-  rightTop: {x: 940, y: 160},
-  rightBottom: {x: 940, y: 290},
-  marketEnd: {x: 820, y: 290},
-  midRightBottom: {x: 690, y: 280},
-  midLeftBottom: {x: 2700, y: 280},
+  // Right side (increased x values)
+  midRight: {x: 790, y: 150},         // Original: 690 → +100
+  marketStart: {x: 920, y: 150},       // Original: 820 → +100
+  rightTop: {x: 1040, y: 160},         // Original: 940 → +100
+  rightBottom: {x: 1040, y: 290},      // Original: 940 → +100
+  marketEnd: {x: 920, y: 290},         // Original: 820 → +100
+  midRightBottom: {x: 790, y: 280},     // Original: 690 → +100
+  // Left side (unchanged)
+  midLeftBottom: {x: 270, y: 280},
   bottomLeft: {x: 60, y: 280}
 };
 
@@ -700,12 +702,14 @@ const innerFunnelPoints = {
 const outerFunnelPoints = {
   topLeft: {x: 60, y: 80},
   midLeft: {x: 270, y: 80},
-  midRight: {x: 730, y: 130},
-  marketStart: {x: 840, y: 130},
-  rightTop: {x: 980, y: 140},
-  rightBottom: {x: 980, y: 330},
-  marketEnd: {x: 840, y: 330},
-  midRightBottom: {x: 730, y: 320},
+  // Right side (increased x values)
+  midRight: {x: 830, y: 130},         // Original: 730 → +100
+  marketStart: {x: 940, y: 130},       // Original: 840 → +100
+  rightTop: {x: 1080, y: 140},         // Original: 980 → +100
+  rightBottom: {x: 1080, y: 330},       // Original: 980 → +100
+  marketEnd: {x: 940, y: 330},         // Original: 840 → +100
+  midRightBottom: {x: 830, y: 320},     // Original: 730 → +100
+  // Left side (unchanged)
   midLeftBottom: {x: 270, y: 320},
   bottomLeft: {x: 60, y: 320}
 };
