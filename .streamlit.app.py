@@ -682,39 +682,39 @@ const w = canvas.width;
 const h = canvas.height;
  
 // Trumpet parameters
-const bellLength = w * 0.5;
-const tubeLength = w * 0.5;
-const startDiameter = 400;
-const endDiameter = 80;
+const bellLength = w * 0.5;  // Bell takes 30% of width
+const tubeLength = w * 0.5;  // Tube takes 70%
+const startDiameter = 200;   // Starting diameter at bell
+const endDiameter = 30;      // Ending diameter at mouthpiece
  
-// Inner funnel points with higher bell opening
+// Inner funnel points (dark blue)
 const innerFunnelPoints = {
- bellStart: {x: 0, y: 50},  // Higher starting position
- bellEnd: {x: bellLength, y: h/2 - 40},
+ bellStart: {x: 0, y: h/2 - startDiameter/2},
+ bellEnd: {x: bellLength, y: h/2 - (startDiameter * 0.7)/2},
  tubeEnd: {x: w, y: h/2 - endDiameter/2},
  mouthBottom: {x: w, y: h/2 + endDiameter/2},
- bellBottomEnd: {x: bellLength, y: h/2 + 40},
- bellBottomStart: {x: 0, y: h - 50}  // Symmetric bottom position
+ bellBottomEnd: {x: bellLength, y: h/2 + (startDiameter * 0.7)/2},
+ bellBottomStart: {x: 0, y: h/2 + startDiameter/2}
 };
  
-// Outer funnel points (larger and higher)
+// Outer funnel points (light blue cloud) - 20px larger
 const outerFunnelPoints = {
- bellStart: {x: -20, y: 30},
- bellEnd: {x: bellLength - 20, y: h/2 - 60},
+ bellStart: {x: -20, y: h/2 - (startDiameter + 40)/2},
+ bellEnd: {x: bellLength - 20, y: h/2 - (startDiameter * 0.7 + 40)/2},
  tubeEnd: {x: w + 20, y: h/2 - (endDiameter + 20)/2},
  mouthBottom: {x: w + 20, y: h/2 + (endDiameter + 20)/2},
- bellBottomEnd: {x: bellLength - 20, y: h/2 + 60},
- bellBottomStart: {x: -20, y: h - 30}
+ bellBottomEnd: {x: bellLength - 20, y: h/2 + (startDiameter * 0.7 + 40)/2},
+ bellBottomStart: {x: -20, y: h/2 + (startDiameter + 40)/2}
 };
  
 const sectionColors = ['#3498db', '#2874a6', '#1b4f72'];
 const outerColor = 'rgba(135, 206, 250, 0.3)';
  
-// Text positions adjusted for new shape
+// Text positions for the sections
 const textPositions = [
- {text: 'Bell Section', x: w * 0.15, y: 120},
- {text: 'Tube Section', x: w * 0.65, y: h/2 - 30},
- {text: 'Mouthpiece', x: w * 0.9, y: h/2 - 10}
+ {text: 'Bell Section', x: w * 0.15, y: h/2 - 60},
+ {text: 'Tube Section', x: w * 0.65, y: h/2 - 40},
+ {text: 'Mouthpiece', x: w * 0.9, y: h/2 - 20}
 ];
  
 // Generate random colors for dots
@@ -843,27 +843,27 @@ function drawTrumpetFunnel(points, color) {
  ctx.fillStyle = color;
  ctx.beginPath();
  
- // Smoother bell curve without S-shape
+ // Bell curve (top)
  ctx.moveTo(points.bellStart.x, points.bellStart.y);
  ctx.bezierCurveTo(
-   points.bellStart.x + w * 0.2, points.bellStart.y + 100,
-   points.bellEnd.x - w * 0.2, points.bellEnd.y - 80,
+   points.bellStart.x + w * 0.1, points.bellStart.y + 40,
+   points.bellEnd.x - w * 0.1, points.bellEnd.y - 20,
    points.bellEnd.x, points.bellEnd.y
  );
  
- // Tube section
+ // Tube section (linear taper)
  ctx.lineTo(points.tubeEnd.x, points.tubeEnd.y);
  
- // Mouthpiece
+ // Mouthpiece (right end)
  ctx.lineTo(points.mouthBottom.x, points.mouthBottom.y);
  
- // Bottom tube
+ // Bottom tube section (linear taper)
  ctx.lineTo(points.bellBottomEnd.x, points.bellBottomEnd.y);
  
  // Bottom bell curve (mirror of top)
  ctx.bezierCurveTo(
-   points.bellBottomEnd.x - w * 0.2, points.bellBottomEnd.y + 80,
-   points.bellBottomStart.x + w * 0.2, points.bellBottomStart.y - 100,
+   points.bellBottomEnd.x - w * 0.1, points.bellBottomEnd.y + 20,
+   points.bellBottomStart.x + w * 0.1, points.bellBottomStart.y - 40,
    points.bellBottomStart.x, points.bellBottomStart.y
  );
  
@@ -951,6 +951,7 @@ animate();
  
 window.addEventListener('resize', function() {
  canvas.width = canvas.offsetWidth;
+ // Update dynamic positions if needed
 });
 </script>
 """
