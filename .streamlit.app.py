@@ -684,34 +684,38 @@ const h = canvas.height;
 
 // Funnel points for inner funnel (dark blue)
 const innerFunnelPoints = {
-  topLeft: {x: 60, y: 120},
-  midLeft: {x: 270, y: 120},
-  // Right side (increased x values)
-  midRight: {x: 790, y: 150},         // Original: 690 → +100
-  marketStart: {x: 920, y: 150},       // Original: 820 → +100
-  rightTop: {x: 1040, y: 160},         // Original: 940 → +100
-  rightBottom: {x: 1040, y: 290},      // Original: 940 → +100
-  marketEnd: {x: 920, y: 290},         // Original: 820 → +100
-  midRightBottom: {x: 790, y: 280},     // Original: 690 → +100
-  // Left side (unchanged)
-  midLeftBottom: {x: 270, y: 280},
-  bottomLeft: {x: 60, y: 280}
+  topLeft: {x: 10, y: 120},           // Changed from x:60
+  midLeft: {x: 220, y: 120},          // Changed from x:270
+  
+  // Right edge (near canvas width)
+  midRight: {x: canvas.width - 210, y: 150},  // Dynamic right edge
+  marketStart: {x: canvas.width - 80, y: 150},
+  rightTop: {x: canvas.width - 10, y: 160},   // 10px from right edge
+  rightBottom: {x: canvas.width - 10, y: 290},
+  marketEnd: {x: canvas.width - 80, y: 290},
+  midRightBottom: {x: canvas.width - 210, y: 280},
+  
+  // Left edge (matches top)
+  midLeftBottom: {x: 220, y: 280},    // Matches midLeft
+  bottomLeft: {x: 10, y: 280}         // Matches topLeft
 };
 
 // Funnel points for outer funnel (light blue cloud)
 const outerFunnelPoints = {
-  topLeft: {x: 60, y: 80},
-  midLeft: {x: 270, y: 80},
-  // Right side (increased x values)
-  midRight: {x: 830, y: 130},         // Original: 730 → +100
-  marketStart: {x: 940, y: 130},       // Original: 840 → +100
-  rightTop: {x: 1080, y: 140},         // Original: 980 → +100
-  rightBottom: {x: 1080, y: 330},       // Original: 980 → +100
-  marketEnd: {x: 940, y: 330},         // Original: 840 → +100
-  midRightBottom: {x: 830, y: 320},     // Original: 730 → +100
-  // Left side (unchanged)
-  midLeftBottom: {x: 270, y: 320},
-  bottomLeft: {x: 60, y: 320}
+  topLeft: {x: 0, y: 80},            // 0 = flush with left edge
+  midLeft: {x: 200, y: 80},           // Wider than inner funnel
+  
+  // Right edge (slightly beyond inner)
+  midRight: {x: canvas.width - 180, y: 130},
+  marketStart: {x: canvas.width - 60, y: 130},
+  rightTop: {x: canvas.width, y: 140}, // Flush with right edge
+  rightBottom: {x: canvas.width, y: 330},
+  marketEnd: {x: canvas.width - 60, y: 330},
+  midRightBottom: {x: canvas.width - 180, y: 320},
+  
+  // Left edge (matches top)
+  midLeftBottom: {x: 200, y: 320},
+  bottomLeft: {x: 0, y: 320}
 };
 
 const sectionColors = ['#3498db', '#2874a6', '#1b4f72'];
