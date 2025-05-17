@@ -748,7 +748,7 @@ def funnel_plot(neck_length, cone_length, start_diameter, end_diameter, color, o
                 x: [...x, ...x.slice().reverse()],
                 y: [...diameter, ...diameter.map(d => -d).reverse()],
                 fill: 'toself',
-                fillcolor: '{color.replace(")", ", " + String(opacity) + ")").replace("rgb", "rgba").replace("#", "rgba(").replace(")", ", 1)")}',
+                fillcolor: '{color.replace("#", "rgba(").replace(")", ", " + String(opacity) + ")")}',
                 line: {{ color: '{color}' }},
                 type: 'scatter',
                 name: '{name} Body',
@@ -789,3 +789,4 @@ def display_funnels():
 
 if __name__ == "__main__":
     display_funnels()
+
