@@ -684,7 +684,7 @@ const h = canvas.height;
 // Trumpet parameters
 const bellLength = w * 0.3;  // Bell takes 30% of width
 const tubeLength = w * 0.7;  // Tube takes 70%
-const startDiameter = 400;   // Starting diameter at bell
+const startDiameter = 300;   // Starting diameter at bell
 const endDiameter = 80;      // Ending diameter at mouthpiece
  
 // Inner funnel points (dark blue)
