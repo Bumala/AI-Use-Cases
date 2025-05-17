@@ -681,28 +681,30 @@ canvas.height = 450;
 const w = canvas.width;
 const h = canvas.height;
  
-// Trumpet-shaped points for inner funnel (dark blue)
+// Trumpet parameters
+const bellLength = w * 0.5;  // Bell takes 30% of width
+const tubeLength = w * 0.5;  // Tube takes 70%
+const startDiameter = 200;   // Starting diameter at bell
+const endDiameter = 30;      // Ending diameter at mouthpiece
+ 
+// Inner funnel points (dark blue)
 const innerFunnelPoints = {
- bellStart: {x: 0, y: 120},
- bellEnd: {x: w * 0.3, y: 150},
- tubeEnd: {x: w * 0.8, y: 180},
- mouthTop: {x: w, y: 200},
- mouthBottom: {x: w, y: 270},
- tubeBottom: {x: w * 0.8, y: 300},
- bellBottomEnd: {x: w * 0.3, y: 330},
- bellBottomStart: {x: 0, y: 360}
+ bellStart: {x: 0, y: h/2 - startDiameter/2},
+ bellEnd: {x: bellLength, y: h/2 - (startDiameter * 0.7)/2},
+ tubeEnd: {x: w, y: h/2 - endDiameter/2},
+ mouthBottom: {x: w, y: h/2 + endDiameter/2},
+ bellBottomEnd: {x: bellLength, y: h/2 + (startDiameter * 0.7)/2},
+ bellBottomStart: {x: 0, y: h/2 + startDiameter/2}
 };
  
-// Outer funnel (light blue cloud) - slightly larger
+// Outer funnel points (light blue cloud) - 20px larger
 const outerFunnelPoints = {
- bellStart: {x: -20, y: 100},
- bellEnd: {x: w * 0.28, y: 130},
- tubeEnd: {x: w * 0.78, y: 160},
- mouthTop: {x: w + 20, y: 180},
- mouthBottom: {x: w + 20, y: 290},
- tubeBottom: {x: w * 0.78, y: 320},
- bellBottomEnd: {x: w * 0.28, y: 350},
- bellBottomStart: {x: -20, y: 380}
+ bellStart: {x: -20, y: h/2 - (startDiameter + 40)/2},
+ bellEnd: {x: bellLength - 20, y: h/2 - (startDiameter * 0.7 + 40)/2},
+ tubeEnd: {x: w + 20, y: h/2 - (endDiameter + 20)/2},
+ mouthBottom: {x: w + 20, y: h/2 + (endDiameter + 20)/2},
+ bellBottomEnd: {x: bellLength - 20, y: h/2 + (startDiameter * 0.7 + 40)/2},
+ bellBottomStart: {x: -20, y: h/2 + (startDiameter + 40)/2}
 };
  
 const sectionColors = ['#3498db', '#2874a6', '#1b4f72'];
@@ -710,9 +712,9 @@ const outerColor = 'rgba(135, 206, 250, 0.3)';
  
 // Text positions for the sections
 const textPositions = [
- {text: 'Bell Section', x: w * 0.15, y: 220},
- {text: 'Tube Section', x: w * 0.55, y: 220},
- {text: 'Mouthpiece', x: w * 0.9, y: 230}
+ {text: 'Bell Section', x: w * 0.15, y: h/2 - 60},
+ {text: 'Tube Section', x: w * 0.65, y: h/2 - 40},
+ {text: 'Mouthpiece', x: w * 0.9, y: h/2 - 20}
 ];
  
 // Generate random colors for dots
@@ -721,7 +723,7 @@ function generateColor() {
  return colors[Math.floor(Math.random() * colors.length)];
 }
  
-// Particle classes (unchanged)
+// Particle classes
 class Dot {
  constructor(x, y, dx, dy, radius, color, bounds) {
    this.x = x;
@@ -781,19 +783,17 @@ class SmallDot {
  }
 }
  
-// Section bounds for dots (now matching trumpet sections)
+// Section bounds for dots
 const sectionBounds = [
  {xMin: innerFunnelPoints.bellStart.x, xMax: innerFunnelPoints.bellEnd.x,
   yMin: innerFunnelPoints.bellStart.y, yMax: innerFunnelPoints.bellBottomStart.y},
  {xMin: innerFunnelPoints.bellEnd.x, xMax: innerFunnelPoints.tubeEnd.x,
-  yMin: innerFunnelPoints.bellStart.y, yMax: innerFunnelPoints.bellBottomStart.y},
- {xMin: innerFunnelPoints.tubeEnd.x, xMax: innerFunnelPoints.mouthTop.x,
   yMin: innerFunnelPoints.bellStart.y, yMax: innerFunnelPoints.bellBottomStart.y}
 ];
  
 const marketIntroOuterBounds = {
- xMin: outerFunnelPoints.tubeEnd.x,
- xMax: outerFunnelPoints.mouthTop.x,
+ xMin: outerFunnelPoints.bellEnd.x,
+ xMax: outerFunnelPoints.tubeEnd.x,
  yMin: outerFunnelPoints.bellStart.y,
  yMax: outerFunnelPoints.bellBottomStart.y
 };
@@ -810,8 +810,8 @@ function randomBetween(min, max) {
 // Initialize dots
 function initDots() {
  sectionDots = [];
- for (let i = 0; i < 3; i++) {
-   for (let j = 0; j < 10; j++) {
+ for (let i = 0; i < 2; i++) {
+   for (let j = 0; j < 15; j++) {
      sectionDots.push(new Dot(
        randomBetween(sectionBounds[i].xMin + 10, sectionBounds[i].xMax - 10),
        randomBetween(sectionBounds[i].yMin + 10, sectionBounds[i].yMax - 10),
@@ -843,41 +843,27 @@ function drawTrumpetFunnel(points, color) {
  ctx.fillStyle = color;
  ctx.beginPath();
  
- // Bell curve (top left)
+ // Bell curve (top)
  ctx.moveTo(points.bellStart.x, points.bellStart.y);
  ctx.bezierCurveTo(
-   points.bellStart.x + w * 0.1, points.bellStart.y + 30,
+   points.bellStart.x + w * 0.1, points.bellStart.y + 40,
    points.bellEnd.x - w * 0.1, points.bellEnd.y - 20,
    points.bellEnd.x, points.bellEnd.y
  );
  
- // Tube section (top)
+ // Tube section (linear taper)
  ctx.lineTo(points.tubeEnd.x, points.tubeEnd.y);
  
- // Mouthpiece flare (top right)
- ctx.bezierCurveTo(
-   points.tubeEnd.x + w * 0.15, points.tubeEnd.y + 10,
-   points.mouthTop.x - w * 0.1, points.mouthTop.y - 5,
-   points.mouthTop.x, points.mouthTop.y
- );
- 
- // Mouthpiece (right side)
+ // Mouthpiece (right end)
  ctx.lineTo(points.mouthBottom.x, points.mouthBottom.y);
  
- // Mouthpiece flare (bottom right)
- ctx.bezierCurveTo(
-   points.mouthBottom.x - w * 0.1, points.mouthBottom.y + 5,
-   points.tubeBottom.x + w * 0.15, points.tubeBottom.y - 10,
-   points.tubeBottom.x, points.tubeBottom.y
- );
- 
- // Tube section (bottom)
+ // Bottom tube section (linear taper)
  ctx.lineTo(points.bellBottomEnd.x, points.bellBottomEnd.y);
  
- // Bell curve (bottom left)
+ // Bottom bell curve (mirror of top)
  ctx.bezierCurveTo(
    points.bellBottomEnd.x - w * 0.1, points.bellBottomEnd.y + 20,
-   points.bellBottomStart.x + w * 0.1, points.bellBottomStart.y - 30,
+   points.bellBottomStart.x + w * 0.1, points.bellBottomStart.y - 40,
    points.bellBottomStart.x, points.bellBottomStart.y
  );
  
@@ -909,10 +895,6 @@ function drawSectionLines() {
  // Bell to tube divider
  ctx.moveTo(innerFunnelPoints.bellEnd.x, innerFunnelPoints.bellEnd.y);
  ctx.lineTo(innerFunnelPoints.bellBottomEnd.x, innerFunnelPoints.bellBottomEnd.y);
- 
- // Tube to mouthpiece divider
- ctx.moveTo(innerFunnelPoints.tubeEnd.x, innerFunnelPoints.tubeEnd.y);
- ctx.lineTo(innerFunnelPoints.tubeBottom.x, innerFunnelPoints.tubeBottom.y);
  
  ctx.stroke();
  ctx.setLineDash([]);
@@ -969,6 +951,7 @@ animate();
  
 window.addEventListener('resize', function() {
  canvas.width = canvas.offsetWidth;
+ // Update dynamic positions if needed
 });
 </script>
 """
