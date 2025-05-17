@@ -976,5 +976,5 @@ window.addEventListener('resize', function() {
 </script>
 """
  
-st.title("Animated Funnel Visualization")
+st.title("AI in Innovation Management")
 components.html(html_code, height=500)
