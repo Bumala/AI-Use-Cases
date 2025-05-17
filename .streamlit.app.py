@@ -847,7 +847,7 @@ ctx.beginPath();
 ctx.moveTo(points.bellStart.x, points.bellStart.y);
 ctx.bezierCurveTo(
  points.bellStart.x + w * 0.1, points.bellStart.y + 25,
- points.bellEnd.x - w * 0.1, points.bellEnd.y - 10,
+ points.bellEnd.x - w * 0.1, points.bellEnd.y - 8,
  points.bellEnd.x, points.bellEnd.y
 );
  
@@ -862,7 +862,7 @@ ctx.lineTo(points.bellBottomEnd.x, points.bellBottomEnd.y);
  
 // Bottom bell curve (mirror of top)
 ctx.bezierCurveTo(
- points.bellBottomEnd.x - w * 0.1, points.bellBottomEnd.y + 10,
+ points.bellBottomEnd.x - w * 0.1, points.bellBottomEnd.y + 8,
  points.bellBottomStart.x + w * 0.1, points.bellBottomStart.y - 25,
  points.bellBottomStart.x, points.bellBottomStart.y
 );
