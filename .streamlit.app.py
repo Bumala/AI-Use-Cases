@@ -684,20 +684,20 @@ const h = canvas.height;
 
 // Funnel points for inner funnel (dark blue)
 const innerFunnelPoints = {
-  topLeft: {x: 10, y: 120},           // Changed from x:60
-  midLeft: {x: 220, y: 120},          // Changed from x:270
+ topLeft: {x: 0, y: 120},            // Changed to x:0 (flush left)
+  midLeft: {x: 200, y: 120},           // Matches outerFunnel's midLeft.x (200)
   
-  // Right edge (near canvas width)
-  midRight: {x: canvas.width - 210, y: 150},  // Dynamic right edge
-  marketStart: {x: canvas.width - 80, y: 150},
-  rightTop: {x: canvas.width - 10, y: 160},   // 10px from right edge
-  rightBottom: {x: canvas.width - 10, y: 290},
-  marketEnd: {x: canvas.width - 80, y: 290},
-  midRightBottom: {x: canvas.width - 210, y: 280},
+  // Right edge (matches outer funnel exactly)
+  midRight: {x: canvas.width - 180, y: 150},  // Matches outer's dynamic width
+  marketStart: {x: canvas.width - 60, y: 150}, // Matches outer's -60 offset
+  rightTop: {x: canvas.width, y: 160},         // Flush right (matches outer)
+  rightBottom: {x: canvas.width, y: 290},      // Flush right
+  marketEnd: {x: canvas.width - 60, y: 290},   // Matches outer's -60 offset
+  midRightBottom: {x: canvas.width - 180, y: 280}, // Matches outer's -180
   
   // Left edge (matches top)
-  midLeftBottom: {x: 220, y: 280},    // Matches midLeft
-  bottomLeft: {x: 10, y: 280}         // Matches topLeft
+  midLeftBottom: {x: 200, y: 280},     // Matches midLeft
+  bottomLeft: {x: 0, y: 280}      
 };
 
 // Funnel points for outer funnel (light blue cloud)
