@@ -846,8 +846,8 @@ function drawTrumpetFunnel(points, color) {
  // Smoother bell curve without S-shape
  ctx.moveTo(points.bellStart.x, points.bellStart.y);
  ctx.bezierCurveTo(
-   points.bellStart.x + w * 0.2, points.bellStart.y + 30,
-   points.bellEnd.x - w * 0.2, points.bellEnd.y - 10,
+   points.bellStart.x + w * 0.2, points.bellStart.y + 100,
+   points.bellEnd.x - w * 0.2, points.bellEnd.y - 80,
    points.bellEnd.x, points.bellEnd.y
  );
  
@@ -862,8 +862,8 @@ function drawTrumpetFunnel(points, color) {
  
  // Bottom bell curve (mirror of top)
  ctx.bezierCurveTo(
-   points.bellBottomEnd.x - w * 0.2, points.bellBottomEnd.y + 10,
-   points.bellBottomStart.x + w * 0.2, points.bellBottomStart.y - 30,
+   points.bellBottomEnd.x - w * 0.2, points.bellBottomEnd.y + 80,
+   points.bellBottomStart.x + w * 0.2, points.bellBottomStart.y - 1000,
    points.bellBottomStart.x, points.bellBottomStart.y
  );
  
