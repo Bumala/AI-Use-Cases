@@ -684,8 +684,8 @@ const h = canvas.height;
 
 // Funnel points for inner funnel (dark blue)
 const innerFunnelPoints = {
-  topLeft: {x: 100, y: 120},
-  midLeft: {x: 310, y: 120},
+  topLeft: {x: 60, y: 120},
+  midLeft: {x: 270, y: 120},
   midRight: {x: 690, y: 150},
   marketStart: {x: 820, y: 150},
   rightTop: {x: 940, y: 160},
