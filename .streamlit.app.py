@@ -771,12 +771,16 @@ def funnel_plot(neck_length, cone_length, start_diameter, end_diameter, color, o
     """
     return html_code
 
+
+
+# Use full_page=True to make the plot stretch across the entire page
+st.set_page_config(layout="wide")
+
 def display_funnels():
     """
     Displays two funnel plots in Streamlit, one in dark blue and the other in light blue.
     """
-    # Use full_page=True to make the plot stretch across the entire page
-    st.set_page_config(layout="wide")
+
 
     # Create the HTML code for the two funnel plots
     funnel_html_dark = funnel_plot(neck_length=2, cone_length=8, start_diameter=0.1, end_diameter=2, color='darkblue', opacity=0.8, name = "Dark Blue")
@@ -788,4 +792,3 @@ def display_funnels():
 
 if __name__ == "__main__":
     display_funnels()
-
