@@ -672,292 +672,273 @@ else:
 
 html_code = """
 <canvas id="funnelCanvas" width="1000" height="450" style="width: 100%; height: auto; background: white;"></canvas>
- 
+
 <script>
 const canvas = document.getElementById('funnelCanvas');
 const ctx = canvas.getContext('2d');
 canvas.width = canvas.offsetWidth;
 canvas.height = 450;
- 
+
 const w = canvas.width;
 const h = canvas.height;
- 
-// Funnel points for inner funnel (dark blue)
-const innerFunnelPoints = {
-topLeft: {x: 0, y: 120},            // Changed to x:0 (flush left)
- midLeft: {x: 200, y: 120},           // Matches outerFunnel's midLeft.x (200)
- 
- // Right edge (matches outer funnel exactly)
- midRight: {x: canvas.width - 180, y: 150},  // Matches outer's dynamic width
- marketStart: {x: canvas.width - 60, y: 150}, // Matches outer's -60 offset
- rightTop: {x: canvas.width, y: 160},         // Flush right (matches outer)
- rightBottom: {x: canvas.width, y: 290},      // Flush right
- marketEnd: {x: canvas.width - 60, y: 290},   // Matches outer's -60 offset
- midRightBottom: {x: canvas.width - 180, y: 280}, // Matches outer's -180
- 
- // Left edge (matches top)
- midLeftBottom: {x: 200, y: 280},     // Matches midLeft
- bottomLeft: {x: 0, y: 280}      
-};
- 
-// Funnel points for outer funnel (light blue cloud)
-const outerFunnelPoints = {
- topLeft: {x: 0, y: 80},            // 0 = flush with left edge
- midLeft: {x: 200, y: 80},           // Wider than inner funnel
- 
- // Right edge (slightly beyond inner)
- midRight: {x: canvas.width - 180, y: 130},
- marketStart: {x: canvas.width - 60, y: 130},
- rightTop: {x: canvas.width, y: 140}, // Flush with right edge
- rightBottom: {x: canvas.width, y: 330},
- marketEnd: {x: canvas.width - 60, y: 330},
- midRightBottom: {x: canvas.width - 180, y: 320},
- 
- // Left edge (matches top)
- midLeftBottom: {x: 200, y: 320},
- bottomLeft: {x: 0, y: 320}
-};
- 
-const sectionColors = ['#3498db', '#2874a6', '#1b4f72'];
-const outerColor = 'rgba(135, 206, 250, 0.3)';  // Light blue with transparency
- 
-// Text positions for the sections
-const textPositions = [
- {text: 'Front End', x: 200, y: 200},
- {text: 'Development', x: 500, y: 200},
- {text: 'Market Introduction', x: 880, y: 210}
+
+// Parameters for trumpet shape (like Python code)
+const numPoints = 500;
+const xVals = [];
+const tubeLength = 0.7 * w; // tube ends at 70% width
+const startDiameter = 0.5;
+const minDiameter = 0.1;
+const maxX = w;
+
+for(let i=0; i<numPoints; i++) {
+  xVals.push(i * maxX / (numPoints - 1));
+}
+
+// Create trumpet diameter profile along x (scaled to funnel width)
+function trumpetDiameter(x) {
+  if (x < tubeLength) {
+    // linear decrease from startDiameter to minDiameter along tube
+    return startDiameter - (startDiameter - minDiameter) * (x / tubeLength);
+  } else {
+    // bell flare parabola starting at tubeLength
+    let dx = (x - tubeLength) / (maxX - tubeLength); // normalize to [0,1]
+    return minDiameter + 0.2 * (dx * (maxX - tubeLength))**2;
+  }
+}
+
+// Generate funnel points for inner and outer funnel based on trumpet shape
+const innerFunnelPoints = [];
+const outerFunnelPoints = [];
+
+const verticalCenter = h / 2; // center y position vertically
+const maxDiameterPixels = 180; // scale factor to convert diameter to pixels (height)
+
+// Outer funnel is slightly wider
+const outerScale = 1.3;
+
+for (let i = 0; i < numPoints; i++) {
+  const x = xVals[i];
+  const d = trumpetDiameter(x);
+  const yInnerTop = verticalCenter - d * maxDiameterPixels;
+  const yInnerBottom = verticalCenter + d * maxDiameterPixels;
+  const yOuterTop = verticalCenter - d * maxDiameterPixels * outerScale;
+  const yOuterBottom = verticalCenter + d * maxDiameterPixels * outerScale;
+
+  // Store points for inner funnel (top and bottom)
+  innerFunnelPoints.push({x: x, yTop: yInnerTop, yBottom: yInnerBottom});
+  // Store points for outer funnel (top and bottom)
+  outerFunnelPoints.push({x: x, yTop: yOuterTop, yBottom: yOuterBottom});
+}
+
+// Section divisions (approximate thirds along x)
+const sectionDivs = [
+  Math.floor(numPoints / 3),
+  Math.floor(numPoints * 2 / 3),
+  numPoints - 1
 ];
- 
-// Generate random colors for dots in sections
-function generateColor() {
- const colors = ['#e74c3c', '#2ecc71', '#f1c40f', '#3498db', '#9b59b6', '#1abc9c', '#e67e22', '#d35400', '#34495e', '#7f8c8d'];
- return colors[Math.floor(Math.random() * colors.length)];
-}
- 
-// Particle classes
-class Dot {
- constructor(x, y, dx, dy, radius, color, bounds) {
-   this.x = x;
-   this.y = y;
-   this.dx = dx;
-   this.dy = dy;
-   this.radius = radius;
-   this.color = color;
-   this.bounds = bounds;  // {xMin, xMax, yMin, yMax}
- }
- 
- move() {
-   this.x += this.dx;
-   this.y += this.dy;
-   
-   if (this.x - this.radius < this.bounds.xMin || this.x + this.radius > this.bounds.xMax) {
-     this.dx = -this.dx;
-   }
-   if (this.y - this.radius < this.bounds.yMin || this.y + this.radius > this.bounds.yMax) {
-     this.dy = -this.dy;
-   }
- }
- 
- draw(ctx) {
-   ctx.beginPath();
-   ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
-   ctx.fillStyle = this.color;
-   ctx.fill();
- }
-}
- 
-class SmallDot {
- constructor(x, y, dx, dy, radius, color, bounds) {
-   this.x = x;
-   this.y = y;
-   this.dx = dx;
-   this.dy = dy;
-   this.radius = radius;
-   this.color = color;
-   this.bounds = bounds;
- }
- move() {
-   this.x += this.dx;
-   this.y += this.dy;
- 
-   // Wrap around to simulate floating cloud
-   if (this.x < this.bounds.xMin) this.x = this.bounds.xMax;
-   if (this.x > this.bounds.xMax) this.x = this.bounds.xMin;
-   if (this.y < this.bounds.yMin) this.y = this.bounds.yMax;
-   if (this.y > this.bounds.yMax) this.y = this.bounds.yMin;
- }
- draw(ctx) {
-   ctx.beginPath();
-   ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
-   ctx.fillStyle = this.color;
-   ctx.fill();
- }
-}
- 
-// Create section bounds for dots (rectangular approx of funnel sections inside inner funnel)
+
+// Calculate section bounds for dots inside inner funnel (using bounding rectangles)
 const sectionBounds = [
- {xMin: innerFunnelPoints.topLeft.x, xMax: innerFunnelPoints.midLeft.x, yMin: innerFunnelPoints.topLeft.y, yMax: innerFunnelPoints.bottomLeft.y},  // Front End
- {xMin: innerFunnelPoints.midLeft.x, xMax: innerFunnelPoints.midRight.x, yMin: innerFunnelPoints.topLeft.y, yMax: innerFunnelPoints.bottomLeft.y},  // Development
- {xMin: innerFunnelPoints.marketStart.x, xMax: innerFunnelPoints.rightTop.x, yMin: innerFunnelPoints.topLeft.y, yMax: innerFunnelPoints.bottomLeft.y}  // Market Introduction (slim)
+  {
+    xMin: innerFunnelPoints[0].x,
+    xMax: innerFunnelPoints[sectionDivs[0]].x,
+    yMin: innerFunnelPoints[sectionDivs[0]].yTop,
+    yMax: innerFunnelPoints[sectionDivs[0]].yBottom
+  },
+  {
+    xMin: innerFunnelPoints[sectionDivs[0]].x,
+    xMax: innerFunnelPoints[sectionDivs[1]].x,
+    yMin: innerFunnelPoints[sectionDivs[1]].yTop,
+    yMax: innerFunnelPoints[sectionDivs[1]].yBottom
+  },
+  {
+    xMin: innerFunnelPoints[sectionDivs[1]].x,
+    xMax: innerFunnelPoints[sectionDivs[2]].x,
+    yMin: innerFunnelPoints[sectionDivs[2]].yTop,
+    yMax: innerFunnelPoints[sectionDivs[2]].yBottom
+  }
 ];
- 
+
 // Market Introduction bounds on outer funnel for small dots ONLY
 const marketIntroOuterBounds = {
- xMin: outerFunnelPoints.marketStart.x,
- xMax: outerFunnelPoints.rightTop.x,
- yMin: outerFunnelPoints.topLeft.y,
- yMax: outerFunnelPoints.bottomLeft.y
+  xMin: outerFunnelPoints[sectionDivs[1]].x,
+  xMax: outerFunnelPoints[sectionDivs[2]].x,
+  yMin: outerFunnelPoints[sectionDivs[2]].yTop,
+  yMax: outerFunnelPoints[sectionDivs[2]].yBottom
 };
- 
+
+const sectionColors = ['#3498db', '#2874a6', '#1b4f72'];
+const outerColor = 'rgba(135, 206, 250, 0.3)';  // Light blue with transparency
+
+// Text positions for the sections (placed at approx centers of sections)
+const textPositions = [
+  {text: 'Front End', x: (sectionBounds[0].xMin + sectionBounds[0].xMax)/2, y: verticalCenter},
+  {text: 'Development', x: (sectionBounds[1].xMin + sectionBounds[1].xMax)/2, y: verticalCenter},
+  {text: 'Market Introduction', x: (sectionBounds[2].xMin + sectionBounds[2].xMax)/2, y: verticalCenter + 10}
+];
+
+// Generate random colors for dots in sections
+function generateColor() {
+  const colors = ['#e74c3c', '#2ecc71', '#f1c40f', '#3498db', '#9b59b6', '#1abc9c', '#e67e22', '#d35400', '#34495e', '#7f8c8d'];
+  return colors[Math.floor(Math.random() * colors.length)];
+}
+
+// Particle classes (unchanged)
+class Dot {
+  constructor(x, y, dx, dy, radius, color, bounds) {
+    this.x = x;
+    this.y = y;
+    this.dx = dx;
+    this.dy = dy;
+    this.radius = radius;
+    this.color = color;
+    this.bounds = bounds;  // {xMin, xMax, yMin, yMax}
+  }
+
+  move() {
+    this.x += this.dx;
+    this.y += this.dy;
+
+    if (this.x - this.radius < this.bounds.xMin || this.x + this.radius > this.bounds.xMax) {
+      this.dx = -this.dx;
+    }
+    if (this.y - this.radius < this.bounds.yMin || this.y + this.radius > this.bounds.yMax) {
+      this.dy = -this.dy;
+    }
+  }
+
+  draw(ctx) {
+    ctx.beginPath();
+    ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+    ctx.fillStyle = this.color;
+    ctx.fill();
+  }
+}
+
+class SmallDot {
+  constructor(x, y, dx, dy, radius, color, bounds) {
+    this.x = x;
+    this.y = y;
+    this.dx = dx;
+    this.dy = dy;
+    this.radius = radius;
+    this.color = color;
+    this.bounds = bounds;
+  }
+  move() {
+    this.x += this.dx;
+    this.y += this.dy;
+
+    // Wrap around to simulate floating cloud
+    if (this.x < this.bounds.xMin) this.x = this.bounds.xMax;
+    if (this.x > this.bounds.xMax) this.x = this.bounds.xMin;
+    if (this.y < this.bounds.yMin) this.y = this.bounds.yMax;
+    if (this.y > this.bounds.yMax) this.y = this.bounds.yMin;
+  }
+  draw(ctx) {
+    ctx.beginPath();
+    ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+    ctx.fillStyle = this.color;
+    ctx.fill();
+  }
+}
+
 let sectionDots = [];
 let outerSmallDots = [];
- 
+
 function randomBetween(min, max) {
- return Math.random() * (max - min) + min;
+  return Math.random() * (max - min) + min;
 }
- 
+
 // Initialize dots
 function initDots() {
- sectionDots = [];
- for (let i = 0; i < 3; i++) {
-   for (let j = 0; j < 10; j++) {
-     sectionDots.push(new Dot(
-       randomBetween(sectionBounds[i].xMin + 10, sectionBounds[i].xMax - 10),
-       randomBetween(sectionBounds[i].yMin + 10, sectionBounds[i].yMax - 10),
-       (Math.random() - 0.5) * 1.5,
-       (Math.random() - 0.5) * 1.5,
-       5,
-       generateColor(),
-       sectionBounds[i]
-     ));
-   }
- }
- 
- outerSmallDots = [];
- for (let i = 0; i < 80; i++) {
-   outerSmallDots.push(new SmallDot(
-     randomBetween(marketIntroOuterBounds.xMin, marketIntroOuterBounds.xMax),
-     randomBetween(marketIntroOuterBounds.yMin, marketIntroOuterBounds.yMax),
-     (Math.random() - 0.5) * 0.15,
-     (Math.random() - 0.5) * 0.15,
-     1.5,
-     'rgba(10, 40, 80, 0.3)',  // very dark blue but transparent
-     marketIntroOuterBounds
-   ));
- }
+  sectionDots = [];
+  for (let i = 0; i < 3; i++) {
+    for (let j = 0; j < 10; j++) {
+      sectionDots.push(new Dot(
+        randomBetween(sectionBounds[i].xMin + 10, sectionBounds[i].xMax - 10),
+        randomBetween(sectionBounds[i].yMin + 10, sectionBounds[i].yMax - 10),
+        (Math.random() - 0.5) * 1.5,
+        (Math.random() - 0.5) * 1.5,
+        5,
+        generateColor(),
+        sectionBounds[i]
+      ));
+    }
+  }
+
+  outerSmallDots = [];
+  for (let i = 0; i < 80; i++) {
+    outerSmallDots.push(new SmallDot(
+      randomBetween(marketIntroOuterBounds.xMin, marketIntroOuterBounds.xMax),
+      randomBetween(marketIntroOuterBounds.yMin, marketIntroOuterBounds.yMax),
+      (Math.random() - 0.5) * 0.15,
+      (Math.random() - 0.5) * 0.15,
+      1.5,
+      'rgba(10,10,10,0.2)',
+      marketIntroOuterBounds
+    ));
+  }
 }
- 
-let cloudOffset = 0;
-let cloudDirection = 1;
- 
-function drawOuterFunnel() {
- cloudOffset += 0.3 * cloudDirection;
- if (cloudOffset > 6 || cloudOffset < -6) cloudDirection *= -1;
- 
- ctx.save();
- ctx.shadowColor = 'rgba(135, 206, 250, 0.5)';
- ctx.shadowBlur = 20 + cloudOffset*2;
- 
- ctx.fillStyle = outerColor;
- ctx.beginPath();
- ctx.moveTo(outerFunnelPoints.topLeft.x, outerFunnelPoints.topLeft.y + cloudOffset/2);
- ctx.lineTo(outerFunnelPoints.midLeft.x, outerFunnelPoints.midLeft.y + cloudOffset/3);
- ctx.lineTo(outerFunnelPoints.midRight.x, outerFunnelPoints.midRight.y + cloudOffset/5);
- ctx.lineTo(outerFunnelPoints.marketStart.x, outerFunnelPoints.marketStart.y);
- ctx.lineTo(outerFunnelPoints.rightTop.x, outerFunnelPoints.rightTop.y - cloudOffset/3);
- ctx.lineTo(outerFunnelPoints.rightBottom.x, outerFunnelPoints.rightBottom.y - cloudOffset/2);
- ctx.lineTo(outerFunnelPoints.marketEnd.x, outerFunnelPoints.marketEnd.y - cloudOffset/4);
- ctx.lineTo(outerFunnelPoints.midRightBottom.x, outerFunnelPoints.midRightBottom.y - cloudOffset/6);
- ctx.lineTo(outerFunnelPoints.midLeftBottom.x, outerFunnelPoints.midLeftBottom.y - cloudOffset/4);
- ctx.lineTo(outerFunnelPoints.bottomLeft.x, outerFunnelPoints.bottomLeft.y - cloudOffset/3);
- ctx.closePath();
- ctx.fill();
- ctx.restore();
+
+// Draw funnel shape using trumpet profile
+function drawFunnel(points, fillColor, strokeColor) {
+  ctx.beginPath();
+  // Top edge left to right
+  for (let i = 0; i < points.length; i++) {
+    const p = points[i];
+    if (i === 0) ctx.moveTo(p.x, p.yTop);
+    else ctx.lineTo(p.x, p.yTop);
+  }
+  // Bottom edge right to left
+  for (let i = points.length - 1; i >= 0; i--) {
+    const p = points[i];
+    ctx.lineTo(p.x, p.yBottom);
+  }
+  ctx.closePath();
+  ctx.fillStyle = fillColor;
+  ctx.fill();
+  ctx.strokeStyle = strokeColor;
+  ctx.lineWidth = 2;
+  ctx.stroke();
 }
- 
-function drawInnerFunnel() {
- ctx.fillStyle = '#154360';
- ctx.beginPath();
- ctx.moveTo(innerFunnelPoints.topLeft.x, innerFunnelPoints.topLeft.y);
- ctx.lineTo(innerFunnelPoints.midLeft.x, innerFunnelPoints.midLeft.y);
- ctx.lineTo(innerFunnelPoints.midRight.x, innerFunnelPoints.midRight.y);
- ctx.lineTo(innerFunnelPoints.marketStart.x, innerFunnelPoints.marketStart.y);
- ctx.lineTo(innerFunnelPoints.rightTop.x, innerFunnelPoints.rightTop.y);
- ctx.lineTo(innerFunnelPoints.rightBottom.x, innerFunnelPoints.rightBottom.y);
- ctx.lineTo(innerFunnelPoints.marketEnd.x, innerFunnelPoints.marketEnd.y);
- ctx.lineTo(innerFunnelPoints.midRightBottom.x, innerFunnelPoints.midRightBottom.y);
- ctx.lineTo(innerFunnelPoints.midLeftBottom.x, innerFunnelPoints.midLeftBottom.y);
- ctx.lineTo(innerFunnelPoints.bottomLeft.x, innerFunnelPoints.bottomLeft.y);
- ctx.closePath();
- ctx.fill();
+
+function drawText() {
+  ctx.font = "bold 26px Arial";
+  ctx.textAlign = "center";
+  ctx.textBaseline = "middle";
+
+  for (let i = 0; i < textPositions.length; i++) {
+    ctx.fillStyle = sectionColors[i];
+    ctx.fillText(textPositions[i].text, textPositions[i].x, textPositions[i].y);
+  }
 }
- 
-function drawSectionLines() {
- ctx.strokeStyle = "white";
- ctx.lineWidth = 2;
- ctx.setLineDash([6, 6]);
- 
- ctx.beginPath();
- ctx.moveTo(innerFunnelPoints.midLeft.x, innerFunnelPoints.midLeft.y);
- ctx.lineTo(innerFunnelPoints.midLeftBottom.x, innerFunnelPoints.midLeftBottom.y);
- 
- ctx.moveTo(innerFunnelPoints.midRight.x, innerFunnelPoints.midRight.y);
- ctx.lineTo(innerFunnelPoints.midRightBottom.x, innerFunnelPoints.midRightBottom.y);
- 
- ctx.stroke();
- ctx.setLineDash([]);
-}
- 
-function drawLabels() {
- ctx.fillStyle = "white";
- ctx.font = "bold 22px Arial";
- ctx.textAlign = "center";
- textPositions.forEach(pos => {
-   ctx.fillText(pos.text, pos.x, pos.y);
- });
-}
- 
-function drawSectionDots() {
- sectionDots.forEach(dot => {
-   dot.draw(ctx);
- });
-}
- 
-function moveSectionDots() {
- sectionDots.forEach(dot => {
-   dot.move();
- });
-}
- 
-function drawOuterSmallDots() {
- outerSmallDots.forEach(dot => {
-   dot.draw(ctx);
- });
-}
- 
-function moveOuterSmallDots() {
- outerSmallDots.forEach(dot => {
-   dot.move();
- });
-}
- 
+
 function animate() {
- ctx.clearRect(0, 0, w, h);
- drawOuterFunnel();
- drawOuterSmallDots();
- drawInnerFunnel();
- drawSectionLines();
- drawLabels();
- drawSectionDots();
- moveSectionDots();
- moveOuterSmallDots();
- requestAnimationFrame(animate);
+  ctx.clearRect(0, 0, w, h);
+
+  drawFunnel(outerFunnelPoints, outerColor, 'rgba(0, 119, 204, 0.6)');  // Outer funnel
+  drawFunnel(innerFunnelPoints, 'white', '#0077cc');                  // Inner funnel
+
+  drawText();
+
+  sectionDots.forEach(dot => {
+    dot.move();
+    dot.draw(ctx);
+  });
+
+  outerSmallDots.forEach(dot => {
+    dot.move();
+    dot.draw(ctx);
+  });
+
+  requestAnimationFrame(animate);
 }
- 
+
 initDots();
 animate();
- 
 </script>
+
 """
  
 st.title("Animated Funnel Visualization")
