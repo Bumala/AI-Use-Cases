@@ -672,91 +672,22 @@ else:
 import streamlit as st
 import streamlit.components.v1 as components
 
-def trumpet_plot():
-    html_code = """
-    <!DOCTYPE html>
-    <html lang="en">
-    <head>
-        <meta charset="UTF-8" />
-        <title>Trumpet Shape Plot</title>
-        <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
-    </head>
-    <body>
-        <div id="plot"></div>
-        <script>
-            // Define x range (length of trumpet)
-            const nPoints = 500;
-            const totalLength = 10;
-            const x = Array.from({ length: nPoints }, (_, i) => (totalLength * i) / (nPoints - 1));
-
-            // Parameters
-            const bellLength = 3;
-            const tubeLength = 7;
-
-            // Initialize diameter array
-            let diameter = new Array(nPoints);
-
-            // Calculate diameter for bell (mirrored parabola)
-            for (let i = 0; i < nPoints; i++) {
-                if (x[i] < bellLength) {
-                    diameter[i] = 0.2 * Math.pow(bellLength - x[i], 2) + 0.5; // base throat diameter = 0.5
-                }
-            }
-
-            // Calculate diameter for tube (linear decrease)
-            const tubeStartIndex = x.findIndex(val => val >= bellLength);
-            const startDiameter = diameter[tubeStartIndex - 1];
-            const endDiameter = 0.1;
-
-            for (let i = tubeStartIndex; i < nPoints; i++) {
-                diameter[i] = startDiameter + ((endDiameter - startDiameter) * (i - tubeStartIndex)) / (nPoints - tubeStartIndex - 1);
-            }
-
-            // Prepare data for Plotly plot
-            const traceUpper = {
-                x: x,
-                y: diameter,
-                mode: 'lines',
-                line: { color: 'goldenrod' },
-                name: 'Upper edge',
-            };
-
-            const traceLower = {
-                x: x,
-                y: diameter.map(d => -d),
-                mode: 'lines',
-                line: { color: 'goldenrod' },
-                name: 'Lower edge',
-            };
-
-            const traceFill = {
-                x: [...x, ...x.slice().reverse()],
-                y: [...diameter, ...diameter.map(d => -d).reverse()],
-                fill: 'toself',
-                fillcolor: 'rgba(255, 215, 0, 0.6)', // gold with transparency
-                line: { color: 'goldenrod' },
-                type: 'scatter',
-                name: 'Trumpet Body',
-                showlegend: false,
-            };
-
-            const layout = {
-                title: "Trumpet: Bell on Left, Mouthpiece on Right, Decreasing Tube",
-                xaxis: { scaleanchor: 'y', showgrid: false, zeroline: false, visible: false },
-                yaxis: { showgrid: false, zeroline: false, visible: false },
-                showlegend: false,
-                autosize: true,
-            };
-
-            Plotly.newPlot('plot', [traceFill, traceUpper, traceLower], layout);
-        </script>
-    </body>
-    </html>
+def funnel_plot(neck_length, cone_length, start_diameter, end_diameter, color, opacity, name):
     """
-    components.html(html_code, height=600)
+    Generates the HTML and JavaScript code for a funnel plot using Plotly.
 
-def funnel_plot():
-    html_code = """
+    Args:
+        neck_length (float): Length of the funnel's neck.
+        cone_length (float): Length of the funnel's cone.
+        start_diameter (float): Diameter of the funnel's neck.
+        end_diameter (float): Diameter of the funnel's opening.
+        color (str): Color of the funnel.
+        opacity (float): Opacity of the funnel.
+        name (str): Name of the trace
+    Returns:
+        str: HTML and JavaScript code for the funnel plot.
+    """
+    html_code = f"""
     <!DOCTYPE html>
     <html lang="en">
     <head>
@@ -770,78 +701,91 @@ def funnel_plot():
             // Define x range (length of funnel)
             const nPoints = 500;
             const totalLength = 10;
-            const x = Array.from({ length: nPoints }, (_, i) => (totalLength * i) / (nPoints - 1));
+            const x = Array.from({{ length: nPoints }}, (_, i) => (totalLength * i) / (nPoints - 1));
 
             // Parameters
-            const neckLength = 2;
-            const coneLength = 8;
-            const startDiameter = 0.1;
-            const endDiameter = 2;
+            const neckLength = {neck_length};
+            const coneLength = {cone_length};
+            const startDiameter = {start_diameter};
+            const endDiameter = {end_diameter};
 
             // Initialize diameter array
             let diameter = new Array(nPoints);
 
             // Calculate diameter for neck (constant)
-            for (let i = 0; i < nPoints; i++) {
-                if (x[i] < neckLength) {
+            for (let i = 0; i < nPoints; i++) {{
+                if (x[i] < neckLength) {{
                     diameter[i] = startDiameter;
-                }
-            }
+                }}
+            }}
 
             // Calculate diameter for cone (linear increase)
             const coneStartIndex = x.findIndex(val => val >= neckLength);
 
-            for (let i = coneStartIndex; i < nPoints; i++) {
+            for (let i = coneStartIndex; i < nPoints; i++) {{
                 diameter[i] = startDiameter + ((endDiameter - startDiameter) * (i - coneStartIndex)) / (nPoints - coneStartIndex - 1);
-            }
+            }}
 
             // Prepare data for Plotly plot
-            const traceUpper = {
+            const traceUpper = {{
                 x: x,
                 y: diameter,
                 mode: 'lines',
-                line: { color: 'skyblue' },
-                name: 'Upper edge',
-            };
+                line: {{ color: '{color}' }},
+                name: '{name} Upper edge',
 
-            const traceLower = {
+            }};
+
+            const traceLower = {{
                 x: x,
                 y: diameter.map(d => -d),
                 mode: 'lines',
-                line: { color: 'skyblue' },
-                name: 'Lower edge',
-            };
+                line: {{ color: '{color}' }},
+                 name: '{name} Lower edge',
+            }};
 
-            const traceFill = {
+            const traceFill = {{
                 x: [...x, ...x.slice().reverse()],
                 y: [...diameter, ...diameter.map(d => -d).reverse()],
                 fill: 'toself',
-                fillcolor: 'rgba(135, 206, 235, 0.6)', // skyblue with transparency
-                line: { color: 'skyblue' },
+                fillcolor: 'rgba({int(color[1:3], 16)}, {int(color[3:5], 16)}, {int(color[5:7], 16)}, {opacity})', // Convert hex to rgba
+                line: {{ color: '{color}' }},
                 type: 'scatter',
-                name: 'Funnel Body',
+                name: '{name} Body',
                 showlegend: false,
-            };
+            }};
 
-            const layout = {
-                title: "Funnel: Narrow Neck on Left, Wide Opening on Right",
-                xaxis: { scaleanchor: 'y', showgrid: false, zeroline: false, visible: false },
-                yaxis: { showgrid: false, zeroline: false, visible: false },
-                showlegend: false,
+            const layout = {{
+                //title: "Funnel: Narrow Neck on Left, Wide Opening on Right", // Removed title for cleaner layout
+                xaxis: {{ scaleanchor: 'y', showgrid: false, zeroline: false, visible: false }},
+                yaxis: {{ showgrid: false, zeroline: false, visible: false }},
+                showlegend: false, // Removed legend
+                margin: {{l:0, r:0, t:0, b:0}}, //remove margins
                 autosize: true,
-            };
+            }};
 
             Plotly.newPlot('plot', [traceFill, traceUpper, traceLower], layout);
         </script>
     </body>
     </html>
     """
-    components.html(html_code, height=600)
+    return html_code
 
-st.title("Funnel Plots in Streamlit")
+def display_funnels():
+    """
+    Displays two funnel plots in Streamlit, one in dark blue and the other in light blue.
+    """
+    # Use full_page=True to make the plot stretch across the entire page
+    st.set_page_config(layout="wide")
 
-st.subheader("Trumpet Shape")
-trumpet_plot()
+    # Create the HTML code for the two funnel plots
+    funnel_html_dark = funnel_plot(neck_length=2, cone_length=8, start_diameter=0.1, end_diameter=2, color='darkblue', opacity=0.8, name = "Dark Blue")
+    funnel_html_light = funnel_plot(neck_length=2.2, cone_length=7.8, start_diameter=0.15, end_diameter=2.3, color='lightblue', opacity=0.5, name="Light Blue") #slightly different parameters so the funnels are not exactly on top of each other.
 
-st.subheader("Funnel Shape")
-funnel_plot()
+    # Display the plots using components.html, use height that fills the page.
+    components.html(funnel_html_light, height=600) # The light blue one should be added first, so it is in the background.
+    components.html(funnel_html_dark, height=600)
+
+if __name__ == "__main__":
+    display_funnels()
+
