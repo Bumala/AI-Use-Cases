@@ -596,7 +596,7 @@ if top_use_case:
     st.markdown(
         f"""
         <div style="margin-top: 1em;">
-            <label style="font-weight: 700; color: #000;">Cluster Information</label><br>
+            <label style="font-weight: 700; color: #000;">Cluster details for the most relevant AI use case</label><br>
             <div style="
                 width: 100%;
                 background-color: #F5F5F5;
