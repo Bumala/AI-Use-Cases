@@ -681,32 +681,28 @@ canvas.height = 450;
 const w = canvas.width;
 const h = canvas.height;
 
-// Funnel points for inner funnel (dark blue)
+// Trumpet-shaped points for inner funnel (dark blue)
 const innerFunnelPoints = {
-  topLeft: {x: 0, y: 120},
-  midLeft: {x: w * 0.2, y: 120},
-  midRight: {x: w * 0.7, y: 150},
-  marketStart: {x: w * 0.85, y: 150},
-  rightTop: {x: w, y: 160},
-  rightBottom: {x: w, y: 290},
-  marketEnd: {x: w * 0.85, y: 290},
-  midRightBottom: {x: w * 0.7, y: 280},
-  midLeftBottom: {x: w * 0.2, y: 280},
-  bottomLeft: {x: 0, y: 280}
+  bellStart: {x: 0, y: 120},
+  bellEnd: {x: w * 0.3, y: 150},
+  tubeEnd: {x: w * 0.8, y: 180},
+  mouthTop: {x: w, y: 200},
+  mouthBottom: {x: w, y: 270},
+  tubeBottom: {x: w * 0.8, y: 300},
+  bellBottomEnd: {x: w * 0.3, y: 330},
+  bellBottomStart: {x: 0, y: 360}
 };
 
-// Funnel points for outer funnel (light blue cloud)
+// Outer funnel (light blue cloud) - slightly larger
 const outerFunnelPoints = {
-  topLeft: {x: 0, y: 80},
-  midLeft: {x: w * 0.2, y: 80},
-  midRight: {x: w * 0.7, y: 130},
-  marketStart: {x: w * 0.85, y: 130},
-  rightTop: {x: w, y: 140},
-  rightBottom: {x: w, y: 330},
-  marketEnd: {x: w * 0.85, y: 330},
-  midRightBottom: {x: w * 0.7, y: 320},
-  midLeftBottom: {x: w * 0.2, y: 320},
-  bottomLeft: {x: 0, y: 320}
+  bellStart: {x: -20, y: 100},
+  bellEnd: {x: w * 0.28, y: 130},
+  tubeEnd: {x: w * 0.78, y: 160},
+  mouthTop: {x: w + 20, y: 180},
+  mouthBottom: {x: w + 20, y: 290},
+  tubeBottom: {x: w * 0.78, y: 320},
+  bellBottomEnd: {x: w * 0.28, y: 350},
+  bellBottomStart: {x: -20, y: 380}
 };
 
 const sectionColors = ['#3498db', '#2874a6', '#1b4f72'];
@@ -714,18 +710,18 @@ const outerColor = 'rgba(135, 206, 250, 0.3)';
 
 // Text positions for the sections
 const textPositions = [
-  {text: 'Front End', x: 200, y: 200},
-  {text: 'Development', x: 500, y: 200},
-  {text: 'Market Introduction', x: 880, y: 210}
+  {text: 'Bell Section', x: w * 0.15, y: 220},
+  {text: 'Tube Section', x: w * 0.55, y: 220},
+  {text: 'Mouthpiece', x: w * 0.9, y: 230}
 ];
 
-// Generate random colors for dots in sections
+// Generate random colors for dots
 function generateColor() {
   const colors = ['#e74c3c', '#2ecc71', '#f1c40f', '#3498db', '#9b59b6', '#1abc9c', '#e67e22', '#d35400', '#34495e', '#7f8c8d'];
   return colors[Math.floor(Math.random() * colors.length)];
 }
 
-// Particle classes
+// Particle classes (unchanged)
 class Dot {
   constructor(x, y, dx, dy, radius, color, bounds) {
     this.x = x;
@@ -771,7 +767,6 @@ class SmallDot {
   move() {
     this.x += this.dx;
     this.y += this.dy;
-
     if (this.x < this.bounds.xMin) this.x = this.bounds.xMax;
     if (this.x > this.bounds.xMax) this.x = this.bounds.xMin;
     if (this.y < this.bounds.yMin) this.y = this.bounds.yMax;
@@ -786,18 +781,21 @@ class SmallDot {
   }
 }
 
-// Create section bounds for dots
+// Section bounds for dots (now matching trumpet sections)
 const sectionBounds = [
-  {xMin: innerFunnelPoints.topLeft.x, xMax: innerFunnelPoints.midLeft.x, yMin: innerFunnelPoints.topLeft.y, yMax: innerFunnelPoints.bottomLeft.y},
-  {xMin: innerFunnelPoints.midLeft.x, xMax: innerFunnelPoints.midRight.x, yMin: innerFunnelPoints.topLeft.y, yMax: innerFunnelPoints.bottomLeft.y},
-  {xMin: innerFunnelPoints.marketStart.x, xMax: innerFunnelPoints.rightTop.x, yMin: innerFunnelPoints.topLeft.y, yMax: innerFunnelPoints.bottomLeft.y}
+  {xMin: innerFunnelPoints.bellStart.x, xMax: innerFunnelPoints.bellEnd.x, 
+   yMin: innerFunnelPoints.bellStart.y, yMax: innerFunnelPoints.bellBottomStart.y},
+  {xMin: innerFunnelPoints.bellEnd.x, xMax: innerFunnelPoints.tubeEnd.x,
+   yMin: innerFunnelPoints.bellStart.y, yMax: innerFunnelPoints.bellBottomStart.y},
+  {xMin: innerFunnelPoints.tubeEnd.x, xMax: innerFunnelPoints.mouthTop.x,
+   yMin: innerFunnelPoints.bellStart.y, yMax: innerFunnelPoints.bellBottomStart.y}
 ];
 
 const marketIntroOuterBounds = {
-  xMin: outerFunnelPoints.marketStart.x,
-  xMax: outerFunnelPoints.rightTop.x,
-  yMin: outerFunnelPoints.topLeft.y,
-  yMax: outerFunnelPoints.bottomLeft.y
+  xMin: outerFunnelPoints.tubeEnd.x,
+  xMax: outerFunnelPoints.mouthTop.x,
+  yMin: outerFunnelPoints.bellStart.y,
+  yMax: outerFunnelPoints.bellBottomStart.y
 };
 
 let sectionDots = [];
@@ -840,48 +838,47 @@ function initDots() {
   }
 }
 
-// Trumpet-shaped funnel drawing
-function drawCurvedFunnel(points, color) {
+// Trumpet-shaped drawing function
+function drawTrumpetFunnel(points, color) {
   ctx.fillStyle = color;
   ctx.beginPath();
   
-  // Left curve (parabolic bell)
-  ctx.moveTo(points.topLeft.x, points.topLeft.y);
-  const bellControlY = points.topLeft.y + (points.midLeft.y - points.topLeft.y) * 0.4;
+  // Bell curve (top left)
+  ctx.moveTo(points.bellStart.x, points.bellStart.y);
   ctx.bezierCurveTo(
-    points.topLeft.x + w * 0.12, bellControlY,
-    points.midLeft.x - w * 0.12, bellControlY,
-    points.midLeft.x, points.midLeft.y
+    points.bellStart.x + w * 0.1, points.bellStart.y + 30,
+    points.bellEnd.x - w * 0.1, points.bellEnd.y - 20,
+    points.bellEnd.x, points.bellEnd.y
   );
   
-  // Middle section
-  ctx.lineTo(points.midRight.x, points.midRight.y);
+  // Tube section (top)
+  ctx.lineTo(points.tubeEnd.x, points.tubeEnd.y);
   
-  // Right flare (mouthpiece)
-  const mouthControlY = points.rightTop.y - (points.rightTop.y - points.midRight.y) * 0.25;
+  // Mouthpiece flare (top right)
   ctx.bezierCurveTo(
-    points.midRight.x + w * 0.18, mouthControlY,
-    points.rightTop.x - w * 0.08, mouthControlY,
-    points.rightTop.x, points.rightTop.y
+    points.tubeEnd.x + w * 0.15, points.tubeEnd.y + 10,
+    points.mouthTop.x - w * 0.1, points.mouthTop.y - 5,
+    points.mouthTop.x, points.mouthTop.y
   );
   
-  // Bottom right
-  ctx.lineTo(points.rightBottom.x, points.rightBottom.y);
+  // Mouthpiece (right side)
+  ctx.lineTo(points.mouthBottom.x, points.mouthBottom.y);
+  
+  // Mouthpiece flare (bottom right)
   ctx.bezierCurveTo(
-    points.rightBottom.x - w * 0.08, points.rightBottom.y - (points.rightBottom.y - points.midRightBottom.y) * 0.25,
-    points.midRightBottom.x + w * 0.18, points.midRightBottom.y - (points.midRightBottom.y - points.rightBottom.y) * 0.25,
-    points.midRightBottom.x, points.midRightBottom.y
+    points.mouthBottom.x - w * 0.1, points.mouthBottom.y + 5,
+    points.tubeBottom.x + w * 0.15, points.tubeBottom.y - 10,
+    points.tubeBottom.x, points.tubeBottom.y
   );
   
-  // Bottom middle
-  ctx.lineTo(points.midLeftBottom.x, points.midLeftBottom.y);
+  // Tube section (bottom)
+  ctx.lineTo(points.bellBottomEnd.x, points.bellBottomEnd.y);
   
-  // Bottom left
-  const bottomBellControlY = points.bottomLeft.y - (points.bottomLeft.y - points.midLeftBottom.y) * 0.4;
+  // Bell curve (bottom left)
   ctx.bezierCurveTo(
-    points.midLeftBottom.x - w * 0.12, bottomBellControlY,
-    points.bottomLeft.x + w * 0.12, bottomBellControlY,
-    points.bottomLeft.x, points.bottomLeft.y
+    points.bellBottomEnd.x - w * 0.1, points.bellBottomEnd.y + 20,
+    points.bellBottomStart.x + w * 0.1, points.bellBottomStart.y - 30,
+    points.bellBottomStart.x, points.bellBottomStart.y
   );
   
   ctx.closePath();
@@ -895,12 +892,12 @@ function drawOuterFunnel() {
   ctx.save();
   ctx.shadowColor = 'rgba(135, 206, 250, 0.5)';
   ctx.shadowBlur = 20 + cloudOffset*2;
-  drawCurvedFunnel(outerFunnelPoints, outerColor);
+  drawTrumpetFunnel(outerFunnelPoints, outerColor);
   ctx.restore();
 }
 
 function drawInnerFunnel() {
-  drawCurvedFunnel(innerFunnelPoints, '#154360');
+  drawTrumpetFunnel(innerFunnelPoints, '#154360');
 }
 
 function drawSectionLines() {
@@ -909,11 +906,13 @@ function drawSectionLines() {
   ctx.setLineDash([6, 6]);
   
   ctx.beginPath();
-  ctx.moveTo(innerFunnelPoints.midLeft.x, innerFunnelPoints.midLeft.y);
-  ctx.lineTo(innerFunnelPoints.midLeftBottom.x, innerFunnelPoints.midLeftBottom.y);
+  // Bell to tube divider
+  ctx.moveTo(innerFunnelPoints.bellEnd.x, innerFunnelPoints.bellEnd.y);
+  ctx.lineTo(innerFunnelPoints.bellBottomEnd.x, innerFunnelPoints.bellBottomEnd.y);
   
-  ctx.moveTo(innerFunnelPoints.midRight.x, innerFunnelPoints.midRight.y);
-  ctx.lineTo(innerFunnelPoints.midRightBottom.x, innerFunnelPoints.midRightBottom.y);
+  // Tube to mouthpiece divider
+  ctx.moveTo(innerFunnelPoints.tubeEnd.x, innerFunnelPoints.tubeEnd.y);
+  ctx.lineTo(innerFunnelPoints.tubeBottom.x, innerFunnelPoints.tubeBottom.y);
   
   ctx.stroke();
   ctx.setLineDash([]);
@@ -968,10 +967,8 @@ function animate() {
 initDots();
 animate();
 
-// Handle window resizing
 window.addEventListener('resize', function() {
   canvas.width = canvas.offsetWidth;
-  // Update dynamic positions if needed
 });
 </script>
 """
