@@ -682,9 +682,9 @@ const w = canvas.width;
 const h = canvas.height;
  
 // Trumpet parameters
-const bellLength = w * 0.4;
-const tubeLength = w * 0.6;
-const startDiameter = 200;
+const bellLength = w * 0.5;
+const tubeLength = w * 0.5;
+const startDiameter = 400;
 const endDiameter = 80;
  
 // Inner funnel points with higher bell opening
