@@ -692,8 +692,8 @@ const innerFunnelPoints = {
   rightBottom: {x: 940, y: 290},
   marketEnd: {x: 820, y: 290},
   midRightBottom: {x: 690, y: 280},
-  midLeftBottom: {x: 310, y: 280},
-  bottomLeft: {x: 100, y: 280}
+  midLeftBottom: {x: 2700, y: 280},
+  bottomLeft: {x: 60, y: 280}
 };
 
 // Funnel points for outer funnel (light blue cloud)
