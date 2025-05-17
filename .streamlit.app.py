@@ -672,21 +672,20 @@ else:
 import streamlit as st
 import streamlit.components.v1 as components
 
+def hex_to_rgba(hex_color, opacity):
+    """
+    Converts a HEX color to an RGBA string with the specified opacity.
+    """
+    hex_color = hex_color.lstrip('#')
+    r, g, b = tuple(int(hex_color[i:i+2], 16) for i in (0, 2, 4))
+    return f'rgba({r}, {g}, {b}, {opacity})'
+
 def funnel_plot(neck_length, cone_length, start_diameter, end_diameter, color, opacity, name):
     """
     Generates the HTML and JavaScript code for a funnel plot using Plotly.
-
-    Args:
-        neck_length (float): Length of the funnel's neck.
-        cone_length (float): Length of the funnel's cone.
-        start_diameter (float): Diameter of the funnel's neck.
-        end_diameter (float): Diameter of the funnel's opening.
-        color (str): Color of the funnel.
-        opacity (float): Opacity of the funnel.
-        name (str): Name of the trace
-    Returns:
-        str: HTML and JavaScript code for the funnel plot.
     """
+    rgba_color = hex_to_rgba(color, opacity)
+
     html_code = f"""
     <!DOCTYPE html>
     <html lang="en">
@@ -698,42 +697,35 @@ def funnel_plot(neck_length, cone_length, start_diameter, end_diameter, color, o
     <body>
         <div id="plot"></div>
         <script>
-            // Define x range (length of funnel)
             const nPoints = 500;
             const totalLength = 10;
             const x = Array.from({{ length: nPoints }}, (_, i) => (totalLength * i) / (nPoints - 1));
 
-            // Parameters
             const neckLength = {neck_length};
             const coneLength = {cone_length};
             const startDiameter = {start_diameter};
             const endDiameter = {end_diameter};
 
-            // Initialize diameter array
             let diameter = new Array(nPoints);
 
-            // Calculate diameter for neck (constant)
             for (let i = 0; i < nPoints; i++) {{
                 if (x[i] < neckLength) {{
                     diameter[i] = startDiameter;
                 }}
             }}
 
-            // Calculate diameter for cone (linear increase)
             const coneStartIndex = x.findIndex(val => val >= neckLength);
 
             for (let i = coneStartIndex; i < nPoints; i++) {{
                 diameter[i] = startDiameter + ((endDiameter - startDiameter) * (i - coneStartIndex)) / (nPoints - coneStartIndex - 1);
             }}
 
-            // Prepare data for Plotly plot
             const traceUpper = {{
                 x: x,
                 y: diameter,
                 mode: 'lines',
                 line: {{ color: '{color}' }},
                 name: '{name} Upper edge',
-
             }};
 
             const traceLower = {{
@@ -741,14 +733,14 @@ def funnel_plot(neck_length, cone_length, start_diameter, end_diameter, color, o
                 y: diameter.map(d => -d),
                 mode: 'lines',
                 line: {{ color: '{color}' }},
-                 name: '{name} Lower edge',
+                name: '{name} Lower edge',
             }};
 
             const traceFill = {{
                 x: [...x, ...x.slice().reverse()],
                 y: [...diameter, ...diameter.map(d => -d).reverse()],
                 fill: 'toself',
-                fillcolor: '{color.replace("#", "rgba(").replace(")", ", " + String(opacity) + ")")}',
+                fillcolor: '{rgba_color}',
                 line: {{ color: '{color}' }},
                 type: 'scatter',
                 name: '{name} Body',
@@ -756,11 +748,10 @@ def funnel_plot(neck_length, cone_length, start_diameter, end_diameter, color, o
             }};
 
             const layout = {{
-                //title: "Funnel: Narrow Neck on Left, Wide Opening on Right", // Removed title for cleaner layout
                 xaxis: {{ scaleanchor: 'y', showgrid: false, zeroline: false, visible: false }},
                 yaxis: {{ showgrid: false, zeroline: false, visible: false }},
-                showlegend: false, // Removed legend
-                margin: {{l:0, r:0, t:0, b:0}}, //remove margins
+                showlegend: false,
+                margin: {{l:0, r:0, t:0, b:0}},
                 autosize: true,
             }};
 
@@ -771,22 +762,33 @@ def funnel_plot(neck_length, cone_length, start_diameter, end_diameter, color, o
     """
     return html_code
 
-
-
 def display_funnels():
     """
     Displays two funnel plots in Streamlit, one in dark blue and the other in light blue.
     """
+    funnel_html_dark = funnel_plot(
+        neck_length=2,
+        cone_length=8,
+        start_diameter=0.1,
+        end_diameter=2,
+        color='#00008b',
+        opacity=0.8,
+        name="Dark Blue"
+    )
 
+    funnel_html_light = funnel_plot(
+        neck_length=2.2,
+        cone_length=7.8,
+        start_diameter=0.15,
+        end_diameter=2.3,
+        color='#add8e6',
+        opacity=0.5,
+        name="Light Blue"
+    )
 
-    # Create the HTML code for the two funnel plots
-    funnel_html_dark = funnel_plot(neck_length=2, cone_length=8, start_diameter=0.1, end_diameter=2, color='#00008b', opacity=0.8, name = "Dark Blue")
-    funnel_html_light = funnel_plot(neck_length=2.2, cone_length=7.8, start_diameter=0.15, end_diameter=2.3, color='#add8e6', opacity=0.5, name="Light Blue") #slightly different parameters so the funnels are not exactly on top of each other.
-
-    # Display the plots using components.html, use height that fills the page.
-    components.html(funnel_html_light, height=600) # The light blue one should be added first, so it is in the background.
+    # Display both funnels (will not truly overlap visually due to iframe separation)
+    components.html(funnel_html_light, height=600)
     components.html(funnel_html_dark, height=600)
 
 if __name__ == "__main__":
     display_funnels()
-
