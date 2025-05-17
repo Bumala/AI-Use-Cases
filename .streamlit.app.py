@@ -703,7 +703,7 @@ bellStart: {x: -20, y: 0 },
 bellEnd: {x: bellLength - 20, y: h/2 - (startDiameter * 0.7 + 40)/2},
 tubeEnd: {x: w + 20, y: h/2 - (endDiameter + 20)/2},
 mouthBottom: {x: w + 20, y: h/2 + (endDiameter + 20)/2},
-bellBottomEnd: {x: bellLength - 20, y: h/2 + (startDiameter * 0.7 + 40)/2},
+bellBottomEnd: {x: bellLength - 20, y: 0},
 bellBottomStart: {x: -20, y: h/2 + (startDiameter + 40)/2}
 };
  
