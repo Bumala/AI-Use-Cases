@@ -850,7 +850,20 @@ function initDots() {
 let cloudOffset = 0;
 let cloudDirection = 1;
  
-function drawOuterFunnel() {
+ctx.save();
+ctx.shadowColor = 'rgba(135, 206, 250, 0.5)';
+ctx.shadowBlur = 20;
+drawCurvedFunnel(outerFunnelPoints, outerColor);
+ctx.restore();
+
+drawCurvedFunnel(innerFunnelPoints, '#154360');
+
+
+
+{
+
+
+
  cloudOffset += 0.3 * cloudDirection;
  if (cloudOffset > 6 || cloudOffset < -6) cloudDirection *= -1;
  
@@ -875,7 +888,10 @@ function drawOuterFunnel() {
  ctx.restore();
 }
  
-function drawInnerFunnel() {
+drawCurvedFunnel(innerFunnelPoints, '#154360');
+
+
+{
  ctx.fillStyle = '#154360';
  ctx.beginPath();
  ctx.moveTo(innerFunnelPoints.topLeft.x, innerFunnelPoints.topLeft.y);
