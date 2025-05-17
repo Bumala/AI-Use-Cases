@@ -669,6 +669,7 @@ else:
 
 #------------------------------------------------------------------------------------------------------------- Funnel image -------------------------------------------------------------------------------------------------------------------
 
+
 html_code = """
 <canvas id="funnelCanvas" width="1000" height="450" style="width: 100%; height: auto; background: white;"></canvas>
 
@@ -838,7 +839,6 @@ function initDots() {
   }
 }
 
-// Draw outer funnel with a floating cloud effect
 let cloudOffset = 0;
 let cloudDirection = 1;
 
@@ -867,7 +867,6 @@ function drawOuterFunnel() {
   ctx.restore();
 }
 
-// Draw inner funnel
 function drawInnerFunnel() {
   ctx.fillStyle = '#154360';
   ctx.beginPath();
@@ -885,7 +884,6 @@ function drawInnerFunnel() {
   ctx.fill();
 }
 
-// Draw section lines (white dashed)
 function drawSectionLines() {
   ctx.strokeStyle = "white";
   ctx.lineWidth = 2;
@@ -902,7 +900,6 @@ function drawSectionLines() {
   ctx.setLineDash([]);
 }
 
-// Draw section labels
 function drawLabels() {
   ctx.fillStyle = "white";
   ctx.font = "bold 22px Arial";
@@ -912,28 +909,24 @@ function drawLabels() {
   });
 }
 
-// Draw all dots in sections
 function drawSectionDots() {
   sectionDots.forEach(dot => {
     dot.draw(ctx);
   });
 }
 
-// Move all dots in sections
 function moveSectionDots() {
   sectionDots.forEach(dot => {
     dot.move();
   });
 }
 
-// Draw outer small dots (dark blue points) only in Market Introduction outer funnel section
 function drawOuterSmallDots() {
   outerSmallDots.forEach(dot => {
     dot.draw(ctx);
   });
 }
 
-// Move outer small dots slowly
 function moveOuterSmallDots() {
   outerSmallDots.forEach(dot => {
     dot.move();
@@ -941,23 +934,23 @@ function moveOuterSmallDots() {
 }
 
 function animate() {
+  ctx.clearRect(0, 0, w, h);
+  drawOuterFunnel();
+  drawOuterSmallDots();
+  drawInnerFunnel();
+  drawSectionLines();
+  drawLabels();
+  drawSectionDots();
+  moveSectionDots();
+  moveOuterSmallDots();
+  requestAnimationFrame(animate);
+}
 
+initDots();
+animate();
 
+</script>
+"""
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+st.title("Animated Funnel Visualization")
+components.html(html_code, height=500)
