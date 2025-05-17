@@ -468,7 +468,7 @@ if selected_attributes:
     )
 else:
     top_use_case = None  # Default value if no attributes are selected
-    st.info("The relevant use case is displayed here")
+    st.info("Please select the attributes above to display relevant information.")
 
 
 
@@ -615,7 +615,7 @@ if top_use_case:
         unsafe_allow_html=True
     )
 else:
-    st.info("Please select a use case to display relevant information.")
+    st.info("Please select the attributes above to display relevant information.")
 
 
  
@@ -657,7 +657,7 @@ if selected_attributes:
     
 else:
     top_6_use_cases = None  # Default value if no attributes are selected
-    st.info("The relevant use case is displayed here")
+    st.info("Please select the attributes above to display relevant information.")
 
 
 
