@@ -773,8 +773,7 @@ def funnel_plot(neck_length, cone_length, start_diameter, end_diameter, color, o
 
 
 
-# Use full_page=True to make the plot stretch across the entire page
-st.set_page_config(layout="wide")
+
 
 def display_funnels():
     """
