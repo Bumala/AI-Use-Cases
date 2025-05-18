@@ -157,22 +157,23 @@ function randomBetween(min, max) {
 function moveSectionDots() {
   sectionDots.forEach(dot => dot.move());
 
-  // Add new dots at the start every few frames
-  if (Math.random() < 0.5) {  // Adjust frequency here
+  // Add new dot at the start (leftmost section) every frame or at a fixed rate
+  if (sectionDots.length < 150) { // Cap total dots to avoid overload
     sectionDots.push(new Dot(
       randomBetween(sectionBounds[0].xMin + 10, sectionBounds[0].xMin + 20),
       randomBetween(sectionBounds[0].yMin + 10, sectionBounds[0].yMax - 10),
-      randomBetween(0.5, 1.0),
-      (Math.random() - 0.5) * 0.3,
+      randomBetween(0.8, 1.5),  // Positive x-direction speed
+      (Math.random() - 0.5) * 0.3,  // Minor y jitter
       5,
       generateColor(),
       sectionBounds[0]
     ));
   }
 
-  // Remove dots that have exited the funnel
-  sectionDots = sectionDots.filter(dot => dot.x <= 1000);
+  // Remove dots that are completely off canvas to prevent buildup
+  sectionDots = sectionDots.filter(dot => dot.x < canvas.width + 50);
 }
+
 
 
 
