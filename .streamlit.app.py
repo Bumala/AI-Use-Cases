@@ -849,7 +849,7 @@ ctx.moveTo(points.bellStart.x, points.bellStart.y);
 ctx.bezierCurveTo(
 points.bellStart.x + w * 0.1, points.bellStart.y + 25,
 points.bellEnd.x - w * 0.1, points.bellEnd.y - 10,
-points.bellEnd.x, points.bellEnd.y
+points.bellEnd.x, points.bellEnd.y+10
 );
  
 // Tube section (linear taper)
