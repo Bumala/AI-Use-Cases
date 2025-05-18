@@ -872,16 +872,33 @@ ctx.closePath();
 ctx.fill();
 }
  
+// 1. Animation Control Variables 
+let expansionProgress = 0;  // 0-1 range for smooth expansion
+let expansionSpeed = 0.005; // Controls growth speed (adjust as needed)
+const maxExpansion = 1.5;   // How much it expands (1.5 = 150% of original)
+
+// 2. Modified drawOuterFunnel() 
 function drawOuterFunnel() {
-cloudOffset += 0.3 * cloudDirection;
-if (cloudOffset > 6 || cloudOffset < -6) cloudDirection *= -1;
- 
-ctx.save();
-ctx.shadowColor = 'rgba(135, 206, 250, 0.5)';
-ctx.shadowBlur = 20 + cloudOffset*2;
-drawTrumpetFunnel(outerFunnelPoints, outerColor);
-ctx.restore();
+    // Calculate current expansion scale (easing function for smoothness)
+    const scale = 1 + (Math.sin(expansionProgress * Math.PI * 2) * (maxExpansion - 1);
+    expansionProgress += expansionSpeed;
+    
+    ctx.save();
+    
+    // Apply scaling centered at the bell opening
+    ctx.translate(0, h/2);          // Move to funnel centerline
+    ctx.scale(scale, scale);         // Scale outward
+    ctx.translate(0, -h/2);         // Reset position
+    
+    // Draw with pulsing shadow
+    ctx.shadowColor = 'rgba(135, 206, 250, 0.4)';
+    ctx.shadowBlur = 15 * scale;     // Shadow grows with expansion
+    drawTrumpetFunnel(outerFunnelPoints, outerColor);
+    
+    ctx.restore();
 }
+
+
  
 function drawInnerFunnel() {
 drawTrumpetFunnel(innerFunnelPoints, '#154360');
@@ -894,8 +911,8 @@ ctx.setLineDash([6, 6]);
  
 ctx.beginPath();
 // Bell to tube divider
-ctx.moveTo(innerFunnelPoints.bellEnd.x, innerFunnelPoints.bellEnd.y-20);
-ctx.lineTo(innerFunnelPoints.bellBottomEnd.x, innerFunnelPoints.bellBottomEnd.y+20);
+ctx.moveTo(innerFunnelPoints.bellEnd.x, innerFunnelPoints.bellEnd.y-60);
+ctx.lineTo(innerFunnelPoints.bellBottomEnd.x, innerFunnelPoints.bellBottomEnd.y+60);
 ctx.stroke();
 
 ctx.beginPath(); 
