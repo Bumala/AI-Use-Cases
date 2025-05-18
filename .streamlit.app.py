@@ -125,8 +125,8 @@ const sectionBounds = [
   {
     xMin: innerFunnelPoints.bellStart.x,
     xMax: innerFunnelPoints.bellEnd.x,
-    yMin: h / 2 - 80,
-    yMax: h / 2 + 80
+    yMin: h/2 - 100,
+    yMax: h/2 + 100
   },
   {
     xMin: innerFunnelPoints.bellEnd.x,
