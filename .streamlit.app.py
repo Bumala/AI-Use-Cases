@@ -67,30 +67,23 @@ function generateColor() {
 
 class Dot {
   constructor(x, y, dx, dy, radius, color, bounds) {
-  this.x = x;
-  this.y = y;
-  this.dx = dx;
-  this.dy = dy;
-  this.radius = radius;
-  this.color = color;
-  this.bounds = bounds;
-  this.prevX = x; // track previous x
-}
-
+    this.x = x;
+    this.y = y;
+    this.dx = dx;
+    this.dy = dy;
+    this.radius = radius;
+    this.color = color;
+    this.bounds = bounds;
+  }
 
   move() {
-  this.prevX = this.x;
-  this.x += this.dx;
-  this.y += this.dy;
-
-  if (this.x - this.radius < this.bounds.xMin || this.x + this.radius > this.bounds.xMax) {
-    this.dx = -this.dx;
+    this.x += this.dx;
+    this.y += this.dy;
+    if (this.x < this.bounds.xMin) this.x = this.bounds.xMax;
+    if (this.x > this.bounds.xMax) this.x = this.bounds.xMin;
+    if (this.y < this.bounds.yMin) this.y = this.bounds.yMax;
+    if (this.y > this.bounds.yMax) this.y = this.bounds.yMin;
   }
-  if (this.y - this.radius < this.bounds.yMin || this.y + this.radius > this.bounds.yMax) {
-    this.dy = -this.dy;
-  }
-}
-
 
   draw(ctx) {
     ctx.beginPath();
@@ -132,17 +125,16 @@ const sectionBounds = [
   {
     xMin: innerFunnelPoints.bellStart.x,
     xMax: innerFunnelPoints.bellEnd.x,
-    yMin: h / 2 - 40,
-    yMax: h / 2 + 40
+    yMin: innerFunnelPoints.bellStart.y,
+    yMax: innerFunnelPoints.bellBottomStart.y
   },
   {
     xMin: innerFunnelPoints.bellEnd.x,
     xMax: innerFunnelPoints.tubeEnd.x,
-    yMin: h / 2 - 40,
-    yMax: h / 2 + 40
+    yMin: innerFunnelPoints.bellStart.y,
+    yMax: innerFunnelPoints.bellBottomStart.y
   }
 ];
-
 
 const marketIntroOuterBounds = {
   xMin: 900,
@@ -168,8 +160,8 @@ function initDots() {
       sectionDots.push(new Dot(
         randomBetween(sectionBounds[i].xMin + 10, sectionBounds[i].xMax - 10),
         randomBetween(sectionBounds[i].yMin + 10, sectionBounds[i].yMax - 10),
-        randomBetween(0.5, 1.0, // always moving right
-        (Math.random() - 0.5) * 0.3,
+        Math.random() * 0.5 + 0.3, // always moving right
+        (Math.random() - 0.5) * 0.5,
         5,
         generateColor(),
         sectionBounds[i]
@@ -290,31 +282,13 @@ function drawSectionDots() {
 function moveSectionDots() {
   sectionDots.forEach(dot => dot.move());
 
+  // Remove some dots when passing x=300 or x=900
   sectionDots = sectionDots.filter(dot => {
-    // Remove only when crossing from left to right at x = 300
-    if (dot.prevX < 300 && dot.x >= 300 && Math.random() < 0.1) return false;
-
-    // Remove only when crossing from left to right at x = 900
-    if (dot.prevX < 900 && dot.x >= 900 && Math.random() < 0.3) return false;
-
+    if (dot.x >= 300 && dot.x < 310 && Math.random() < 0.1) return false;
+    if (dot.x >= 900 && dot.x < 910 && Math.random() < 0.3) return false;
     return true;
   });
-
-  // Refill to maintain a constant count
-  while (sectionDots.length < 30) {
-    sectionDots.push(new Dot(
-      randomBetween(sectionBounds[0].xMin + 10, sectionBounds[0].xMin + 20),
-      randomBetween(sectionBounds[0].yMin + 10, sectionBounds[0].yMax - 10),
-      randomBetween(0.5, 1.0),
-      (Math.random() - 0.5) * 0.3,
-      5,
-      generateColor(),
-      sectionBounds[0]
-    ));
-  }
 }
-
-
 
 function drawOuterSmallDots() {
   outerSmallDots.forEach(dot => dot.draw(ctx));
@@ -344,6 +318,7 @@ window.addEventListener('resize', function() {
   canvas.width = canvas.offsetWidth;
 });
 </script>
+
 
 """
  
