@@ -125,16 +125,17 @@ const sectionBounds = [
   {
     xMin: innerFunnelPoints.bellStart.x,
     xMax: innerFunnelPoints.bellEnd.x,
-    yMin: innerFunnelPoints.bellStart.y,
-    yMax: innerFunnelPoints.bellBottomStart.y
+    yMin: h / 2 - 100,
+    yMax: h / 2 + 100
   },
   {
     xMin: innerFunnelPoints.bellEnd.x,
     xMax: innerFunnelPoints.tubeEnd.x,
-    yMin: innerFunnelPoints.bellStart.y,
-    yMax: innerFunnelPoints.bellBottomStart.y
+    yMin: h / 2 - 40,
+    yMax: h / 2 + 40
   }
 ];
+
 
 const marketIntroOuterBounds = {
   xMin: 900,
