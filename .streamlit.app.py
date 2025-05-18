@@ -701,8 +701,8 @@ bellBottomStart: {x: 0, y: h/2 + startDiameter/2}
 const outerFunnelPoints = {
 bellStart: {x: -20, y: 0},
 bellEnd: {x: bellLength - 20, y: h/2 - (startDiameter * 0.7 + 40)/2},
-tubeEnd: {x: w + 20, y: h/2 - (endDiameter + 20)/2},
-mouthBottom: {x: w + 20, y: h/2 + (endDiameter + 20)/2},
+tubeEnd: {x: 900, y: h/2 - endDiameter/2},
+mouthBottom: {x: 900, y: h/2 + endDiameter/2},
 bellBottomEnd: {x: bellLength - 20, y: h/2 + (startDiameter * 0.7 + 40)/2},
 bellBottomStart: {x: -20, y: 450}
 };
