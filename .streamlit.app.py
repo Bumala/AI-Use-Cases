@@ -881,7 +881,7 @@ const maxScale = 1.0;
 
 let isPaused = false;
 let pauseCounter = 0;
-const pauseFrames = 120; // Approx. 2 seconds at 60fps
+const pauseFrames = 180; 
 
 function drawOuterFunnel() {
     let scale;
