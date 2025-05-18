@@ -281,15 +281,20 @@ function drawSectionDots() {
 }
 
 function moveSectionDots() {
-  sectionDots.forEach(dot => dot.move());
+  sectionDots.forEach(dot => {
+    dot.move();
 
-  // Remove some dots when passing x=300 or x=900
-  sectionDots = sectionDots.filter(dot => {
-    if (dot.x >= 300 && dot.x < 310 && Math.random() < 0.1) return false;
-    if (dot.x >= 900 && dot.x < 910 && Math.random() < 0.3) return false;
-    return true;
+    // If a dot exits the funnel on the right, reset it to the left
+    if (dot.x > 1000) {
+      dot.x = sectionBounds[0].xMin + 10;
+      dot.y = randomBetween(sectionBounds[0].yMin + 10, sectionBounds[0].yMax - 10);
+      dot.dx = randomBetween(0.5, 1.0);
+      dot.dy = (Math.random() - 0.5) * 0.3;
+      dot.bounds = sectionBounds[0]; // Reset to first section
+    }
   });
 }
+
 
 function drawOuterSmallDots() {
   outerSmallDots.forEach(dot => dot.draw(ctx));
