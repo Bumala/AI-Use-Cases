@@ -161,8 +161,8 @@ function initDots() {
       sectionDots.push(new Dot(
         randomBetween(sectionBounds[i].xMin + 10, sectionBounds[i].xMax - 10),
         randomBetween(sectionBounds[i].yMin + 10, sectionBounds[i].yMax - 10),
-        Math.random() * 0.5 + 0.3, // always moving right
-        (Math.random() - 0.5) * 0.5,
+        Math.random( 0.5 + 1.0, // always moving right
+        (Math.random() - 0.5) * 0.3,
         5,
         generateColor(),
         sectionBounds[i]
