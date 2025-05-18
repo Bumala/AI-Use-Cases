@@ -876,17 +876,34 @@ ctx.fill();
 
  
 let expansionProgress = 0;  
-let expansionSpeed = 0.005; // Adjust speed here
+let expansionSpeed = 0.005;
 const maxScale = 1.0;
+const pauseDuration = 2000; // milliseconds
+let isPaused = false;
+let pauseStartTime = null;
 
-function drawOuterFunnel() {
-    // Calculate scale using a half-sine wave from 0 to 1
-    const scale = Math.sin(expansionProgress * Math.PI / 2); // only grows
+function drawOuterFunnel(timestamp) {
+    let scale;
 
-    expansionProgress += expansionSpeed;
+    if (isPaused) {
+        // Stay at full size during pause
+        scale = maxScale;
 
-    if (scale >= maxScale) {
-        expansionProgress = 0; // Reset instantly when full size is reached
+        // Check if 2 seconds have passed
+        if (timestamp - pauseStartTime >= pauseDuration) {
+            isPaused = false;
+            expansionProgress = 0; // Restart growth
+        }
+    } else {
+        // Animate growing
+        scale = Math.sin(expansionProgress * Math.PI / 2); // 0 → 1
+        expansionProgress += expansionSpeed;
+
+        if (scale >= maxScale) {
+            scale = maxScale;
+            isPaused = true;
+            pauseStartTime = timestamp; // Start pause
+        }
     }
 
     ctx.save();
@@ -899,6 +916,7 @@ function drawOuterFunnel() {
     drawTrumpetFunnel(outerFunnelPoints, outerColor);
     ctx.restore();
 }
+
 
 
 
@@ -971,6 +989,20 @@ moveSectionDots();
 moveOuterSmallDots();
 requestAnimationFrame(animate);
 }
+
+function drawLoop(timestamp) {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    drawOuterFunnel(timestamp);
+    requestAnimationFrame(drawLoop);
+}
+requestAnimationFrame(drawLoop);
+
+
+
+
+
+
+
  
 initDots();
 animate();
