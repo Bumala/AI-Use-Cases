@@ -793,8 +793,8 @@ yMin: innerFunnelPoints.bellStart.y, yMax: innerFunnelPoints.bellBottomStart.y}
 ];
  
 const marketIntroOuterBounds = {
-xMin: outerFunnelPoints.bellEnd.x,
-xMax: outerFunnelPoints.tubeEnd.x,
+xMin: 900,
+xMax: 1000,
 yMin: outerFunnelPoints.bellStart.y,
 yMax: outerFunnelPoints.bellBottomStart.y
 };
@@ -828,13 +828,13 @@ for (let j = 0; j < 15; j++) {
 outerSmallDots = [];
 for (let i = 0; i < 8000; i++) {
 outerSmallDots.push(new SmallDot(
-  randomBetween(900, 1000),
-  randomBetween(h/2 - 20, h/2 + 20),
+  randomBetween(marketIntroOuterBounds.xMin, marketIntroOuterBounds.xMax),
+  randomBetween(marketIntroOuterBounds.yMin, marketIntroOuterBounds.yMax),
   (Math.random() - 0.5) * 0.15,
   (Math.random() - 0.5) * 0.15,
   1.5,
   'rgba(10, 40, 80, 0.3)',
-
+  marketIntroOuterBounds
 ));
 }
 }
