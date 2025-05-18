@@ -895,13 +895,8 @@ ctx.beginPath();
 // Bell to tube divider
 ctx.moveTo(innerFunnelPoints.bellEnd.x, innerFunnelPoints.bellEnd.y-20);
 ctx.lineTo(innerFunnelPoints.bellBottomEnd.x, innerFunnelPoints.bellBottomEnd.y+20);
-ctx.stroke();
  
-ctx.beginPath();
-ctx.moveTo(900, outerFunnelPoints.bellStart.y);  // Top (using outer funnel height)
-ctx.lineTo(900, outerFunnelPoints.bellBottomStart.y);  // Bottom
 ctx.stroke();
- 
 ctx.setLineDash([]);
 }
  
