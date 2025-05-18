@@ -691,8 +691,8 @@ const endDiameter = 60;      // Ending diameter at mouthpiece
 const innerFunnelPoints = {
 bellStart: {x: 0, y: h/2 - startDiameter/2},
 bellEnd: {x: bellLength, y: h/2 - (startDiameter * 0.7)/2},
-tubeEnd: {x: w, y: h/2 - endDiameter},
-mouthBottom: {x: w, y: h/2 + endDiameter},
+tubeEnd: {x: w, y: h/2 - endDiameter/4},
+mouthBottom: {x: w, y: h/2 + endDiameter/4},
 bellBottomEnd: {x: bellLength, y: h/2 + (startDiameter * 0.7)/2},
 bellBottomStart: {x: 0, y: h/2 + startDiameter/2}
 };
