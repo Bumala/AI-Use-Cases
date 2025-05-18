@@ -839,38 +839,41 @@ outerSmallDots.push(new SmallDot(
 }
 }
  
-// Trumpet-shaped drawing function
 function drawTrumpetFunnel(points, color) {
-ctx.fillStyle = color;
-ctx.beginPath();
- 
-// Bell curve (top)
-ctx.moveTo(points.bellStart.x, points.bellStart.y);
-ctx.bezierCurveTo(
-points.bellStart.x + w * 0.1, points.bellStart.y + 25,
-points.bellEnd.x - w * 0.1, points.bellEnd.y - 10,
-points.bellEnd.x, points.bellEnd.y
-);
- 
-// Tube section (linear taper)
-ctx.lineTo(points.tubeEnd.x, points.tubeEnd.y);
- 
-// Mouthpiece (right end)
-ctx.lineTo(points.mouthBottom.x, points.mouthBottom.y);
- 
-// Bottom tube section (linear taper)
-ctx.lineTo(points.bellBottomEnd.x, points.bellBottomEnd.y);
- 
-// Bottom bell curve (mirror of top)
-ctx.bezierCurveTo(
-points.bellBottomEnd.x - w * 0.1, points.bellBottomEnd.y + 10,
-points.bellBottomStart.x + w * 0.1, points.bellBottomStart.y - 25,
-points.bellBottomStart.x, points.bellBottomStart.y
-);
- 
-ctx.closePath();
-ctx.fill();
+    ctx.beginPath();
+    ctx.fillStyle = color;
+
+    // Start at the bell's top start
+    ctx.moveTo(points.bellStart.x, points.bellStart.y);
+
+    // Top bell curve → bellEnd
+    ctx.bezierCurveTo(
+        points.bellStart.x + 50, points.bellStart.y,   // Control point 1
+        points.bellEnd.x - 50, points.bellEnd.y,       // Control point 2
+        points.bellEnd.x, points.bellEnd.y             // End point
+    );
+
+    // Tube line (top) → tubeEnd
+    ctx.lineTo(points.tubeEnd.x, points.tubeEnd.y);
+
+    // Mouth curve (right side)
+    ctx.lineTo(points.mouthBottom.x, points.mouthBottom.y);
+
+    // Tube line (bottom) → bellBottomEnd
+    ctx.lineTo(points.bellBottomEnd.x, points.bellBottomEnd.y);
+
+    // Bottom bell curve → bellBottomStart
+    ctx.bezierCurveTo(
+        points.bellBottomEnd.x - 50, points.bellBottomEnd.y,  // Control point 1
+        points.bellBottomStart.x + 50, points.bellBottomStart.y, // Control point 2
+        points.bellBottomStart.x, points.bellBottomStart.y      // End point
+    );
+
+    // Close path
+    ctx.closePath();
+    ctx.fill();
 }
+
 
 
 
