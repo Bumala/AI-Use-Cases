@@ -876,7 +876,7 @@ ctx.fill();
 
  
 let expansionProgress = 0;  
-let expansionSpeed = 0.005;
+let expansionSpeed = 0.0005;
 const maxScale = 1.0;
 const pauseDuration = 2000; // milliseconds
 let isPaused = false;
@@ -917,12 +917,7 @@ function drawOuterFunnel(timestamp) {
     ctx.restore();
 }
 
-function drawLoop(timestamp) {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    drawOuterFunnel(timestamp);
-    requestAnimationFrame(drawLoop);
-}
-requestAnimationFrame(drawLoop);
+
 
 
 
