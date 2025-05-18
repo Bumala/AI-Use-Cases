@@ -898,8 +898,8 @@ ctx.lineTo(innerFunnelPoints.bellBottomEnd.x, innerFunnelPoints.bellBottomEnd.y+
 ctx.stroke();
 
 ctx.beginPath(); 
-ctx.moveTo(900, outerFunnelPoints.bellStart.y);  // Top (using outer funnel height)
-ctx.lineTo(900, outerFunnelPoints.bellBottomStart.y);  // Bottom
+ctx.moveTo(800, outerFunnelPoints.bellStart.y);  // Top (using outer funnel height)
+ctx.lineTo(800, outerFunnelPoints.bellBottomStart.y);  // Bottom
 ctx.stroke();
 
 ctx.setLineDash([]);
