@@ -685,7 +685,7 @@ const h = canvas.height;
 const bellLength = w * 0.3;  // Bell takes 30% of width
 const tubeLength = w * 0.7;  // Tube takes 70%
 const startDiameter = 300;   // Starting diameter at bell
-const endDiameter = 80;      // Ending diameter at mouthpiece
+const endDiameter = 60;      // Ending diameter at mouthpiece
  
 // Inner funnel points (dark blue)
 const innerFunnelPoints = {
