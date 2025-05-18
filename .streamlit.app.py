@@ -1339,7 +1339,6 @@ else:
 
 
 #------------------------------------------------------------------------------------------------------------- Funnel image -------------------------------------------------------------------------------------------------------------------
-
 html_code = """
 <canvas id="funnelCanvas" width="1000" height="450" style="width: 100%; height: auto; background: white;"></canvas>
  
@@ -1355,8 +1354,8 @@ const h = canvas.height;
 // Trumpet parameters
 const bellLength = w * 0.3;  // Bell takes 30% of width
 const tubeLength = w * 0.7;  // Tube takes 70%
-const startDiameter = 400;   // Starting diameter at bell
-const endDiameter = 100;      // Ending diameter at mouthpiece
+const startDiameter = 300;   // Starting diameter at bell
+const endDiameter = 80;      // Ending diameter at mouthpiece
  
 // Inner funnel points (dark blue)
 const innerFunnelPoints = {
@@ -1517,8 +1516,8 @@ ctx.beginPath();
 // Bell curve (top)
 ctx.moveTo(points.bellStart.x, points.bellStart.y);
 ctx.bezierCurveTo(
- points.bellStart.x + w * 0.1, points.bellStart.y + 30,
- points.bellEnd.x - w * 0.1, points.bellEnd.y - 15,
+ points.bellStart.x + w * 0.1, points.bellStart.y + 25,
+ points.bellEnd.x - w * 0.1, points.bellEnd.y - 10,
  points.bellEnd.x, points.bellEnd.y
 );
  
@@ -1533,8 +1532,8 @@ ctx.lineTo(points.bellBottomEnd.x, points.bellBottomEnd.y);
  
 // Bottom bell curve (mirror of top)
 ctx.bezierCurveTo(
- points.bellBottomEnd.x - w * 0.1, points.bellBottomEnd.y + 15,
- points.bellBottomStart.x + w * 0.1, points.bellBottomStart.y - 30,
+ points.bellBottomEnd.x - w * 0.1, points.bellBottomEnd.y + 10,
+ points.bellBottomStart.x + w * 0.1, points.bellBottomStart.y - 25,
  points.bellBottomStart.x, points.bellBottomStart.y
 );
  
@@ -1629,3 +1628,4 @@ canvas.width = canvas.offsetWidth;
  
 st.title("AI in Innovation Management")
 components.html(html_code, height=500)
+
