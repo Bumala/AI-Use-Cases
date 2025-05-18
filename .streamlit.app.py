@@ -796,7 +796,7 @@ const marketIntroOuterBounds = {
 xMin: 900,
 xMax: 1500,
 yMin: 0,
-yMax: 250
+yMax: 290
 };
  
 let sectionDots = [];
