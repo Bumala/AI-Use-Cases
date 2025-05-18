@@ -807,35 +807,23 @@ let cloudDirection = 1;
 function randomBetween(min, max) {
 return Math.random() * (max - min) + min;
 }
-
-
-const funnelBounds = {
-  xMin: Math.min(innerFunnelPoints.bellStart.x, outerFunnelPoints.bellStart.x),
-  xMax: Math.max(innerFunnelPoints.tubeEnd.x, outerFunnelPoints.tubeEnd.x),
-  yMin: h / 2 - 60,  // Adjust based on visual needs
-  yMax: h / 2 + 60
-};
-
-
-
  
+// Initialize dots
 function initDots() {
-  sectionDots = [];
-
-  for (let i = 0; i < 30; i++) {
-    sectionDots.push(new Dot(
-      randomBetween(funnelBounds.xMin + 10, funnelBounds.xMax - 10),
-      randomBetween(funnelBounds.yMin + 10, funnelBounds.yMax - 10),
-      (Math.random() - 0.5) * 1.5,
-      (Math.random() - 0.5) * 1.5,
-      5,
-      generateColor(),
-      funnelBounds
-       sectionBounds[i]
-    ));
-  }
+sectionDots = [];
+for (let i = 0; i < 2; i++) {
+for (let j = 0; j < 15; j++) {
+  sectionDots.push(new Dot(
+    randomBetween(sectionBounds[i].xMin + 10, sectionBounds[i].xMax - 10),
+    randomBetween(sectionBounds[i].yMin + 10, sectionBounds[i].yMax - 10),
+    (Math.random() - 0.5) * 1.5,
+    (Math.random() - 0.5) * 1.5,
+    5,
+    generateColor(),
+    sectionBounds[i]
+  ));
 }
-
+}
  
 outerSmallDots = [];
 for (let i = 0; i < 4000; i++) {
