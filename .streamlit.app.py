@@ -794,7 +794,7 @@ yMin: innerFunnelPoints.bellStart.y, yMax: innerFunnelPoints.bellBottomStart.y}
  
 const marketIntroOuterBounds = {
 xMin: 900,
-xMax: 1500,
+xMax: 2000,
 yMin: h/2 - 50,
 yMax: h/2 + 50
 };
