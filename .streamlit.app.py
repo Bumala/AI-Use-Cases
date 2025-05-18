@@ -156,20 +156,22 @@ return Math.random() * (max - min) + min;
  
 // Initialize dots
 function initDots() {
-sectionDots = [];
-for (let i = 0; i < 2; i++) {
-for (let j = 0; j < 15; j++) {
-  sectionDots.push(new Dot(
-    randomBetween(sectionBounds[i].xMin + 10, sectionBounds[i].xMax - 10),
-    randomBetween(sectionBounds[i].yMin + 10, sectionBounds[i].yMax - 10),
-    (Math.random() - 0.5) * 1.5,
-    (Math.random() - 0.5) * 1.5,
-    5,
-    generateColor(),
-    sectionBounds[i]
-  ));
+  sectionDots = [];
+  for (let i = 0; i < 2; i++) {
+    for (let j = 0; j < 15; j++) {
+      sectionDots.push(new Dot(
+        randomBetween(sectionBounds[i].xMin + 10, sectionBounds[i].xMax - 10),
+        randomBetween(sectionBounds[i].yMin + 10, sectionBounds[i].yMax - 10),
+        randomBetween(0.5, 1.0),
+        (Math.random() - 0.5) * 0.3,
+        5,
+        generateColor(),
+        sectionBounds[i]
+      ));
+    }
+  }
 }
-}
+
  
 outerSmallDots = [];
 for (let i = 0; i < 4000; i++) {
@@ -304,10 +306,20 @@ dot.draw(ctx);
 }
  
 function moveSectionDots() {
-sectionDots.forEach(dot => {
-dot.move();
-});
+  sectionDots.forEach(dot => dot.move());
+
+  // Reduce dots at x=300 and x=900 stations
+  sectionDots = sectionDots.filter(dot => {
+    // Remove some dots when crossing x = 300
+    if (dot.x >= 300 && dot.x < 310 && Math.random() < 0.1) return false;
+
+    // Remove more dots when crossing x = 900
+    if (dot.x >= 900 && dot.x < 910 && Math.random() < 0.3) return false;
+
+    return true;
+  });
 }
+
  
 function drawOuterSmallDots() {
 outerSmallDots.forEach(dot => {
