@@ -874,7 +874,7 @@ ctx.fill();
  
 // Animation Control Variables of the outer funnel
 let expansionProgress = 0;  
-let expansionSpeed = 0.001; // Adjust speed here (0.005 = slower, 0.02 = faster)
+let expansionSpeed = 0.005; // Adjust speed here (0.005 = slower, 0.02 = faster)
 const maxScale = 1.0;       // Original size (1.0 = 100%)
 
 function drawOuterFunnel() {
