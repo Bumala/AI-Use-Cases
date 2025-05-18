@@ -829,7 +829,7 @@ outerSmallDots = [];
 for (let i = 0; i < 8000; i++) {
 outerSmallDots.push(new SmallDot(
   randomBetween(1000, 1500),
-  randomBetween( h/2 - 20,  h/2 + 20,
+  randomBetween( h/2 - (endDiameter + 20)/2,  h/2 + (endDiameter + 20)/2,
   (Math.random() - 0.5) * 0.15,
   (Math.random() - 0.5) * 0.15,
   1.5,
