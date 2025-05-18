@@ -876,33 +876,17 @@ ctx.fill();
 
  
 let expansionProgress = 0;  
-let expansionSpeed = 0.005;
+let expansionSpeed = 0.005; // Adjust speed here
 const maxScale = 1.0;
 
-let isPaused = false;
-let pauseCounter = 0;
-const pauseFrames = 120; // Approx. 2 seconds at 60fps
-
 function drawOuterFunnel() {
-    let scale;
+    // Calculate scale using a half-sine wave from 0 to 1
+    const scale = Math.sin(expansionProgress * Math.PI / 2); // only grows
 
-    if (isPaused) {
-        scale = maxScale;
-        pauseCounter++;
+    expansionProgress += expansionSpeed;
 
-        if (pauseCounter >= pauseFrames) {
-            isPaused = false;
-            pauseCounter = 0;
-            expansionProgress = 0;
-        }
-    } else {
-        scale = Math.sin(expansionProgress * Math.PI / 2); // grows 0 → 1
-        expansionProgress += expansionSpeed;
-
-        if (scale >= maxScale) {
-            scale = maxScale;
-            isPaused = true;
-        }
+    if (scale >= maxScale) {
+        expansionProgress = 0; // Reset instantly when full size is reached
     }
 
     ctx.save();
