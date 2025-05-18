@@ -686,14 +686,15 @@ const bellLength = w * 0.3;  // Bell takes 30% of width
 const tubeLength = w * 0.7;  // Tube takes 70%
 const startDiameter = 300;   // Starting diameter at bell
 const endDiameter = 60;      // Ending diameter at mouthpiece
+const tubeStartRatio = 0.5;
  
 // Inner funnel points (dark blue)
 const innerFunnelPoints = {
 bellStart: {x: 0, y: h/2 - startDiameter/2},
-bellEnd: {x: bellLength, y: h/2 - (startDiameter * 0.7)/2},
-tubeEnd: {x: w, y: h/2 - endDiameter/4},
-mouthBottom: {x: w, y: h/2 + endDiameter/4},
-bellBottomEnd: {x: bellLength, y: h/2 + (startDiameter * 0.7)/2},
+bellEnd: {x: bellLength, y: h/2 - (startDiameter * tubeStartRatio)/2},
+tubeEnd: {x: w, y: h/2 - endDiameter/2},
+mouthBottom: {x: w, y: h/2 + endDiameter/2},
+bellBottomEnd: {x: bellLength, y: h/2 + (startDiameter * tubeStartRatio)/2},
 bellBottomStart: {x: 0, y: h/2 + startDiameter/2}
 };
  
