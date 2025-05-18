@@ -708,7 +708,7 @@ bellBottomEnd: {x: bellLength - 20, y: h/2 + (startDiameter * 0.7 + 40)/2},
 bellBottomStart: {x: -20, y: 450}
 };
  
-const sectionColors = ['#3498db', '#2874a6', '#1b4f72'];
+const sectionColors = ['#3498db', '#2874a6', '#537a94'];
 const outerColor = 'rgba(135, 206, 250, 0.3)';
  
 // Text positions for the sections
