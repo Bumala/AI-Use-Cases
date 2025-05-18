@@ -125,17 +125,16 @@ const sectionBounds = [
   {
     xMin: innerFunnelPoints.bellStart.x,
     xMax: innerFunnelPoints.bellEnd.x,
-    yMin: h/2 - 100,
-    yMax: h/2 + 100
+    yMin: innerFunnelPoints.bellStart.y,
+    yMax: innerFunnelPoints.bellBottomStart.y
   },
   {
     xMin: innerFunnelPoints.bellEnd.x,
     xMax: innerFunnelPoints.tubeEnd.x,
-    yMin: h / 2 - 40,
-    yMax: h / 2 + 40
+    yMin: innerFunnelPoints.bellStart.y,
+    yMax: innerFunnelPoints.bellBottomStart.y
   }
 ];
-
 
 const marketIntroOuterBounds = {
   xMin: 900,
@@ -154,29 +153,21 @@ function randomBetween(min, max) {
 }
 
 // Initialize dots
-function moveSectionDots() {
-  sectionDots.forEach(dot => dot.move());
-
-  // Add new dot at the start (leftmost section) every frame or at a fixed rate
-  if (sectionDots.length < 150) { // Cap total dots to avoid overload
-    sectionDots.push(new Dot(
-      randomBetween(sectionBounds[0].xMin + 10, sectionBounds[0].xMin + 20),
-      randomBetween(sectionBounds[0].yMin + 10, sectionBounds[0].yMax - 10),
-      randomBetween(0.8, 1.5),  // Positive x-direction speed
-      (Math.random() - 0.5) * 0.3,  // Minor y jitter
-      5,
-      generateColor(),
-      sectionBounds[0]
-    ));
+function initDots() {
+  sectionDots = [];
+  for (let i = 0; i < 2; i++) {
+    for (let j = 0; j < 15; j++) {
+      sectionDots.push(new Dot(
+        randomBetween(sectionBounds[i].xMin + 10, sectionBounds[i].xMax - 10),
+        randomBetween(sectionBounds[i].yMin + 10, sectionBounds[i].yMax - 10),
+        Math.random() * 0.5 + 0.3, // always moving right
+        (Math.random() - 0.5) * 0.5,
+        5,
+        generateColor(),
+        sectionBounds[i]
+      ));
+    }
   }
-
-  // Remove dots that are completely off canvas to prevent buildup
-  sectionDots = sectionDots.filter(dot => dot.x < canvas.width + 50);
-}
-
-
-
-
 
   outerSmallDots = [];
   for (let i = 0; i < 4000; i++) {
@@ -992,7 +983,6 @@ if selected_attributes:
 else:
    top_6_use_cases = None  # Default value if no attributes are selected
    st.info("Please select the attributes above to display relevant information.")
- 
  
  
  
