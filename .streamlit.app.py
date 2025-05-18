@@ -154,21 +154,28 @@ function randomBetween(min, max) {
 }
 
 // Initialize dots
-function initDots() {
-  sectionDots = [];
-  for (let i = 0; i < 2; i++) {
-    for (let j = 0; j < 15; j++) {
-      sectionDots.push(new Dot(
-        randomBetween(sectionBounds[i].xMin + 10, sectionBounds[i].xMax - 10),
-        randomBetween(sectionBounds[i].yMin + 10, sectionBounds[i].yMax - 10),
-        Math.random() * 0.5 + 0.3, // always moving right
-        (Math.random() - 0.5) * 0.5,
-        5,
-        generateColor(),
-        sectionBounds[i]
-      ));
-    }
+function moveSectionDots() {
+  sectionDots.forEach(dot => dot.move());
+
+  // Add new dots at the start every few frames
+  if (Math.random() < 0.5) {  // Adjust frequency here
+    sectionDots.push(new Dot(
+      randomBetween(sectionBounds[0].xMin + 10, sectionBounds[0].xMin + 20),
+      randomBetween(sectionBounds[0].yMin + 10, sectionBounds[0].yMax - 10),
+      randomBetween(0.5, 1.0),
+      (Math.random() - 0.5) * 0.3,
+      5,
+      generateColor(),
+      sectionBounds[0]
+    ));
   }
+
+  // Remove dots that have exited the funnel
+  sectionDots = sectionDots.filter(dot => dot.x <= 1000);
+}
+
+
+
 
   outerSmallDots = [];
   for (let i = 0; i < 4000; i++) {
