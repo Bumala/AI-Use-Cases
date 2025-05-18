@@ -161,8 +161,8 @@ function initDots() {
       sectionDots.push(new Dot(
         randomBetween(sectionBounds[i].xMin + 10, sectionBounds[i].xMax - 10),
         randomBetween(sectionBounds[i].yMin + 10, sectionBounds[i].yMax - 10),
-        Math.random( 0.5 + 1.0, // always moving right
-        (Math.random() - 0.5) * 0.3,
+        Math.random() * 0.5 + 0.3, // always moving right
+        (Math.random() - 0.5) * 0.5,
         5,
         generateColor(),
         sectionBounds[i]
@@ -989,7 +989,6 @@ if selected_attributes:
 else:
    top_6_use_cases = None  # Default value if no attributes are selected
    st.info("Please select the attributes above to display relevant information.")
- 
  
  
  
