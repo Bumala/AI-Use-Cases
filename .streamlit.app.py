@@ -876,7 +876,7 @@ ctx.fill();
 
  
 let expansionProgress = 0;  
-let expansionSpeed = 0.003;
+let expansionSpeed = 0.005;
 const maxScale = 1.0;
 
 let isPaused = false;
