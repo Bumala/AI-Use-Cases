@@ -699,12 +699,12 @@ bellBottomStart: {x: 0, y: h/2 + startDiameter/2}
  
 // Outer funnel points (light blue cloud) - 20px larger
 const outerFunnelPoints = {
-bellStart: {x: -20, y: 0},
+bellStart: {x: -20, y: -20},
 bellEnd: {x: bellLength - 20, y: h/2 - (startDiameter * 0.7 + 40)/2},
 tubeEnd: {x: w + 20, y: h/2 - (endDiameter + 20)/2},
 mouthBottom: {x: w + 20, y: h/2 + (endDiameter + 20)/2},
 bellBottomEnd: {x: bellLength - 20, y: h/2 + (startDiameter * 0.7 + 40)/2},
-bellBottomStart: {x: -20, y: 180}
+bellBottomStart: {x: -20, y: 600}
 };
  
 const sectionColors = ['#3498db', '#2874a6', '#1b4f72'];
