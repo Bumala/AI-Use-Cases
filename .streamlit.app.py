@@ -893,7 +893,7 @@ ctx.setLineDash([6, 6]);
  
 ctx.beginPath();
 // Bell to tube divider
-ctx.moveTo(innerFunnelPoints.bellEnd.x, innerFunnelPoints.bellEnd.y+20);
+ctx.moveTo(innerFunnelPoints.bellEnd.x, innerFunnelPoints.bellEnd.y-20);
 ctx.lineTo(innerFunnelPoints.bellBottomEnd.x, innerFunnelPoints.bellBottomEnd.y+20);
  
 ctx.stroke();
