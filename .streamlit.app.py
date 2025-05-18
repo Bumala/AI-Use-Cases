@@ -872,26 +872,34 @@ ctx.closePath();
 ctx.fill();
 }
  
-// Animation Control Variables of the outer funnel
-let expansionProgress = 0;  
-let expansionSpeed = 0.005; // Adjust speed here (0.005 = slower, 0.02 = faster)
-const maxScale = 1.0;       // Original size (1.0 = 100%)
+// Animation Control
+const growthDuration = 3; // Seconds to grow from 0% to 100%
+let growthProgress = 0;   // 0-1 range
 
-function drawOuterFunnel() {
-    // Calculate scale (0 → 1) using absolute sine value
-    const scale = Math.abs(Math.sin(expansionProgress * Math.PI)); 
-    expansionProgress += expansionSpeed;
+function drawOuterFunnel(timestamp) {
+    if (!lastTimestamp) lastTimestamp = timestamp;
+    const deltaTime = (timestamp - lastTimestamp) / 1000; // Convert to seconds
+    lastTimestamp = timestamp;
+    
+    // Update progress (resets to 0 when reaching 1)
+    growthProgress = Math.min(growthProgress + (deltaTime / growthDuration), 1);
+    if (growthProgress >= 1) growthProgress = 0; // Instant reset
+    
+    // Linear growth (0 → 1)
+    const scale = growthProgress; 
     
     ctx.save();
     ctx.translate(0, h/2);
-    ctx.scale(scale, scale); // grows from 0 to 1.0
+    ctx.scale(scale, scale);
     ctx.translate(0, -h/2);
     
     ctx.shadowColor = 'rgba(135, 206, 250, 0.4)';
-    ctx.shadowBlur = 15 * scale; 
+    ctx.shadowBlur = 15 * scale;
     drawTrumpetFunnel(outerFunnelPoints, outerColor);
     ctx.restore();
 }
+
+let lastTimestamp = 0;
 
 
  
