@@ -828,13 +828,13 @@ for (let j = 0; j < 15; j++) {
 outerSmallDots = [];
 for (let i = 0; i < 8000; i++) {
 outerSmallDots.push(new SmallDot(
-  randomBetween(-10, -14),
+  randomBetween(900, 1000),
   randomBetween(h/2 - 20, h/2 + 20),
   (Math.random() - 0.5) * 0.15,
   (Math.random() - 0.5) * 0.15,
   1.5,
   'rgba(10, 40, 80, 0.3)',
-  marketIntroOuterBounds
+
 ));
 }
 }
