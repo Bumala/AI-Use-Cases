@@ -826,25 +826,29 @@ for (let j = 0; j < 15; j++) {
 }
  
 outerSmallDots = [];
-const dotYMin = h / 2 - 20;
-const dotYMax = h / 2 + 20;
+
+const dotXMin = 900;
+const dotXMax = canvas.width;  
+const dotYMin = canvas.height / 2 - 20;
+const dotYMax = canvas.height / 2 + 20;
 
 for (let i = 0; i < 80; i++) {
   outerSmallDots.push(new SmallDot(
-    randomBetween(900, w), // x >= 900 to full canvas width
-    randomBetween(dotYMin, dotYMax), // tightly around h/2
+    randomBetween(dotXMin, dotXMax),
+    randomBetween(dotYMin, dotYMax),
     (Math.random() - 0.5) * 0.15,
     (Math.random() - 0.5) * 0.15,
     1.5,
-    'rgba(10, 40, 80, 0.3)',  // change to desired background color
+    'rgba(10, 40, 80, 0.3)',
     {
-      xMin: 900,
-      xMax: w,
+      xMin: dotXMin,
+      xMax: dotXMax,
       yMin: dotYMin,
       yMax: dotYMax
     }
   ));
 }
+
 
  
 // Trumpet-shaped drawing function
