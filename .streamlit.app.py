@@ -871,27 +871,35 @@ points.bellBottomStart.x, points.bellBottomStart.y
 ctx.closePath();
 ctx.fill();
 }
+
+
+
  
-// Animation Control Variables of the outer funnel
 let expansionProgress = 0;  
-let expansionSpeed = 0.005; // Adjust speed here (0.005 = slower, 0.02 = faster)
-const maxScale = 1.0;       // Original size (1.0 = 100%)
+let expansionSpeed = 0.005; // Adjust speed here
+const maxScale = 1.0;
 
 function drawOuterFunnel() {
-    // Calculate scale (0 → 1) using absolute sine value
-    const scale = Math.abs(Math.sin(expansionProgress * Math.PI)); 
+    // Calculate scale using a half-sine wave from 0 to 1
+    const scale = Math.sin(expansionProgress * Math.PI / 2); // only grows
+
     expansionProgress += expansionSpeed;
-    
+
+    if (scale >= maxScale) {
+        expansionProgress = 0; // Reset instantly when full size is reached
+    }
+
     ctx.save();
-    ctx.translate(0, h/2);
-    ctx.scale(scale, scale); // grows from 0 to 1.0
-    ctx.translate(0, -h/2);
-    
+    ctx.translate(0, h / 2);
+    ctx.scale(scale, scale);
+    ctx.translate(0, -h / 2);
+
     ctx.shadowColor = 'rgba(135, 206, 250, 0.4)';
     ctx.shadowBlur = 15 * scale; 
     drawTrumpetFunnel(outerFunnelPoints, outerColor);
     ctx.restore();
 }
+
 
 
  
