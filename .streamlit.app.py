@@ -704,7 +704,7 @@ bellEnd: {x: bellLength - 20, y: h/2 - (startDiameter * 0.7 + 40)/2},
 tubeEnd: {x: w + 20, y: h/2 - (endDiameter + 20)/2},
 mouthBottom: {x: w + 20, y: h/2 + (endDiameter + 20)/2},
 bellBottomEnd: {x: bellLength - 20, y: h/2 + (startDiameter * 0.7 + 40)/2},
-bellBottomStart: {x: -20, y: 225}
+bellBottomStart: {x: -20, y: 450}
 };
  
 const sectionColors = ['#3498db', '#2874a6', '#1b4f72'];
