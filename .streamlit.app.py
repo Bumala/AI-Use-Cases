@@ -113,14 +113,7 @@ this.color = color;
 this.bounds = bounds;
 }
  
-move() {
-this.x += this.dx;
-this.y += this.dy;
-if (this.x < this.bounds.xMin) this.x = this.bounds.xMax;
-if (this.x > this.bounds.xMax) this.x = this.bounds.xMin;
-if (this.y < this.bounds.yMin) this.y = this.bounds.yMax;
-if (this.y > this.bounds.yMax) this.y = this.bounds.yMin;
-}
+
  
 draw(ctx) {
 ctx.beginPath();
