@@ -692,8 +692,8 @@ const tubeStartRatio = 0.5;
 const innerFunnelPoints = {
 bellStart: {x: 0, y: h/2 - startDiameter/2},
 bellEnd: {x: bellLength, y: h/2 - (startDiameter * tubeStartRatio)/2},
-tubeEnd: {x: w, y: h/2 - endDiameter/4},
-mouthBottom: {x: w, y: h/2 + endDiameter/4},
+tubeEnd: {x: w, y: h/2 - endDiameter/3},
+mouthBottom: {x: w, y: h/2 + endDiameter/3},
 bellBottomEnd: {x: bellLength, y: h/2 + (startDiameter * tubeStartRatio)/2},
 bellBottomStart: {x: 0, y: h/2 + startDiameter/2}
 };
