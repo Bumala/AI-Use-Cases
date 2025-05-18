@@ -125,16 +125,17 @@ const sectionBounds = [
   {
     xMin: innerFunnelPoints.bellStart.x,
     xMax: innerFunnelPoints.bellEnd.x,
-    yMin: innerFunnelPoints.bellStart.y,
-    yMax: innerFunnelPoints.bellBottomStart.y
+    yMin: h / 2 - 40,
+    yMax: h / 2 + 40
   },
   {
     xMin: innerFunnelPoints.bellEnd.x,
     xMax: innerFunnelPoints.tubeEnd.x,
-    yMin: innerFunnelPoints.bellStart.y,
-    yMax: innerFunnelPoints.bellBottomStart.y
+    yMin: h / 2 - 40,
+    yMax: h / 2 + 40
   }
 ];
+
 
 const marketIntroOuterBounds = {
   xMin: 900,
@@ -280,15 +281,30 @@ function drawSectionDots() {
 }
 
 function moveSectionDots() {
+  // Move all existing dots
   sectionDots.forEach(dot => dot.move());
 
-  // Remove some dots when passing x=300 or x=900
+  // Remove some dots at station x=300 and x=900
   sectionDots = sectionDots.filter(dot => {
     if (dot.x >= 300 && dot.x < 310 && Math.random() < 0.1) return false;
     if (dot.x >= 900 && dot.x < 910 && Math.random() < 0.3) return false;
     return true;
   });
+
+  // Count how many dots are missing and add new ones at the beginning
+  while (sectionDots.length < 30) {
+    sectionDots.push(new Dot(
+      randomBetween(sectionBounds[0].xMin + 10, sectionBounds[0].xMin + 20),
+      randomBetween(sectionBounds[0].yMin + 10, sectionBounds[0].yMax - 10),
+      randomBetween(0.5, 1.0),
+      (Math.random() - 0.5) * 0.3,
+      5,
+      generateColor(),
+      sectionBounds[0]
+    ));
+  }
 }
+
 
 function drawOuterSmallDots() {
   outerSmallDots.forEach(dot => dot.draw(ctx));
