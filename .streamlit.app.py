@@ -712,9 +712,9 @@ const outerColor = 'rgba(135, 206, 250, 0.3)';
  
 // Text positions for the sections
 const textPositions = [
-{text: 'Bell Section', x: w * 0.1, y: h/2 },
-{text: 'Tube Section', x: w * 0.5, y: h/2 },
-{text: 'Mouthpiece', x: w * 0.8, y: h/2 }
+{text: 'Front End', x: w * 0.1, y: h/2 },
+{text: 'Development', x: w * 0.5, y: h/2 },
+{text: 'Market Introduction', x: w * 0.8, y: h/2 }
 ];
  
 // Generate random colors for dots
