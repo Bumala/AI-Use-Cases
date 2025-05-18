@@ -825,19 +825,29 @@ for (let j = 0; j < 15; j++) {
 }
 }
  
-outerSmallDots = [];
-for (let i = 0; i < 4000; i++) {
-outerSmallDots.push(new SmallDot(
-  randomBetween(marketIntroOuterBounds.xMin, marketIntroOuterBounds.xMax),
-  randomBetween(marketIntroOuterBounds.yMin, marketIntroOuterBounds.yMax),
-  (Math.random() - 0.5) * 0.15,
-  (Math.random() - 0.5) * 0.15,
-  1.5,
-  'rgba(10, 40, 80, 0.3)',
-  marketIntroOuterBounds
-));
+function initDots() {
+  sectionDots = [];
+
+  for (let i = 0; i < 2; i++) {
+    for (let j = 0; j < 15; j++) {
+      sectionDots.push(new Dot(
+        randomBetween(outerFunnelPoints.bellStart.x + 20, outerFunnelPoints.tubeEnd.x - 20),  // Wider X range
+        randomBetween(h / 2 - 60, h / 2 + 60),  // Taller Y range
+        (Math.random() - 0.5) * 1.5,
+        (Math.random() - 0.5) * 1.5,
+        5,
+        generateColor(),
+        {
+          xMin: outerFunnelPoints.bellStart.x + 20,
+          xMax: outerFunnelPoints.tubeEnd.x - 20,
+          yMin: h / 2 - 60,
+          yMax: h / 2 + 60
+        }
+      ));
+    }
+  }
 }
-}
+
  
 // Trumpet-shaped drawing function
 function drawTrumpetFunnel(points, color) {
