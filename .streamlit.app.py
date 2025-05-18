@@ -828,8 +828,8 @@ for (let j = 0; j < 15; j++) {
 outerSmallDots = [];
 for (let i = 0; i < 80; i++) {
 outerSmallDots.push(new SmallDot(
-  randomBetween(marketIntroOuterBounds.xMin, marketIntroOuterBounds.xMax),
-  randomBetween(marketIntroOuterBounds.yMin, marketIntroOuterBounds.yMax),
+  randomBetween(900, 1000),
+  randomBetween(-240, 240),
   (Math.random() - 0.5) * 0.15,
   (Math.random() - 0.5) * 0.15,
   1.5,
