@@ -839,49 +839,38 @@ outerSmallDots.push(new SmallDot(
 }
 }
  
+// Trumpet-shaped drawing function
 function drawTrumpetFunnel(points, color) {
-    ctx.beginPath();
-    ctx.fillStyle = color;
-
-    // Move to top-left of bell
-    ctx.moveTo(points.bellStart.x, points.bellStart.y);
-
-    // Curve from bellStart → bellEnd (smooth falling curve)
-    ctx.bezierCurveTo(
-        points.bellStart.x + 80, points.bellStart.y + 10,  // CP1 (curves outward)
-        points.bellEnd.x - 30, points.bellEnd.y + 10,      // CP2 (curves inward)
-        points.bellEnd.x, points.bellEnd.y                 // End point
-    );
-
-    // Smooth curve from bellEnd → tubeEnd
-    ctx.bezierCurveTo(
-        points.bellEnd.x + 50, points.bellEnd.y,           // CP1
-        points.tubeEnd.x - 50, points.tubeEnd.y,           // CP2
-        points.tubeEnd.x, points.tubeEnd.y                 // Tube top end
-    );
-
-    // Down to mouth bottom (right vertical line)
-    ctx.lineTo(points.mouthBottom.x, points.mouthBottom.y);
-
-    // Curve from tube → bell (bottom side, reversed)
-    ctx.bezierCurveTo(
-        points.tubeEnd.x - 50, points.bellBottomEnd.y,     // CP1
-        points.bellBottomEnd.x + 50, points.bellBottomEnd.y, // CP2
-        points.bellBottomEnd.x, points.bellBottomEnd.y     // End point
-    );
-
-    // Curve back to bellBottomStart
-    ctx.bezierCurveTo(
-        points.bellBottomEnd.x - 40, points.bellBottomEnd.y + 10,  // CP1
-        points.bellBottomStart.x + 80, points.bellBottomStart.y - 10, // CP2
-        points.bellBottomStart.x, points.bellBottomStart.y
-    );
-
-    ctx.closePath();
-    ctx.fill();
+ctx.fillStyle = color;
+ctx.beginPath();
+ 
+// Bell curve (top)
+ctx.moveTo(points.bellStart.x, points.bellStart.y);
+ctx.bezierCurveTo(
+points.bellStart.x + w * 0.1, points.bellStart.y + 25,
+points.bellEnd.x - w * 0.1, points.bellEnd.y - 10,
+points.bellEnd.x, points.bellEnd.y
+);
+ 
+// Tube section (linear taper)
+ctx.lineTo(points.tubeEnd.x, points.tubeEnd.y);
+ 
+// Mouthpiece (right end)
+ctx.lineTo(points.mouthBottom.x, points.mouthBottom.y);
+ 
+// Bottom tube section (linear taper)
+ctx.lineTo(points.bellBottomEnd.x, points.bellBottomEnd.y);
+ 
+// Bottom bell curve (mirror of top)
+ctx.bezierCurveTo(
+points.bellBottomEnd.x - w * 0.1, points.bellBottomEnd.y + 10,
+points.bellBottomStart.x + w * 0.1, points.bellBottomStart.y - 25,
+points.bellBottomStart.x, points.bellBottomStart.y
+);
+ 
+ctx.closePath();
+ctx.fill();
 }
-
-
 
 
 
@@ -892,7 +881,7 @@ const maxScale = 1.0;
 
 let isPaused = false;
 let pauseCounter = 0;
-const pauseFrames = 180; 
+const pauseFrames = 120; // Approx. 2 seconds at 60fps
 
 function drawOuterFunnel() {
     let scale;
