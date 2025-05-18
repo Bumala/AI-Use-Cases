@@ -688,13 +688,14 @@ const startDiameter = 300;   // Starting diameter at bell
 const endDiameter = 80;      // Ending diameter at mouthpiece
  
 // Inner funnel points (dark blue)
+// Inner funnel (smaller diameter now)
 const innerFunnelPoints = {
-bellStart: {x: 0, y: h/2 - startDiameter/2},
-bellEnd: {x: bellLength, y: h/2 - (startDiameter * 0.7)/2},
-tubeEnd: {x: w, y: h/2 - endDiameter/2},
-mouthBottom: {x: w, y: h/2 + endDiameter/2},
-bellBottomEnd: {x: bellLength, y: h/2 + (startDiameter * 0.7)/2},
-bellBottomStart: {x: 0, y: h/2 + startDiameter/2}
+    bellStart: { x: 0, y: h/2 - 200/2 },            // Reduced from 300 to 200 (top-left)
+    bellEnd: { x: bellLength, y: h/2 - (200 * 0.7)/2 }, // Proportional taper (70% of new diameter)
+    tubeEnd: { x: w, y: h/2 - endDiameter/2 },      // Mouthpiece stays the same
+    mouthBottom: { x: w, y: h/2 + endDiameter/2 },  // Mouthpiece bottom unchanged
+    bellBottomEnd: { x: bellLength, y: h/2 + (200 * 0.7)/2 }, // Proportional taper (bottom)
+    bellBottomStart: { x: 0, y: h/2 + 200/2 }       // Bottom-left (matches new diameter)
 };
  
 // Outer funnel points (light blue cloud) - 20px larger
