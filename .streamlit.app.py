@@ -1396,69 +1396,69 @@ return colors[Math.floor(Math.random() * colors.length)];
 // Particle classes
 class Dot {
 constructor(x, y, dx, dy, radius, color, bounds) {
- this.x = x;
- this.y = y;
- this.dx = dx;
- this.dy = dy;
- this.radius = radius;
- this.color = color;
- this.bounds = bounds;
+  this.x = x;
+  this.y = y;
+  this.dx = dx;
+  this.dy = dy;
+  this.radius = radius;
+  this.color = color;
+  this.bounds = bounds;
 }
  
 move() {
- this.x += this.dx;
- this.y += this.dy;
+  this.x += this.dx;
+  this.y += this.dy;
  
- if (this.x - this.radius < this.bounds.xMin || this.x + this.radius > this.bounds.xMax) {
-   this.dx = -this.dx;
- }
- if (this.y - this.radius < this.bounds.yMin || this.y + this.radius > this.bounds.yMax) {
-   this.dy = -this.dy;
- }
+  if (this.x - this.radius < this.bounds.xMin || this.x + this.radius > this.bounds.xMax) {
+    this.dx = -this.dx;
+  }
+  if (this.y - this.radius < this.bounds.yMin || this.y + this.radius > this.bounds.yMax) {
+    this.dy = -this.dy;
+  }
 }
  
 draw(ctx) {
- ctx.beginPath();
- ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
- ctx.fillStyle = this.color;
- ctx.fill();
+  ctx.beginPath();
+  ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+  ctx.fillStyle = this.color;
+  ctx.fill();
 }
 }
  
 class SmallDot {
 constructor(x, y, dx, dy, radius, color, bounds) {
- this.x = x;
- this.y = y;
- this.dx = dx;
- this.dy = dy;
- this.radius = radius;
- this.color = color;
- this.bounds = bounds;
+  this.x = x;
+  this.y = y;
+  this.dx = dx;
+  this.dy = dy;
+  this.radius = radius;
+  this.color = color;
+  this.bounds = bounds;
 }
  
 move() {
- this.x += this.dx;
- this.y += this.dy;
- if (this.x < this.bounds.xMin) this.x = this.bounds.xMax;
- if (this.x > this.bounds.xMax) this.x = this.bounds.xMin;
- if (this.y < this.bounds.yMin) this.y = this.bounds.yMax;
- if (this.y > this.bounds.yMax) this.y = this.bounds.yMin;
+  this.x += this.dx;
+  this.y += this.dy;
+  if (this.x < this.bounds.xMin) this.x = this.bounds.xMax;
+  if (this.x > this.bounds.xMax) this.x = this.bounds.xMin;
+  if (this.y < this.bounds.yMin) this.y = this.bounds.yMax;
+  if (this.y > this.bounds.yMax) this.y = this.bounds.yMin;
 }
  
 draw(ctx) {
- ctx.beginPath();
- ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
- ctx.fillStyle = this.color;
- ctx.fill();
+  ctx.beginPath();
+  ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+  ctx.fillStyle = this.color;
+  ctx.fill();
 }
 }
  
 // Section bounds for dots
 const sectionBounds = [
 {xMin: innerFunnelPoints.bellStart.x, xMax: innerFunnelPoints.bellEnd.x,
-yMin: innerFunnelPoints.bellStart.y, yMax: innerFunnelPoints.bellBottomStart.y},
+ yMin: innerFunnelPoints.bellStart.y, yMax: innerFunnelPoints.bellBottomStart.y},
 {xMin: innerFunnelPoints.bellEnd.x, xMax: innerFunnelPoints.tubeEnd.x,
-yMin: innerFunnelPoints.bellStart.y, yMax: innerFunnelPoints.bellBottomStart.y}
+ yMin: innerFunnelPoints.bellStart.y, yMax: innerFunnelPoints.bellBottomStart.y}
 ];
  
 const marketIntroOuterBounds = {
@@ -1481,30 +1481,30 @@ return Math.random() * (max - min) + min;
 function initDots() {
 sectionDots = [];
 for (let i = 0; i < 2; i++) {
- for (let j = 0; j < 15; j++) {
-   sectionDots.push(new Dot(
-     randomBetween(sectionBounds[i].xMin + 10, sectionBounds[i].xMax - 10),
-     randomBetween(sectionBounds[i].yMin + 10, sectionBounds[i].yMax - 10),
-     (Math.random() - 0.5) * 1.5,
-     (Math.random() - 0.5) * 1.5,
-     5,
-     generateColor(),
-     sectionBounds[i]
-   ));
- }
+  for (let j = 0; j < 15; j++) {
+    sectionDots.push(new Dot(
+      randomBetween(sectionBounds[i].xMin + 10, sectionBounds[i].xMax - 10),
+      randomBetween(sectionBounds[i].yMin + 10, sectionBounds[i].yMax - 10),
+      (Math.random() - 0.5) * 1.5,
+      (Math.random() - 0.5) * 1.5,
+      5,
+      generateColor(),
+      sectionBounds[i]
+    ));
+  }
 }
  
 outerSmallDots = [];
 for (let i = 0; i < 80; i++) {
- outerSmallDots.push(new SmallDot(
-   randomBetween(marketIntroOuterBounds.xMin, marketIntroOuterBounds.xMax),
-   randomBetween(marketIntroOuterBounds.yMin, marketIntroOuterBounds.yMax),
-   (Math.random() - 0.5) * 0.15,
-   (Math.random() - 0.5) * 0.15,
-   1.5,
-   'rgba(10, 40, 80, 0.3)',
-   marketIntroOuterBounds
- ));
+  outerSmallDots.push(new SmallDot(
+    randomBetween(marketIntroOuterBounds.xMin, marketIntroOuterBounds.xMax),
+    randomBetween(marketIntroOuterBounds.yMin, marketIntroOuterBounds.yMax),
+    (Math.random() - 0.5) * 0.15,
+    (Math.random() - 0.5) * 0.15,
+    1.5,
+    'rgba(10, 40, 80, 0.3)',
+    marketIntroOuterBounds
+  ));
 }
 }
  
@@ -1516,9 +1516,9 @@ ctx.beginPath();
 // Bell curve (top)
 ctx.moveTo(points.bellStart.x, points.bellStart.y);
 ctx.bezierCurveTo(
- points.bellStart.x + w * 0.1, points.bellStart.y + 30,
- points.bellEnd.x - w * 0.1, points.bellEnd.y - 15,
- points.bellEnd.x, points.bellEnd.y
+  points.bellStart.x + w * 0.1, points.bellStart.y + 40,
+  points.bellEnd.x - w * 0.1, points.bellEnd.y - 20,
+  points.bellEnd.x, points.bellEnd.y
 );
  
 // Tube section (linear taper)
@@ -1532,9 +1532,9 @@ ctx.lineTo(points.bellBottomEnd.x, points.bellBottomEnd.y);
  
 // Bottom bell curve (mirror of top)
 ctx.bezierCurveTo(
- points.bellBottomEnd.x - w * 0.1, points.bellBottomEnd.y + 15,
- points.bellBottomStart.x + w * 0.1, points.bellBottomStart.y - 30,
- points.bellBottomStart.x, points.bellBottomStart.y
+  points.bellBottomEnd.x - w * 0.1, points.bellBottomEnd.y + 20,
+  points.bellBottomStart.x + w * 0.1, points.bellBottomStart.y - 40,
+  points.bellBottomStart.x, points.bellBottomStart.y
 );
  
 ctx.closePath();
@@ -1575,31 +1575,31 @@ ctx.fillStyle = "white";
 ctx.font = "bold 22px Arial";
 ctx.textAlign = "center";
 textPositions.forEach(pos => {
- ctx.fillText(pos.text, pos.x, pos.y);
+  ctx.fillText(pos.text, pos.x, pos.y);
 });
 }
  
 function drawSectionDots() {
 sectionDots.forEach(dot => {
- dot.draw(ctx);
+  dot.draw(ctx);
 });
 }
  
 function moveSectionDots() {
 sectionDots.forEach(dot => {
- dot.move();
+  dot.move();
 });
 }
  
 function drawOuterSmallDots() {
 outerSmallDots.forEach(dot => {
- dot.draw(ctx);
+  dot.draw(ctx);
 });
 }
  
 function moveOuterSmallDots() {
 outerSmallDots.forEach(dot => {
- dot.move();
+  dot.move();
 });
 }
  
@@ -1628,4 +1628,3 @@ canvas.width = canvas.offsetWidth;
  
 st.title("AI in Innovation Management")
 components.html(html_code, height=500)
-
