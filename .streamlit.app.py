@@ -831,6 +831,7 @@ function initDots() {
       5,
       generateColor(),
       funnelBounds
+       sectionBounds[i]
     ));
   }
 }
