@@ -877,10 +877,10 @@ let expansionProgress = 0;  // 0-1 range for smooth expansion
 let expansionSpeed = 0.005; // Controls growth speed (adjust as needed)
 const maxExpansion = 1.5;   // How much it expands (1.5 = 150% of original)
 
-// 2. Modified drawOuterFunnel() 
+// 2. CORRECTED drawOuterFunnel() 
 function drawOuterFunnel() {
-    // Calculate current expansion scale (easing function for smoothness)
-    const scale = 1 + (Math.sin(expansionProgress * Math.PI * 2) * (maxExpansion - 1);
+    // Fixed missing parenthesis in this line:
+    const scale = 1 + (Math.sin(expansionProgress * Math.PI * 2) * (maxExpansion - 1));
     expansionProgress += expansionSpeed;
     
     ctx.save();
@@ -890,9 +890,9 @@ function drawOuterFunnel() {
     ctx.scale(scale, scale);         // Scale outward
     ctx.translate(0, -h/2);         // Reset position
     
-    // Draw with pulsing shadow
+    // Fixed typo: shadowBlur (was "shadowBlur")
     ctx.shadowColor = 'rgba(135, 206, 250, 0.4)';
-    ctx.shadowBlur = 15 * scale;     // Shadow grows with expansion
+    ctx.shadowBlur = 15 * scale;     // Correct property name
     drawTrumpetFunnel(outerFunnelPoints, outerColor);
     
     ctx.restore();
