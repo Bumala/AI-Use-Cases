@@ -875,7 +875,7 @@ ctx.fill();
 // 1. Animation Control Variables 
 let expansionProgress = 0;  // 0-1 range for smooth expansion
 let expansionSpeed = 0.0005; // Controls growth speed (adjust as needed)
-const maxExpansion = 1.5;   // How much it expands (1.5 = 150% of original)
+const maxExpansion = 1.0;   // How much it expands (1.5 = 150% of original)
 
 // 2. CORRECTED drawOuterFunnel() 
 function drawOuterFunnel() {
