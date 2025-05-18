@@ -872,29 +872,24 @@ ctx.closePath();
 ctx.fill();
 }
  
-// 1. Animation Control Variables 
-let expansionProgress = 0;  // 0-1 range for smooth expansion
-let expansionSpeed = 0.0005; // Controls growth speed (adjust as needed)
-const maxExpansion = 1.0;   // How much it expands (1.5 = 150% of original)
+// Animation Control Variables
+let expansionProgress = 0;  
+let expansionSpeed = 0.005; // Adjust speed here (0.005 = slower, 0.02 = faster)
+const maxScale = 1.0;       // Original size (1.0 = 100%)
 
-// 2. CORRECTED drawOuterFunnel() 
 function drawOuterFunnel() {
-    // Fixed missing parenthesis in this line:
-    const scale = 1 + (Math.sin(expansionProgress * Math.PI * 2) * (maxExpansion - 1));
+    // Calculate scale (0 → 1) using absolute sine value
+    const scale = Math.abs(Math.sin(expansionProgress * Math.PI)); 
     expansionProgress += expansionSpeed;
     
     ctx.save();
+    ctx.translate(0, h/2);
+    ctx.scale(scale, scale); // Will grow from 0 to 1.0
+    ctx.translate(0, -h/2);
     
-    // Apply scaling centered at the bell opening
-    ctx.translate(0, h/2);          // Move to funnel centerline
-    ctx.scale(scale, scale);         // Scale outward
-    ctx.translate(0, -h/2);         // Reset position
-    
-    // Fixed typo: shadowBlur (was "shadowBlur")
     ctx.shadowColor = 'rgba(135, 206, 250, 0.4)';
-    ctx.shadowBlur = 15 * scale;     // Correct property name
+    ctx.shadowBlur = 15 * scale; 
     drawTrumpetFunnel(outerFunnelPoints, outerColor);
-    
     ctx.restore();
 }
 
