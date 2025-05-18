@@ -876,33 +876,33 @@ ctx.fill();
 
  
 let expansionProgress = 0;  
-let expansionSpeed = 0.005; // Adjust growth speed
+let expansionSpeed = 0.005;
 const maxScale = 1.0;
 const pauseDuration = 2000; // milliseconds
 let isPaused = false;
-let pauseStartTime = 0;
+let pauseStartTime = null;
 
 function drawOuterFunnel(timestamp) {
     let scale;
 
     if (isPaused) {
-        // Stay at full size
+        // Stay at full size during pause
         scale = maxScale;
 
+        // Check if 2 seconds have passed
         if (timestamp - pauseStartTime >= pauseDuration) {
-            // End pause, restart growth
             isPaused = false;
-            expansionProgress = 0;
+            expansionProgress = 0; // Restart growth
         }
     } else {
-        // Growing phase
+        // Animate growing
         scale = Math.sin(expansionProgress * Math.PI / 2); // 0 → 1
         expansionProgress += expansionSpeed;
 
         if (scale >= maxScale) {
             scale = maxScale;
             isPaused = true;
-            pauseStartTime = timestamp;
+            pauseStartTime = timestamp; // Start pause
         }
     }
 
@@ -923,6 +923,7 @@ function drawLoop(timestamp) {
     requestAnimationFrame(drawLoop);
 }
 requestAnimationFrame(drawLoop);
+
 
 
 
