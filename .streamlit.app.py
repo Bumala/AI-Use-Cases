@@ -897,7 +897,7 @@ ctx.moveTo(innerFunnelPoints.bellEnd.x, innerFunnelPoints.bellEnd.y-20);
 ctx.lineTo(innerFunnelPoints.bellBottomEnd.x, innerFunnelPoints.bellBottomEnd.y+20);
 ctx.stroke();
 
-ctx.beginPath(); #dashed line at position y 7
+ctx.beginPath(); 
 ctx.moveTo(7, outerFunnelPoints.bellStart.y);  // Top (using outer funnel height)
 ctx.lineTo(7, outerFunnelPoints.bellBottomStart.y);  // Bottom
 ctx.stroke();
