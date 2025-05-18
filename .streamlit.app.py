@@ -687,7 +687,7 @@ const tubeLength = w * 0.7;  // Tube takes 70%
 const startDiameter = 300;   // Starting diameter at bell
 const endDiameter = 80;      // Ending diameter at mouthpiece
  
-// Inner funnel points (dark blue) - kept the same as original
+// Inner funnel points (dark blue)
 const innerFunnelPoints = {
 bellStart: {x: 0, y: h/2 - startDiameter/2},
 bellEnd: {x: bellLength, y: h/2 - (startDiameter * 0.7)/2},
@@ -697,14 +697,14 @@ bellBottomEnd: {x: bellLength, y: h/2 + (startDiameter * 0.7)/2},
 bellBottomStart: {x: 0, y: h/2 + startDiameter/2}
 };
  
-// Outer funnel points (light blue cloud) - Modified to have larger bell diameter (60px larger instead of 40px)
+// Outer funnel points (light blue cloud) - 20px larger
 const outerFunnelPoints = {
-bellStart: {x: -30, y: h/2 - (startDiameter + 60)/2},
-bellEnd: {x: bellLength - 20, y: h/2 - (startDiameter * 0.7 + 40)/2}, // Keep tube transition same
+bellStart: {x: -20, y: h/2 - (startDiameter + 40)/2},
+bellEnd: {x: bellLength - 20, y: h/2 - (startDiameter * 0.7 + 40)/2},
 tubeEnd: {x: w + 20, y: h/2 - (endDiameter + 20)/2},
 mouthBottom: {x: w + 20, y: h/2 + (endDiameter + 20)/2},
-bellBottomEnd: {x: bellLength - 20, y: h/2 + (startDiameter * 0.7 + 40)/2}, // Keep tube transition same
-bellBottomStart: {x: -30, y: h/2 + (startDiameter + 60)/2}
+bellBottomEnd: {x: bellLength - 20, y: h/2 + (startDiameter * 0.7 + 40)/2},
+bellBottomStart: {x: -20, y: h/2 + (startDiameter + 40)/2}
 };
  
 const sectionColors = ['#3498db', '#2874a6', '#1b4f72'];
@@ -838,16 +838,16 @@ outerSmallDots.push(new SmallDot(
 }
 }
  
-// Trumpet-shaped drawing function - updated for better symmetry
+// Trumpet-shaped drawing function
 function drawTrumpetFunnel(points, color) {
 ctx.fillStyle = color;
 ctx.beginPath();
  
-// Bell curve (top) - made more symmetrical
+// Bell curve (top)
 ctx.moveTo(points.bellStart.x, points.bellStart.y);
 ctx.bezierCurveTo(
-points.bellStart.x + w * 0.1, points.bellStart.y,
-points.bellEnd.x - w * 0.1, points.bellEnd.y,
+points.bellStart.x + w * 0.1, points.bellStart.y + 25,
+points.bellEnd.x - w * 0.1, points.bellEnd.y - 10,
 points.bellEnd.x, points.bellEnd.y
 );
  
@@ -860,10 +860,10 @@ ctx.lineTo(points.mouthBottom.x, points.mouthBottom.y);
 // Bottom tube section (linear taper)
 ctx.lineTo(points.bellBottomEnd.x, points.bellBottomEnd.y);
  
-// Bottom bell curve (mirror of top) - made more symmetrical
+// Bottom bell curve (mirror of top)
 ctx.bezierCurveTo(
-points.bellBottomEnd.x - w * 0.1, points.bellBottomEnd.y,
-points.bellBottomStart.x + w * 0.1, points.bellBottomStart.y,
+points.bellBottomEnd.x - w * 0.1, points.bellBottomEnd.y + 10,
+points.bellBottomStart.x + w * 0.1, points.bellBottomStart.y - 25,
 points.bellBottomStart.x, points.bellBottomStart.y
 );
  
