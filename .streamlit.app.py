@@ -67,23 +67,30 @@ function generateColor() {
 
 class Dot {
   constructor(x, y, dx, dy, radius, color, bounds) {
-    this.x = x;
-    this.y = y;
-    this.dx = dx;
-    this.dy = dy;
-    this.radius = radius;
-    this.color = color;
-    this.bounds = bounds;
-  }
+  this.x = x;
+  this.y = y;
+  this.dx = dx;
+  this.dy = dy;
+  this.radius = radius;
+  this.color = color;
+  this.bounds = bounds;
+  this.prevX = x; // track previous x
+}
+
 
   move() {
-    this.x += this.dx;
-    this.y += this.dy;
-    if (this.x < this.bounds.xMin) this.x = this.bounds.xMax;
-    if (this.x > this.bounds.xMax) this.x = this.bounds.xMin;
-    if (this.y < this.bounds.yMin) this.y = this.bounds.yMax;
-    if (this.y > this.bounds.yMax) this.y = this.bounds.yMin;
+  this.prevX = this.x;
+  this.x += this.dx;
+  this.y += this.dy;
+
+  if (this.x - this.radius < this.bounds.xMin || this.x + this.radius > this.bounds.xMax) {
+    this.dx = -this.dx;
   }
+  if (this.y - this.radius < this.bounds.yMin || this.y + this.radius > this.bounds.yMax) {
+    this.dy = -this.dy;
+  }
+}
+
 
   draw(ctx) {
     ctx.beginPath();
@@ -281,17 +288,19 @@ function drawSectionDots() {
 }
 
 function moveSectionDots() {
-  // Move all existing dots
   sectionDots.forEach(dot => dot.move());
 
-  // Remove some dots at station x=300 and x=900
   sectionDots = sectionDots.filter(dot => {
-    if (dot.x >= 300 && dot.x < 310 && Math.random() < 0.1) return false;
-    if (dot.x >= 900 && dot.x < 910 && Math.random() < 0.3) return false;
+    // Remove only when crossing from left to right at x = 300
+    if (dot.prevX < 300 && dot.x >= 300 && Math.random() < 0.1) return false;
+
+    // Remove only when crossing from left to right at x = 900
+    if (dot.prevX < 900 && dot.x >= 900 && Math.random() < 0.3) return false;
+
     return true;
   });
 
-  // Count how many dots are missing and add new ones at the beginning
+  // Refill to maintain a constant count
   while (sectionDots.length < 30) {
     sectionDots.push(new Dot(
       randomBetween(sectionBounds[0].xMin + 10, sectionBounds[0].xMin + 20),
@@ -304,6 +313,7 @@ function moveSectionDots() {
     ));
   }
 }
+
 
 
 function drawOuterSmallDots() {
