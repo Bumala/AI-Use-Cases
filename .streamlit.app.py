@@ -982,7 +982,6 @@ dot.move();
  
 function animate() {
 ctx.clearRect(0, 0, w, h);
-drawOuterFunnel();
 drawOuterSmallDots();
 drawInnerFunnel();
 drawSectionLines();
