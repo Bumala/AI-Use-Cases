@@ -917,6 +917,12 @@ function drawOuterFunnel(timestamp) {
     ctx.restore();
 }
 
+function drawLoop(timestamp) {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    drawOuterFunnel(timestamp);
+    requestAnimationFrame(drawLoop);
+}
+requestAnimationFrame(drawLoop);
 
 
 
