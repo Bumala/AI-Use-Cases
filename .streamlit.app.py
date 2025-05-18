@@ -83,16 +83,15 @@ this.bounds = bounds;
 }
  
 move() {
-this.x += this.dx;
-this.y += this.dy;
- 
-if (this.x - this.radius < this.bounds.xMin || this.x + this.radius > this.bounds.xMax) {
-  this.dx = -this.dx;
+  this.x += this.dx;
+  this.y += this.dy;
+
+  // Keep dot gently inside vertical bounds
+  if (this.y - this.radius < this.bounds.yMin || this.y + this.radius > this.bounds.yMax) {
+    this.dy = -this.dy;
+  }
 }
-if (this.y - this.radius < this.bounds.yMin || this.y + this.radius > this.bounds.yMax) {
-  this.dy = -this.dy;
-}
-}
+
  
 draw(ctx) {
 ctx.beginPath();
