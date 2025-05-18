@@ -926,6 +926,7 @@ requestAnimationFrame(drawLoop);
 
 
 
+
  
 function drawInnerFunnel() {
 drawTrumpetFunnel(innerFunnelPoints, '#154360');
