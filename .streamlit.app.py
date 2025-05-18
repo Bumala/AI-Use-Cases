@@ -880,6 +880,7 @@ function drawOuterFunnel(timestamp) {
     if (!lastTimestamp) lastTimestamp = timestamp;
     const deltaTime = (timestamp - lastTimestamp) / 1000; // Convert to seconds
     lastTimestamp = timestamp;
+    let lastTimestamp = 0;
     
     // Update progress (resets to 0 when reaching 1)
     growthProgress = Math.min(growthProgress + (deltaTime / growthDuration), 1);
@@ -899,7 +900,7 @@ function drawOuterFunnel(timestamp) {
     ctx.restore();
 }
 
-let lastTimestamp = 0;
+
 
 
  
