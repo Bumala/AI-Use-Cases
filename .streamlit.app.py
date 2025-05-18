@@ -826,18 +826,26 @@ for (let j = 0; j < 15; j++) {
 }
  
 outerSmallDots = [];
+const dotYMin = h / 2 - 20;
+const dotYMax = h / 2 + 20;
+
 for (let i = 0; i < 80; i++) {
-outerSmallDots.push(new SmallDot(
-  randomBetween(900, 1000),
-  randomBetween(h/2+20, h/2-20),
-  (Math.random() - 0.5) * 0.15,
-  (Math.random() - 0.5) * 0.15,
-  1.5,
-  'rgba(10, 40, 80, 0.3)',
-  marketIntroOuterBounds
-));
+  outerSmallDots.push(new SmallDot(
+    randomBetween(900, w), // x >= 900 to full canvas width
+    randomBetween(dotYMin, dotYMax), // tightly around h/2
+    (Math.random() - 0.5) * 0.15,
+    (Math.random() - 0.5) * 0.15,
+    1.5,
+    'rgba(10, 40, 80, 0.3)',  // change to desired background color
+    {
+      xMin: 900,
+      xMax: w,
+      yMin: dotYMin,
+      yMax: dotYMax
+    }
+  ));
 }
-}
+
  
 // Trumpet-shaped drawing function
 function drawTrumpetFunnel(points, color) {
