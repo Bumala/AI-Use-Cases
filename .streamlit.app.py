@@ -843,36 +843,44 @@ function drawTrumpetFunnel(points, color) {
     ctx.beginPath();
     ctx.fillStyle = color;
 
-    // Start at the bell's top start
+    // Move to top-left of bell
     ctx.moveTo(points.bellStart.x, points.bellStart.y);
 
-    // Top bell curve → bellEnd
+    // Curve from bellStart → bellEnd (smooth falling curve)
     ctx.bezierCurveTo(
-        points.bellStart.x + 50, points.bellStart.y,   // Control point 1
-        points.bellEnd.x - 50, points.bellEnd.y,       // Control point 2
-        points.bellEnd.x, points.bellEnd.y             // End point
+        points.bellStart.x + 80, points.bellStart.y + 10,  // CP1 (curves outward)
+        points.bellEnd.x - 30, points.bellEnd.y + 10,      // CP2 (curves inward)
+        points.bellEnd.x, points.bellEnd.y                 // End point
     );
 
-    // Tube line (top) → tubeEnd
-    ctx.lineTo(points.tubeEnd.x, points.tubeEnd.y);
+    // Smooth curve from bellEnd → tubeEnd
+    ctx.bezierCurveTo(
+        points.bellEnd.x + 50, points.bellEnd.y,           // CP1
+        points.tubeEnd.x - 50, points.tubeEnd.y,           // CP2
+        points.tubeEnd.x, points.tubeEnd.y                 // Tube top end
+    );
 
-    // Mouth curve (right side)
+    // Down to mouth bottom (right vertical line)
     ctx.lineTo(points.mouthBottom.x, points.mouthBottom.y);
 
-    // Tube line (bottom) → bellBottomEnd
-    ctx.lineTo(points.bellBottomEnd.x, points.bellBottomEnd.y);
-
-    // Bottom bell curve → bellBottomStart
+    // Curve from tube → bell (bottom side, reversed)
     ctx.bezierCurveTo(
-        points.bellBottomEnd.x - 50, points.bellBottomEnd.y,  // Control point 1
-        points.bellBottomStart.x + 50, points.bellBottomStart.y, // Control point 2
-        points.bellBottomStart.x, points.bellBottomStart.y      // End point
+        points.tubeEnd.x - 50, points.bellBottomEnd.y,     // CP1
+        points.bellBottomEnd.x + 50, points.bellBottomEnd.y, // CP2
+        points.bellBottomEnd.x, points.bellBottomEnd.y     // End point
     );
 
-    // Close path
+    // Curve back to bellBottomStart
+    ctx.bezierCurveTo(
+        points.bellBottomEnd.x - 40, points.bellBottomEnd.y + 10,  // CP1
+        points.bellBottomStart.x + 80, points.bellBottomStart.y - 10, // CP2
+        points.bellBottomStart.x, points.bellBottomStart.y
+    );
+
     ctx.closePath();
     ctx.fill();
 }
+
 
 
 
