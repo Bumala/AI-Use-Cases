@@ -872,9 +872,9 @@ ctx.closePath();
 ctx.fill();
 }
  
-// Animation Control Variables
+// Animation Control Variables of the outer funnel
 let expansionProgress = 0;  
-let expansionSpeed = 0.005; // Adjust speed here (0.005 = slower, 0.02 = faster)
+let expansionSpeed = 0.0005; // Adjust speed here (0.005 = slower, 0.02 = faster)
 const maxScale = 1.0;       // Original size (1.0 = 100%)
 
 function drawOuterFunnel() {
@@ -884,7 +884,7 @@ function drawOuterFunnel() {
     
     ctx.save();
     ctx.translate(0, h/2);
-    ctx.scale(scale, scale); // Will grow from 0 to 1.0
+    ctx.scale(scale, scale); // grows from 0 to 1.0
     ctx.translate(0, -h/2);
     
     ctx.shadowColor = 'rgba(135, 206, 250, 0.4)';
