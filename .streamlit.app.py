@@ -714,7 +714,7 @@ const outerColor = 'rgba(135, 206, 250, 0.3)';
 const textPositions = [
 {text: 'Front End', x: w * 0.1, y: h/2 },
 {text: 'Development', x: w * 0.5, y: h/2 },
-{text: 'Market Introduction', x: w * 0.95, y: h/2 }
+{text: 'Market Introduction', x: w * 0.9, y: h/2 }
 ];
  
 // Generate random colors for dots
