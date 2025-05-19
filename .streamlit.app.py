@@ -383,19 +383,19 @@ components.html(html_code, height=500)
 st.markdown("<p style='font-size:18px;  margin-bottom:0; text-align:center;'>AI´s impact on the automotive innovation process: </p>", unsafe_allow_html=True)
 
 
-# Set size and vertical stretch factor
 font_size = 60
-stretch_y = 10  # 1 = normal, 2 = double height
+stretch_y = 10
 
 html_code = f"""
 <div style="display: flex; gap: 100px; justify-content: center;">
-    <div style="rotate(90deg) scaleY({stretch_y}); translateX(-20px); font-size: {font_size}px;">}}</div>
-    <div style="rotate(90deg) scaleY({stretch_y});translateX(0px); font-size: {font_size}px;">}}</div>
-    <div style="rotate(90deg) scaleY({stretch_y});translateX(+20px); font-size: {font_size}px;">}}</div>
+    <div style="display: inline-block; transform: rotate(90deg) scaleY({stretch_y}) translateX(-20px); font-size: {font_size}px;">}}</div>
+    <div style="display: inline-block; transform: rotate(90deg) scaleY({stretch_y}) translateX(0px); font-size: {font_size}px;">}}</div>
+    <div style="display: inline-block; transform: rotate(90deg) scaleY({stretch_y}) translateX(20px); font-size: {font_size}px;">}}</div>
 </div>
 """
 
 st.markdown(html_code, unsafe_allow_html=True)
+
 
 
 
