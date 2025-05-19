@@ -380,18 +380,21 @@ components.html(html_code, height=500)
 #---------------------------------------------------------------------------------------------- Display of all AI Use Cases -------------------------------------------------------------------------------------------------------------------
 
 
-# Manually define the size in pixels
-size = 50  # Change this value to your desired font size
+import streamlit as st
 
-# HTML + CSS to display rotated characters
+# Manually set the size (in pixels)
+size = 60  # 👈 change this number to adjust size
+
+# HTML & CSS to display three downward-pointing `}` characters
 html_code = f"""
-<div style="display: flex; gap: 5px; justify-content: center;">
+<div style="display: flex; gap: 8px; justify-content: center;">
     <div style="transform: rotate(90deg); font-size: {size}px;">}}</div>
     <div style="transform: rotate(90deg); font-size: {size}px;">}}</div>
     <div style="transform: rotate(90deg); font-size: {size}px;">}}</div>
 </div>
 """
 
+# Render the HTML in Streamlit
 st.markdown(html_code, unsafe_allow_html=True)
 
 
