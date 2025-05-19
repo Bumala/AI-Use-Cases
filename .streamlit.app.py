@@ -156,14 +156,12 @@ function randomBetween(min, max) {
 // Initialize dots
 function initDots() {
   sectionDots = [];
-
   for (let i = 0; i < 2; i++) {
-    let numDots = i === 0 ? 40 : 15; // More dots in first section
-    for (let j = 0; j < numDots; j++) {
+    for (let j = 0; j < 15; j++) {
       sectionDots.push(new Dot(
         randomBetween(sectionBounds[i].xMin + 10, sectionBounds[i].xMax - 10),
         randomBetween(sectionBounds[i].yMin + 10, sectionBounds[i].yMax - 10),
-        Math.random() * 0.5 + 0.3,
+        Math.random() * 0.5 + 0.3, // always moving right
         (Math.random() - 0.5) * 0.5,
         5,
         generateColor(),
@@ -171,8 +169,6 @@ function initDots() {
       ));
     }
   }
-}
-
 
   outerSmallDots = [];
   for (let i = 0; i < 4000; i++) {
