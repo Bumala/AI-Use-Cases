@@ -384,7 +384,7 @@ st.markdown("<p style='font-size:18px;  margin-bottom:0; text-align:center;'>AIÂ
 
 
 font_size = 60
-stretch_y = 10
+stretch_y = 5
 
 html_code = f"""
 <div style="display: flex; gap: 100px; justify-content: center;">
