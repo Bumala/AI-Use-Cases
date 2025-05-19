@@ -433,45 +433,42 @@ st.markdown(html_code, unsafe_allow_html=True)
 
 #-------------------------------------------- All use case descriptions
 
-use_case_descriptions = {
-  "AI-powered manufacturing planning in smart factories": "Cluster 1: Ideation and Intelligent Planning in Automotive",
-   "AI-driven Human-Machine Collaboration in ideation": "Cluster 1: Ideation and Intelligent Planning in Automotive",
-   "AI-enabled bionic digital twin production planning": "Cluster 1: Ideation and Intelligent Planning in Automotive",
-   "AI-infused Human-Robot Collaboration planning": "Cluster 1: Ideation and Intelligent Planning in Automotive",
-   "AI-powered material flow planning": "Cluster 1: Ideation and Intelligent Planning in Automotive",
-   "AI-based digital twin for lithium-ion battery development": "Cluster 1: Ideation and Intelligent Planning in Automotive",
-   "AI-enabled predictive maintenance": "Cluster 1: Ideation and Intelligent Planning in Automotive",
-   "AI-driven predictive quality models for customer defects": "Cluster 1: Ideation and Intelligent Planning in Automotive",
-   
-   "AI- and Genetic Algorithms-based vehicle design": "Cluster 2: AI-optimized design and quality in Automotive",
-   "AI-augmented visual inspections": "Cluster 2: AI-optimized design and quality in Automotive",
-   "AI-optimized scenario engineering": "Cluster 2: AI-optimized design and quality in Automotive",
-   "AI-driven design process": "Cluster 2: AI-optimized design and quality in Automotive",
-   "AI- and Bio-inspired Design": "Cluster 2: AI-optimized design and quality in Automotive",
-   "AI-assisted quality control of the bumper warpage": "Cluster 2: AI-optimized design and quality in Automotive",
-   "AI-optimized braking system test": "Cluster 2: AI-optimized design and quality in Automotive",
-   
-   "AI-enabled idea generation in the Metaverse": "Cluster 3: AI-driven Customer-Centric Innovation in Automotive",
-   "AI-driven interactive collaborative innovation": "Cluster 3: AI-driven Customer-Centric Innovation in Automotive",
-   "AI-based identification of consumer adoption stage": "Cluster 3: AI-driven Customer-Centric Innovation in Automotive",
-   "AI-powered marketing campaign": "Cluster 3: AI-driven Customer-Centric Innovation in Automotive",
-   "AI-driven relationship marketing": "Cluster 3: AI-driven Customer-Centric Innovation in Automotive",
-   "AI-powered customer satisfaction analysis": "Cluster 3: AI-driven Customer-Centric Innovation in Automotive",
-   "AI-driven competition analysis": "Cluster 3: AI-driven Customer-Centric Innovation in Automotive",
-   
-   "AI-assisted customer service in after-sales": "Cluster 4: AI in Automotive Customer Service",
-   "AI-enabled battery monitoring": "Cluster 4: AI in Automotive Customer Service",
-   "AI-assisted staff training": "Cluster 4: AI in Automotive Customer Service",
-   
-   "AI-infused experiments in R&D": "Cluster 5: AI in Strategic Forecasting",
-   "AI-optimized patent analysis": "Cluster 5: AI in Strategic Forecasting",
-   "AI-powered forecasting of the technology life cycle of EVs (S-Curve)": "Cluster 5: AI in Strategic Forecasting",
-   "AI-assisted ideation": "Cluster 5: AI in Strategic Forecasting",
-   "AI-driven vehicles sales prediction": "Cluster 5: AI in Strategic Forecasting"
 
+# Step 1: Use Case Data
+use_case_descriptions = {
+    "AI-infused experiments in R&D": "This use case focuses on integrating AI into experimental R&D processes to accelerate discovery and optimize results.",
+    "AI-powered manufacturing planning in smart factories": "This use case enables intelligent scheduling, resource allocation, and process optimization using AI in smart factories.",
+    "AI-driven Human-Machine Collaboration in ideation": "This use case explores collaboration between AI tools and human designers during early-stage ideation.",
+    "Predictive Maintenance using AI sensors": "Leverages AI and sensor data to predict and prevent equipment failures before they happen.",
+    "AI for Customer Behavior Analysis": "Analyzes large sets of customer interaction data to find actionable insights.",
+    "AI-assisted Prototyping": "Automates parts of the prototyping process using generative AI models.",
+    "Natural Language Processing in Customer Feedback": "Uses NLP to analyze unstructured feedback and identify key themes.",
+    "AI for Market Trend Forecasting": "Predicts future market directions using large-scale data and AI models.",
+    "Generative Design for Engineering": "Uses AI to generate thousands of design options based on constraints.",
+    "AI-enhanced Risk Management": "Automates risk detection and mitigation strategies using predictive analytics.",
+    "AI for Supply Chain Optimization": "Improves logistics and supply chain operations through intelligent forecasting.",
+    "AI in Quality Control": "Detects defects in real-time through computer vision systems.",
+    "Conversational AI for Support": "Implements AI chatbots to assist customers and employees efficiently.",
+    "AI-powered Personalization Engines": "Delivers hyper-personalized product recommendations using AI.",
+    "AI in Product Lifecycle Management": "Optimizes every stage of a product’s life using AI analytics.",
+    "AI for Competitive Intelligence": "Monitors competitor behavior and market shifts automatically.",
+    "AI-based Design Validation": "Simulates and tests design concepts using machine learning.",
+    "AI in Inventory Management": "Reduces overstock and stockouts with smarter predictions.",
+    "Smart Energy Management with AI": "Optimizes factory energy use based on AI models.",
+    "AI-driven Regulatory Compliance": "Helps ensure products meet legal and safety standards via automation.",
+    "AI in User Behavior Modeling": "Understands how users interact with products using behavioral models.",
+    "Voice-Activated Interfaces": "Enables control of systems using natural language commands.",
+    "AI-assisted UX Design": "Provides data-driven recommendations to improve user experience.",
+    "AI in Product Customization": "Automatically configures products to customer preferences.",
+    "AI-driven Feature Prioritization": "Ranks feature development priorities based on predicted impact.",
+    "Digital Twin with AI": "Creates a real-time digital replica of a product or system.",
+    "AI-powered Testing Automation": "Speeds up QA by automatically generating and executing test cases.",
+    "Autonomous Product Testing": "AI runs independent tests without human involvement.",
+    "AI in Materials Discovery": "Uses AI to find and evaluate new materials faster.",
+    "AI-enhanced Collaboration Platforms": "Improves team creativity and efficiency through smart assistance."
 }
 
-#Styling
+# Step 2: Styling
 st.markdown("""
 <style>
 h1 {
@@ -550,6 +547,7 @@ column_html += "</div>"
 
 # Step 6: Render in Streamlit
 st.markdown(column_html, unsafe_allow_html=True)
+
 
 
 
