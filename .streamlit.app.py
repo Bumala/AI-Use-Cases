@@ -380,18 +380,22 @@ components.html(html_code, height=500)
 #---------------------------------------------------------------------------------------------- Display of all AI Use Cases -------------------------------------------------------------------------------------------------------------------
 
 
+import streamlit as st
+
 # Set size and vertical stretch factor
 font_size = 60
 stretch_y = 4  # 1 = normal, 2 = double height
 
-
 html_code = f"""
-<div style="display: flex; gap: 100px; justify-content: center;">
-    <div style="transform: rotate(90deg) scaleY({stretch_y}) translateX(-20px); font-size: {font_size}px;">}}</div>
-    <div style="transform: rotate(90deg) scaleY({stretch_y}) translateX(0px); font-size: {font_size}px;">}}</div>
-    <div style="transform: rotate(90deg) scaleY({stretch_y}) translateX(20px); font-size: {font_size}px;">}}</div>
+<div style="display: flex; gap: 100px; justify-content: center; align-items: center;">
+    <div style="display: inline-block; transform: rotate(90deg) scaleY({stretch_y}) translateX(-20px); transform-origin: center center; font-size: {font_size}px; font-family: monospace; line-height: 1;">}}</div>
+    <div style="display: inline-block; transform: rotate(90deg) scaleY({stretch_y}) translateX(0px); transform-origin: center center; font-size: {font_size}px; font-family: monospace; line-height: 1;">}}</div>
+    <div style="display: inline-block; transform: rotate(90deg) scaleY({stretch_y}) translateX(20px); transform-origin: center center; font-size: {font_size}px; font-family: monospace; line-height: 1;">}}</div>
 </div>
 """
+
+st.markdown(html_code, unsafe_allow_html=True)
+
 
 
 
