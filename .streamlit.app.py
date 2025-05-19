@@ -559,16 +559,6 @@ column_html = """
 st.markdown(column_html, unsafe_allow_html=True)
 
 
-# Display
-st.markdown(column_html, unsafe_allow_html=True)
-
-
-
-
-
-
-
-
 
 
 #-------------------------------------------------------------------------------------------- Table for category, dimension and attributes -----------------------------------------------------------------------------------------------------
