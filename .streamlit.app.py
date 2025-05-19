@@ -1214,7 +1214,7 @@ if top_use_case:
             fig.update_layout(
                 title=f"Average Attribute Significance for {cluster_name}",
                 title_font=dict(family='Arial Bold', size=18, color='black'),
-                margin=dict(t=100, b=80),
+                margin=dict(t=150, b=80),
                 title_x=0.2,
                 height=500
             )
