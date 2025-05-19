@@ -1215,6 +1215,7 @@ if top_use_case:
                 title=f"Average Attribute Significance for {cluster_name}",
                 title_font=dict(family='Arial Bold', size=18, color='black'),
                 margin=dict(t=50, b=80),
+                title_x = 0.5,
                 height=500
             )
 
