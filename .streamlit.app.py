@@ -317,7 +317,7 @@ function moveSectionDots() {
     }
 
     // At x > 1000: loop back to start of section 0
-    if (dot.x > 1400) {
+    if (dot.x > 1100) {
       dot.bounds = sectionBounds[0];
       dot.x = sectionBounds[0].xMin + 10;
       dot.y = randomBetween(sectionBounds[0].yMin + 10, sectionBounds[0].yMax - 10);
