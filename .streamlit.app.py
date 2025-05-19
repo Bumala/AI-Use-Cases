@@ -382,7 +382,7 @@ components.html(html_code, height=500)
 
 st.markdown("<p style='font-size:18px;  margin-bottom:0; text-align:center;'>AI´s impact on the automotive innovation process: </p>", unsafe_allow_html=True)
 
-import streamlit as st
+
 
 # Settings
 font_size = 40
