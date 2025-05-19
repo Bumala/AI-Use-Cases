@@ -323,6 +323,26 @@ function moveSectionDots() {
 }
 
 
+
+
+// 🚀 Start the continuous loop
+function animate() {
+  moveSectionDots();
+
+  // Optional: draw your dots here with drawDots(sectionDots)
+  // Example:
+  // drawDots(sectionDots);
+
+  requestAnimationFrame(animate);
+}
+
+animate(); // Start the loop!
+
+
+
+
+
+
  
 
 
