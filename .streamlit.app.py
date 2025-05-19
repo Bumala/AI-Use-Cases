@@ -432,15 +432,43 @@ st.markdown(html_code, unsafe_allow_html=True)
 
 
 #-------------------------------------------- All use case descriptions
-# Your data
+import streamlit as st
+
+# Your data with 30 example use cases
 use_case_descriptions = {
     "AI-infused experiments in R&D": "This use case focuses on integrating AI into experimental R&D processes to accelerate discovery and optimize results.",
     "AI-powered manufacturing planning in smart factories": "This use case enables intelligent scheduling, resource allocation, and process optimization using AI in smart factories.",
     "AI-driven Human-Machine Collaboration in ideation": "This use case explores collaboration between AI tools and human designers during early-stage ideation.",
-    # Add the remaining 27 use cases here...
+    "Predictive Maintenance using AI sensors": "Leverages AI and sensor data to predict and prevent equipment failures before they happen.",
+    "AI for Customer Behavior Analysis": "Analyzes large sets of customer interaction data to find actionable insights.",
+    "AI-assisted Prototyping": "Automates parts of the prototyping process using generative AI models.",
+    "Natural Language Processing in Customer Feedback": "Uses NLP to analyze unstructured feedback and identify key themes.",
+    "AI for Market Trend Forecasting": "Predicts future market directions using large-scale data and AI models.",
+    "Generative Design for Engineering": "Uses AI to generate thousands of design options based on constraints.",
+    "AI-enhanced Risk Management": "Automates risk detection and mitigation strategies using predictive analytics.",
+    "AI for Supply Chain Optimization": "Improves logistics and supply chain operations through intelligent forecasting.",
+    "AI in Quality Control": "Detects defects in real-time through computer vision systems.",
+    "Conversational AI for Support": "Implements AI chatbots to assist customers and employees efficiently.",
+    "AI-powered Personalization Engines": "Delivers hyper-personalized product recommendations using AI.",
+    "AI in Product Lifecycle Management": "Optimizes every stage of a product’s life using AI analytics.",
+    "AI for Competitive Intelligence": "Monitors competitor behavior and market shifts automatically.",
+    "AI-based Design Validation": "Simulates and tests design concepts using machine learning.",
+    "AI in Inventory Management": "Reduces overstock and stockouts with smarter predictions.",
+    "Smart Energy Management with AI": "Optimizes factory energy use based on AI models.",
+    "AI-driven Regulatory Compliance": "Helps ensure products meet legal and safety standards via automation.",
+    "AI in User Behavior Modeling": "Understands how users interact with products using behavioral models.",
+    "Voice-Activated Interfaces": "Enables control of systems using natural language commands.",
+    "AI-assisted UX Design": "Provides data-driven recommendations to improve user experience.",
+    "AI in Product Customization": "Automatically configures products to customer preferences.",
+    "AI-driven Feature Prioritization": "Ranks feature development priorities based on predicted impact.",
+    "Digital Twin with AI": "Creates a real-time digital replica of a product or system.",
+    "AI-powered Testing Automation": "Speeds up QA by automatically generating and executing test cases.",
+    "Autonomous Product Testing": "AI runs independent tests without human involvement.",
+    "AI in Materials Discovery": "Uses AI to find and evaluate new materials faster.",
+    "AI-enhanced Collaboration Platforms": "Improves team creativity and efficiency through smart assistance."
 }
 
-# Style for collapsible boxes
+# CSS styles for layout and collapsible boxes
 st.markdown("""
 <style>
 .container {
@@ -449,13 +477,11 @@ st.markdown("""
     gap: 40px;
     flex-wrap: wrap;
 }
-
 .column {
     flex: 1;
     min-width: 300px;
     max-width: 350px;
 }
-
 .details-box {
     background-color: #f0f8ff;
     border: 1px solid #ccc;
@@ -464,7 +490,6 @@ st.markdown("""
     margin-bottom: 15px;
     font-family: sans-serif;
 }
-
 details summary {
     font-weight: bold;
     cursor: pointer;
@@ -473,17 +498,15 @@ details summary {
 </style>
 """, unsafe_allow_html=True)
 
-# Sort use cases into 3 columns
+# Convert dict to list and split into 3 columns of 10 items each
 use_cases = list(use_case_descriptions.items())
-
-# Divide strictly by thirds
 columns = [
-    use_cases[:10],     # First 10 → Left
-    use_cases[10:20],   # Next 10 → Middle
-    use_cases[20:30]    # Last 10 → Right
+    use_cases[:10],     # Left column
+    use_cases[10:20],   # Middle column
+    use_cases[20:30],   # Right column
 ]
 
-# Build HTML
+# Build HTML for columns and use case boxes
 column_html = "<div class='container'>"
 for col in columns:
     column_html += "<div class='column'>"
@@ -498,6 +521,9 @@ for col in columns:
         """
     column_html += "</div>"
 column_html += "</div>"
+
+# Render the final HTML in Streamlit
+st.markdown(column_html, unsafe_allow_html=True)
 
 
 #-------------------------------------------------------------------------------------------- Table for category, dimension and attributes -----------------------------------------------------------------------------------------------------
