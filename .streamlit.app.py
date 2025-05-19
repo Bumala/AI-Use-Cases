@@ -383,7 +383,7 @@ components.html(html_code, height=500)
 st.markdown("<p style='font-size:18px;  margin-bottom:0; text-align:center;'>AI´s impact on the automotive innovation process: </p>", unsafe_allow_html=True)
 
 
-font_size = 60
+font_size = 40
 stretch_y = 5
 
 html_code = f"""
