@@ -387,7 +387,7 @@ font_size = 60
 stretch_y = 2  # 1 = normal, 2 = double height
 
 html_code = f"""
-<div style="display: flex; gap: 10px; justify-content: center;">
+<div style="display: flex; gap: 100px; justify-content: center;">
     <div style="transform: rotate(90deg) scaleY({stretch_y}); font-size: {font_size}px;">}}</div>
     <div style="transform: rotate(90deg) scaleY({stretch_y}); font-size: {font_size}px;">}}</div>
     <div style="transform: rotate(90deg) scaleY({stretch_y}); font-size: {font_size}px;">}}</div>
