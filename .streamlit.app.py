@@ -286,11 +286,12 @@ function moveSectionDots() {
 
     // At x ≈ 300: simulate a filter gate
     if (dot.bounds === sectionBounds[0] && dot.x > sectionBounds[0].xMax - 5) {
-      if (Math.random() < 0.66) { // allow 2/3 to pass
+      if (Math.random() < 0.5) {
+        // Let dot proceed to next section
         dot.bounds = sectionBounds[1];
         return [dot];
       } else {
-        // Reset to start
+        // Reset to beginning of section 0
         dot.x = sectionBounds[0].xMin + 10;
         dot.y = randomBetween(sectionBounds[0].yMin + 10, sectionBounds[0].yMax - 10);
         dot.dx = randomBetween(0.5, 1.0);
@@ -299,12 +300,14 @@ function moveSectionDots() {
       }
     }
 
-    // At x ≈ 900: filter again
+    // At x ≈ 900: another filter gate
     if (dot.bounds === sectionBounds[1] && dot.x > sectionBounds[1].xMax - 5) {
       if (Math.random() < 0.5) {
-        dot.bounds = { xMin: 900, xMax: 1500, yMin: dot.y - 10, yMax: dot.y + 10 };
+        // Let it continue beyond 900 (into fading or external region)
+        dot.bounds = { xMin: 900, xMax: 1500, yMin: dot.y - 10, yMax: dot.y + 10 }; // loose bounds
         return [dot];
       } else {
+        // Send back to ~x=300
         dot.x = sectionBounds[1].xMin + 10;
         dot.y = randomBetween(sectionBounds[1].yMin + 10, sectionBounds[1].yMax - 10);
         dot.dx = randomBetween(0.5, 1.0);
@@ -313,34 +316,14 @@ function moveSectionDots() {
       }
     }
 
-    // Remove after x > 1200
-    if (dot.x > 1200) {
+    // Remove dots that go past x=1000
+    if (dot.x > 1000) {
       return [];
     }
 
     return [dot];
   });
 }
-
-
-
-
-// 🚀 Start the continuous loop
-function animate() {
-  moveSectionDots();
-
-  // Optional: draw your dots here with drawDots(sectionDots)
-  // Example:
-  // drawDots(sectionDots);
-
-  requestAnimationFrame(animate);
-}
-
-
-
-
-
-
 
 
  
