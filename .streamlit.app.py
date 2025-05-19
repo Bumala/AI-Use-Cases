@@ -382,45 +382,27 @@ components.html(html_code, height=500)
 
 
 
-
-import streamlit as st
-
 # Settings
-font_size = 60
-stretch_y = 4  # Vertical stretch factor
+font_size = 40
+stretch_y = 4  # Stretch factor
 
+# HTML and CSS
 html_code = f"""
 <div style="display: flex; justify-content: center; width: 100%;">
-    <div style="display: flex; gap: 100px; align-items: center;">
-        
-        <!-- First character: wrapper shifted left -->
-        <div style="transform: translateX(-40px);">
-            <div style="font-size: {font_size}px; font-family: monospace; line-height: 1;
-                        display: inline-block; 
-                        transform: rotate(90deg) scaleY({stretch_y}); translateX(-40px)
-                        transform-origin: center;">}}</div>
-        </div>
-
-        <!-- Second character: centered -->
-        <div>
-            <div style="font-size: {font_size}px; font-family: monospace; line-height: 1;
-                        display: inline-block; 
-                        transform: rotate(90deg) scaleY({stretch_y});
-                        transform-origin: center;">}}</div>
-        </div>
-
-        <!-- Third character: unchanged -->
-        <div>
-            <div style="font-size: {font_size}px; font-family: monospace; line-height: 1;
-                        display: inline-block; 
-                        transform: rotate(90deg) scaleY({stretch_y});
-                        transform-origin: center;">}}</div>
-        </div>
+    <div style="display: flex; gap: 300px; align-items: center;">
+        <div style="font-size: {font_size}px; font-family: monospace; line-height: 1; display: inline-block; 
+                    transform: rotate(90deg) scaleY({stretch_y}); transform-origin: center;">}}</div>
+        <div style="font-size: {font_size}px; font-family: monospace; line-height: 1; display: inline-block; 
+                    transform: rotate(90deg) scaleY({stretch_y}); transform-origin: center;">}}</div>
+        <div style="font-size: {font_size}px; font-family: monospace; line-height: 1; display: inline-block; 
+                    transform: rotate(90deg) scaleY({stretch_y}); transform-origin: center;">}}</div>
     </div>
 </div>
 """
 
+# Render HTML in Streamlit
 st.markdown(html_code, unsafe_allow_html=True)
+
 
 
 
