@@ -388,9 +388,9 @@ stretch_y = 5
 
 html_code = f"""
 <div style="display: flex; gap: 100px; justify-content: center;">
-    <div style="display: inline-block; transform: rotate(90deg) scaleY({stretch_y}) translateX(-20px); font-size: {font_size}px;">}}</div>
-    <div style="display: inline-block; transform: rotate(90deg) scaleY({stretch_y}) translateX(0px); font-size: {font_size}px;">}}</div>
-    <div style="display: inline-block; transform: rotate(90deg) scaleY({stretch_y}) translateX(+20px); font-size: {font_size}px;">}}</div>
+    <div style="display: inline-block; transform: rotate(90deg) scaleY({stretch_y}) translateX(-20px); align-items: center; font-size: {font_size}px;">}}</div>
+    <div style="display: inline-block; transform: rotate(90deg) scaleY({stretch_y}) translateX(0px); align-items: center; font-size: {font_size}px;">}}</div>
+    <div style="display: inline-block; transform: rotate(90deg) scaleY({stretch_y}) translateX(+20px); align-items: center; font-size: {font_size}px;">}}</div>
 </div>
 """
 
