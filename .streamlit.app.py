@@ -468,7 +468,7 @@ use_case_descriptions = {
 }
 
 # Heading
-st.markdown("<p style='font-weight: 700; font-size:22px; margin-top:1em; text-align:center;'>AI use cases in automotive</p>", unsafe_allow_html=True)
+st.markdown("<p style='font-weight: 700; font-size:22px; margin-top:3em; text-align:center;'>AI use cases in automotive</p>", unsafe_allow_html=True)
 
 # Styling
 st.markdown("""
