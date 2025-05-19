@@ -418,7 +418,7 @@ html_code = """
     <p style="font-size: 18px; text-align: center; margin-top: -40px; white-space: nowrap; font-weight: 700">
         Efficiency improvements in product development
     </p>
-    <p style="font-size: 18px; text-align: center; margin-top: -40px; text-align: center; white-space: nowrap; font-weight: 700">
+    <p style="font-size: 18px; text-align: center; margin-top: -40px; text-align: center; white-space: nowrap; font-weight: 700; right-margin: 100">
         Optimized market introduction
     </p>
 </div>
