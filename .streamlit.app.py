@@ -411,16 +411,16 @@ import streamlit as st
 
 html_code = """
 <div style="display: flex; justify-content: center; gap: 400px; margin-top: 50px;">
-    <div style="font-size: 18px; text-align: center; 
+    <p style="font-size: 18px; text-align: center; 
               margin-left: 100px; margin-top: -40px; white-space: nowrap">
         Amplification of idea space
-    ">
-    <div style="font-size: 18px; text-align: center; margin-top: -40px;">
+    </p>
+    <p style="font-size: 18px; text-align: center; margin-top: -40px;">
         Efficiency improvements in product development
-    ">
-    <div style="font-size: 18px; text-align: center; margin-top: -40px; text-align: left; ">
+    </p>
+    <p style="font-size: 18px; text-align: center; margin-top: -40px; text-align: left; ">
         Optimized market introduction
-    ">
+    </p>
 </div>
 """
 
