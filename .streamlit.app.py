@@ -432,7 +432,7 @@ st.markdown(html_code, unsafe_allow_html=True)
 
 
 #-------------------------------------------- All use case descriptions
-import streamlit as st
+
 
 # Step 1: Use Case Data
 use_case_descriptions = {
