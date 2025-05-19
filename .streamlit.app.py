@@ -1200,13 +1200,13 @@ if top_use_case:
                 ticktext=["Low", "Moderate", "High"],
                 title_text="Average Significance Level",
                 range=[0, 2],
-                title_font=dict(family='Arial Bold'),
+                title_font=dict(family='Arial Bold', color='black'),
                 tickfont=dict(color='black'),
             )
             fig.update_xaxes(
                 title_text="Attributes",
                 tickangle=50,
-                title_font=dict(family='Arial Bold'),
+                title_font=dict(family='Arial Bold', color='black'),
                 tickfont=dict(color='black'),
                 automargin=True,
                 title_standoff=30
@@ -1214,7 +1214,7 @@ if top_use_case:
             fig.update_layout(
                 title=f"Average Attribute Significance for {cluster_name}",
                 title_font=dict(family='Arial Bold', size=18, color='black'),
-                margin=dict(t=50, b=80),
+                margin=dict(t=100, b=80),
                 title_x=0.2,
                 height=500
             )
