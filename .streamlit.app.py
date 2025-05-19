@@ -373,27 +373,27 @@ window.addEventListener('resize', function() {
 
 """
  
-st.markdown("<p style='font-size:22px; font-weight: 700; text-align:center;'>AI in the automotive innovation process</p>", unsafe_allow_html=True)
+st.markdown("<p style='font-size:24px; font-weight: 700; margin-bottom:0; text-align:center;'>AI in the automotive innovation process</p>", unsafe_allow_html=True)
 components.html(html_code, height=500)
 
 
 #---------------------------------------------------------------------------------------------- Display of all AI Use Cases -------------------------------------------------------------------------------------------------------------------
 
-import streamlit as st
 
-# Slider to control size in pixels
-size = st.slider("Select size of characters (px)", 20, 200, 60)
+# Manually define the size in pixels
+size = 50  # Change this value to your desired font size
 
-# HTML & CSS for rotated '}' characters side by side
+# HTML + CSS to display rotated characters
 html_code = f"""
-<div style="display: flex; gap: 10px;">
-  <div style="transform: rotate(90deg); font-size: {size}px;">}}</div>
-  <div style="transform: rotate(90deg); font-size: {size}px;">}}</div>
-  <div style="transform: rotate(90deg); font-size: {size}px;">}}</div>
+<div style="display: flex; gap: 5px; justify-content: center;">
+    <div style="transform: rotate(90deg); font-size: {size}px;">}}</div>
+    <div style="transform: rotate(90deg); font-size: {size}px;">}}</div>
+    <div style="transform: rotate(90deg); font-size: {size}px;">}}</div>
 </div>
 """
 
 st.markdown(html_code, unsafe_allow_html=True)
+
 
 
 
