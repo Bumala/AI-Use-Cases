@@ -434,9 +434,40 @@ st.markdown(html_code, unsafe_allow_html=True)
 #-------------------------------------------- All use case descriptions
 
 use_case_descriptions = {
-   "AI-infused experiments in R&D": "This use case focuses on integrating AI into experimental R&D processes to accelerate discovery and optimize results.",
-   "AI-powered manufacturing planning in smart factories": "This use case enables intelligent scheduling, resource allocation, and process optimization using AI in smart factories.",
-   "AI-infused experiments in R&D": "This use case balaalalalalalallala.",
+  "AI-powered manufacturing planning in smart factories": "Cluster 1: Ideation and Intelligent Planning in Automotive",
+   "AI-driven Human-Machine Collaboration in ideation": "Cluster 1: Ideation and Intelligent Planning in Automotive",
+   "AI-enabled bionic digital twin production planning": "Cluster 1: Ideation and Intelligent Planning in Automotive",
+   "AI-infused Human-Robot Collaboration planning": "Cluster 1: Ideation and Intelligent Planning in Automotive",
+   "AI-powered material flow planning": "Cluster 1: Ideation and Intelligent Planning in Automotive",
+   "AI-based digital twin for lithium-ion battery development": "Cluster 1: Ideation and Intelligent Planning in Automotive",
+   "AI-enabled predictive maintenance": "Cluster 1: Ideation and Intelligent Planning in Automotive",
+   "AI-driven predictive quality models for customer defects": "Cluster 1: Ideation and Intelligent Planning in Automotive",
+   
+   "AI- and Genetic Algorithms-based vehicle design": "Cluster 2: AI-optimized design and quality in Automotive",
+   "AI-augmented visual inspections": "Cluster 2: AI-optimized design and quality in Automotive",
+   "AI-optimized scenario engineering": "Cluster 2: AI-optimized design and quality in Automotive",
+   "AI-driven design process": "Cluster 2: AI-optimized design and quality in Automotive",
+   "AI- and Bio-inspired Design": "Cluster 2: AI-optimized design and quality in Automotive",
+   "AI-assisted quality control of the bumper warpage": "Cluster 2: AI-optimized design and quality in Automotive",
+   "AI-optimized braking system test": "Cluster 2: AI-optimized design and quality in Automotive",
+   
+   "AI-enabled idea generation in the Metaverse": "Cluster 3: AI-driven Customer-Centric Innovation in Automotive",
+   "AI-driven interactive collaborative innovation": "Cluster 3: AI-driven Customer-Centric Innovation in Automotive",
+   "AI-based identification of consumer adoption stage": "Cluster 3: AI-driven Customer-Centric Innovation in Automotive",
+   "AI-powered marketing campaign": "Cluster 3: AI-driven Customer-Centric Innovation in Automotive",
+   "AI-driven relationship marketing": "Cluster 3: AI-driven Customer-Centric Innovation in Automotive",
+   "AI-powered customer satisfaction analysis": "Cluster 3: AI-driven Customer-Centric Innovation in Automotive",
+   "AI-driven competition analysis": "Cluster 3: AI-driven Customer-Centric Innovation in Automotive",
+   
+   "AI-assisted customer service in after-sales": "Cluster 4: AI in Automotive Customer Service",
+   "AI-enabled battery monitoring": "Cluster 4: AI in Automotive Customer Service",
+   "AI-assisted staff training": "Cluster 4: AI in Automotive Customer Service",
+   
+   "AI-infused experiments in R&D": "Cluster 5: AI in Strategic Forecasting",
+   "AI-optimized patent analysis": "Cluster 5: AI in Strategic Forecasting",
+   "AI-powered forecasting of the technology life cycle of EVs (S-Curve)": "Cluster 5: AI in Strategic Forecasting",
+   "AI-assisted ideation": "Cluster 5: AI in Strategic Forecasting",
+   "AI-driven vehicles sales prediction": "Cluster 5: AI in Strategic Forecasting"
 
 }
 
