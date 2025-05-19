@@ -392,7 +392,7 @@ html_code = f"""
 <div style="display: flex; justify-content: center; width: 100%;">
     <div style="display: flex; gap: 200px; align-items: center;">
         <div style="font-size: {font_size}px; font-family: monospace; line-height: 1; display: inline-block; 
-                    transform: rotate(90deg) scaleY({stretch_y}); transform-origin: center;">}}</div>
+                    transform: rotate(90deg) scaleY({stretch_y}); translateX(-40px); transform-origin: center;">}}</div>
         <div style="font-size: {font_size}px; font-family: monospace; line-height: 1; display: inline-block; 
                     transform: rotate(90deg) scaleY({stretch_y}); transform-origin: center;">}}</div>
         <div style="font-size: {font_size}px; font-family: monospace; line-height: 1; display: inline-block; 
