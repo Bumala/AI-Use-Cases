@@ -407,7 +407,7 @@ st.markdown(html_code, unsafe_allow_html=True)
 
 
 
-import streamlit as st
+
 
 html_code = """
 <div style="display: flex; justify-content: center; gap: 150px; margin-top: 50px;">
@@ -418,7 +418,7 @@ html_code = """
     <p style="font-size: 18px; text-align: center; margin-top: -40px; white-space: nowrap; font-weight: 700">
         Efficiency improvements in product development
     </p>
-    <p style="font-size: 18px; text-align: center; margin-top: -40px; text-align: center; white-space: nowrap; font-weight: 700; right-margin: 100">
+    <p style="font-size: 18px; text-align: center; margin-top: -40px; text-align: center; white-space: nowrap; font-weight: 700; right-margin: 150">
         Optimized market introduction
     </p>
 </div>
