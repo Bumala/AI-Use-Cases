@@ -382,6 +382,7 @@ components.html(html_code, height=500)
 
 st.markdown("<p style='font-size:18px;  margin-bottom:0; text-align:center;'>AI´s impact on the automotive innovation process: </p>", unsafe_allow_html=True)
 
+st.markdown(
 # Set size and vertical stretch factor
 font_size = 60
 stretch_y = 10  # 1 = normal, 2 = double height
@@ -393,7 +394,7 @@ html_code = f"""
     <div style="transform: rotate(90deg) scaleY({stretch_y});translateX(+20px); font-size: {font_size}px;">}}</div>
 </div>
 """
-
+)
 st.markdown(html_code, unsafe_allow_html=True)
 
 
