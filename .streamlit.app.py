@@ -468,10 +468,10 @@ use_case_descriptions = {
 }
 
 # Ensure the list has exactly 30 items
+columns = [[], [], []]
 use_cases = list(use_case_descriptions.items())
-if len(use_cases) != 30:
-    st.error("Please provide exactly 30 unique use cases.")
-else:
+for i, (title, description) in enumerate(use_cases):
+
     # Divide into 3 groups of 10
     columns = [
         use_cases[:10],   # Left column
