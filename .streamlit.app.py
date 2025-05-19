@@ -190,8 +190,8 @@ function drawTrumpetFunnel(points, color) {
   ctx.beginPath();
   ctx.moveTo(points.bellStart.x, points.bellStart.y);
   ctx.bezierCurveTo(
-  points.outerStart.x + w * 0.05, points.outerStart.y - h * 0.6,  // early strong outward flare
-  points.outerEnd.x - w * 0.2, points.outerEnd.y - h * 0.05,     // subtle recurve inwards
+  points.outerStart.x + w * 0.05, points.outerStart.y - (h * 0.6),  // early strong outward flare
+  points.outerEnd.x - w * 0.2, points.outerEnd.y - (h * 0.05),     // subtle recurve inwards
   points.outerEnd.x, points.outerEnd.y
 );
 
@@ -202,8 +202,8 @@ function drawTrumpetFunnel(points, color) {
   ctx.lineTo(points.mouthBottom.x, points.mouthBottom.y);
   ctx.lineTo(points.bellBottomEnd.x, points.bellBottomEnd.y);
   ctx.bezierCurveTo(
-  points.outerEnd.x - w * 0.2, points.outerEnd.y + h * 0.05,      // subtle recurve inward
-  points.outerStart.x + w * 0.05, points.outerStart.y + h * 0.6,  // strong early outward flare
+  points.outerEnd.x - w * 0.2, points.outerEnd.y + (h * 0.05),      // subtle recurve inward
+  points.outerStart.x + w * 0.05, points.outerStart.y + (h * 0.6),  // strong early outward flare
   points.outerStart.x, points.outerStart.y
 );
 
