@@ -380,7 +380,7 @@ components.html(html_code, height=500)
 #---------------------------------------------------------------------------------------------- Display of all AI Use Cases -------------------------------------------------------------------------------------------------------------------
 
 
-
+st.markdown("<p style='font-size:18px;  margin-bottom:0; text-align:center;'>AI´s impact on the automotive innovation process: </p>", unsafe_allow_html=True)
 
 # Settings
 font_size = 40
@@ -389,7 +389,7 @@ stretch_y = 4  # Stretch factor
 # HTML and CSS
 html_code = f"""
 <div style="display: flex; justify-content: center; width: 100%;">
-    <div style="display: flex; gap: 300px; align-items: center;">
+    <div style="display: flex; gap: 400px; align-items: center;">
         <div style="font-size: {font_size}px; font-family: monospace; line-height: 1; display: inline-block; 
                     transform: rotate(90deg) scaleY({stretch_y}); transform-origin: center;">}}</div>
         <div style="font-size: {font_size}px; font-family: monospace; line-height: 1; display: inline-block; 
