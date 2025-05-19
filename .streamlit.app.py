@@ -476,7 +476,7 @@ details summary {
 """, unsafe_allow_html=True)
 
 # Sort use cases into 3 columns
-columns = [use_cases[:10], use_cases[10:20], use_cases[20:30]]
+columns = [use_case_descriptions[:10], use_case_descriptions[10:20], use_case_descriptions[20:30]]
 use_cases = list(use_case_descriptions.items())
 for i, (title, description) in enumerate(use_cases):
     column_index = i % 3
