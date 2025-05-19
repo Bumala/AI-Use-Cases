@@ -384,44 +384,45 @@ st.markdown("<p style='font-size:18px;  margin-bottom:0; text-align:center;'>AIÂ
 
 
 
+import streamlit as st
+
 # Settings
 font_size = 40
 stretch_y = 4  # Stretch factor
 
 # HTML and CSS
 html_code = f"""
-<div style="display: flex; justify-content: center; width: 100%;">
-    <div style="display: flex; gap: 400px; align-items: flex-start;">
+<div style="display: flex; justify-content: center; width: 100%; margin-top: 50px;">
+    <div style="display: flex; gap: 200px; text-align: center;">
 
-        <!-- First character + sentence -->
-        <div style="display: flex; flex-direction: column; align-items: center;">
+        <!-- First block -->
+        <div>
             <div style="font-size: {font_size}px; font-family: monospace; line-height: 1;
-                        display: inline-block; transform: rotate(90deg) scaleY({stretch_y});
+                        transform: rotate(90deg) scaleY({stretch_y});
                         transform-origin: center;">}}</div>
-            <p style="margin-top: 20px; text-align: center; max-width: 150px;">AI in design</p>
+            <div style="margin-top: 20px;">AI in design</div>
         </div>
 
-        <!-- Second character + sentence -->
-        <div style="display: flex; flex-direction: column; align-items: center;">
+        <!-- Second block -->
+        <div>
             <div style="font-size: {font_size}px; font-family: monospace; line-height: 1;
-                        display: inline-block; transform: rotate(90deg) scaleY({stretch_y});
+                        transform: rotate(90deg) scaleY({stretch_y});
                         transform-origin: center;">}}</div>
-            <p style="margin-top: 20px; text-align: center; max-width: 150px;">AI in manufacturing</p>
+            <div style="margin-top: 20px;">AI in manufacturing</div>
         </div>
 
-        <!-- Third character + sentence -->
-        <div style="display: flex; flex-direction: column; align-items: center;">
+        <!-- Third block -->
+        <div>
             <div style="font-size: {font_size}px; font-family: monospace; line-height: 1;
-                        display: inline-block; transform: rotate(90deg) scaleY({stretch_y});
+                        transform: rotate(90deg) scaleY({stretch_y});
                         transform-origin: center;">}}</div>
-            <p style="margin-top: 20px; text-align: center; max-width: 150px;">AI in user experience</p>
+            <div style="margin-top: 20px;">AI in user experience</div>
         </div>
 
     </div>
 </div>
 """
 
-# Render HTML in Streamlit
 st.markdown(html_code, unsafe_allow_html=True)
 
 
