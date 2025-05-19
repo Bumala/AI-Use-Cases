@@ -373,7 +373,7 @@ window.addEventListener('resize', function() {
 
 """
  
-st.markdown("<p style='font-size:18px; text-align:center;'>AI in the automotive innovation process</p>", unsafe_allow_html=True)
+st.markdown("<p style='font-size:22px; font-weight: 700; text-align:center;'>AI in the automotive innovation process</p>", unsafe_allow_html=True)
 components.html(html_code, height=500)
 
 
