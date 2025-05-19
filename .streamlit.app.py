@@ -190,23 +190,18 @@ function drawTrumpetFunnel(points, color) {
   ctx.beginPath();
   ctx.moveTo(points.bellStart.x, points.bellStart.y);
   ctx.bezierCurveTo(
-  points.outerStart.x + w * 0.3, points.outerStart.y - h * 1.0,   // strong outward flare
-  points.outerEnd.x - w * 0.1, points.outerEnd.y - h * 0.6,       // gentle approach to end
-  points.outerEnd.x, points.outerEnd.y
-);
-
-
+    points.bellStart.x + w * 0.1, points.bellStart.y + 25,
+    points.bellEnd.x - w * 0.1, points.bellEnd.y - 10,
+    points.bellEnd.x, points.bellEnd.y
+  );
   ctx.lineTo(points.tubeEnd.x, points.tubeEnd.y);
   ctx.lineTo(points.mouthBottom.x, points.mouthBottom.y);
   ctx.lineTo(points.bellBottomEnd.x, points.bellBottomEnd.y);
   ctx.bezierCurveTo(
-  points.outerEnd.x - w * 0.1, points.outerEnd.y + h * 0.6,       // gentle approach to end
-  points.outerStart.x + w * 0.3, points.outerStart.y + h * 1.0,   // strong outward flare
-  points.outerStart.x, points.outerStart.y
-);
-
-
-
+    points.bellBottomEnd.x - w * 0.1, points.bellBottomEnd.y + 10,
+    points.bellBottomStart.x + w * 0.1, points.bellBottomStart.y - 25,
+    points.bellBottomStart.x, points.bellBottomStart.y
+  );
   ctx.closePath();
   ctx.fill();
 }
@@ -1033,6 +1028,7 @@ if selected_attributes:
 else:
    top_6_use_cases = None  # Default value if no attributes are selected
    st.info("Please select the attributes above to display relevant information.")
+ 
  
  
 
