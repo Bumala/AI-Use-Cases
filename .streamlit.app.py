@@ -467,6 +467,10 @@ use_case_descriptions = {
     # Add the remaining 27 use cases here...
 }
 
+# Heading and Subheading
+st.markdown("## 🧠 AI Use Cases in Product Development")
+st.markdown("Explore 30 innovative ways AI can enhance every stage of the product lifecycle.")
+
 # Styling
 st.markdown("""
 <style>
@@ -481,8 +485,24 @@ st.markdown("""
     min-width: 300px;
     max-width: 350px;
 }
-.details-box {
-    background-color: #f0f8ff;
+.details-box-1 {
+    background-color: #ffe0b2;  /* Light orange */
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    padding: 10px 15px;
+    margin-bottom: 15px;
+    font-family: sans-serif;
+}
+.details-box-2 {
+    background-color: #ffcc80;  /* Medium orange */
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    padding: 10px 15px;
+    margin-bottom: 15px;
+    font-family: sans-serif;
+}
+.details-box-3 {
+    background-color: #ffb74d;  /* Darker orange */
     border: 1px solid #ccc;
     border-radius: 10px;
     padding: 10px 15px;
@@ -494,32 +514,42 @@ details summary {
     cursor: pointer;
     outline: none;
 }
+.column-title {
+    font-weight: bold;
+    font-size: 20px;
+    margin-bottom: 15px;
+    text-align: center;
+    color: black;
+}
 </style>
 """, unsafe_allow_html=True)
 
-# Manually assign to columns without a loop
 titles = list(use_case_descriptions.keys())
 
+# Manually structure HTML with different box colors per column
 column_html = """
 <div class='container'>
 
   <div class='column'>
+    <div class='column-title'>Column 1: Exploration & Design</div>
     """ + "".join([
-        f"<div class='details-box'><details><summary>{titles[i]}</summary><p>{use_case_descriptions[titles[i]]}</p></details></div>"
+        f"<div class='details-box-1'><details><summary>{titles[i]}</summary><p>{use_case_descriptions[titles[i]]}</p></details></div>"
         for i in range(0, 10)
     ]) + """
   </div>
 
   <div class='column'>
+    <div class='column-title'>Column 2: Development & Production</div>
     """ + "".join([
-        f"<div class='details-box'><details><summary>{titles[i]}</summary><p>{use_case_descriptions[titles[i]]}</p></details></div>"
+        f"<div class='details-box-2'><details><summary>{titles[i]}</summary><p>{use_case_descriptions[titles[i]]}</p></details></div>"
         for i in range(10, 20)
     ]) + """
   </div>
 
   <div class='column'>
+    <div class='column-title'>Column 3: Deployment & Optimization</div>
     """ + "".join([
-        f"<div class='details-box'><details><summary>{titles[i]}</summary><p>{use_case_descriptions[titles[i]]}</p></details></div>"
+        f"<div class='details-box-3'><details><summary>{titles[i]}</summary><p>{use_case_descriptions[titles[i]]}</p></details></div>"
         for i in range(20, 30)
     ]) + """
   </div>
@@ -527,7 +557,7 @@ column_html = """
 </div>
 """
 
-# Render
+# Display
 st.markdown(column_html, unsafe_allow_html=True)
 
 
