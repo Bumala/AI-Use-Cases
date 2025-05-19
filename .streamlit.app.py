@@ -467,104 +467,95 @@ use_case_descriptions = {
     "Use Case 30": "Description for use case 30"
 }
 
-# Custom CSS for the columns and boxes
-st.markdown("""
+# Color pickers for each column
+col1_color = st.color_picker("Left Column Color", "#f0f8ff")
+col2_color = st.color_picker("Middle Column Color", "#fff0f5")
+col3_color = st.color_picker("Right Column Color", "#f0fff0")
+
+# Dynamic CSS based on selected colors
+st.markdown(f"""
 <style>
-    .container {
-        display: flex;
-        justify-content: space-between;
-        gap: 20px;
-        flex-wrap: wrap;
-    }
-    
-    .column {
-        flex: 1;
-        min-width: 300px;
-        max-width: 350px;
-    }
-    
-    .left-column .details-box {
-        background-color: #f0f8ff;
-        border: 1px solid #4682b4;
-        border-radius: 8px;
-        padding: 12px;
-        margin-bottom: 15px;
-    }
-    
-    .middle-column .details-box {
-        background-color: #fff0f5;
-        border: 1px solid #db7093;
-        border-radius: 8px;
-        padding: 12px;
-        margin-bottom: 15px;
-    }
-    
-    .right-column .details-box {
-        background-color: #f0fff0;
-        border: 1px solid #2e8b57;
-        border-radius: 8px;
-        padding: 12px;
-        margin-bottom: 15px;
-    }
-    
-    details summary {
-        font-weight: bold;
-        cursor: pointer;
-        padding: 5px;
-    }
-    
-    details p {
-        margin-top: 10px;
-        padding-left: 5px;
-    }
+.container {{
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+    flex-wrap: wrap;
+}}
+
+.column {{
+    flex: 1;
+    min-width: 300px;
+    max-width: 350px;
+}}
+
+/* Left column boxes */
+.column:nth-child(1) .details-box {{
+    background-color: {col1_color};
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    padding: 10px 15px;
+    margin-bottom: 15px;
+    font-family: sans-serif;
+}}
+
+/* Middle column boxes */
+.column:nth-child(2) .details-box {{
+    background-color: {col2_color};
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    padding: 10px 15px;
+    margin-bottom: 15px;
+    font-family: sans-serif;
+}}
+
+/* Right column boxes */
+.column:nth-child(3) .details-box {{
+    background-color: {col3_color};
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    padding: 10px 15px;
+    margin-bottom: 15px;
+    font-family: sans-serif;
+}}
+
+details summary {{
+    font-weight: bold;
+    cursor: pointer;
+    outline: none;
+}}
 </style>
 """, unsafe_allow_html=True)
 
-# Create columns
-col1, col2, col3 = st.columns(3)
-
-# Organize use cases into the three columns
+# Organize use cases into columns
 use_cases = list(use_case_descriptions.items())
+columns = [[], [], []]
 
-with col1:
-    st.markdown('<div class="column left-column">', unsafe_allow_html=True)
-    for title, description in use_cases[:10]:
-        st.markdown(f"""
-        <div class='details-box'>
-            <details>
-                <summary>{title}</summary>
-                <p>{description}</p>
-            </details>
-        </div>
-        """, unsafe_allow_html=True)
-    st.markdown('</div>', unsafe_allow_html=True)
+for i, (title, description) in enumerate(use_cases):
+    if i < 10:
+        column_index = 0  # Left column
+    elif i < 20:
+        column_index = 1  # Middle column
+    else:
+        column_index = 2  # Right column
+        
+    html_snippet = f"""
+    <div class='details-box'>
+        <details>
+            <summary>{title}</summary>
+            <p>{description}</p>
+        </details>
+    </div>
+    """
+    columns[column_index].append(html_snippet)
 
-with col2:
-    st.markdown('<div class="column middle-column">', unsafe_allow_html=True)
-    for title, description in use_cases[10:20]:
-        st.markdown(f"""
-        <div class='details-box'>
-            <details>
-                <summary>{title}</summary>
-                <p>{description}</p>
-            </details>
-        </div>
-        """, unsafe_allow_html=True)
-    st.markdown('</div>', unsafe_allow_html=True)
+# Build the HTML structure
+column_html = "<div class='container'>"
+for col in columns:
+    column_html += "<div class='column'>" + "".join(col) + "</div>"
+column_html += "</div>"
 
-with col3:
-    st.markdown('<div class="column right-column">', unsafe_allow_html=True)
-    for title, description in use_cases[20:30]:
-        st.markdown(f"""
-        <div class='details-box'>
-            <details>
-                <summary>{title}</summary>
-                <p>{description}</p>
-            </details>
-        </div>
-        """, unsafe_allow_html=True)
-    st.markdown('</div>', unsafe_allow_html=True)
-
+# Render in Streamlit
+st.markdown(column_html, unsafe_allow_html=True)
 
 
 
