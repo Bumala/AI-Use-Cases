@@ -407,11 +407,20 @@ st.markdown(html_code, unsafe_allow_html=True)
 
 
 
+import streamlit as st
+
 html_code = """
 <div style="display: flex; justify-content: center; gap: 400px; margin-top: 50px;">
-    <p style="font-size: 18px; text-align: top-margin: 1em; center;">Amplification of idea space</p>
-    <p style="font-size: 18px; text-align: center;">Efficiency improvements in product development</p>
-    <p style="font-size: 18px; text-align: center;">Optimized market introduction</p>
+    <p style="font-size: 18px; text-align: center; 
+              margin-left: -50px; margin-top: -20px;">
+        AI in design
+    </p>
+    <p style="font-size: 18px; text-align: center;">
+        AI in manufacturing
+    </p>
+    <p style="font-size: 18px; text-align: center;">
+        AI in user experience
+    </p>
 </div>
 """
 
