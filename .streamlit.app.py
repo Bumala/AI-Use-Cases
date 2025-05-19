@@ -415,10 +415,10 @@ html_code = """
               margin-left: 100px; margin-top: -40px; white-space: nowrap">
         Amplification of idea space
     </p>
-    <p style="font-size: 18px; text-align: center; margin-top: -40px;">
+    <p style="font-size: 18px; text-align: center; margin-top: -40px;white-space: nowrap">
         Efficiency improvements in product development
     </p>
-    <p style="font-size: 18px; text-align: center; margin-top: -40px; text-align: left; ">
+    <p style="font-size: 18px; text-align: center; margin-top: -40px; text-align: right; white-space: nowrap ">
         Optimized market introduction
     </p>
 </div>
