@@ -412,7 +412,7 @@ import streamlit as st
 html_code = """
 <div style="display: flex; justify-content: center; gap: 400px; margin-top: 50px;">
     <p style="font-size: 18px; text-align: center; 
-              margin-left: -50px; margin-top: -20px;">
+              margin-left: -50px; margin-top: -30px;">
         AI in design
     </p>
     <p style="font-size: 18px; text-align: center;">
