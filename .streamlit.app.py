@@ -380,7 +380,9 @@ components.html(html_code, height=500)
 #---------------------------------------------------------------------------------------------- Display of all AI Use Cases -------------------------------------------------------------------------------------------------------------------
 
 
-
+# Set size and vertical stretch factor
+font_size = 60
+stretch_y = 4  # 1 = normal, 2 = double height
 
 
 html_code = f"""
