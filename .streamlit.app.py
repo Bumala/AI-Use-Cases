@@ -285,7 +285,7 @@ function moveSectionDots() {
     dot.move();
 
     // At x ≈ 300: let some through, reset others to start
-    if (Math.abs(dot.x - 300) < 5) {
+    if (Math.abs(dot.x - 700) < 5) {
       if (Math.random() < 0.5) {
         return [dot]; // allow through
       } else {
