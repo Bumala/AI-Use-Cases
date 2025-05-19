@@ -468,7 +468,7 @@ ai_use_cases_data = {
     "AI-enhanced Collaboration Platforms": "Improves team creativity and efficiency through smart assistance."
 }
 
-# CSS styles for layout and collapsible boxes
+# Style for collapsible boxes
 st.markdown("""
 <style>
 .container {
@@ -477,11 +477,13 @@ st.markdown("""
     gap: 40px;
     flex-wrap: wrap;
 }
+
 .column {
     flex: 1;
     min-width: 300px;
     max-width: 350px;
 }
+
 .details-box {
     background-color: #f0f8ff;
     border: 1px solid #ccc;
@@ -490,6 +492,7 @@ st.markdown("""
     margin-bottom: 15px;
     font-family: sans-serif;
 }
+
 details summary {
     font-weight: bold;
     cursor: pointer;
@@ -498,32 +501,31 @@ details summary {
 </style>
 """, unsafe_allow_html=True)
 
-# Convert dict to list and split into 3 columns of 10 items each
-ai_use_cases_list = list(ai_use_cases_data.items())
-columns = [
-    ai_use_cases_list[:10],     # Left column
-    ai_use_cases_list[10:20],   # Middle column
-    ai_use_cases_list[20:30],   # Right column
-]
+# Sort use cases into 3 columns
+columns = [[], [], []]
+use_cases = list(use_case_descriptions.items())
+for i, (title, description) in enumerate(use_cases):
+    column_index = i % 3
+    html_snippet = f"""
+    <div class='details-box'>
+        <details>
+            <summary>{title}</summary>
+            <p>{description}</p>
+        </details>
+    </div>
+    """
+    columns[column_index].append(html_snippet)
 
-# Build HTML for columns and use case boxes
+# Combine into full HTML
 column_html = "<div class='container'>"
 for col in columns:
-    column_html += "<div class='column'>"
-    for title, description in col:
-        column_html += f"""
-        <div class='details-box'>
-            <details>
-                <summary>{title}</summary>
-                <p>{description}</p>
-            </details>
-        </div>
-        """
-    column_html += "</div>"
+    column_html += "<div class='column'>" + "".join(col) + "</div>"
 column_html += "</div>"
 
-# Render the final HTML in Streamlit
+# Render in Streamlit
 st.markdown(column_html, unsafe_allow_html=True)
+
+
 
 
 #-------------------------------------------------------------------------------------------- Table for category, dimension and attributes -----------------------------------------------------------------------------------------------------
