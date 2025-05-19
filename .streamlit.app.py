@@ -397,14 +397,7 @@ html_code = f"""
 st.markdown(html_code, unsafe_allow_html=True)
 
 
-html = """
-<svg width="40" height="200">
-  <path d="M20,0 Q0,50 20,100 Q0,150 20,200"
-        stroke="black" fill="transparent" stroke-width="4"/>
-</svg>
-"""
-import streamlit as st
-st.markdown(html, unsafe_allow_html=True)
+
 
 
 
