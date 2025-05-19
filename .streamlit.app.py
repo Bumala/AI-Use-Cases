@@ -474,19 +474,32 @@ details summary {
 """, unsafe_allow_html=True)
 
 # Sort use cases into 3 columns
-columns = [[], [], []]
 use_cases = list(use_case_descriptions.items())
-for i, (title, description) in enumerate(use_cases):
-    column_index = i % 3
-    html_snippet = f"""
-    <div class='details-box'>
-        <details>
-            <summary>{title}</summary>
-            <p>{description}</p>
-        </details>
-    </div>
-    """
-    columns[column_index].append(html_snippet)
+
+# Divide strictly by thirds
+columns = [
+    use_cases[:10],     # First 10 → Left
+    use_cases[10:20],   # Next 10 → Middle
+    use_cases[20:30]    # Last 10 → Right
+]
+
+# Build HTML
+column_html = "<div class='container'>"
+for col in columns:
+    column_html += "<div class='column'>"
+    for title, description in col:
+        column_html += f"""
+        <div class='details-box'>
+            <details>
+                <summary>{title}</summary>
+                <p>{description}</p>
+            </details>
+        </div>
+        """
+    column_html += "</div>"
+column_html += "</div>"
+
+
 
 # Combine into full HTML
 column_html = "<div class='container'>"
