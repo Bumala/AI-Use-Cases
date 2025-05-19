@@ -304,7 +304,7 @@ function moveSectionDots() {
     if (dot.bounds === sectionBounds[1] && dot.x > sectionBounds[1].xMax - 5) {
       if (Math.random() < 0.5) {
         // Let it continue beyond 900 (into fading or external region)
-        dot.bounds = { xMin: 900, xMax: 1000, yMin: dot.y - 10, yMax: dot.y + 10 }; // loose bounds
+        dot.bounds = { xMin: 900, xMax: 1500, yMin: dot.y - 10, yMax: dot.y + 10 }; // loose bounds
         return [dot];
       } else {
         // Send back to ~x=300
