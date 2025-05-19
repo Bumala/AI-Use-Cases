@@ -284,14 +284,14 @@ function moveSectionDots() {
   sectionDots = sectionDots.flatMap(dot => {
     dot.move();
 
-    // 1. Gate at x ≈ 300: filter some, reset others to start
+    // At x ≈ 300: simulate a filter gate
     if (dot.bounds === sectionBounds[0] && dot.x > sectionBounds[0].xMax - 5) {
       if (Math.random() < 0.5) {
-        // Let it pass to section 1
+        // Let dot proceed to next section
         dot.bounds = sectionBounds[1];
         return [dot];
       } else {
-        // Reset to start of section 0
+        // Reset to beginning of section 0
         dot.x = sectionBounds[0].xMin + 10;
         dot.y = randomBetween(sectionBounds[0].yMin + 10, sectionBounds[0].yMax - 10);
         dot.dx = randomBetween(0.5, 1.0);
@@ -300,14 +300,14 @@ function moveSectionDots() {
       }
     }
 
-    // 2. Gate at x ≈ 900: filter some, reset others to x ≈ 300
+    // At x ≈ 900: another filter gate
     if (dot.bounds === sectionBounds[1] && dot.x > sectionBounds[1].xMax - 5) {
       if (Math.random() < 0.5) {
-        // Let it move freely beyond 900
-        dot.bounds = { xMin: 900, xMax: 1200, yMin: dot.y - 15, yMax: dot.y + 15 };
+        // Let it continue beyond 900 (into fading or external region)
+        dot.bounds = { xMin: 900, xMax: 1500, yMin: dot.y - 10, yMax: dot.y + 10 }; // loose bounds
         return [dot];
       } else {
-        // Reset back to beginning of section 1 (around x=300)
+        // Send back to ~x=300
         dot.x = sectionBounds[1].xMin + 10;
         dot.y = randomBetween(sectionBounds[1].yMin + 10, sectionBounds[1].yMax - 10);
         dot.dx = randomBetween(0.5, 1.0);
@@ -316,31 +316,8 @@ function moveSectionDots() {
       }
     }
 
-    // 3. Remove dots that reach beyond x = 1200
-    if (dot.x > 1200) {
-      return [];
-    }
-
-    return [dot]; // Keep dot by default
-  });
-
-  // Optional: add new dots at the very beginning to keep a constant flow
-  if (sectionDots.length < 100) {
-    sectionDots.push(new Dot(
-      sectionBounds[0].xMin + 10,
-      randomBetween(sectionBounds[0].yMin + 10, sectionBounds[0].yMax - 10),
-      randomBetween(0.5, 1.0),
-      (Math.random() - 0.5) * 0.3,
-      5,
-      generateColor(),
-      sectionBounds[0]
-    ));
-  }
-}
-
-
     // Remove dots that go past x=1000
-    if (dot.x > 1200) {
+    if (dot.x > 1000) {
       return [];
     }
 
