@@ -281,19 +281,48 @@ function drawSectionDots() {
 }
 
 function moveSectionDots() {
-  sectionDots.forEach(dot => {
+  sectionDots = sectionDots.flatMap(dot => {
     dot.move();
 
-    // If a dot exits the funnel on the right, reset it to the left
-    if (dot.x > 1000) {
-      dot.x = sectionBounds[0].xMin + 10;
-      dot.y = randomBetween(sectionBounds[0].yMin + 10, sectionBounds[0].yMax - 10);
-      dot.dx = randomBetween(0.5, 1.0);
-      dot.dy = (Math.random() - 0.5) * 0.3;
-      dot.bounds = sectionBounds[0]; // Reset to first section
+    // At x ≈ 300: let some through, reset others to start
+    if (Math.abs(dot.x - 300) < 5) {
+      if (Math.random() < 0.5) {
+        return [dot]; // allow through
+      } else {
+        // Reset to beginning
+        dot.x = sectionBounds[0].xMin + 10;
+        dot.y = randomBetween(sectionBounds[0].yMin + 10, sectionBounds[0].yMax - 10);
+        dot.dx = randomBetween(0.5, 1.0);
+        dot.dy = (Math.random() - 0.5) * 0.3;
+        dot.bounds = sectionBounds[0];
+        return [dot];
+      }
     }
+
+    // At x ≈ 900: let some through, reset others to x ≈ 300
+    if (Math.abs(dot.x - 900) < 5) {
+      if (Math.random() < 0.5) {
+        return [dot]; // allow through
+      } else {
+        // Reset to around x = 300
+        dot.x = 300;
+        dot.y = randomBetween(sectionBounds[1].yMin + 10, sectionBounds[1].yMax - 10);
+        dot.dx = randomBetween(0.5, 1.0);
+        dot.dy = (Math.random() - 0.5) * 0.3;
+        dot.bounds = sectionBounds[1];
+        return [dot];
+      }
+    }
+
+    // Remove dots that go past x = 1000
+    if (dot.x > 1000) {
+      return [];
+    }
+
+    return [dot]; // keep as is
   });
 }
+
 
 
 function drawOuterSmallDots() {
