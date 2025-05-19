@@ -463,7 +463,7 @@ use_case_descriptions = {
     "AI-powered Testing Automation": "Speeds up QA by automatically generating and executing test cases.",
     "Autonomous Product Testing": "AI runs independent tests without human involvement.",
     "AI in Materials Discovery": "Uses AI to find and evaluate new materials faster.",
-    "AI-enhanced Collaboration Platforms": "Improves team creativity and efficiency through smart assistance."
+    "AI-enhanced Collaboration Platforms": "Improves team creativity and efficiency through smart assistance.",
 }
 
 # Style for collapsible boxes
