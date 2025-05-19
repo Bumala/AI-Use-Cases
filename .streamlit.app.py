@@ -67,7 +67,6 @@ function generateColor() {
 
 class Dot {
   constructor(x, y, dx, dy, radius, color, bounds) {
-    this.stage = 0;  // Tracks current phase in the funnel
     this.x = x;
     this.y = y;
     this.dx = dx;
@@ -78,14 +77,13 @@ class Dot {
   }
 
   move() {
-  this.x += this.dx;
-  this.y += this.dy;
-
-  // Optional: vertical bounds only (if needed visually)
-  if (this.y < 0) this.y = 0;
-  if (this.y > canvas.height) this.y = canvas.height;
-}
-
+    this.x += this.dx;
+    this.y += this.dy;
+    if (this.x < this.bounds.xMin) this.x = this.bounds.xMax;
+    if (this.x > this.bounds.xMax) this.x = this.bounds.xMin;
+    if (this.y < this.bounds.yMin) this.y = this.bounds.yMax;
+    if (this.y > this.bounds.yMax) this.y = this.bounds.yMin;
+  }
 
   draw(ctx) {
     ctx.beginPath();
@@ -106,7 +104,14 @@ class SmallDot {
     this.bounds = bounds;
   }
 
-  
+  move() {
+    this.x += this.dx;
+    this.y += this.dy;
+    if (this.x < this.bounds.xMin) this.x = this.bounds.xMax;
+    if (this.x > this.bounds.xMax) this.x = this.bounds.xMin;
+    if (this.y < this.bounds.yMin) this.y = this.bounds.yMax;
+    if (this.y > this.bounds.yMax) this.y = this.bounds.yMin;
+  }
 
   draw(ctx) {
     ctx.beginPath();
@@ -279,72 +284,30 @@ function moveSectionDots() {
   sectionDots = sectionDots.flatMap(dot => {
     dot.move();
 
-    // 1. First filter at x ≈ 300
-    if (dot.x > 300 && dot.x <= 310 && dot.stage === 0) {
-      if (Math.random() < 2 / 3) {
-        // Allow through to stage 1
-        dot.stage = 1;
-        return [dot];
-      } else {
-        // Reset to beginning
-        dot.x = 10;
-        dot.y = randomBetween(h / 2 - 100, h / 2 + 100);
-        dot.dx = randomBetween(0.5, 1.0);
-        dot.dy = (Math.random() - 0.5) * 0.3;
-        dot.stage = 0;
-        return [dot];
-      }
-    }
-
-    // 2. Second filter at x ≈ 900
-    if (dot.x > 900 && dot.x <= 910 && dot.stage === 1) {
+    // At x ≈ 300: simulate a filter gate
+    if (dot.bounds === sectionBounds[0] && dot.x > sectionBounds[0].xMax - 5) {
       if (Math.random() < 0.5) {
-        // Allow through to final stage
-        dot.stage = 2;
+        // Let dot proceed to next section
+        dot.bounds = sectionBounds[1];
         return [dot];
       } else {
-        // Reset to x ≈ 300
-        dot.x = 300;
-        dot.y = randomBetween(h / 2 - 40, h / 2 + 40);
+        // Reset to beginning of section 0
+        dot.x = sectionBounds[0].xMin + 10;
+        dot.y = randomBetween(sectionBounds[0].yMin + 10, sectionBounds[0].yMax - 10);
         dot.dx = randomBetween(0.5, 1.0);
         dot.dy = (Math.random() - 0.5) * 0.3;
-        dot.stage = 1;
         return [dot];
       }
     }
 
-    // 3. Remove dots that reach x > 1200
-    if (dot.x > 1200) {
-      return [];
-    }
-
-    return [dot];
-  });
-
-  // Keep input flow steady — add new dots at the beginning
-  while (sectionDots.length < 150) {
-    sectionDots.push(new Dot(
-      10,
-      randomBetween(h / 2 - 100, h / 2 + 100),
-      randomBetween(0.5, 1.0),
-      (Math.random() - 0.5) * 0.3,
-      5,
-      generateColor(),
-      {} // Remove bounds so it flows freely
-    ));
-    sectionDots[sectionDots.length - 1].stage = 0;
-  }
-}
-
-
-    // 2. Gate at x ≈ 900: filter some, reset others to x ≈ 300
+    // At x ≈ 900: another filter gate
     if (dot.bounds === sectionBounds[1] && dot.x > sectionBounds[1].xMax - 5) {
       if (Math.random() < 0.5) {
-        // Let it move freely beyond 900
-        dot.bounds = { xMin: 900, xMax: 1200, yMin: dot.y - 15, yMax: dot.y + 15 };
+        // Let it continue beyond 900 (into fading or external region)
+        dot.bounds = { xMin: 900, xMax: 1500, yMin: dot.y - 10, yMax: dot.y + 10 }; // loose bounds
         return [dot];
       } else {
-        // Reset back to beginning of section 1 (around x=300)
+        // Send back to ~x=300
         dot.x = sectionBounds[1].xMin + 10;
         dot.y = randomBetween(sectionBounds[1].yMin + 10, sectionBounds[1].yMax - 10);
         dot.dx = randomBetween(0.5, 1.0);
@@ -353,28 +316,14 @@ function moveSectionDots() {
       }
     }
 
-    // 3. Remove dots that reach beyond x = 1200
-    if (dot.x > 1200) {
+    // Remove dots that go past x=1000
+    if (dot.x > 1000) {
       return [];
     }
 
-    return [dot]; // Keep dot by default
+    return [dot];
   });
-
-  // Optional: add new dots at the very beginning to keep a constant flow
-  if (sectionDots.length < 100) {
-    sectionDots.push(new Dot(
-      sectionBounds[0].xMin + 10,
-      randomBetween(sectionBounds[0].yMin + 10, sectionBounds[0].yMax - 10),
-      randomBetween(0.5, 1.0),
-      (Math.random() - 0.5) * 0.3,
-      5,
-      generateColor(),
-      sectionBounds[0]
-    ));
-  }
 }
-
 
 
  
@@ -1073,7 +1022,6 @@ if selected_attributes:
 else:
    top_6_use_cases = None  # Default value if no attributes are selected
    st.info("Please select the attributes above to display relevant information.")
- 
  
  
  
