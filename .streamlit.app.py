@@ -1162,68 +1162,72 @@ else:
  
  #----------------------------------------------------------------------------------------------- Graph of top use case cluster ---------------------------------------------------------------------------------------------------------------
 
+import plotly.graph_objects as go
+import streamlit as st
+
 if top_use_case:
-    # Identify the cluster
+    # Step 1: Find the cluster for the selected top use case
     cluster_name = use_case_to_cluster.get(top_use_case)
 
     if cluster_name:
-        # Get all use cases in the same cluster
+        # Step 2: Get all use cases in that cluster
         cluster_use_cases = [
             use_case for use_case, cluster in use_case_to_cluster.items()
             if cluster == cluster_name
         ]
 
-        # Step 3: Filter the dataframe
+        # Step 3: Filter the analysis table to include only those use cases
         cluster_df = analysis_table.loc[
             analysis_table.index.intersection(cluster_use_cases)
         ]
 
         if not cluster_df.empty:
-            # Step 4: Build a grouped bar chart (one bar per use case per attribute)
-            attribute_columns = cluster_df.columns
-            fig = go.Figure()
+            # Step 4: Calculate average values for each attribute
+            avg_values = cluster_df.mean()
 
-            for use_case in cluster_df.index:
-                fig.add_trace(go.Bar(
-                    x=attribute_columns,
-                    y=cluster_df.loc[use_case],
-                    name=use_case,
+            # Step 5: Create the bar chart
+            fig = go.Figure(data=[
+                go.Bar(
+                    x=avg_values.index,
+                    y=avg_values.values,
                     marker_color=[
-                        '#92D050' if v == 2 else '#FFD966' if v == 1 else '#D9D9D9'
-                        for v in cluster_df.loc[use_case]
-                    ]
-                ))
+                        '#92D050' if v >= 1.5 else '#FFD966' if v >= 0.5 else '#D9D9D9'
+                        for v in avg_values.values
+                    ],
+                )
+            ])
 
-            # Step 5: Styling
+            # Step 6: Format the chart
+            fig.update_yaxes(
+                tickvals=[0, 1, 2],
+                ticktext=["Low", "Moderate", "High"],
+                title_text="Average Significance Level",
+                range=[0, 2],
+                title_font=dict(family='Arial Bold'),
+                tickfont=dict(color='black'),
+            )
+            fig.update_xaxes(
+                title_text="Attributes",
+                tickangle=50,
+                title_font=dict(family='Arial Bold'),
+                tickfont=dict(color='black'),
+                automargin=True,
+                title_standoff=30
+            )
             fig.update_layout(
-                barmode='group',
-                title=f"Attribute Significance Across Use Cases in {cluster_name}",
+                title=f"Average Attribute Significance for {cluster_name}",
                 title_font=dict(family='Arial Bold', size=18, color='black'),
-                xaxis=dict(
-                    title="Attributes",
-                    tickangle=45,
-                    title_font=dict(family='Arial Bold'),
-                    tickfont=dict(color='black')
-                ),
-                yaxis=dict(
-                    title="Significance Level",
-                    tickvals=[0, 1, 2],
-                    ticktext=["Low", "Moderate", "High"],
-                    range=[0, 2],
-                    title_font=dict(family='Arial Bold'),
-                    tickfont=dict(color='black')
-                ),
-                legend_title="Use Cases",
-                height=500,
-                margin=dict(t=50, b=80)
+                margin=dict(t=50, b=80),
+                height=500
             )
 
-            # Step 6: Display
+            # Step 7: Show chart
             st.plotly_chart(fig, use_container_width=True)
         else:
-            st.warning("No matching use cases found in this cluster.")
+            st.warning("No data found for the cluster's use cases.")
     else:
-        st.warning("Top use case not found in cluster mapping.")
+        st.warning("Selected use case does not belong to a known cluster.")
+
 
  
  
