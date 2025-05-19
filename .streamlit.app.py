@@ -467,69 +467,69 @@ use_case_descriptions = {
     # Add the remaining 27 use cases here...
 }
 
-# Ensure the list has exactly 30 items
-columns = [[], [], []]
-use_cases = list(use_case_descriptions.items())
-for i, (title, description) in enumerate(use_cases):
+# Styling
+st.markdown("""
+<style>
+.container {
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+    flex-wrap: wrap;
+}
+.column {
+    flex: 1;
+    min-width: 300px;
+    max-width: 350px;
+}
+.details-box {
+    background-color: #f0f8ff;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    padding: 10px 15px;
+    margin-bottom: 15px;
+    font-family: sans-serif;
+}
+details summary {
+    font-weight: bold;
+    cursor: pointer;
+    outline: none;
+}
+</style>
+""", unsafe_allow_html=True)
 
-    # Divide into 3 groups of 10
-    columns = [
-        use_cases[:10],   # Left column
-        use_cases[10:20], # Middle column
-        use_cases[20:30]  # Right column
-    ]
+# Manually assign to columns without a loop
+titles = list(use_case_descriptions.keys())
 
-    # Style for collapsible boxes
-    st.markdown("""
-    <style>
-    .container {
-        display: flex;
-        justify-content: center;
-        gap: 40px;
-        flex-wrap: wrap;
-    }
+column_html = """
+<div class='container'>
 
-    .column {
-        flex: 1;
-        min-width: 300px;
-        max-width: 350px;
-    }
+  <div class='column'>
+    """ + "".join([
+        f"<div class='details-box'><details><summary>{titles[i]}</summary><p>{use_case_descriptions[titles[i]]}</p></details></div>"
+        for i in range(0, 10)
+    ]) + """
+  </div>
 
-    .details-box {
-        background-color: #f0f8ff;
-        border: 1px solid #ccc;
-        border-radius: 10px;
-        padding: 10px 15px;
-        margin-bottom: 15px;
-        font-family: sans-serif;
-    }
+  <div class='column'>
+    """ + "".join([
+        f"<div class='details-box'><details><summary>{titles[i]}</summary><p>{use_case_descriptions[titles[i]]}</p></details></div>"
+        for i in range(10, 20)
+    ]) + """
+  </div>
 
-    details summary {
-        font-weight: bold;
-        cursor: pointer;
-        outline: none;
-    }
-    </style>
-    """, unsafe_allow_html=True)
+  <div class='column'>
+    """ + "".join([
+        f"<div class='details-box'><details><summary>{titles[i]}</summary><p>{use_case_descriptions[titles[i]]}</p></details></div>"
+        for i in range(20, 30)
+    ]) + """
+  </div>
 
-    # Build HTML for all three columns
-    column_html = "<div class='container'>"
-    for col in columns:
-        column_html += "<div class='column'>"
-        for title, description in col:
-            column_html += f"""
-            <div class='details-box'>
-                <details>
-                    <summary>{title}</summary>
-                    <p>{description}</p>
-                </details>
-            </div>
-            """
-        column_html += "</div>"
-    column_html += "</div>"
+</div>
+"""
 
-    # Render in Streamlit
-    st.markdown(column_html, unsafe_allow_html=True)
+# Render
+st.markdown(column_html, unsafe_allow_html=True)
+
 
 
 
