@@ -286,12 +286,11 @@ function moveSectionDots() {
 
     // At x ≈ 300: simulate a filter gate
     if (dot.bounds === sectionBounds[0] && dot.x > sectionBounds[0].xMax - 5) {
-      if (Math.random() < 0.5) {
-        // Let dot proceed to next section
+      if (Math.random() < 0.66) { // allow 2/3 to pass
         dot.bounds = sectionBounds[1];
         return [dot];
       } else {
-        // Reset to beginning of section 0
+        // Reset to start
         dot.x = sectionBounds[0].xMin + 10;
         dot.y = randomBetween(sectionBounds[0].yMin + 10, sectionBounds[0].yMax - 10);
         dot.dx = randomBetween(0.5, 1.0);
@@ -300,14 +299,12 @@ function moveSectionDots() {
       }
     }
 
-    // At x ≈ 900: another filter gate
+    // At x ≈ 900: filter again
     if (dot.bounds === sectionBounds[1] && dot.x > sectionBounds[1].xMax - 5) {
       if (Math.random() < 0.5) {
-        // Let it continue beyond 900 (into fading or external region)
-        dot.bounds = { xMin: 900, xMax: 1500, yMin: dot.y - 10, yMax: dot.y + 10 }; // loose bounds
+        dot.bounds = { xMin: 900, xMax: 1500, yMin: dot.y - 10, yMax: dot.y + 10 };
         return [dot];
       } else {
-        // Send back to ~x=300
         dot.x = sectionBounds[1].xMin + 10;
         dot.y = randomBetween(sectionBounds[1].yMin + 10, sectionBounds[1].yMax - 10);
         dot.dx = randomBetween(0.5, 1.0);
@@ -316,8 +313,8 @@ function moveSectionDots() {
       }
     }
 
-    // Remove dots that go past x=1000
-    if (dot.x > 1000) {
+    // Remove after x > 1200
+    if (dot.x > 1200) {
       return [];
     }
 
