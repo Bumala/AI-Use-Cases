@@ -436,37 +436,11 @@ st.markdown(html_code, unsafe_allow_html=True)
 
 # Step 1: Use Case Data
 use_case_descriptions = {
-    "AI-infused experiments in R&D": "This use case focuses on integrating AI into experimental R&D processes to accelerate discovery and optimize results.",
-    "AI-powered manufacturing planning in smart factories": "This use case enables intelligent scheduling, resource allocation, and process optimization using AI in smart factories.",
-    "AI-driven Human-Machine Collaboration in ideation": "This use case explores collaboration between AI tools and human designers during early-stage ideation.",
-    "Predictive Maintenance using AI sensors": "Leverages AI and sensor data to predict and prevent equipment failures before they happen.",
-    "AI for Customer Behavior Analysis": "Analyzes large sets of customer interaction data to find actionable insights.",
-    "AI-assisted Prototyping": "Automates parts of the prototyping process using generative AI models.",
-    "Natural Language Processing in Customer Feedback": "Uses NLP to analyze unstructured feedback and identify key themes.",
-    "AI for Market Trend Forecasting": "Predicts future market directions using large-scale data and AI models.",
-    "Generative Design for Engineering": "Uses AI to generate thousands of design options based on constraints.",
-    "AI-enhanced Risk Management": "Automates risk detection and mitigation strategies using predictive analytics.",
-    "AI for Supply Chain Optimization": "Improves logistics and supply chain operations through intelligent forecasting.",
-    "AI in Quality Control": "Detects defects in real-time through computer vision systems.",
-    "Conversational AI for Support": "Implements AI chatbots to assist customers and employees efficiently.",
-    "AI-powered Personalization Engines": "Delivers hyper-personalized product recommendations using AI.",
-    "AI in Product Lifecycle Management": "Optimizes every stage of a product’s life using AI analytics.",
-    "AI for Competitive Intelligence": "Monitors competitor behavior and market shifts automatically.",
-    "AI-based Design Validation": "Simulates and tests design concepts using machine learning.",
-    "AI in Inventory Management": "Reduces overstock and stockouts with smarter predictions.",
-    "Smart Energy Management with AI": "Optimizes factory energy use based on AI models.",
-    "AI-driven Regulatory Compliance": "Helps ensure products meet legal and safety standards via automation.",
-    "AI in User Behavior Modeling": "Understands how users interact with products using behavioral models.",
-    "Voice-Activated Interfaces": "Enables control of systems using natural language commands.",
-    "AI-assisted UX Design": "Provides data-driven recommendations to improve user experience.",
-    "AI in Product Customization": "Automatically configures products to customer preferences.",
-    "AI-driven Feature Prioritization": "Ranks feature development priorities based on predicted impact.",
-    "Digital Twin with AI": "Creates a real-time digital replica of a product or system.",
-    "AI-powered Testing Automation": "Speeds up QA by automatically generating and executing test cases.",
-    "Autonomous Product Testing": "AI runs independent tests without human involvement.",
-    "AI in Materials Discovery": "Uses AI to find and evaluate new materials faster.",
-    "AI-enhanced Collaboration Platforms": "Improves team creativity and efficiency through smart assistance."
+   "AI-infused experiments in R&D": "This use case focuses on integrating AI into experimental R&D processes to accelerate discovery and optimize results.",
+   "AI-powered manufacturing planning in smart factories": "This use case enables intelligent scheduling, resource allocation, and process optimization using AI in smart factories.",
+   "AI-infused experiments in R&D": "This use case balaalalalalalallala.",
 }
+
 
 # Step 2: Styling
 st.markdown("""
