@@ -377,7 +377,7 @@ st.markdown("<p style='font-size:24px; font-weight: 700; margin-bottom:0; text-a
 components.html(html_code, height=500)
 
 
-#---------------------------------------------------------------------------------------------- Display of all AI Use Cases -------------------------------------------------------------------------------------------------------------------
+#---------------------------------------------------------------------------------------------- Introduction -------------------------------------------------------------------------------------------------------------------
 
 
 st.markdown("<p style='font-size:18px;  margin-bottom:0; text-align:center;'>AI´s impact on the automotive innovation process: </p>", unsafe_allow_html=True)
@@ -411,14 +411,14 @@ import streamlit as st
 
 html_code = """
 <div style="display: flex; justify-content: center; gap: 400px; margin-top: 50px;">
-    <p style="font-size: 18px; text-align: center; 
+    <p style="font-size: 18px; text-align: right; 
               margin-left: 100px; margin-top: -40px; white-space: nowrap">
         Amplification of idea space
     </p>
-    <p style="font-size: 18px; text-align: center; margin-top: -40px;white-space: nowrap">
+    <p style="font-size: 18px; text-align: center; margin-top: -40px; white-space: nowrap">
         Efficiency improvements in product development
     </p>
-    <p style="font-size: 18px; text-align: center; margin-top: -40px; text-align: right; white-space: nowrap ">
+    <p style="font-size: 18px; text-align: center; margin-top: -40px; text-align: center; white-space: nowrap ">
         Optimized market introduction
     </p>
 </div>
