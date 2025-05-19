@@ -336,7 +336,7 @@ function animate() {
   requestAnimationFrame(animate);
 }
 
-animate(); // Start the loop!
+
 
 
 
