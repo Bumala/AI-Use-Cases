@@ -317,7 +317,7 @@ function moveSectionDots() {
     }
 
     // Remove dots that go past x=1000
-    if (dot.x > 1000) {
+    if (dot.x > 1200) {
       return [];
     }
 
