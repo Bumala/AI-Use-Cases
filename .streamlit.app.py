@@ -471,34 +471,37 @@ use_case_descriptions = {
 }
 
 
-# Organize into 3 fixed columns
+# 2. Automatic distribution into 3 columns
 use_cases = list(use_case_descriptions.items())
+total_cases = len(use_cases)
 
-# Split into 3 columns of 10 items each
-column1 = use_cases[:10]    # First 10 items
-column2 = use_cases[10:20]  # Next 10 items
-column3 = use_cases[20:]    # Last 10 items
+# Calculate how many items per column (spread evenly)
+items_per_col = (total_cases + 2) // 3  # Rounds up division
 
-columns = [column1, column2, column3]  # 3 columns, 10 rows each
+# Split into 3 columns
+columns = [
+    use_cases[0:items_per_col],
+    use_cases[items_per_col:2*items_per_col],
+    use_cases[2*items_per_col:]
+]
 
-# Generate HTML for each column
-column_html = "<div class='container' style='display: flex; justify-content: space-between;'>"
+# 3. Generate HTML (same as before)
+html = """<div class="container" style="display: flex; gap: 20px;">"""
 for col in columns:
-    column_html += "<div class='column' style='flex: 1; margin: 5px;'>"
+    html += """<div class="column" style="flex: 1;">"""
     for title, description in col:
-        column_html += f"""
-        <div class='details-box'>
+        html += f"""
+        <div style="margin-bottom: 15px; padding: 10px; border: 1px solid #ddd; border-radius: 5px;">
             <details>
-                <summary>{title}</summary>
+                <summary><strong>{title}</strong></summary>
                 <p>{description}</p>
             </details>
         </div>
         """
-    column_html += "</div>"
-column_html += "</div>"
+    html += "</div>"
+html += "</div>"
 
-# Render in Streamlit
-st.markdown(column_html, unsafe_allow_html=True)
+st.markdown(html, unsafe_allow_html=True)
 
 
 
