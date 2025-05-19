@@ -284,45 +284,49 @@ function moveSectionDots() {
   sectionDots = sectionDots.flatMap(dot => {
     dot.move();
 
-    // At x ≈ 300: let some through, reset others to start
-    if (Math.abs(dot.x - 700) < 5) {
+    // At x ≈ 300: simulate a filter gate
+    if (dot.bounds === sectionBounds[0] && dot.x > sectionBounds[0].xMax - 5) {
       if (Math.random() < 0.5) {
-        return [dot]; // allow through
+        // Let dot proceed to next section
+        dot.bounds = sectionBounds[1];
+        return [dot];
       } else {
-        // Reset to beginning
+        // Reset to beginning of section 0
         dot.x = sectionBounds[0].xMin + 10;
         dot.y = randomBetween(sectionBounds[0].yMin + 10, sectionBounds[0].yMax - 10);
         dot.dx = randomBetween(0.5, 1.0);
         dot.dy = (Math.random() - 0.5) * 0.3;
-        dot.bounds = sectionBounds[0];
         return [dot];
       }
     }
 
-    // At x ≈ 900: let some through, reset others to x ≈ 300
-    if (Math.abs(dot.x - 900) < 2) {
+    // At x ≈ 900: another filter gate
+    if (dot.bounds === sectionBounds[1] && dot.x > sectionBounds[1].xMax - 5) {
       if (Math.random() < 0.5) {
-        return [dot]; // allow through
+        // Let it continue beyond 900 (into fading or external region)
+        dot.bounds = { xMin: 900, xMax: 1000, yMin: dot.y - 10, yMax: dot.y + 10 }; // loose bounds
+        return [dot];
       } else {
-        // Reset to around x = 300
-        dot.x = 300;
+        // Send back to ~x=300
+        dot.x = sectionBounds[1].xMin + 10;
         dot.y = randomBetween(sectionBounds[1].yMin + 10, sectionBounds[1].yMax - 10);
         dot.dx = randomBetween(0.5, 1.0);
         dot.dy = (Math.random() - 0.5) * 0.3;
-        dot.bounds = sectionBounds[1];
         return [dot];
       }
     }
 
-    // Remove dots that go past x = 1000
+    // Remove dots that go past x=1000
     if (dot.x > 1000) {
       return [];
     }
 
-    return [dot]; // keep as is
+    return [dot];
   });
 }
 
+
+ 
 
 
 function drawOuterSmallDots() {
