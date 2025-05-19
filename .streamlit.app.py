@@ -504,11 +504,18 @@ column_html += "</div>"
 # Combine into full HTML
 column_html = "<div class='container'>"
 for col in columns:
-    column_html += "<div class='column'>" + "".join(col) + "</div>"
+    column_html += "<div class='column'>"
+    for title, description in col:
+        column_html += f"""
+        <div class='details-box'>
+            <details>
+                <summary>{title}</summary>
+                <p>{description}</p>
+            </details>
+        </div>
+        """
+    column_html += "</div>"
 column_html += "</div>"
-
-# Render in Streamlit
-st.markdown(column_html, unsafe_allow_html=True)
 
 
 
