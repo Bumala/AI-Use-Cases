@@ -1160,8 +1160,71 @@ if top_use_case:
 else:
    st.info("Please select the attributes above to display relevant information.")
  
- 
- 
+ #----------------------------------------------------------------------------------------------- Graph of top use case cluster ---------------------------------------------------------------------------------------------------------------
+
+if top_use_case:
+    # Identify the cluster
+    cluster_name = use_case_to_cluster.get(top_use_case)
+
+    if cluster_name:
+        # Get all use cases in the same cluster
+        cluster_use_cases = [
+            use_case for use_case, cluster in use_case_to_cluster.items()
+            if cluster == cluster_name
+        ]
+
+        # Step 3: Filter the dataframe
+        cluster_df = analysis_table.loc[
+            analysis_table.index.intersection(cluster_use_cases)
+        ]
+
+        if not cluster_df.empty:
+            # Step 4: Build a grouped bar chart (one bar per use case per attribute)
+            attribute_columns = cluster_df.columns
+            fig = go.Figure()
+
+            for use_case in cluster_df.index:
+                fig.add_trace(go.Bar(
+                    x=attribute_columns,
+                    y=cluster_df.loc[use_case],
+                    name=use_case,
+                    marker_color=[
+                        '#92D050' if v == 2 else '#FFD966' if v == 1 else '#D9D9D9'
+                        for v in cluster_df.loc[use_case]
+                    ]
+                ))
+
+            # Step 5: Styling
+            fig.update_layout(
+                barmode='group',
+                title=f"Attribute Significance Across Use Cases in {cluster_name}",
+                title_font=dict(family='Arial Bold', size=18, color='black'),
+                xaxis=dict(
+                    title="Attributes",
+                    tickangle=45,
+                    title_font=dict(family='Arial Bold'),
+                    tickfont=dict(color='black')
+                ),
+                yaxis=dict(
+                    title="Significance Level",
+                    tickvals=[0, 1, 2],
+                    ticktext=["Low", "Moderate", "High"],
+                    range=[0, 2],
+                    title_font=dict(family='Arial Bold'),
+                    tickfont=dict(color='black')
+                ),
+                legend_title="Use Cases",
+                height=500,
+                margin=dict(t=50, b=80)
+            )
+
+            # Step 6: Display
+            st.plotly_chart(fig, use_container_width=True)
+        else:
+            st.warning("No matching use cases found in this cluster.")
+    else:
+        st.warning("Top use case not found in cluster mapping.")
+
  
  
 # -------------------------------------------------------------------------------------------------- Calculate and show other relevant use case --------------------------------------------------------------------------------------------------
