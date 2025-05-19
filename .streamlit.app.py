@@ -705,7 +705,7 @@ with multiselect_container:
    # Add a styled sentence above the dropdown
    st.markdown(
        """
-       <p style="font-size:18px; font-weight:bold; color:black;margin-bottom: 0px;">
+       <p style="font-size:18px; font-weight:bold; color:black;margin-bottom: 0px; margin-top: 3em;">
            Select as many attributes as you like from the dropdown list below to identify relevant AI use cases and clusters in automotive. The more attributes you choose, the more accurately the most relevant AI use case will be displayed. If you select fewer than three attributes, please refer to the section with additional relevant use cases further down this page.
        </p>
        """,
