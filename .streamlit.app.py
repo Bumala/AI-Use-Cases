@@ -470,35 +470,6 @@ use_case_descriptions = {
     "AI-enhanced Collaboration Platforms": "Improves team efficiency through smart tools."
 }
 
-# Style for collapsible boxes
-st.markdown("""
-<style>
-.container {
-    display: flex;
-    justify-content: center;
-    gap: 40px;
-    flex-wrap: wrap;
-}
-.column {
-    flex: 1;
-    min-width: 300px;
-    max-width: 350px;
-}
-.details-box {
-    background-color: #f0f8ff;
-    border: 1px solid #ccc;
-    border-radius: 10px;
-    padding: 10px 15px;
-    margin-bottom: 15px;
-    font-family: sans-serif;
-}
-details summary {
-    font-weight: bold;
-    cursor: pointer;
-    outline: none;
-}
-</style>
-""", unsafe_allow_html=True)
 
 # Organize into 3 fixed columns
 use_cases = list(use_case_descriptions.items())
