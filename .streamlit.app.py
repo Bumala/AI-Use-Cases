@@ -432,17 +432,40 @@ st.markdown(html_code, unsafe_allow_html=True)
 
 
 #-------------------------------------------- All use case descriptions
-# Your data
 use_case_descriptions = {
     "AI-infused experiments in R&D": "This use case focuses on integrating AI into experimental R&D processes to accelerate discovery and optimize results.",
     "AI-powered manufacturing planning in smart factories": "This use case enables intelligent scheduling, resource allocation, and process optimization using AI in smart factories.",
     "AI-driven Human-Machine Collaboration in ideation": "This use case explores collaboration between AI tools and human designers during early-stage ideation.",
-    
-    
-  
+    "Predictive Maintenance using AI sensors": "Leverages AI and sensor data to predict and prevent equipment failures before they happen.",
+    "Use Case 5": "Description for use case 5",
+    "Use Case 6": "Description for use case 6",
+    "Use Case 7": "Description for use case 7",
+    "Use Case 8": "Description for use case 8",
+    "Use Case 9": "Description for use case 9",
+    "Use Case 10": "Description for use case 10",
+    "Use Case 11": "Description for use case 11",
+    "Use Case 12": "Description for use case 12",
+    "Use Case 13": "Description for use case 13",
+    "Use Case 14": "Description for use case 14",
+    "Use Case 15": "Description for use case 15",
+    "Use Case 16": "Description for use case 16",
+    "Use Case 17": "Description for use case 17",
+    "Use Case 18": "Description for use case 18",
+    "Use Case 19": "Description for use case 19",
+    "Use Case 20": "Description for use case 20",
+    "Use Case 21": "Description for use case 21",
+    "Use Case 22": "Description for use case 22",
+    "Use Case 23": "Description for use case 23",
+    "Use Case 24": "Description for use case 24",
+    "Use Case 25": "Description for use case 25",
+    "Use Case 26": "Description for use case 26",
+    "Use Case 27": "Description for use case 27",
+    "Use Case 28": "Description for use case 28",
+    "Use Case 29": "Description for use case 29",
+    "Use Case 30": "Description for use case 30"
 }
 
-# Style for collapsible boxes
+# Style for collapsible boxes with individual column colors
 st.markdown("""
 <style>
 .container {
@@ -458,8 +481,29 @@ st.markdown("""
     max-width: 350px;
 }
 
-.details-box {
-    background-color: #f0f8ff;
+/* Left column (first 10 use cases) */
+.column:nth-child(1) .details-box {
+    background-color: #f0f8ff;  /* Light blue */
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    padding: 10px 15px;
+    margin-bottom: 15px;
+    font-family: sans-serif;
+}
+
+/* Middle column (next 10 use cases) */
+.column:nth-child(2) .details-box {
+    background-color: #fff0f5;  /* Lavender blush */
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    padding: 10px 15px;
+    margin-bottom: 15px;
+    font-family: sans-serif;
+}
+
+/* Right column (last 10 use cases) */
+.column:nth-child(3) .details-box {
+    background-color: #f0fff0;  /* Honeydew */
     border: 1px solid #ccc;
     border-radius: 10px;
     padding: 10px 15px;
@@ -475,11 +519,18 @@ details summary {
 </style>
 """, unsafe_allow_html=True)
 
-# Sort use cases into 3 columns
+# Sort use cases into 3 columns (first 10 in left, next 10 in middle, last 10 in right)
 columns = [[], [], []]
 use_cases = list(use_case_descriptions.items())
+
 for i, (title, description) in enumerate(use_cases):
-    column_index = i % 3
+    if i < 10:
+        column_index = 0  # Left column
+    elif i < 20:
+        column_index = 1  # Middle column
+    else:
+        column_index = 2  # Right column
+        
     html_snippet = f"""
     <div class='details-box'>
         <details>
@@ -498,7 +549,6 @@ column_html += "</div>"
 
 # Render in Streamlit
 st.markdown(column_html, unsafe_allow_html=True)
-
 
 
 
