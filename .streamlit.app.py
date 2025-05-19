@@ -468,8 +468,7 @@ use_case_descriptions = {
 }
 
 # Heading and Subheading
-st.markdown("## 🧠 AI Use Cases in Product Development")
-st.markdown("Explore 30 innovative ways AI can enhance every stage of the product lifecycle.")
+st.markdown("<p style='font-weight: 700; font-size:22px;  margin-top:1em; text-align:center;'>AI use cases in automotive </p>", unsafe_allow_html=True)
 
 # Styling
 st.markdown("""
@@ -486,7 +485,7 @@ st.markdown("""
     max-width: 350px;
 }
 .details-box-1 {
-    background-color: #ffe0b2;  /* Light orange */
+    background-color: #e37852;  
     border: 1px solid #ccc;
     border-radius: 10px;
     padding: 10px 15px;
@@ -494,7 +493,7 @@ st.markdown("""
     font-family: sans-serif;
 }
 .details-box-2 {
-    background-color: #ffcc80;  /* Medium orange */
+    background-color: #FFA07A;  
     border: 1px solid #ccc;
     border-radius: 10px;
     padding: 10px 15px;
@@ -502,7 +501,7 @@ st.markdown("""
     font-family: sans-serif;
 }
 .details-box-3 {
-    background-color: #ffb74d;  /* Darker orange */
+    background-color: #FFC4A6;  
     border: 1px solid #ccc;
     border-radius: 10px;
     padding: 10px 15px;
@@ -531,7 +530,7 @@ column_html = """
 <div class='container'>
 
   <div class='column'>
-    <div class='column-title'>Column 1: Exploration & Design</div>
+    <div class='column-title'>Front end use cases</div>
     """ + "".join([
         f"<div class='details-box-1'><details><summary>{titles[i]}</summary><p>{use_case_descriptions[titles[i]]}</p></details></div>"
         for i in range(0, 10)
@@ -539,7 +538,7 @@ column_html = """
   </div>
 
   <div class='column'>
-    <div class='column-title'>Column 2: Development & Production</div>
+    <div class='column-title'>Development use cases</div>
     """ + "".join([
         f"<div class='details-box-2'><details><summary>{titles[i]}</summary><p>{use_case_descriptions[titles[i]]}</p></details></div>"
         for i in range(10, 20)
@@ -547,7 +546,7 @@ column_html = """
   </div>
 
   <div class='column'>
-    <div class='column-title'>Column 3: Deployment & Optimization</div>
+    <div class='column-title'>Market introduction use cases</div>
     """ + "".join([
         f"<div class='details-box-3'><details><summary>{titles[i]}</summary><p>{use_case_descriptions[titles[i]]}</p></details></div>"
         for i in range(20, 30)
