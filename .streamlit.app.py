@@ -190,20 +190,22 @@ function drawTrumpetFunnel(points, color) {
   ctx.beginPath();
   ctx.moveTo(points.bellStart.x, points.bellStart.y);
   ctx.bezierCurveTo(
-  points.bellStart.x + w * 0.25, points.bellStart.y - 50,
-  points.bellEnd.x - w * 0.05, points.bellEnd.y - 30,
-  points.bellEnd.x, points.bellEnd.y
+  points.bellStart.x + w * 0.1, points.bellStart.y,                  // slight horizontal nudge
+  points.bellEnd.x - w * 0.3, points.bellEnd.y - h * 0.9,            // big upward flare near the end
+  points.bellEnd.x, points.bellEnd.y                                 // end at top-right
 );
+
 
 
   ctx.lineTo(points.tubeEnd.x, points.tubeEnd.y);
   ctx.lineTo(points.mouthBottom.x, points.mouthBottom.y);
   ctx.lineTo(points.bellBottomEnd.x, points.bellBottomEnd.y);
   ctx.bezierCurveTo(
-  points.bellBottomEnd.x - w * 0.05, points.bellBottomEnd.y + 30,
-  points.bellBottomStart.x + w * 0.25, points.bellBottomStart.y + 50,
-  points.bellBottomStart.x, points.bellBottomStart.y
+  points.bellBottomEnd.x - w * 0.3, points.bellBottomEnd.y + h * 0.9, // big downward flare near the end
+  points.bellBottomStart.x + w * 0.1, points.bellBottomStart.y,      // slight horizontal nudge
+  points.bellBottomStart.x, points.bellBottomStart.y                 // end at bottom-left
 );
+
 
 
   ctx.closePath();
