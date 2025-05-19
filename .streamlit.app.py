@@ -317,9 +317,9 @@ function moveSectionDots() {
     }
 
     // At x > 1000: loop back to start of section 0
-    if (dot.x > 1500) {
+    if (dot.x > 1000) {
       dot.bounds = sectionBounds[0];
-      dot.x = sectionBounds[0].xMin + 100;
+      dot.x = sectionBounds[0].xMin + 10;
       dot.y = randomBetween(sectionBounds[0].yMin + 10, sectionBounds[0].yMax - 10);
       dot.dx = randomBetween(0.5, 1.0);
       dot.dy = (Math.random() - 0.5) * 0.3;
@@ -1028,7 +1028,6 @@ if selected_attributes:
 else:
    top_6_use_cases = None  # Default value if no attributes are selected
    st.info("Please select the attributes above to display relevant information.")
- 
  
  
  
