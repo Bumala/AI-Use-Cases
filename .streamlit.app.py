@@ -413,13 +413,13 @@ html_code = """
 <div style="display: flex; justify-content: center; gap: 400px; margin-top: 50px;">
     <p style="font-size: 18px; text-align: center; 
               margin-left: 100px; margin-top: -40px;">
-        AI in design
+        Amplification of idea space
     </p>
-    <p style="font-size: 18px; text-align: right; margin-top: -40px;">
-        AI in manufacturing
+    <p style="font-size: 18px; text-align: center; margin-top: -40px;">
+        Efficiency improvements in product development
     </p>
-    <p style="font-size: 18px; text-align: center;">
-        AI in user experience
+    <p style="font-size: 18px; text-align: center; margin-top: -40px; text-align: left">
+        Optimized market introduction
     </p>
 </div>
 """
