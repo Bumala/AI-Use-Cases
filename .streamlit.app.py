@@ -432,6 +432,8 @@ st.markdown(html_code, unsafe_allow_html=True)
 
 
 #-------------------------------------------- All use case descriptions
+import streamlit as st
+
 use_case_descriptions = {
     "AI-infused experiments in R&D": "This use case focuses on integrating AI into experimental R&D processes to accelerate discovery and optimize results.",
     "AI-powered manufacturing planning in smart factories": "This use case enables intelligent scheduling, resource allocation, and process optimization using AI in smart factories.",
@@ -465,91 +467,103 @@ use_case_descriptions = {
     "Use Case 30": "Description for use case 30"
 }
 
-# Style for collapsible boxes with individual column colors
+# Custom CSS for the columns and boxes
 st.markdown("""
 <style>
-.container {
-    display: flex;
-    justify-content: center;
-    gap: 40px;
-    flex-wrap: wrap;
-}
-
-.column {
-    flex: 1;
-    min-width: 300px;
-    max-width: 350px;
-}
-
-/* Left column (first 10 use cases) */
-.column:nth-child(1) .details-box {
-    background-color: #f0f8ff;  /* Light blue */
-    border: 1px solid #ccc;
-    border-radius: 10px;
-    padding: 10px 15px;
-    margin-bottom: 15px;
-    font-family: sans-serif;
-}
-
-/* Middle column (next 10 use cases) */
-.column:nth-child(2) .details-box {
-    background-color: #fff0f5;  /* Lavender blush */
-    border: 1px solid #ccc;
-    border-radius: 10px;
-    padding: 10px 15px;
-    margin-bottom: 15px;
-    font-family: sans-serif;
-}
-
-/* Right column (last 10 use cases) */
-.column:nth-child(3) .details-box {
-    background-color: #f0fff0;  /* Honeydew */
-    border: 1px solid #ccc;
-    border-radius: 10px;
-    padding: 10px 15px;
-    margin-bottom: 15px;
-    font-family: sans-serif;
-}
-
-details summary {
-    font-weight: bold;
-    cursor: pointer;
-    outline: none;
-}
+    .container {
+        display: flex;
+        justify-content: space-between;
+        gap: 20px;
+        flex-wrap: wrap;
+    }
+    
+    .column {
+        flex: 1;
+        min-width: 300px;
+        max-width: 350px;
+    }
+    
+    .left-column .details-box {
+        background-color: #f0f8ff;
+        border: 1px solid #4682b4;
+        border-radius: 8px;
+        padding: 12px;
+        margin-bottom: 15px;
+    }
+    
+    .middle-column .details-box {
+        background-color: #fff0f5;
+        border: 1px solid #db7093;
+        border-radius: 8px;
+        padding: 12px;
+        margin-bottom: 15px;
+    }
+    
+    .right-column .details-box {
+        background-color: #f0fff0;
+        border: 1px solid #2e8b57;
+        border-radius: 8px;
+        padding: 12px;
+        margin-bottom: 15px;
+    }
+    
+    details summary {
+        font-weight: bold;
+        cursor: pointer;
+        padding: 5px;
+    }
+    
+    details p {
+        margin-top: 10px;
+        padding-left: 5px;
+    }
 </style>
 """, unsafe_allow_html=True)
 
-# Sort use cases into 3 columns (first 10 in left, next 10 in middle, last 10 in right)
-columns = [[], [], []]
+# Create columns
+col1, col2, col3 = st.columns(3)
+
+# Organize use cases into the three columns
 use_cases = list(use_case_descriptions.items())
 
-for i, (title, description) in enumerate(use_cases):
-    if i < 10:
-        column_index = 0  # Left column
-    elif i < 20:
-        column_index = 1  # Middle column
-    else:
-        column_index = 2  # Right column
-        
-    html_snippet = f"""
-    <div class='details-box'>
-        <details>
-            <summary>{title}</summary>
-            <p>{description}</p>
-        </details>
-    </div>
-    """
-    columns[column_index].append(html_snippet)
+with col1:
+    st.markdown('<div class="column left-column">', unsafe_allow_html=True)
+    for title, description in use_cases[:10]:
+        st.markdown(f"""
+        <div class='details-box'>
+            <details>
+                <summary>{title}</summary>
+                <p>{description}</p>
+            </details>
+        </div>
+        """, unsafe_allow_html=True)
+    st.markdown('</div>', unsafe_allow_html=True)
 
-# Combine into full HTML
-column_html = "<div class='container'>"
-for col in columns:
-    column_html += "<div class='column'>" + "".join(col) + "</div>"
-column_html += "</div>"
+with col2:
+    st.markdown('<div class="column middle-column">', unsafe_allow_html=True)
+    for title, description in use_cases[10:20]:
+        st.markdown(f"""
+        <div class='details-box'>
+            <details>
+                <summary>{title}</summary>
+                <p>{description}</p>
+            </details>
+        </div>
+        """, unsafe_allow_html=True)
+    st.markdown('</div>', unsafe_allow_html=True)
 
-# Render in Streamlit
-st.markdown(column_html, unsafe_allow_html=True)
-
+with col3:
+    st.markdown('<div class="column right-column">', unsafe_allow_html=True)
+    for title, description in use_cases[20:30]:
+        st.markdown(f"""
+        <div class='details-box'>
+            <details>
+                <summary>{title}</summary>
+                <p>{description}</p>
+            </details>
+        </div>
+        """, unsafe_allow_html=True)
+    st.markdown('</div>', unsafe_allow_html=True)
 
 
 
