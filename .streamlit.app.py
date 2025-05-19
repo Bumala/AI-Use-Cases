@@ -410,15 +410,15 @@ st.markdown(html_code, unsafe_allow_html=True)
 import streamlit as st
 
 html_code = """
-<div style="display: flex; justify-content: center; gap: 400px; margin-top: 50px;">
+<div style="display: flex; justify-content: center; gap: 200px; margin-top: 50px;">
     <p style="font-size: 18px; text-align: right; font-weight: 700; 
-              margin-left: 100px; margin-top: -40px;margin-left: 100; white-space: nowrap">
+              margin-left: 100px; margin-top: -40px; white-space: nowrap">
         Amplification of idea space
     </p>
     <p style="font-size: 18px; text-align: center; margin-top: -40px; white-space: nowrap; font-weight: 700">
         Efficiency improvements in product development
     </p>
-    <p style="font-size: 18px; text-align: center; margin-top: -40px; text-align: center; white-space: nowrap; font-weight: 700; margin-right: -1000">
+    <p style="font-size: 18px; text-align: center; margin-top: -40px; text-align: center; white-space: nowrap; font-weight: 700">
         Optimized market introduction
     </p>
 </div>
