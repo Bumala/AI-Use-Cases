@@ -379,6 +379,7 @@ components.html(html_code, height=500)
 
 
 
+st.markdown("<h1 style='font-size:60px;'>&#x23EC;&#x23EC;&#x23EC;</h1>", unsafe_allow_html=True)
 
 
 
