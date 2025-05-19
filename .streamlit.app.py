@@ -432,6 +432,7 @@ st.markdown(html_code, unsafe_allow_html=True)
 
 
 #-------------------------------------------- All use case descriptions
+
 # Your data
 use_case_descriptions = {
     "AI-infused experiments in R&D": "This use case focuses on integrating AI into experimental R&D processes to accelerate discovery and optimize results.",
@@ -464,11 +465,10 @@ use_case_descriptions = {
     "Autonomous Product Testing": "AI runs independent tests without human involvement.",
     "AI in Materials Discovery": "Uses AI to find and evaluate new materials faster.",
     "AI-enhanced Collaboration Platforms": "Improves team creativity and efficiency through smart assistance."
-    # Add the remaining 27 use cases here...
 }
 
-# Heading and Subheading
-st.markdown("<p style='font-weight: 700; font-size:22px;  margin-top:1em; text-align:center;'>AI use cases in automotive </p>", unsafe_allow_html=True)
+# Heading
+st.markdown("<p style='font-weight: 700; font-size:22px; margin-top:1em; text-align:center;'>AI use cases in automotive</p>", unsafe_allow_html=True)
 
 # Styling
 st.markdown("""
@@ -485,7 +485,7 @@ st.markdown("""
     max-width: 350px;
 }
 .details-box-1 {
-    background-color: #e37852;  
+    background-color: #e37852;
     border: 1px solid #ccc;
     border-radius: 10px;
     padding: 10px 15px;
@@ -493,7 +493,7 @@ st.markdown("""
     font-family: sans-serif;
 }
 .details-box-2 {
-    background-color: #FFA07A;  
+    background-color: #FFA07A;
     border: 1px solid #ccc;
     border-radius: 10px;
     padding: 10px 15px;
@@ -501,7 +501,7 @@ st.markdown("""
     font-family: sans-serif;
 }
 .details-box-3 {
-    background-color: #FFC4A6;  
+    background-color: #FFC4A6;
     border: 1px solid #ccc;
     border-radius: 10px;
     padding: 10px 15px;
@@ -524,37 +524,40 @@ details summary {
 """, unsafe_allow_html=True)
 
 titles = list(use_case_descriptions.keys())
+assert len(titles) >= 30, "You must have at least 30 use cases"
 
-# Manually structure HTML with different box colors per column
 column_html = """
 <div class='container'>
 
   <div class='column'>
     <div class='column-title'>Front end use cases</div>
-    """ + "".join([
-        f"<div class='details-box-1'><details><summary>{titles[i]}</summary><p>{use_case_descriptions[titles[i]]}</p></details></div>"
-        for i in range(0, 10)
-    ]) + """
+""" + "".join([
+    f"<div class='details-box-1'><details><summary>{titles[i]}</summary><p>{use_case_descriptions[titles[i]]}</p></details></div>"
+    for i in range(0, 10)
+]) + """
   </div>
 
   <div class='column'>
     <div class='column-title'>Development use cases</div>
-    """ + "".join([
-        f"<div class='details-box-2'><details><summary>{titles[i]}</summary><p>{use_case_descriptions[titles[i]]}</p></details></div>"
-        for i in range(10, 20)
-    ]) + """
+""" + "".join([
+    f"<div class='details-box-2'><details><summary>{titles[i]}</summary><p>{use_case_descriptions[titles[i]]}</p></details></div>"
+    for i in range(10, 20)
+]) + """
   </div>
 
   <div class='column'>
     <div class='column-title'>Market introduction use cases</div>
-    """ + "".join([
-        f"<div class='details-box-3'><details><summary>{titles[i]}</summary><p>{use_case_descriptions[titles[i]]}</p></details></div>"
-        for i in range(20, 30)
-    ]) + """
+""" + "".join([
+    f"<div class='details-box-3'><details><summary>{titles[i]}</summary><p>{use_case_descriptions[titles[i]]}</p></details></div>"
+    for i in range(20, 30)
+]) + """
   </div>
 
 </div>
 """
+
+st.markdown(column_html, unsafe_allow_html=True)
+
 
 # Display
 st.markdown(column_html, unsafe_allow_html=True)
