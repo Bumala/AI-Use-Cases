@@ -434,57 +434,39 @@ st.markdown(html_code, unsafe_allow_html=True)
 #-------------------------------------------- All use case descriptions
 
 
-# Step 1: Use Case Data
+# Your data
 use_case_descriptions = {
-   "AI-infused experiments in R&D": "This use case focuses on integrating AI into experimental R&D processes to accelerate discovery and optimize results.",
-   "AI-powered manufacturing planning in smart factories": "This use case enables intelligent scheduling, resource allocation, and process optimization using AI in smart factories.",
-   "AI-infused experiments in R&D": "This use case balaalalalalalallala.",
+    "AI-infused experiments in R&D": "This use case focuses on integrating AI into experimental R&D processes to accelerate discovery and optimize results.",
+    "AI-powered manufacturing planning in smart factories": "This use case enables intelligent scheduling, resource allocation, and process optimization using AI in smart factories.",
+    "AI-driven Human-Machine Collaboration in ideation": "This use case explores collaboration between AI tools and human designers during early-stage ideation.",
+    # Add the remaining 27 use cases here...
 }
 
-
-# Step 2: Styling
+# Style for collapsible boxes
 st.markdown("""
 <style>
-h1 {
-    text-align: center;
-    font-family: sans-serif;
-    color: #333333;
-    margin-bottom: 20px;
-}
-.column-heading {
-    text-align: center;
-    font-weight: bold;
-    font-size: 20px;
-    margin-bottom: 10px;
-    font-family: sans-serif;
-}
 .container {
     display: flex;
     justify-content: center;
     gap: 40px;
     flex-wrap: wrap;
 }
+
 .column {
     flex: 1;
     min-width: 300px;
     max-width: 350px;
 }
-.column-1 .details-box {
-    background-color: #FF8C42; /* Dark orange */
-}
-.column-2 .details-box {
-    background-color: #FFA500; /* Medium orange */
-}
-.column-3 .details-box {
-    background-color: #FFD580; /* Light orange */
-}
+
 .details-box {
+    background-color: #f0f8ff;
     border: 1px solid #ccc;
     border-radius: 10px;
     padding: 10px 15px;
     margin-bottom: 15px;
     font-family: sans-serif;
 }
+
 details summary {
     font-weight: bold;
     cursor: pointer;
@@ -493,33 +475,28 @@ details summary {
 </style>
 """, unsafe_allow_html=True)
 
-# Step 3: Heading
-st.markdown("<h1>AI use cases in automotive</h1>", unsafe_allow_html=True)
-
-# Step 4: Divide into columns
+# Sort use cases into 3 columns
+columns = [[], [], []]
 use_cases = list(use_case_descriptions.items())
-columns = [use_cases[:10], use_cases[10:20], use_cases[20:30]]
-column_titles = ["Front end use cases", "Development use cases", "Market introduction use cases"]
+for i, (title, description) in enumerate(use_cases):
+    column_index = i % 3
+    html_snippet = f"""
+    <div class='details-box'>
+        <details>
+            <summary>{title}</summary>
+            <p>{description}</p>
+        </details>
+    </div>
+    """
+    columns[column_index].append(html_snippet)
 
-# Step 5: Render columns with headings
+# Combine into full HTML
 column_html = "<div class='container'>"
-for i, col in enumerate(columns):
-    column_class = f"column column-{i+1}"
-    column_html += f"<div class='{column_class}'>"
-    column_html += f"<div class='column-heading'>{column_titles[i]}</div>"
-    for title, description in col:
-        column_html += f"""
-        <div class='details-box'>
-            <details>
-                <summary>{title}</summary>
-                <p>{description}</p>
-            </details>
-        </div>
-        """
-    column_html += "</div>"
+for col in columns:
+    column_html += "<div class='column'>" + "".join(col) + "</div>"
 column_html += "</div>"
 
-# Step 6: Render in Streamlit
+# Render in Streamlit
 st.markdown(column_html, unsafe_allow_html=True)
 
 
