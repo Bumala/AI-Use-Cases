@@ -380,22 +380,22 @@ components.html(html_code, height=500)
 #---------------------------------------------------------------------------------------------- Display of all AI Use Cases -------------------------------------------------------------------------------------------------------------------
 
 
-import streamlit as st
 
-# Manually set the size (in pixels)
-size = 60  # 👈 change this number to adjust size
 
-# HTML & CSS to display three downward-pointing `}` characters
+# Set size and vertical stretch factor
+font_size = 60
+stretch_y = 2  # 1 = normal, 2 = double height
+
 html_code = f"""
-<div style="display: flex; gap: 8px; justify-content: center;">
-    <div style="transform: rotate(90deg); font-size: {size}px;">}}</div>
-    <div style="transform: rotate(90deg); font-size: {size}px;">}}</div>
-    <div style="transform: rotate(90deg); font-size: {size}px;">}}</div>
+<div style="display: flex; gap: 10px; justify-content: center;">
+    <div style="transform: rotate(90deg) scaleY({stretch_y}); font-size: {font_size}px;">}}</div>
+    <div style="transform: rotate(90deg) scaleY({stretch_y}); font-size: {font_size}px;">}}</div>
+    <div style="transform: rotate(90deg) scaleY({stretch_y}); font-size: {font_size}px;">}}</div>
 </div>
 """
 
-# Render the HTML in Streamlit
 st.markdown(html_code, unsafe_allow_html=True)
+
 
 
 
