@@ -435,7 +435,7 @@ st.markdown(html_code, unsafe_allow_html=True)
 import streamlit as st
 
 # Your data with 30 example use cases
-use_case_descriptions = {
+ai_use_cases_data = {
     "AI-infused experiments in R&D": "This use case focuses on integrating AI into experimental R&D processes to accelerate discovery and optimize results.",
     "AI-powered manufacturing planning in smart factories": "This use case enables intelligent scheduling, resource allocation, and process optimization using AI in smart factories.",
     "AI-driven Human-Machine Collaboration in ideation": "This use case explores collaboration between AI tools and human designers during early-stage ideation.",
@@ -499,11 +499,11 @@ details summary {
 """, unsafe_allow_html=True)
 
 # Convert dict to list and split into 3 columns of 10 items each
-use_cases = list(use_case_descriptions.items())
+ai_use_cases_list = list(ai_use_cases_data.items())
 columns = [
-    use_cases[:10],     # Left column
-    use_cases[10:20],   # Middle column
-    use_cases[20:30],   # Right column
+    ai_use_cases_list[:10],     # Left column
+    ai_use_cases_list[10:20],   # Middle column
+    ai_use_cases_list[20:30],   # Right column
 ]
 
 # Build HTML for columns and use case boxes
