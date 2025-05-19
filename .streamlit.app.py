@@ -373,13 +373,28 @@ window.addEventListener('resize', function() {
 
 """
  
-st.title("AI in Innovation Management")
+st.markdown("<p style='font-size:18px; text-align:center;'>AI in the automotive innovation process</p>", unsafe_allow_html=True)
 components.html(html_code, height=500)
 
 
+#---------------------------------------------------------------------------------------------- Display of all AI Use Cases -------------------------------------------------------------------------------------------------------------------
 
+import streamlit as st
 
-st.markdown("<h1 style='font-size:60px;'>&#x23EC;&#x23EC;&#x23EC;</h1>", unsafe_allow_html=True)
+# Slider to control size in pixels
+size = st.slider("Select size of characters (px)", 20, 200, 60)
+
+# HTML & CSS for rotated '}' characters side by side
+html_code = f"""
+<div style="display: flex; gap: 10px;">
+  <div style="transform: rotate(90deg); font-size: {size}px;">}}</div>
+  <div style="transform: rotate(90deg); font-size: {size}px;">}}</div>
+  <div style="transform: rotate(90deg); font-size: {size}px;">}}</div>
+</div>
+"""
+
+st.markdown(html_code, unsafe_allow_html=True)
+
 
 
 
