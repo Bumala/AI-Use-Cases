@@ -382,53 +382,40 @@ components.html(html_code, height=500)
 
 st.markdown("<p style='font-size:18px;  margin-bottom:0; text-align:center;'>AI´s impact on the automotive innovation process: </p>", unsafe_allow_html=True)
 
-
-
-import streamlit as st
-
 # Settings
 font_size = 40
 stretch_y = 4  # Stretch factor
 
 # HTML and CSS
 html_code = f"""
-<div style="display: flex; justify-content: center; width: 100%; margin-top: 50px;">
-    <div style="display: flex; gap: 200px; text-align: center;">
-
-        <!-- First block -->
-        <div>
-            <div style="font-size: {font_size}px; font-family: monospace; line-height: 1;
-                        transform: rotate(90deg) scaleY({stretch_y});
-                        transform-origin: center;">}}</div>
-            <div style="margin-top: 20px;">AI in design</div>
-        </div>
-
-        <!-- Second block -->
-        <div>
-            <div style="font-size: {font_size}px; font-family: monospace; line-height: 1;
-                        transform: rotate(90deg) scaleY({stretch_y});
-                        transform-origin: center;">}}</div>
-            <div style="margin-top: 20px;">AI in manufacturing</div>
-        </div>
-
-        <!-- Third block -->
-        <div>
-            <div style="font-size: {font_size}px; font-family: monospace; line-height: 1;
-                        transform: rotate(90deg) scaleY({stretch_y});
-                        transform-origin: center;">}}</div>
-            <div style="margin-top: 20px;">AI in user experience</div>
-        </div>
-
+<div style="display: flex; justify-content: center; width: 100%;">
+    <div style="display: flex; gap: 400px; align-items: center;">
+        <div style="font-size: {font_size}px; font-family: monospace; line-height: 1; display: inline-block; 
+                    transform: rotate(90deg) scaleY({stretch_y}); transform-origin: center;">}}</div>
+        <div style="font-size: {font_size}px; font-family: monospace; line-height: 1; display: inline-block; 
+                    transform: rotate(90deg) scaleY({stretch_y}); transform-origin: center;">}}</div>
+        <div style="font-size: {font_size}px; font-family: monospace; line-height: 1; display: inline-block; 
+                    transform: rotate(90deg) scaleY({stretch_y}); transform-origin: center;">}}</div>
     </div>
 </div>
 """
 
+# Render HTML in Streamlit
 st.markdown(html_code, unsafe_allow_html=True)
 
 
 
 
 
+html_code = """
+<div style="display: flex; justify-content: center; gap: 400px; margin-top: 50px;">
+    <p style="font-size: 18px; text-align: center;">AI in design</p>
+    <p style="font-size: 18px; text-align: center;">AI in manufacturing</p>
+    <p style="font-size: 18px; text-align: center;">AI in user experience</p>
+</div>
+"""
+
+st.markdown(html_code, unsafe_allow_html=True)
 
 
 
@@ -1087,6 +1074,5 @@ if selected_attributes:
 else:
    top_6_use_cases = None  # Default value if no attributes are selected
    st.info("Please select the attributes above to display relevant information.")
- 
  
 
