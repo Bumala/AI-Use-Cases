@@ -427,8 +427,74 @@ html_code = """
 st.markdown(html_code, unsafe_allow_html=True)
 
 
+#------------------------------------------------------------------------------------------ All 30 use cases -------------------------------------------------------------------------------------------------------------------------------
 
 
+
+#-------------------------------------------- All use case descriptions
+use_case_descriptions = {
+   "AI-infused experiments in R&D": "This use case focuses on integrating AI into experimental R&D processes to accelerate discovery and optimize results.",
+   "AI-powered manufacturing planning in smart factories": "This use case enables intelligent scheduling, resource allocation, and process optimization using AI in smart factories.",
+   "AI-infused experiments in R&D": "This use case balaalalalalalallala.",
+}
+ 
+
+# Style for collapsible boxes
+st.markdown("""
+<style>
+.container {
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+    flex-wrap: wrap;
+}
+
+.column {
+    flex: 1;
+    min-width: 300px;
+    max-width: 350px;
+}
+
+.details-box {
+    background-color: #f0f8ff;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    padding: 10px 15px;
+    margin-bottom: 15px;
+    font-family: sans-serif;
+}
+
+details summary {
+    font-weight: bold;
+    cursor: pointer;
+    outline: none;
+}
+</style>
+""", unsafe_allow_html=True)
+
+# Sort use cases into 3 columns
+columns = [[], [], []]
+use_cases = list(use_case_descriptions.items())
+for i, (title, description) in enumerate(use_cases):
+    column_index = i % 3
+    html_snippet = f"""
+    <div class='details-box'>
+        <details>
+            <summary>{title}</summary>
+            <p>{description}</p>
+        </details>
+    </div>
+    """
+    columns[column_index].append(html_snippet)
+
+# Combine into full HTML
+column_html = "<div class='container'>"
+for col in columns:
+    column_html += "<div class='column'>" + "".join(col) + "</div>"
+column_html += "</div>"
+
+# Render in Streamlit
+st.markdown(column_html, unsafe_allow_html=True)
 
 
 
@@ -853,14 +919,6 @@ html(html_code, height=700)
  
  
 #------------------------------------------------------------------------------------------ Top use case selection and display ------------------------------------------------------------------------------------------------------------------
- 
-#------------------------- AI use case description ---------------------------------
-use_case_descriptions = {
-   "AI-infused experiments in R&D": "This use case focuses on integrating AI into experimental R&D processes to accelerate discovery and optimize results.",
-   "AI-powered manufacturing planning in smart factories": "This use case enables intelligent scheduling, resource allocation, and process optimization using AI in smart factories.",
-   "AI-infused experiments in R&D": "This use case balaalalalalalallala.",
-}
- 
  
  
 # ---------------------------- Calculate and show top use case -----------------------
