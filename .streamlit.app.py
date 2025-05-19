@@ -389,9 +389,9 @@ stretch_y = 10  # 1 = normal, 2 = double height
 
 html_code = f"""
 <div style="display: flex; gap: 100px; justify-content: center;">
-    <div style="transform: rotate(90deg) scaleY({stretch_y}); translateX(-20px); font-size: {font_size}px;">}}</div>
-    <div style="transform: rotate(90deg) scaleY({stretch_y});translateX(0px); font-size: {font_size}px;">}}</div>
-    <div style="transform: rotate(90deg) scaleY({stretch_y});translateX(+20px); font-size: {font_size}px;">}}</div>
+    <div style="display: rotate(90deg) scaleY({stretch_y}); translateX(-20px); font-size: {font_size}px;">}}</div>
+    <div style="display: rotate(90deg) scaleY({stretch_y});translateX(0px); font-size: {font_size}px;">}}</div>
+    <div style="display: rotate(90deg) scaleY({stretch_y});translateX(+20px); font-size: {font_size}px;">}}</div>
 </div>
 """
 
