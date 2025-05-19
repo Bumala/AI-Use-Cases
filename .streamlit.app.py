@@ -1162,9 +1162,6 @@ else:
  
  #----------------------------------------------------------------------------------------------- Graph of top use case cluster ---------------------------------------------------------------------------------------------------------------
 
-import plotly.graph_objects as go
-import streamlit as st
-
 if top_use_case:
     # Step 1: Find the cluster for the selected top use case
     cluster_name = use_case_to_cluster.get(top_use_case)
