@@ -384,13 +384,13 @@ components.html(html_code, height=500)
 
 
 # Settings
-font_size = 60
+font_size = 50
 stretch_y = 4  # Stretch factor
 
 # HTML and CSS
 html_code = f"""
 <div style="display: flex; justify-content: center; width: 100%;">
-    <div style="display: flex; gap: 100px; align-items: center;">
+    <div style="display: flex; gap: 200px; align-items: center;">
         <div style="font-size: {font_size}px; font-family: monospace; line-height: 1; display: inline-block; 
                     transform: rotate(90deg) scaleY({stretch_y}); transform-origin: center;">}}</div>
         <div style="font-size: {font_size}px; font-family: monospace; line-height: 1; display: inline-block; 
