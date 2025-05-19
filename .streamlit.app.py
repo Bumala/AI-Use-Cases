@@ -502,29 +502,31 @@ details summary {
 
 # Organize into 3 fixed columns
 use_cases = list(use_case_descriptions.items())
-columns = [
-    use_cases[:10],     # First 10 use cases (left)
-    use_cases[10:20],   # Next 10 (middle)
-    use_cases[20:30]    # Final 10 (right)
-]
 
-# Build HTML layout
-column_html = "<div class='container'>"
+# Split into 3 columns of 10 items each
+column1 = use_cases[:10]    # First 10 items
+column2 = use_cases[10:20]  # Next 10 items
+column3 = use_cases[20:]    # Last 10 items
+
+columns = [column1, column2, column3]  # 3 columns, 10 rows each
+
+# Generate HTML for each column
+column_html = "<div class='container' style='display: flex; justify-content: space-between;'>"
 for col in columns:
-    column_html += "<div class='column'>"
-    for title, desc in col:
+    column_html += "<div class='column' style='flex: 1; margin: 5px;'>"
+    for title, description in col:
         column_html += f"""
         <div class='details-box'>
             <details>
                 <summary>{title}</summary>
-                <p>{desc}</p>
+                <p>{description}</p>
             </details>
         </div>
         """
     column_html += "</div>"
 column_html += "</div>"
 
-# Render layout
+# Render in Streamlit
 st.markdown(column_html, unsafe_allow_html=True)
 
 
