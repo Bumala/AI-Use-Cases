@@ -1266,4 +1266,3 @@ if selected_attributes:
 else:
    top_6_use_cases = None  # Default value if no attributes are selected
    st.info("Please select the attributes above to display relevant information.")
-
