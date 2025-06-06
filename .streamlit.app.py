@@ -381,7 +381,7 @@ components.html(html_code, height=500)
 #---------------------------------------------------------------------------------------------- Introduction -------------------------------------------------------------------------------------------------------------------
 
 
-st.markdown("<p style='font-weight: 700; font-size:20px; margin-bottom:-10; margin-bottom:10; text-align:center;'>AI's impact on the automotive innovation process: </p>", unsafe_allow_html=True)
+st.markdown("<p style='font-weight: 700; font-size:20px; margin-bottom:-40; margin-bottom:10; text-align:center;'>AI's impact on the automotive innovation process: </p>", unsafe_allow_html=True)
 
 # Settings
 font_size = 30
@@ -407,14 +407,14 @@ st.markdown(html_code, unsafe_allow_html=True)
 
 html_code = """
 <div style="display: flex; justify-content: center; gap: 100px; margin-top: 50px;">
-    <p style="font-size: 18px; text-align: right; font-weight: 700; 
+    <p style="font-size: 20px; text-align: right; font-weight: 700; 
               margin-left: 50px; margin-top: -40px; white-space: nowrap">
         Amplification of idea space
     </p>
-    <p style="font-size: 18px; text-align: center; margin-top: -40px; white-space: nowrap; font-weight: 700">
+    <p style="font-size: 20px; text-align: center; margin-top: -40px; white-space: nowrap; font-weight: 700">
         Efficiency improvements in product development
     </p>
-    <p style="font-size: 18px; text-align: center; margin-top: -40px; text-align: center; white-space: nowrap; font-weight: 700; right-margin: 200">
+    <p style="font-size: 20px; text-align: center; margin-top: -40px; text-align: center; white-space: nowrap; font-weight: 700; right-margin: 200">
         Optimized market introduction
     </p>
 </div>
