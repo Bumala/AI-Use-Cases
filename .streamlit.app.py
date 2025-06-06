@@ -56,9 +56,9 @@ const outerFunnelPoints = {
 
 
 const textPositions = [
-  {text: 'Front End', x: w * 0.1, y: h/2 },
-  {text: 'Development', x: w * 0.5, y: h/2 },
-  {text: 'Market Introduction', x: w * 0.85, y: h/2 }
+  {text: 'Front End', x: w * 0.1, y: h/2 - 5 },
+  {text: 'Development', x: w * 0.5, y: h/2 - 5 },
+  {text: 'Market Introduction', x: w * 0.85, y: h/2 - 5 }
 ];
 
 function generateColor() {
