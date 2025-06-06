@@ -381,11 +381,11 @@ components.html(html_code, height=500)
 #---------------------------------------------------------------------------------------------- Introduction -------------------------------------------------------------------------------------------------------------------
 
 
-st.markdown("<p style='font-weight: 700; font-size:20px; margin-top:-100; margin-bottom:10; text-align:center;'>AI's impact on the automotive innovation process: </p>", unsafe_allow_html=True)
+st.markdown("<p style='font-weight: 700; font-size:20px; margin-bottom:10; text-align:center;'>AI's impact on the automotive innovation process: </p>", unsafe_allow_html=True)
 
 # Settings
 font_size = 30
-stretch_y = 4  # Stretch factor
+stretch_y = 2  # Stretch factor
 
 # HTML and CSS
 html_code = f"""
