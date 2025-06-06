@@ -54,11 +54,6 @@ const outerFunnelPoints = {
   bellBottomStart: {x: -20, y: 450}
 };
 
-ctx.textBaseline = 'middle';
-textPositions.forEach(({text, x, y}) => {
-  ctx.fillText(text, x, y);
-});
-
 
 const textPositions = [
   {text: 'Front End', x: w * 0.1, y: h/2 },
