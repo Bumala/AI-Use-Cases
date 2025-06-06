@@ -339,9 +339,6 @@ function moveSectionDots() {
 
 
 
- 
-
-
 function drawOuterSmallDots() {
   outerSmallDots.forEach(dot => dot.draw(ctx));
 }
@@ -555,8 +552,6 @@ column_html = """
 st.markdown(column_html, unsafe_allow_html=True)
 
 
-
-
 #-------------------------------------------------------------------------------------------- Table for category, dimension and attributes -----------------------------------------------------------------------------------------------------
 data = [
  ["Category", "Dimension", "Attributes"],
@@ -668,9 +663,7 @@ analysis_table_data = {
 analysis_table = pd.DataFrame(analysis_table_data)
 analysis_table.set_index("Use Case", inplace=True)
  
- 
- 
- 
+
  
 # ------------------------------------------------------------------------------------------------------- Session state ------------------------------------------------------------------------------------------------------------------------
 if "selected" not in st.session_state:
@@ -681,9 +674,6 @@ if "attr_multiselect" not in st.session_state:
  
 # Initialize selected_attributes from session state
 selected_attributes = list(st.session_state.selected)
- 
- 
- 
  
  
  
@@ -717,16 +707,10 @@ with multiselect_container:
    )
  
  
- 
- 
- 
 # Update session state when dropdown changes
 if set(selected_attributes) != st.session_state.selected:
  st.session_state.selected = set(selected_attributes)
  st.session_state.attr_multiselect = selected_attributes
- 
- 
- 
  
  
 #--------------------------------------------------------------------------------------------------------- Table layout ------------------------------------------------------------------------------------------------------------------------
@@ -814,9 +798,6 @@ def generate_html_table(data, selected):
  
  html += "</table>"
  return html
- 
- 
- 
  
  
 #----------------------------------------------------------------------------------------------- Python, Javascript, Streamlit Communication ---------------------------------------------------------------------------------------------------
@@ -913,13 +894,6 @@ if 'js_message' not in st.session_state:
 handle_js_messages()
  
  
- 
- 
- 
- 
- 
- 
- 
 #--------------------------- JavaScript to handle Streamlit communication--------
 streamlit_js = """
 <script>
@@ -1009,8 +983,7 @@ else:
    top_use_case = None  # Default value if no attributes are selected
    st.info("Please select the attributes above to display relevant information.")
  
- 
- 
+
 #------------------------------------------------------------------------------------------------- Top use case graph display ------------------------------------------------------------------------------------------------------------------
  
 st.markdown(
@@ -1055,9 +1028,7 @@ if top_use_case:
    margin=dict(t=0, b=40)  # Adjust bottom margin (try 20-60)
 )
    st.plotly_chart(fig, use_container_width=True)
- 
- 
- 
+  
 #-------------------------------------------------------------------------------------------------------- Cluster Analysis --------------------------------------------------------------------------------------------------------------------
  
 # Dictionary mapping use cases to their clusters
@@ -1122,9 +1093,6 @@ cluster_details = {
        "Examples include patent analysis, technology lifecycle forecasting, and sales prediction."
    )
 }
- 
- 
- 
  
 #-------------------------------- Selection of Clusters ------------------------------------------------
  
@@ -1222,9 +1190,6 @@ if top_use_case:
     else:
         st.warning("Selected use case does not belong to a known cluster.")
 
-
- 
- 
 # -------------------------------------------------------------------------------------------------- Calculate and show other relevant use case --------------------------------------------------------------------------------------------------
 if selected_attributes:
    summed = analysis_table[selected_attributes].sum(axis=1)
