@@ -6,5 +6,5 @@ openpyxl
 numpy
 streamlit-js-eval
 plotly
-streamlit-frontend-events
+
 
