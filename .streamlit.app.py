@@ -7,11 +7,12 @@ import streamlit.components.v1 as components
 
 
 
-
-
-
 import streamlit as st
-from streamlit.components.v1 import html
+import json
+from streamlit_frontend_events import streamlit_frontend_events
+
+
+
 
 
 
@@ -597,75 +598,6 @@ data = [
 
 
 
-attributes = [
- ["Category", "Dimension", "Attributes"],
- ["Impact (What)", "Benefits", "Quality/Scope/Knowledge", "Time Efficiency", "Cost"],
- [None, "Focus within Business Model Navigator", "Customer Segments", "Value Proposition", "Value Chain", "Revenue Model"],
- [None, "Aim", "Product Innovation", "Process Innovation", "Business Model Innovation"],
- [None, "Ambidexterity", "Exploration", "Exploitation"],
- ["Technology (How)", "AI Role", "Automaton", "Helper", "Partner"],
- [None, "AI Concepts", "Machine Learning", "Deep Learning", "Artificial Neural Networks", "Natural Language Processing", "Computer Vision", "Robotics"],
- [None, "Analytics Focus", "Descriptive", "Diagnostic", "Predictive", "Prescriptive"],
- [None, "Analytics Problem", "Description/ Summary", "Clustering", "Classification", "Dependency Analysis", "Regression"],
- [None, "Data Type", "Customer Data", "Machine Data", "Business Data (Internal Data)", "Market Data", "Public & Regulatory Data", "Synthetic Data"],
- ["Context (Where/When)", "Innovation Phase", "Front End", "Development", "Market Introduction"],
- [None, "Department", "R&D", "Manufacturing", "Marketing & Sales", "Customer Service"],
-]
-
-
-
-
-
-
-if "selected" not in st.session_state:
-    st.session_state.selected = set()
-
-# This function is called when JS posts a message
-def on_js_event(msg):
-    if msg and "selected" in msg:
-        st.session_state.selected = set(msg["selected"])
-
-selected = list(st.session_state.selected)
-html_code = f"""
-<table border="1" style="border-collapse:collapse;">
-    <tr>
-        {''.join(f'<th>{a}</th>' for a in attributes)}
-    </tr>
-    <tr>
-        {''.join(f'''
-        <td data-attr="{a}" style="background-color:{'#92D050' if a in selected else '#f1fbfe'};cursor:pointer;" onclick="toggleAttr('{a}', this)"></td>
-        ''' for a in attributes)}
-    </tr>
-</table>
-<script>
-var selected = {selected};
-function toggleAttr(attr, cell) {{
-    var idx = selected.indexOf(attr);
-    if(idx >= 0) {{
-        selected.splice(idx,1);
-        cell.style.backgroundColor = "#f1fbfe";
-    }} else {{
-        selected.push(attr);
-        cell.style.backgroundColor = "#92D050";
-    }}
-    window.parent.postMessage({{isStreamlitMessage:true, selected:selected}}, "*");
-}}
-</script>
-"""
-
-# Show the table and connect Python callback
-html(html_code, height=100, on_message=on_js_event, key="interactive_table")
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -1177,3 +1109,92 @@ else:
     st.info("Please select attributes by clicking fields in the table above to display relevant information.")
 
 # [End of code]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+attributes = [
+ ["Category", "Dimension", "Attributes"],
+ ["Impact (What)", "Benefits", "Quality/Scope/Knowledge", "Time Efficiency", "Cost"],
+ [None, "Focus within Business Model Navigator", "Customer Segments", "Value Proposition", "Value Chain", "Revenue Model"],
+ [None, "Aim", "Product Innovation", "Process Innovation", "Business Model Innovation"],
+ [None, "Ambidexterity", "Exploration", "Exploitation"],
+ ["Technology (How)", "AI Role", "Automaton", "Helper", "Partner"],
+ [None, "AI Concepts", "Machine Learning", "Deep Learning", "Artificial Neural Networks", "Natural Language Processing", "Computer Vision", "Robotics"],
+ [None, "Analytics Focus", "Descriptive", "Diagnostic", "Predictive", "Prescriptive"],
+ [None, "Analytics Problem", "Description/ Summary", "Clustering", "Classification", "Dependency Analysis", "Regression"],
+ [None, "Data Type", "Customer Data", "Machine Data", "Business Data (Internal Data)", "Market Data", "Public & Regulatory Data", "Synthetic Data"],
+ ["Context (Where/When)", "Innovation Phase", "Front End", "Development", "Market Introduction"],
+ [None, "Department", "R&D", "Manufacturing", "Marketing & Sales", "Customer Service"],
+]
+
+
+if "selected" not in st.session_state:
+    st.session_state.selected = set()
+
+selected = list(st.session_state.selected)
+
+# Render interactive HTML table with a hidden input
+html_code = f"""
+<table border="1" style="border-collapse:collapse;">
+    <tr>
+        {''.join(f'<th>{a}</th>' for a in attributes)}
+    </tr>
+    <tr>
+        {''.join(f'''
+        <td data-attr="{a}" style="background-color:{'#92D050' if a in selected else '#f1fbfe'};cursor:pointer;" onclick="toggleAttr('{a}', this)"></td>
+        ''' for a in attributes)}
+    </tr>
+</table>
+<input type="hidden" id="attr_input" name="attr_input" value='{json.dumps(selected)}'/>
+<script>
+var selected = {json.dumps(selected)};
+function toggleAttr(attr, cell) {{
+    var idx = selected.indexOf(attr);
+    if(idx >= 0) {{
+        selected.splice(idx,1);
+        cell.style.backgroundColor = "#f1fbfe";
+    }} else {{
+        selected.push(attr);
+        cell.style.backgroundColor = "#92D050";
+    }}
+    document.getElementById("attr_input").value = JSON.stringify(selected);
+    const event = new Event('input', {{ bubbles: true }});
+    document.getElementById("attr_input").dispatchEvent(event);
+}}
+</script>
+"""
+
+# Render the HTML and capture hidden input changes
+events = streamlit_frontend_events(
+    html_code,
+    events=["input[attr_input]"],
+    key="table_events"
+)
+
+# Update Streamlit state on change
+if events and "attr_input" in events and events["attr_input"]:
+    try:
+        st.session_state.selected = set(json.loads(events["attr_input"]))
+    except Exception:
+        pass
+
+# Now use st.session_state.selected everywhere in your calculations!
+st.write("Currently selected:", list(st.session_state.selected))
