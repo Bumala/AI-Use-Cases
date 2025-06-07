@@ -5,7 +5,552 @@ import json
 import plotly.graph_objects as go
 import streamlit.components.v1 as components
 
-# ... [everything above remains unchanged, including Streamlit layout, funnel, and use_case_descriptions, etc.] ...
+#------------------------------------------------------------------------------------------------------ Streamlit page layout -------------------------------------------------------------------------------------------------------------------
+# Set Streamlit page layout
+st.set_page_config(layout="wide")
+ 
+
+
+
+#------------------------------------------------------------------------------------------------------------- Funnel image -------------------------------------------------------------------------------------------------------------------
+ 
+html_code = """
+<canvas id="funnelCanvas" width="1000" height="450" style="width: 100%; height: auto; background: white;"></canvas>
+
+<script>
+const canvas = document.getElementById('funnelCanvas');
+const ctx = canvas.getContext('2d');
+canvas.width = canvas.offsetWidth;
+canvas.height = 450;
+
+const w = canvas.width;
+const h = canvas.height;
+
+// Trumpet parameters
+const bellLength = w * 0.3;
+const tubeLength = w * 0.7;
+const startDiameter = 300;
+const endDiameter = 60;
+const tubeStartRatio = 0.5;
+
+// Inner funnel points
+const innerFunnelPoints = {
+  bellStart: {x: 0, y: h/2 - startDiameter/2},
+  bellEnd: {x: bellLength, y: h/2 - (startDiameter * tubeStartRatio)/2},
+  tubeEnd: {x: w, y: h/2 - endDiameter/3},
+  mouthBottom: {x: w, y: h/2 + endDiameter/3},
+  bellBottomEnd: {x: bellLength, y: h/2 + (startDiameter * tubeStartRatio)/2},
+  bellBottomStart: {x: 0, y: h/2 + startDiameter/2}
+};
+
+// Outer funnel points
+const outerFunnelPoints = {
+  bellStart: {x: -20, y: 0},
+  bellEnd: {x: bellLength - 20, y: h/2 - (startDiameter * 0.7 + 40)/2},
+  tubeEnd: {x: 900, y: h/2 - (endDiameter + 20)/2},
+  mouthBottom: {x: 900, y: h/2 + (endDiameter + 20)/2},
+  bellBottomEnd: {x: bellLength - 20, y: h/2 + (startDiameter * 0.7 + 40)/2},
+  bellBottomStart: {x: -20, y: 450}
+};
+
+
+const textPositions = [
+  {text: 'Front End', x: w * 0.1, y: h/2 + 5 },
+  {text: 'Development', x: w * 0.5, y: h/2 + 5 },
+  {text: 'Market Introduction', x: w * 0.85, y: h/2 + 5 }
+];
+
+function generateColor() {
+  const colors = ['#e74c3c', '#2ecc71', '#f1c40f', '#3498db', '#9b59b6', '#1abc9c', '#e67e22', '#d35400', '#34495e', '#7f8c8d'];
+  return colors[Math.floor(Math.random() * colors.length)];
+}
+
+class Dot {
+  constructor(x, y, dx, dy, radius, color, bounds) {
+    this.x = x;
+    this.y = y;
+    this.dx = dx;
+    this.dy = dy;
+    this.radius = radius;
+    this.color = color;
+    this.bounds = bounds;
+  }
+
+  move() {
+    this.x += this.dx;
+    this.y += this.dy;
+    if (this.x < this.bounds.xMin) this.x = this.bounds.xMax;
+    if (this.x > this.bounds.xMax) this.x = this.bounds.xMin;
+    if (this.y < this.bounds.yMin) this.y = this.bounds.yMax;
+    if (this.y > this.bounds.yMax) this.y = this.bounds.yMin;
+  }
+
+  draw(ctx) {
+    ctx.beginPath();
+    ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+    ctx.fillStyle = this.color;
+    ctx.fill();
+  }
+}
+
+class SmallDot {
+  constructor(x, y, dx, dy, radius, color, bounds) {
+    this.x = x;
+    this.y = y;
+    this.dx = dx;
+    this.dy = dy;
+    this.radius = radius;
+    this.color = color;
+    this.bounds = bounds;
+  }
+
+  move() {
+    this.x += this.dx;
+    this.y += this.dy;
+    if (this.x < this.bounds.xMin) this.x = this.bounds.xMax;
+    if (this.x > this.bounds.xMax) this.x = this.bounds.xMin;
+    if (this.y < this.bounds.yMin) this.y = this.bounds.yMax;
+    if (this.y > this.bounds.yMax) this.y = this.bounds.yMin;
+  }
+
+  draw(ctx) {
+    ctx.beginPath();
+    ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+    ctx.fillStyle = this.color;
+    ctx.fill();
+  }
+}
+
+const sectionBounds = [
+  {
+    xMin: innerFunnelPoints.bellStart.x,
+    xMax: innerFunnelPoints.bellEnd.x,
+    yMin: h / 2 - 100,
+    yMax: h / 2 + 100
+  },
+  {
+    xMin: innerFunnelPoints.bellEnd.x,
+    xMax: innerFunnelPoints.tubeEnd.x,
+    yMin: h / 2 - 40,
+    yMax: h / 2 + 40
+  }
+];
+
+
+const marketIntroOuterBounds = {
+  xMin: 900,
+  xMax: 2000,
+  yMin: h/2 - 50,
+  yMax: h/2 + 50
+};
+
+let sectionDots = [];
+let outerSmallDots = [];
+let cloudOffset = 0;
+let cloudDirection = 1;
+
+function randomBetween(min, max) {
+  return Math.random() * (max - min) + min;
+}
+
+// Initialize dots
+function initDots() {
+  sectionDots = [];
+  for (let i = 0; i < 2; i++) {
+    for (let j = 0; j < 15; j++) {
+      sectionDots.push(new Dot(
+        randomBetween(sectionBounds[i].xMin + 10, sectionBounds[i].xMax - 10),
+        randomBetween(sectionBounds[i].yMin + 10, sectionBounds[i].yMax - 10),
+        Math.random() * 0.5 + 0.3, // always moving right
+        (Math.random() - 0.5) * 0.5,
+        5,
+        generateColor(),
+        sectionBounds[i]
+      ));
+    }
+  }
+
+  outerSmallDots = [];
+  for (let i = 0; i < 4000; i++) {
+    outerSmallDots.push(new SmallDot(
+      randomBetween(marketIntroOuterBounds.xMin, marketIntroOuterBounds.xMax),
+      randomBetween(marketIntroOuterBounds.yMin, marketIntroOuterBounds.yMax),
+      (Math.random() - 0.5) * 0.15,
+      (Math.random() - 0.5) * 0.15,
+      1.5,
+      'rgba(10, 40, 80, 0.3)',
+      marketIntroOuterBounds
+    ));
+  }
+}
+
+// Draw funnels
+function drawTrumpetFunnel(points, color) {
+  ctx.fillStyle = color;
+  ctx.beginPath();
+  ctx.moveTo(points.bellStart.x, points.bellStart.y);
+  ctx.bezierCurveTo(
+  points.bellStart.x + w * 0.15, points.bellStart.y + 40,
+  points.bellEnd.x - w * 0.05, points.bellEnd.y - 30,
+  points.bellEnd.x, points.bellEnd.y
+);
+
+
+
+  ctx.lineTo(points.tubeEnd.x, points.tubeEnd.y);
+  ctx.lineTo(points.mouthBottom.x, points.mouthBottom.y);
+  ctx.lineTo(points.bellBottomEnd.x, points.bellBottomEnd.y);
+  ctx.bezierCurveTo(
+  points.bellBottomEnd.x - w * 0.05, points.bellBottomEnd.y + 30,
+  points.bellBottomStart.x + w * 0.15, points.bellBottomStart.y - 40,
+  points.bellBottomStart.x, points.bellBottomStart.y
+);
+
+
+
+  ctx.closePath();
+  ctx.fill();
+}
+
+let expansionProgress = 0;  
+let expansionSpeed = 0.005;
+const maxScale = 1.0;
+
+let isPaused = false;
+let pauseCounter = 0;
+const pauseFrames = 120;
+
+function drawOuterFunnel() {
+  let scale;
+
+  if (isPaused) {
+    scale = maxScale;
+    pauseCounter++;
+    if (pauseCounter >= pauseFrames) {
+      isPaused = false;
+      pauseCounter = 0;
+      expansionProgress = 0;
+    }
+  } else {
+    scale = Math.sin(expansionProgress * Math.PI / 2);
+    expansionProgress += expansionSpeed;
+    if (scale >= maxScale) {
+      scale = maxScale;
+      isPaused = true;
+    }
+  }
+
+  ctx.save();
+  ctx.translate(0, h / 2);
+  ctx.scale(scale, scale);
+  ctx.translate(0, -h / 2);
+
+  ctx.shadowColor = 'rgba(135, 206, 250, 0.4)';
+  ctx.shadowBlur = 15 * scale;
+  drawTrumpetFunnel(outerFunnelPoints, 'rgba(135, 206, 250, 0.3)');
+  ctx.restore();
+}
+
+function drawInnerFunnel() {
+  drawTrumpetFunnel(innerFunnelPoints, '#154360');
+}
+
+function drawSectionLines() {
+  ctx.strokeStyle = "white";
+  ctx.lineWidth = 2;
+  ctx.setLineDash([6, 6]);
+
+  ctx.beginPath();
+  ctx.moveTo(innerFunnelPoints.bellEnd.x, innerFunnelPoints.bellEnd.y-60);
+  ctx.lineTo(innerFunnelPoints.bellBottomEnd.x, innerFunnelPoints.bellBottomEnd.y+60);
+  ctx.stroke();
+
+  ctx.beginPath();
+  ctx.moveTo(900, outerFunnelPoints.bellStart.y);
+  ctx.lineTo(900, outerFunnelPoints.bellBottomStart.y);
+  ctx.stroke();
+
+  ctx.setLineDash([]);
+}
+
+function drawLabels() {
+  ctx.fillStyle = "white";
+  ctx.font = "bold 22px Arial";
+  ctx.textAlign = "center";
+  textPositions.forEach(pos => {
+    ctx.fillText(pos.text, pos.x, pos.y);
+  });
+}
+
+function drawSectionDots() {
+  sectionDots.forEach(dot => dot.draw(ctx));
+}
+
+function moveSectionDots() {
+  sectionDots = sectionDots.flatMap(dot => {
+    dot.move();
+
+    // At x ≈ 300: simulate a filter gate
+    if (dot.bounds === sectionBounds[0] && dot.x > sectionBounds[0].xMax - 5) {
+      if (Math.random() < 0.5) {
+        // Let dot proceed to next section
+        dot.bounds = sectionBounds[1];
+        return [dot];
+      } else {
+        // Reset to beginning of section 0
+        dot.x = sectionBounds[0].xMin + 10;
+        dot.y = randomBetween(sectionBounds[0].yMin + 10, sectionBounds[0].yMax - 10);
+        dot.dx = randomBetween(0.5, 1.0);
+        dot.dy = (Math.random() - 0.5) * 0.3;
+        return [dot];
+      }
+    }
+
+    // At x ≈ 900: another filter gate
+    if (dot.bounds === sectionBounds[1] && dot.x > sectionBounds[1].xMax - 5) {
+      if (Math.random() < 0.5) {
+        // Let it continue beyond 900 (into fading or external region)
+        dot.bounds = { xMin: 900, xMax: 1500, yMin: dot.y - 10, yMax: dot.y + 10 }; // loose bounds
+        return [dot];
+      } else {
+        // Send back to ~x=300
+        dot.x = sectionBounds[1].xMin + 10;
+        dot.y = randomBetween(sectionBounds[1].yMin + 10, sectionBounds[1].yMax - 10);
+        dot.dx = randomBetween(0.5, 1.0);
+        dot.dy = (Math.random() - 0.5) * 0.3;
+        return [dot];
+      }
+    }
+
+    // At x > 1000: loop back to start of section 0
+    if (dot.x > 1000) {
+      dot.bounds = sectionBounds[0];
+      dot.x = sectionBounds[0].xMin + 10;
+      dot.y = randomBetween(sectionBounds[0].yMin + 10, sectionBounds[0].yMax - 10);
+      dot.dx = randomBetween(0.5, 1.0);
+      dot.dy = (Math.random() - 0.5) * 0.3;
+      return [dot];
+    }
+
+    return [dot];
+  });
+}
+
+
+
+function drawOuterSmallDots() {
+  outerSmallDots.forEach(dot => dot.draw(ctx));
+}
+
+function moveOuterSmallDots() {
+  outerSmallDots.forEach(dot => dot.move());
+}
+
+function animate() {
+  ctx.clearRect(0, 0, w, h);
+  drawOuterFunnel();
+  drawOuterSmallDots();
+  drawInnerFunnel();
+  drawSectionLines();
+  drawLabels();
+  drawSectionDots();
+  moveSectionDots();
+  moveOuterSmallDots();
+  requestAnimationFrame(animate);
+}
+
+initDots();
+animate();
+
+window.addEventListener('resize', function() {
+  canvas.width = canvas.offsetWidth;
+});
+</script>
+
+
+"""
+ 
+st.markdown("<p style='font-size:24px; font-weight: 700; margin-bottom:0; text-align:center;'>AI in the automotive innovation process</p>", unsafe_allow_html=True)
+components.html(html_code, height=500)
+
+
+#---------------------------------------------------------------------------------------------- Introduction -------------------------------------------------------------------------------------------------------------------
+
+
+st.markdown("<p style='font-weight: 700; font-size:20px; margin-bottom:10; text-align:center;'>AI's impact on the automotive innovation process: </p>", unsafe_allow_html=True)
+
+# Settings
+font_size = 30
+stretch_y = 4  # Stretch factor
+
+# HTML and CSS
+html_code = f"""
+<div style="display: flex; justify-content: center; width: 100%;">
+    <div style="display: flex; gap: 400px; align-items: center;">
+        <div style="font-size: {font_size}px; font-family: monospace; line-height: 1; display: inline-block; 
+                    transform: rotate(90deg) scaleY({stretch_y}); transform-origin: center;">}}</div>
+        <div style="font-size: {font_size}px; font-family: monospace; line-height: 1; display: inline-block; 
+                    transform: rotate(90deg) scaleY({stretch_y}); transform-origin: center;">}}</div>
+        <div style="font-size: {font_size}px; font-family: monospace; line-height: 1; display: inline-block; 
+                    transform: rotate(90deg) scaleY({stretch_y}); transform-origin: center;">}}</div>
+    </div>
+</div>
+"""
+
+# Render HTML in Streamlit
+st.markdown(html_code, unsafe_allow_html=True)
+
+
+html_code = """
+<div style="display: flex; justify-content: center; gap: 100px; margin-top: 50px;">
+    <p style="font-size: 20px; text-align: right; font-weight: 700; 
+              margin-left: 50px; margin-top: -40px; white-space: nowrap">
+        Amplification of idea space
+    </p>
+    <p style="font-size: 20px; text-align: center; margin-top: -40px; white-space: nowrap; font-weight: 700">
+        Efficiency improvements in product development
+    </p>
+    <p style="font-size: 20px; text-align: center; margin-top: -40px; text-align: center; white-space: nowrap; font-weight: 700; right-margin: 200">
+        Optimized market introduction
+    </p>
+</div>
+"""
+
+st.markdown(html_code, unsafe_allow_html=True)
+
+
+#------------------------------------------------------------------------------------------ All 30 use cases -------------------------------------------------------------------------------------------------------------------------------
+
+
+
+#-------------------------------------------- All use case descriptions
+
+# Your data
+use_case_descriptions = {
+    "AI-infused experiments in R&D": "This use case focuses on integrating AI into experimental R&D processes to accelerate discovery and optimize results.",
+    "AI-powered manufacturing planning in smart factories": "This use case enables intelligent scheduling, resource allocation, and process optimization using AI in smart factories.",
+    "AI-driven Human-Machine Collaboration in ideation": "This use case explores collaboration between AI tools and human designers during early-stage ideation.",
+    "Predictive Maintenance using AI sensors": "Leverages AI and sensor data to predict and prevent equipment failures before they happen.",
+    "AI for Customer Behavior Analysis": "Analyzes large sets of customer interaction data to find actionable insights.",
+    "AI-assisted Prototyping": "Automates parts of the prototyping process using generative AI models.",
+    "Natural Language Processing in Customer Feedback": "Uses NLP to analyze unstructured feedback and identify key themes.",
+    "AI for Market Trend Forecasting": "Predicts future market directions using large-scale data and AI models.",
+    "Generative Design for Engineering": "Uses AI to generate thousands of design options based on constraints.",
+    "AI-enhanced Risk Management": "Automates risk detection and mitigation strategies using predictive analytics.",
+    "AI for Supply Chain Optimization": "Improves logistics and supply chain operations through intelligent forecasting.",
+    "AI in Quality Control": "Detects defects in real-time through computer vision systems.",
+    "Conversational AI for Support": "Implements AI chatbots to assist customers and employees efficiently.",
+    "AI-powered Personalization Engines": "Delivers hyper-personalized product recommendations using AI.",
+    "AI in Product Lifecycle Management": "Optimizes every stage of a product’s life using AI analytics.",
+    "AI for Competitive Intelligence": "Monitors competitor behavior and market shifts automatically.",
+    "AI-based Design Validation": "Simulates and tests design concepts using machine learning.",
+    "AI in Inventory Management": "Reduces overstock and stockouts with smarter predictions.",
+    "Smart Energy Management with AI": "Optimizes factory energy use based on AI models.",
+    "AI-driven Regulatory Compliance": "Helps ensure products meet legal and safety standards via automation.",
+    "AI in User Behavior Modeling": "Understands how users interact with products using behavioral models.",
+    "Voice-Activated Interfaces": "Enables control of systems using natural language commands.",
+    "AI-assisted UX Design": "Provides data-driven recommendations to improve user experience.",
+    "AI in Product Customization": "Automatically configures products to customer preferences.",
+    "AI-driven Feature Prioritization": "Ranks feature development priorities based on predicted impact.",
+    "Digital Twin with AI": "Creates a real-time digital replica of a product or system.",
+    "AI-powered Testing Automation": "Speeds up QA by automatically generating and executing test cases.",
+    "Autonomous Product Testing": "AI runs independent tests without human involvement.",
+    "AI in Materials Discovery": "Uses AI to find and evaluate new materials faster.",
+    "AI-enhanced Collaboration Platforms": "Improves team creativity and efficiency through smart assistance."
+}
+
+# Heading
+st.markdown("<p style='font-weight: 700; font-size:22px; margin-top:3em; text-align:center;'>AI use cases in automotive</p>", unsafe_allow_html=True)
+
+# Styling
+st.markdown("""
+<style>
+.container {
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+    flex-wrap: wrap;
+}
+.column {
+    flex: 1;
+    min-width: 300px;
+    max-width: 350px;
+}
+.details-box-1 {
+    background-color: #e37852;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    padding: 10px 15px;
+    margin-bottom: 15px;
+    font-family: sans-serif;
+}
+.details-box-2 {
+    background-color: #FFA07A;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    padding: 10px 15px;
+    margin-bottom: 15px;
+    font-family: sans-serif;
+}
+.details-box-3 {
+    background-color: #FFC4A6;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    padding: 10px 15px;
+    margin-bottom: 15px;
+    font-family: sans-serif;
+}
+details summary {
+    font-weight: bold;
+    cursor: pointer;
+    outline: none;
+}
+.column-title {
+    font-weight: bold;
+    font-size: 20px;
+    margin-bottom: 15px;
+    text-align: center;
+    color: black;
+}
+</style>
+""", unsafe_allow_html=True)
+
+titles = list(use_case_descriptions.keys())
+assert len(titles) >= 30, "You must have at least 30 use cases"
+
+column_html = """
+<div class='container'>
+
+  <div class='column'>
+    <div class='column-title'>Front end use cases</div>
+""" + "".join([
+    f"<div class='details-box-1'><details><summary>{titles[i]}</summary><p>{use_case_descriptions[titles[i]]}</p></details></div>"
+    for i in range(0, 10)
+]) + """
+  </div>
+
+  <div class='column'>
+    <div class='column-title'>Development use cases</div>
+""" + "".join([
+    f"<div class='details-box-2'><details><summary>{titles[i]}</summary><p>{use_case_descriptions[titles[i]]}</p></details></div>"
+    for i in range(10, 20)
+]) + """
+  </div>
+
+  <div class='column'>
+    <div class='column-title'>Market introduction use cases</div>
+""" + "".join([
+    f"<div class='details-box-3'><details><summary>{titles[i]}</summary><p>{use_case_descriptions[titles[i]]}</p></details></div>"
+    for i in range(20, 30)
+]) + """
+  </div>
+
+</div>
+"""
+
+st.markdown(column_html, unsafe_allow_html=True)
+
+
 
 #-------------------------------------------------------------------------------------------- Table for category, dimension and attributes -------------------------------------------------------------
 data = [
