@@ -5,63 +5,7 @@ import json
 import plotly.graph_objects as go
 import streamlit.components.v1 as components
  
-
-
-
-
-# Set Streamlit page config to centered layout (fixed container)
-st.set_page_config(layout="centered")
-
-# Inject custom CSS to fix main content width and prevent scaling
-st.markdown("""
-    <style>
-    .main .block-container {
-        max-width: 800px;
-        min-width: 800px;
-        width: 800px;
-        margin-left: auto;
-        margin-right: auto;
-    }
-    /* Prevent images from scaling */
-    img {
-        max-width: 800px !important;
-        width: 800px !important;
-        height: auto !important;
-    }
-    /* Prevent users from zooming (on mobile) */
-    @viewport {
-        width: 800px;
-        zoom: 1.0;
-    }
-    </style>
-    """, unsafe_allow_html=True)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+ 
 #------------------------------------------------------------------------------------------------------ Streamlit page layout -------------------------------------------------------------------------------------------------------------------
 # Set Streamlit page layout
 st.set_page_config(layout="wide")
