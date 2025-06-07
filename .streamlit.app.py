@@ -15,365 +15,342 @@ st.set_page_config(layout="wide")
 
 #------------------------------------------------------------------------------------------------------------- Funnel image -------------------------------------------------------------------------------------------------------------------
  
+
+
 html_code = """
-<canvas id="funnelCanvas" width="1000" height="450" style="width: 100%; height: auto; background: white;"></canvas>
-
+<div id="funnelContainer" style="width: 100%; max-width: 1400px; margin:0 auto;">
+  <canvas id="funnelCanvas" style="width: 100%; height: 450px; background: white; display: block;"></canvas>
+</div>
 <script>
-const canvas = document.getElementById('funnelCanvas');
-const ctx = canvas.getContext('2d');
-canvas.width = canvas.offsetWidth;
-canvas.height = 450;
-
-const w = canvas.width;
-const h = canvas.height;
-
-// Trumpet parameters
-const bellLength = w * 0.3;
-const tubeLength = w * 0.7;
-const startDiameter = 300;
-const endDiameter = 60;
-const tubeStartRatio = 0.5;
-
-// Inner funnel points
-const innerFunnelPoints = {
-  bellStart: {x: 0, y: h/2 - startDiameter/2},
-  bellEnd: {x: bellLength, y: h/2 - (startDiameter * tubeStartRatio)/2},
-  tubeEnd: {x: w, y: h/2 - endDiameter/3},
-  mouthBottom: {x: w, y: h/2 + endDiameter/3},
-  bellBottomEnd: {x: bellLength, y: h/2 + (startDiameter * tubeStartRatio)/2},
-  bellBottomStart: {x: 0, y: h/2 + startDiameter/2}
-};
-
-// Outer funnel points
-const outerFunnelPoints = {
-  bellStart: {x: -20, y: 0},
-  bellEnd: {x: bellLength - 20, y: h/2 - (startDiameter * 0.7 + 40)/2},
-  tubeEnd: {x: 900, y: h/2 - (endDiameter + 20)/2},
-  mouthBottom: {x: 900, y: h/2 + (endDiameter + 20)/2},
-  bellBottomEnd: {x: bellLength - 20, y: h/2 + (startDiameter * 0.7 + 40)/2},
-  bellBottomStart: {x: -20, y: 450}
-};
-
-
-const textPositions = [
-  {text: 'Front End', x: w * 0.1, y: h/2 + 5 },
-  {text: 'Development', x: w * 0.5, y: h/2 + 5 },
-  {text: 'Market Introduction', x: w * 0.85, y: h/2 + 5 }
-];
-
-function generateColor() {
-  const colors = ['#e74c3c', '#2ecc71', '#f1c40f', '#3498db', '#9b59b6', '#1abc9c', '#e67e22', '#d35400', '#34495e', '#7f8c8d'];
-  return colors[Math.floor(Math.random() * colors.length)];
-}
-
-class Dot {
-  constructor(x, y, dx, dy, radius, color, bounds) {
-    this.x = x;
-    this.y = y;
-    this.dx = dx;
-    this.dy = dy;
-    this.radius = radius;
-    this.color = color;
-    this.bounds = bounds;
-  }
-
-  move() {
-    this.x += this.dx;
-    this.y += this.dy;
-    if (this.x < this.bounds.xMin) this.x = this.bounds.xMax;
-    if (this.x > this.bounds.xMax) this.x = this.bounds.xMin;
-    if (this.y < this.bounds.yMin) this.y = this.bounds.yMax;
-    if (this.y > this.bounds.yMax) this.y = this.bounds.yMin;
-  }
-
-  draw(ctx) {
-    ctx.beginPath();
-    ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
-    ctx.fillStyle = this.color;
-    ctx.fill();
-  }
-}
-
-class SmallDot {
-  constructor(x, y, dx, dy, radius, color, bounds) {
-    this.x = x;
-    this.y = y;
-    this.dx = dx;
-    this.dy = dy;
-    this.radius = radius;
-    this.color = color;
-    this.bounds = bounds;
-  }
-
-  move() {
-    this.x += this.dx;
-    this.y += this.dy;
-    if (this.x < this.bounds.xMin) this.x = this.bounds.xMax;
-    if (this.x > this.bounds.xMax) this.x = this.bounds.xMin;
-    if (this.y < this.bounds.yMin) this.y = this.bounds.yMax;
-    if (this.y > this.bounds.yMax) this.y = this.bounds.yMin;
-  }
-
-  draw(ctx) {
-    ctx.beginPath();
-    ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
-    ctx.fillStyle = this.color;
-    ctx.fill();
-  }
-}
-
-const sectionBounds = [
-  {
-    xMin: innerFunnelPoints.bellStart.x,
-    xMax: innerFunnelPoints.bellEnd.x,
-    yMin: h / 2 - 100,
-    yMax: h / 2 + 100
-  },
-  {
-    xMin: innerFunnelPoints.bellEnd.x,
-    xMax: innerFunnelPoints.tubeEnd.x,
-    yMin: h / 2 - 40,
-    yMax: h / 2 + 40
-  }
-];
-
-
-const marketIntroOuterBounds = {
-  xMin: 900,
-  xMax: 2000,
-  yMin: h/2 - 50,
-  yMax: h/2 + 50
-};
-
 let sectionDots = [];
 let outerSmallDots = [];
-let cloudOffset = 0;
-let cloudDirection = 1;
-
-function randomBetween(min, max) {
-  return Math.random() * (max - min) + min;
-}
-
-// Initialize dots
-function initDots() {
-  sectionDots = [];
-  for (let i = 0; i < 2; i++) {
-    for (let j = 0; j < 15; j++) {
-      sectionDots.push(new Dot(
-        randomBetween(sectionBounds[i].xMin + 10, sectionBounds[i].xMax - 10),
-        randomBetween(sectionBounds[i].yMin + 10, sectionBounds[i].yMax - 10),
-        Math.random() * 0.5 + 0.3, // always moving right
-        (Math.random() - 0.5) * 0.5,
-        5,
-        generateColor(),
-        sectionBounds[i]
-      ));
-    }
-  }
-
-  outerSmallDots = [];
-  for (let i = 0; i < 4000; i++) {
-    outerSmallDots.push(new SmallDot(
-      randomBetween(marketIntroOuterBounds.xMin, marketIntroOuterBounds.xMax),
-      randomBetween(marketIntroOuterBounds.yMin, marketIntroOuterBounds.yMax),
-      (Math.random() - 0.5) * 0.15,
-      (Math.random() - 0.5) * 0.15,
-      1.5,
-      'rgba(10, 40, 80, 0.3)',
-      marketIntroOuterBounds
-    ));
-  }
-}
-
-// Draw funnels
-function drawTrumpetFunnel(points, color) {
-  ctx.fillStyle = color;
-  ctx.beginPath();
-  ctx.moveTo(points.bellStart.x, points.bellStart.y);
-  ctx.bezierCurveTo(
-  points.bellStart.x + w * 0.15, points.bellStart.y + 40,
-  points.bellEnd.x - w * 0.05, points.bellEnd.y - 30,
-  points.bellEnd.x, points.bellEnd.y
-);
-
-
-
-  ctx.lineTo(points.tubeEnd.x, points.tubeEnd.y);
-  ctx.lineTo(points.mouthBottom.x, points.mouthBottom.y);
-  ctx.lineTo(points.bellBottomEnd.x, points.bellBottomEnd.y);
-  ctx.bezierCurveTo(
-  points.bellBottomEnd.x - w * 0.05, points.bellBottomEnd.y + 30,
-  points.bellBottomStart.x + w * 0.15, points.bellBottomStart.y - 40,
-  points.bellBottomStart.x, points.bellBottomStart.y
-);
-
-
-
-  ctx.closePath();
-  ctx.fill();
-}
-
-let expansionProgress = 0;  
-let expansionSpeed = 0.005;
-const maxScale = 1.0;
-
+let marketIntroOuterBounds = {};
+let sectionBounds = [];
+let textPositions = [];
+let innerFunnelPoints = {};
+let outerFunnelPoints = {};
+let w = 1000, h = 450;
+let expansionProgress = 0;
 let isPaused = false;
 let pauseCounter = 0;
 const pauseFrames = 120;
+const expansionSpeed = 0.005;
+const maxScale = 1.0;
 
-function drawOuterFunnel() {
-  let scale;
+function resizeCanvas() {
+    const canvas = document.getElementById('funnelCanvas');
+    w = canvas.parentElement.offsetWidth;
+    h = 450;
+    canvas.width = w;
+    canvas.height = h;
+}
 
-  if (isPaused) {
-    scale = maxScale;
-    pauseCounter++;
-    if (pauseCounter >= pauseFrames) {
-      isPaused = false;
-      pauseCounter = 0;
-      expansionProgress = 0;
+function generateColor() {
+    const colors = ['#e74c3c', '#2ecc71', '#f1c40f', '#3498db', '#9b59b6', '#1abc9c', '#e67e22', '#d35400', '#34495e', '#7f8c8d'];
+    return colors[Math.floor(Math.random() * colors.length)];
+}
+
+function randomBetween(min, max) {
+    return Math.random() * (max - min) + min;
+}
+
+// Dot classes as before
+class Dot {
+    constructor(x, y, dx, dy, radius, color, bounds) {
+        this.x = x;
+        this.y = y;
+        this.dx = dx;
+        this.dy = dy;
+        this.radius = radius;
+        this.color = color;
+        this.bounds = bounds;
     }
-  } else {
-    scale = Math.sin(expansionProgress * Math.PI / 2);
-    expansionProgress += expansionSpeed;
-    if (scale >= maxScale) {
-      scale = maxScale;
-      isPaused = true;
+    move() {
+        this.x += this.dx;
+        this.y += this.dy;
+        if (this.x < this.bounds.xMin) this.x = this.bounds.xMax;
+        if (this.x > this.bounds.xMax) this.x = this.bounds.xMin;
+        if (this.y < this.bounds.yMin) this.y = this.bounds.yMax;
+        if (this.y > this.bounds.yMax) this.y = this.bounds.yMin;
     }
-  }
-
-  ctx.save();
-  ctx.translate(0, h / 2);
-  ctx.scale(scale, scale);
-  ctx.translate(0, -h / 2);
-
-  ctx.shadowColor = 'rgba(135, 206, 250, 0.4)';
-  ctx.shadowBlur = 15 * scale;
-  drawTrumpetFunnel(outerFunnelPoints, 'rgba(135, 206, 250, 0.3)');
-  ctx.restore();
+    draw(ctx) {
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+        ctx.fillStyle = this.color;
+        ctx.fill();
+    }
+}
+class SmallDot {
+    constructor(x, y, dx, dy, radius, color, bounds) {
+        this.x = x;
+        this.y = y;
+        this.dx = dx;
+        this.dy = dy;
+        this.radius = radius;
+        this.color = color;
+        this.bounds = bounds;
+    }
+    move() {
+        this.x += this.dx;
+        this.y += this.dy;
+        if (this.x < this.bounds.xMin) this.x = this.bounds.xMax;
+        if (this.x > this.bounds.xMax) this.x = this.bounds.xMin;
+        if (this.y < this.bounds.yMin) this.y = this.bounds.yMax;
+        if (this.y > this.bounds.yMax) this.y = this.bounds.yMin;
+    }
+    draw(ctx) {
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+        ctx.fillStyle = this.color;
+        ctx.fill();
+    }
 }
 
-function drawInnerFunnel() {
-  drawTrumpetFunnel(innerFunnelPoints, '#154360');
+function setFunnelGeometry() {
+    // Responsive trumpet parameters
+    const bellLength = w * 0.3;
+    const tubeLength = w * 0.7;
+    const startDiameter = w * 0.3;
+    const endDiameter = w * 0.06;
+    const tubeStartRatio = 0.5;
+
+    innerFunnelPoints = {
+        bellStart: {x: 0, y: h/2 - startDiameter/2},
+        bellEnd: {x: bellLength, y: h/2 - (startDiameter * tubeStartRatio)/2},
+        tubeEnd: {x: w, y: h/2 - endDiameter/3},
+        mouthBottom: {x: w, y: h/2 + endDiameter/3},
+        bellBottomEnd: {x: bellLength, y: h/2 + (startDiameter * tubeStartRatio)/2},
+        bellBottomStart: {x: 0, y: h/2 + startDiameter/2}
+    };
+
+    outerFunnelPoints = {
+        bellStart: {x: -w*0.02, y: 0},
+        bellEnd: {x: bellLength-w*0.02, y: h/2 - (startDiameter*0.7 + w*0.04)/2},
+        tubeEnd: {x: w*0.9, y: h/2 - (endDiameter + w*0.02)/2},
+        mouthBottom: {x: w*0.9, y: h/2 + (endDiameter + w*0.02)/2},
+        bellBottomEnd: {x: bellLength-w*0.02, y: h/2 + (startDiameter*0.7 + w*0.04)/2},
+        bellBottomStart: {x: -w*0.02, y: h}
+    };
+
+    textPositions = [
+        {text: 'Front End', x: w * 0.1, y: h/2 + 5},
+        {text: 'Development', x: w * 0.5, y: h/2 + 5},
+        {text: 'Market Introduction', x: w * 0.85, y: h/2 + 5}
+    ];
+
+    sectionBounds = [
+        {
+            xMin: innerFunnelPoints.bellStart.x,
+            xMax: innerFunnelPoints.bellEnd.x,
+            yMin: h/2 - startDiameter*0.33,
+            yMax: h/2 + startDiameter*0.33
+        },
+        {
+            xMin: innerFunnelPoints.bellEnd.x,
+            xMax: w,
+            yMin: h/2 - startDiameter*0.13,
+            yMax: h/2 + startDiameter*0.13
+        }
+    ];
+
+    marketIntroOuterBounds = {
+        xMin: w*0.9,
+        xMax: w*1.5,
+        yMin: h/2 - startDiameter*0.15,
+        yMax: h/2 + startDiameter*0.15
+    };
 }
 
-function drawSectionLines() {
-  ctx.strokeStyle = "white";
-  ctx.lineWidth = 2;
-  ctx.setLineDash([6, 6]);
-
-  ctx.beginPath();
-  ctx.moveTo(innerFunnelPoints.bellEnd.x, innerFunnelPoints.bellEnd.y-60);
-  ctx.lineTo(innerFunnelPoints.bellBottomEnd.x, innerFunnelPoints.bellBottomEnd.y+60);
-  ctx.stroke();
-
-  ctx.beginPath();
-  ctx.moveTo(900, outerFunnelPoints.bellStart.y);
-  ctx.lineTo(900, outerFunnelPoints.bellBottomStart.y);
-  ctx.stroke();
-
-  ctx.setLineDash([]);
+function initDots() {
+    sectionDots = [];
+    for (let i = 0; i < 2; i++) {
+        for (let j = 0; j < 15; j++) {
+            sectionDots.push(new Dot(
+                randomBetween(sectionBounds[i].xMin + 10, sectionBounds[i].xMax - 10),
+                randomBetween(sectionBounds[i].yMin + 10, sectionBounds[i].yMax - 10),
+                Math.random() * 0.5 + 0.3, // always moving right
+                (Math.random() - 0.5) * 0.5,
+                5,
+                generateColor(),
+                sectionBounds[i]
+            ));
+        }
+    }
+    outerSmallDots = [];
+    for (let i = 0; i < 2500; i++) {
+        outerSmallDots.push(new SmallDot(
+            randomBetween(marketIntroOuterBounds.xMin, marketIntroOuterBounds.xMax),
+            randomBetween(marketIntroOuterBounds.yMin, marketIntroOuterBounds.yMax),
+            (Math.random() - 0.5) * 0.15,
+            (Math.random() - 0.5) * 0.15,
+            1.5,
+            'rgba(10, 40, 80, 0.3)',
+            marketIntroOuterBounds
+        ));
+    }
 }
 
-function drawLabels() {
-  ctx.fillStyle = "white";
-  ctx.font = "bold 22px Arial";
-  ctx.textAlign = "center";
-  textPositions.forEach(pos => {
-    ctx.fillText(pos.text, pos.x, pos.y);
-  });
+// Drawing functions
+function drawTrumpetFunnel(ctx, points, color) {
+    ctx.fillStyle = color;
+    ctx.beginPath();
+    ctx.moveTo(points.bellStart.x, points.bellStart.y);
+    ctx.bezierCurveTo(
+        points.bellStart.x + w * 0.15, points.bellStart.y + 40,
+        points.bellEnd.x - w * 0.05, points.bellEnd.y - 30,
+        points.bellEnd.x, points.bellEnd.y
+    );
+    ctx.lineTo(points.tubeEnd.x, points.tubeEnd.y);
+    ctx.lineTo(points.mouthBottom.x, points.mouthBottom.y);
+    ctx.lineTo(points.bellBottomEnd.x, points.bellBottomEnd.y);
+    ctx.bezierCurveTo(
+        points.bellBottomEnd.x - w * 0.05, points.bellBottomEnd.y + 30,
+        points.bellBottomStart.x + w * 0.15, points.bellBottomStart.y - 40,
+        points.bellBottomStart.x, points.bellBottomStart.y
+    );
+    ctx.closePath();
+    ctx.fill();
 }
 
-function drawSectionDots() {
-  sectionDots.forEach(dot => dot.draw(ctx));
-}
+function drawOuterFunnel(ctx) {
+    let scale;
+    if (isPaused) {
+        scale = maxScale;
+        pauseCounter++;
+        if (pauseCounter >= pauseFrames) {
+            isPaused = false;
+            pauseCounter = 0;
+            expansionProgress = 0;
+        }
+    } else {
+        scale = Math.sin(expansionProgress * Math.PI / 2);
+        expansionProgress += expansionSpeed;
+        if (scale >= maxScale) {
+            scale = maxScale;
+            isPaused = true;
+        }
+    }
+    ctx.save();
+    ctx.translate(0, h / 2);
+    ctx.scale(scale, scale);
+    ctx.translate(0, -h / 2);
 
+    ctx.shadowColor = 'rgba(135, 206, 250, 0.4)';
+    ctx.shadowBlur = 15 * scale;
+    drawTrumpetFunnel(ctx, outerFunnelPoints, 'rgba(135, 206, 250, 0.3)');
+    ctx.restore();
+}
+function drawInnerFunnel(ctx) {
+    drawTrumpetFunnel(ctx, innerFunnelPoints, '#154360');
+}
+function drawSectionLines(ctx) {
+    ctx.strokeStyle = "white";
+    ctx.lineWidth = 2;
+    ctx.setLineDash([6, 6]);
+    ctx.beginPath();
+    ctx.moveTo(innerFunnelPoints.bellEnd.x, innerFunnelPoints.bellEnd.y-60);
+    ctx.lineTo(innerFunnelPoints.bellBottomEnd.x, innerFunnelPoints.bellBottomEnd.y+60);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(w*0.9, 0);
+    ctx.lineTo(w*0.9, h);
+    ctx.stroke();
+    ctx.setLineDash([]);
+}
+function drawLabels(ctx) {
+    ctx.fillStyle = "white";
+    ctx.font = "bold " + Math.round(w*0.022) + "px Arial";
+    ctx.textAlign = "center";
+    textPositions.forEach(pos => {
+        ctx.fillText(pos.text, pos.x, pos.y);
+    });
+}
+function drawSectionDots(ctx) {
+    sectionDots.forEach(dot => dot.draw(ctx));
+}
 function moveSectionDots() {
-  sectionDots = sectionDots.flatMap(dot => {
-    dot.move();
-
-    // At x ≈ 300: simulate a filter gate
-    if (dot.bounds === sectionBounds[0] && dot.x > sectionBounds[0].xMax - 5) {
-      if (Math.random() < 0.5) {
-        // Let dot proceed to next section
-        dot.bounds = sectionBounds[1];
+    sectionDots = sectionDots.flatMap(dot => {
+        dot.move();
+        // At end of section 0
+        if (dot.bounds === sectionBounds[0] && dot.x > sectionBounds[0].xMax - 5) {
+            if (Math.random() < 0.5) {
+                dot.bounds = sectionBounds[1];
+                return [dot];
+            } else {
+                dot.x = sectionBounds[0].xMin + 10;
+                dot.y = randomBetween(sectionBounds[0].yMin + 10, sectionBounds[0].yMax - 10);
+                dot.dx = randomBetween(0.5, 1.0);
+                dot.dy = (Math.random() - 0.5) * 0.3;
+                return [dot];
+            }
+        }
+        // At end of section 1
+        if (dot.bounds === sectionBounds[1] && dot.x > sectionBounds[1].xMax - 5) {
+            if (Math.random() < 0.5) {
+                // Let it continue beyond into loose bounds
+                dot.bounds = { xMin: w*0.9, xMax: w*1.2, yMin: dot.y - 10, yMax: dot.y + 10 };
+                return [dot];
+            } else {
+                dot.x = sectionBounds[1].xMin + 10;
+                dot.y = randomBetween(sectionBounds[1].yMin + 10, sectionBounds[1].yMax - 10);
+                dot.dx = randomBetween(0.5, 1.0);
+                dot.dy = (Math.random() - 0.5) * 0.3;
+                return [dot];
+            }
+        }
+        // At x > end of canvas, loop back
+        if (dot.x > w) {
+            dot.bounds = sectionBounds[0];
+            dot.x = sectionBounds[0].xMin + 10;
+            dot.y = randomBetween(sectionBounds[0].yMin + 10, sectionBounds[0].yMax - 10);
+            dot.dx = randomBetween(0.5, 1.0);
+            dot.dy = (Math.random() - 0.5) * 0.3;
+            return [dot];
+        }
         return [dot];
-      } else {
-        // Reset to beginning of section 0
-        dot.x = sectionBounds[0].xMin + 10;
-        dot.y = randomBetween(sectionBounds[0].yMin + 10, sectionBounds[0].yMax - 10);
-        dot.dx = randomBetween(0.5, 1.0);
-        dot.dy = (Math.random() - 0.5) * 0.3;
-        return [dot];
-      }
-    }
-
-    // At x ≈ 900: another filter gate
-    if (dot.bounds === sectionBounds[1] && dot.x > sectionBounds[1].xMax - 5) {
-      if (Math.random() < 0.5) {
-        // Let it continue beyond 900 (into fading or external region)
-        dot.bounds = { xMin: 900, xMax: 1500, yMin: dot.y - 10, yMax: dot.y + 10 }; // loose bounds
-        return [dot];
-      } else {
-        // Send back to ~x=300
-        dot.x = sectionBounds[1].xMin + 10;
-        dot.y = randomBetween(sectionBounds[1].yMin + 10, sectionBounds[1].yMax - 10);
-        dot.dx = randomBetween(0.5, 1.0);
-        dot.dy = (Math.random() - 0.5) * 0.3;
-        return [dot];
-      }
-    }
-
-    // At x > 1000: loop back to start of section 0
-    if (dot.x > 1000) {
-      dot.bounds = sectionBounds[0];
-      dot.x = sectionBounds[0].xMin + 10;
-      dot.y = randomBetween(sectionBounds[0].yMin + 10, sectionBounds[0].yMax - 10);
-      dot.dx = randomBetween(0.5, 1.0);
-      dot.dy = (Math.random() - 0.5) * 0.3;
-      return [dot];
-    }
-
-    return [dot];
-  });
+    });
 }
-
-
-
-function drawOuterSmallDots() {
-  outerSmallDots.forEach(dot => dot.draw(ctx));
+function drawOuterSmallDots(ctx) {
+    outerSmallDots.forEach(dot => dot.draw(ctx));
 }
-
 function moveOuterSmallDots() {
-  outerSmallDots.forEach(dot => dot.move());
+    outerSmallDots.forEach(dot => dot.move());
 }
 
 function animate() {
-  ctx.clearRect(0, 0, w, h);
-  drawOuterFunnel();
-  drawOuterSmallDots();
-  drawInnerFunnel();
-  drawSectionLines();
-  drawLabels();
-  drawSectionDots();
-  moveSectionDots();
-  moveOuterSmallDots();
-  requestAnimationFrame(animate);
+    const canvas = document.getElementById('funnelCanvas');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    ctx.clearRect(0, 0, w, h);
+    drawOuterFunnel(ctx);
+    drawOuterSmallDots(ctx);
+    drawInnerFunnel(ctx);
+    drawSectionLines(ctx);
+    drawLabels(ctx);
+    drawSectionDots(ctx);
+    moveSectionDots();
+    moveOuterSmallDots();
+    requestAnimationFrame(animate);
 }
 
-initDots();
-animate();
+function rerenderFunnel() {
+    resizeCanvas();
+    setFunnelGeometry();
+    initDots();
+}
 
 window.addEventListener('resize', function() {
-  canvas.width = canvas.offsetWidth;
+    rerenderFunnel();
 });
+setTimeout(() => {
+    rerenderFunnel();
+    animate();
+}, 300);
 </script>
-
-
 """
- 
+
 st.markdown("<p style='font-size:24px; font-weight: 700; margin-bottom:0; text-align:center;'>AI in the automotive innovation process</p>", unsafe_allow_html=True)
 components.html(html_code, height=500)
-
 
 #---------------------------------------------------------------------------------------------- Introduction -------------------------------------------------------------------------------------------------------------------
 
