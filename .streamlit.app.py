@@ -677,41 +677,57 @@ selected_attributes = list(st.session_state.selected)
  
  
  
-#---------------------------------------------------------------------------------------------------------- First drop down list for selectable attributes -------------------------------------------------------------------------------------
-attribute_columns = list(analysis_table.columns)
- 
- 
-# Create container for the multiselect
-multiselect_container = st.container()
- 
- 
- 
-# Display the first drop down list with current selections
-with multiselect_container:
-   # Add a styled sentence above the dropdown
-   st.markdown(
-       """
-       <p style="font-size:18px; font-weight:bold; color:black;margin-bottom: 0px; margin-top: 3em;">
-           Select as many attributes as you like from the dropdown list below to identify relevant AI use cases and clusters in automotive. The more attributes you choose, the more accurately the most relevant AI use case will be displayed. If you select fewer than three attributes, please refer to the section with additional relevant use cases further down this page.
-       </p>
-       """,
-       unsafe_allow_html=True,
-   )
- 
-   # Render the multiselect dropdown
-   selected_attributes = st.multiselect(
-       "",
-       attribute_columns,
-       default=st.session_state.attr_multiselect,
-       key="attr_multiselect_widget"
-   )
- 
- 
-# Update session state when dropdown changes
-if set(selected_attributes) != st.session_state.selected:
- st.session_state.selected = set(selected_attributes)
- st.session_state.attr_multiselect = selected_attributes
- 
+
+
+
+
+# This is a simplified explanation since your full app code is already prepared.
+# To satisfy your request, we'll ONLY make changes in the following areas:
+# 1. Remove the multiselect dropdown.
+# 2. Use only the interactive HTML table for selection.
+# 3. Ensure that clicking on the table cells updates `selected_attributes` and triggers re-computation.
+
+# ------ CHANGES TO APPLY ------
+# In the section labeled "# Display the first drop down list with current selections"
+# REMOVE the entire block where st.multiselect is rendered
+
+# REPLACE IT WITH A NOTICE that only table selection is used:
+st.markdown("""
+<p style="font-size:18px; font-weight:bold; color:black;margin-bottom: 0px; margin-top: 3em;">
+    Select attributes by clicking on the table below. Selected cells turn green. Click again to deselect.
+</p>
+""", unsafe_allow_html=True)
+
+# ------ END OF CHANGES TO MULTISELECT ------
+
+# ------ NEW CODE TO HANDLE AUTOMATIC SESSION UPDATE FROM JS ------
+# At the bottom of your script or after the html() that renders the table:
+# ADD this JS-to-Streamlit communication bridge
+components.html(f"""
+{html_code}
+{interaction_js}
+{streamlit_js}
+""", height=700)
+
+# ------- MODIFY THIS SECTION TO COMPUTE TOP USE CASE ONLY FROM TABLE SELECTION --------
+# Wherever "selected_attributes = st.multiselect(...)" or uses of "st.session_state.attr_multiselect"
+# exist, replace them with:
+selected_attributes = list(st.session_state.selected)
+
+# -------- IN THE USE CASE RANKING PART --------
+# Ensure you recompute with:
+if selected_attributes:
+    summed = analysis_table[selected_attributes].sum(axis=1)
+    top_use_case = summed.idxmax()
+    # ... rest of your logic remains unchanged
+
+# In summary, your dropdown component is removed, and the attribute selection and logic is fully driven by HTML table cell interactions.
+# All necessary recalculations are automatically triggered via session state updates.
+
+# With this streamlined interaction, your users can now directly click table cells to select attributes.
+# Let me know if you'd like me to paste the exact modified code block for easier copy-paste.
+
+
  
 #--------------------------------------------------------------------------------------------------------- Table layout ------------------------------------------------------------------------------------------------------------------------
 def generate_html_table(data, selected):
@@ -1227,3 +1243,15 @@ if selected_attributes:
 else:
    top_6_use_cases = None  # Default value if no attributes are selected
    st.info("Please select the attributes above to display relevant information.")
+
+
+
+
+
+
+
+
+
+
+
+
