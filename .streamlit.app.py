@@ -40,7 +40,7 @@ if "cellClickData" in params:
 
 # Core table HTML/JS (same as your version)
 def generate_html_table(data, selected):
-     first_col_width = 160
+    first_col_width = 160
     second_col_width = 200
     base_cell_width = 150
     cell_height = 50
