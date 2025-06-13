@@ -666,66 +666,99 @@ analysis_table.set_index("Use Case", inplace=True)
 
  
 # ------------------------------------------------------------------------------------------------------- Session state ------------------------------------------------------------------------------------------------------------------------
+
+
+# --- Load the analysis table ---
+# (This assumes your DataFrame `analysis_table` is already defined elsewhere in your full app)
+
+# Initialize session state
 if "selected" not in st.session_state:
- st.session_state.selected = set()
- 
-if "attr_multiselect" not in st.session_state:
- st.session_state.attr_multiselect = []
- 
-# Initialize selected_attributes from session state
-selected_attributes = list(st.session_state.selected)
- 
- 
- 
+    st.session_state.selected = set()
 
-
-
-
-# This is a simplified explanation since your full app code is already prepared.
-# To satisfy your request, we'll ONLY make changes in the following areas:
-# 1. Remove the multiselect dropdown.
-# 2. Use only the interactive HTML table for selection.
-# 3. Ensure that clicking on the table cells updates `selected_attributes` and triggers re-computation.
-
-# ------ CHANGES TO APPLY ------
-# In the section labeled "# Display the first drop down list with current selections"
-# REMOVE the entire block where st.multiselect is rendered
-
-# REPLACE IT WITH A NOTICE that only table selection is used:
+# Display user instructions
 st.markdown("""
 <p style="font-size:18px; font-weight:bold; color:black;margin-bottom: 0px; margin-top: 3em;">
     Select attributes by clicking on the table below. Selected cells turn green. Click again to deselect.
 </p>
 """, unsafe_allow_html=True)
 
-# ------ END OF CHANGES TO MULTISELECT ------
+# List of selectable attributes (column headers from your analysis table)
+selectable_attributes = [col for col in analysis_table.columns if col != "Use Case"]
 
-# ------ NEW CODE TO HANDLE AUTOMATIC SESSION UPDATE FROM JS ------
-# At the bottom of your script or after the html() that renders the table:
-# ADD this JS-to-Streamlit communication bridge
-components.html(f"""
-{html_code}
-{interaction_js}
-{streamlit_js}
-""", height=700)
+# HTML for interactive table
+attribute_table_html = """
+<style>
+.attr-table {
+  border-collapse: collapse;
+  width: 100%;
+  table-layout: fixed;
+  font-size: 14px;
+}
+.attr-table th, .attr-table td {
+  border: 1px solid #ccc;
+  padding: 6px;
+  text-align: center;
+  cursor: pointer;
+}
+.attr-table td.selected {
+  background-color: #4CAF50 !important;
+  color: white;
+}
+</style>
 
-# ------- MODIFY THIS SECTION TO COMPUTE TOP USE CASE ONLY FROM TABLE SELECTION --------
-# Wherever "selected_attributes = st.multiselect(...)" or uses of "st.session_state.attr_multiselect"
-# exist, replace them with:
-selected_attributes = list(st.session_state.selected)
+<table class='attr-table' id='attrTable'>
+  <thead>
+    <tr>""" + ''.join([f"<th>{col}</th>" for col in selectable_attributes]) + """</tr>
+  </thead>
+  <tbody>
+    <tr>""" + ''.join([f"<td data-attr='{col}'></td>" for col in selectable_attributes]) + """</tr>
+  </tbody>
+</table>
 
-# -------- IN THE USE CASE RANKING PART --------
-# Ensure you recompute with:
+<script>
+const table = document.getElementById('attrTable');
+const selected = new Set(JSON.parse(localStorage.getItem('selectedAttrs') || '[]'));
+
+function sendToStreamlit(selectedAttrs) {
+  const streamlitEvent = new CustomEvent("streamlit:setComponentValue", {
+    detail: {value: Array.from(selectedAttrs)}
+  });
+  window.dispatchEvent(streamlitEvent);
+}
+
+function updateUI() {
+  table.querySelectorAll('td').forEach(td => {
+    const attr = td.getAttribute('data-attr');
+    td.classList.toggle('selected', selected.has(attr));
+  });
+}
+
+table.addEventListener('click', e => {
+  if (e.target.tagName === 'TD') {
+    const attr = e.target.getAttribute('data-attr');
+    if (selected.has(attr)) selected.delete(attr);
+    else selected.add(attr);
+    localStorage.setItem('selectedAttrs', JSON.stringify(Array.from(selected)));
+    updateUI();
+    sendToStreamlit(selected);
+  }
+});
+
+updateUI();
+sendToStreamlit(selected);
+</script>
+"""
+
+# Streamlit component to render HTML and get back data
+selected_attributes = components.html(attribute_table_html, height=250, scrolling=False)
+
+# Use selected attributes to calculate top use case
 if selected_attributes:
-    summed = analysis_table[selected_attributes].sum(axis=1)
+    selected = selected_attributes if isinstance(selected_attributes, list) else []
+    st.session_state.selected = set(selected)
+    summed = analysis_table[selected].sum(axis=1)
     top_use_case = summed.idxmax()
-    # ... rest of your logic remains unchanged
-
-# In summary, your dropdown component is removed, and the attribute selection and logic is fully driven by HTML table cell interactions.
-# All necessary recalculations are automatically triggered via session state updates.
-
-# With this streamlined interaction, your users can now directly click table cells to select attributes.
-# Let me know if you'd like me to paste the exact modified code block for easier copy-paste.
+    st.markdown(f"**Top use case based on selection:** {top_use_case}")
 
 
  
