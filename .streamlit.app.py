@@ -1,35 +1,46 @@
-
-
 import streamlit as st
 import pandas as pd
 from streamlit.components.v1 import html
+from streamlit_javascript import st_javascript
 
-# Set page layout
+# --- Install streamlit-javascript via pip:
+# pip install streamlit-javascript
+
+# Page setup
 st.set_page_config(layout="wide")
-
-# ======= TABLE DATA =======
-data = [
-    ["Category", "Dimension", "Attributes"],
-    ["Impact (What)", "Benefits", "Quality/Scope/Knowledge", "Time Efficiency", "Cost"],
-    [None, "Focus within Business Model Navigator", "Customer Segments", "Value Proposition", "Value Chain", "Revenue Model"],
-    [None, "Aim", "Product Innovation", "Process Innovation", "Business Model Innovation"],
-    [None, "Ambidexterity", "Exploration", "Exploitation"],
-    ["Technology (How)", "AI Role", "Automaton", "Helper", "Partner"],
-    [None, "AI Concepts", "Machine Learning", "Deep Learning", "Artificial Neural Networks", "Natural Language Processing", "Computer Vision", "Robotics"],
-    [None, "Analytics Focus", "Descriptive", "Diagnostic", "Predictive", "Prescriptive"],
-    [None, "Analytics Problem", "Description/ Summary", "Clustering", "Classification", "Dependency Analysis", "Regression"],
-    [None, "Data Type", "Customer Data", "Machine Data", "Business Data (Internal Data)", "Market Data", "Public & Regulatory Data", "Synthetic Data"],
-    ["Context (Where/When)", "Innovation Phase", "Front End", "Development", "Market Introduction"],
-    [None, "Department", "R&D", "Manufacturing", "Marketing & Sales", "Customer Service"],
-]
-
-# ======= SESSION STATE =======
 if "selected" not in st.session_state:
     st.session_state.selected = set()
 
-# ======= PERFECT TABLE LAYOUT GENERATION =======
+# Listen for JS messages via URL params (populated via st_javascript)
+js_code = """
+window.addEventListener("message", (event) => {
+    const m = event.data;
+    if (m?.isStreamlitMessage && m.type === "cellClick") {
+        const p = JSON.stringify(m.data);
+        const url = new URL(window.location.href);
+        url.searchParams.set("cellClickData", p);
+        window.location.href = url;
+    }
+});
+"""
+st_javascript(js_code=js_code)
+
+# Process any click event
+params = st.experimental_get_query_params()
+if "cellClickData" in params:
+    import json
+    data = json.loads(params["cellClickData"][0])
+    attr, sel = data["attribute"], data["selected"]
+    if sel:
+        st.session_state.selected.add(attr)
+    else:
+        st.session_state.selected.discard(attr)
+    st.experimental_set_query_params()
+    st.experimental_rerun()
+
+# Core table HTML/JS (same as your version)
 def generate_html_table(data, selected):
-    first_col_width = 160
+     first_col_width = 160
     second_col_width = 200
     base_cell_width = 150
     cell_height = 50
@@ -111,284 +122,72 @@ def generate_html_table(data, selected):
         html += "</tr>"
 
     html += "</table>"
-    return html
+  
 
+    return html_table
 
+data = [  
+  
+  
+    ["Category", "Dimension", "Attributes"],
+    ["Impact (What)", "Benefits", "Quality/Scope/Knowledge", "Time Efficiency", "Cost"],
+    [None, "Focus within Business Model Navigator", "Customer Segments", "Value Proposition", "Value Chain", "Revenue Model"],
+    [None, "Aim", "Product Innovation", "Process Innovation", "Business Model Innovation"],
+    [None, "Ambidexterity", "Exploration", "Exploitation"],
+    ["Technology (How)", "AI Role", "Automaton", "Helper", "Partner"],
+    [None, "AI Concepts", "Machine Learning", "Deep Learning", "Artificial Neural Networks", "Natural Language Processing", "Computer Vision", "Robotics"],
+    [None, "Analytics Focus", "Descriptive", "Diagnostic", "Predictive", "Prescriptive"],
+    [None, "Analytics Problem", "Description/ Summary", "Clustering", "Classification", "Dependency Analysis", "Regression"],
+    [None, "Data Type", "Customer Data", "Machine Data", "Business Data (Internal Data)", "Market Data", "Public & Regulatory Data", "Synthetic Data"],
+    ["Context (Where/When)", "Innovation Phase", "Front End", "Development", "Market Introduction"],
+    [None, "Department", "R&D", "Manufacturing", "Marketing & Sales", "Customer Service"],
+]
 
+  # same data structure as you provided ... ]
+table_html = generate_html_table(data, st.session_state.selected)
 
-
-
-
-
-
-# ======= JAVASCRIPT FOR INTERACTIVITY =======
-interaction_js = """
+# Wrap with interactive JS
+full_html = f"""
 <script>
-function handleCellClick(element) {
-    const attr = element.getAttribute('data-attr');
-    const isSelected = element.style.backgroundColor === 'rgb(146, 208, 80)';
-    
-    // Toggle visual selection immediately
-    element.style.backgroundColor = isSelected ? '#f1fbfe' : '#92D050';
-    
-    // Send message to Streamlit
-    window.parent.postMessage({
+{js_code}
+function handleCellClick(el) {{
+    const attr = el.getAttribute('data-attr');
+    const sel = el.classList.toggle('selected');
+    el.style.backgroundColor = sel ? '#92D050' : el.dataset.originalColor;
+    window.parent.postMessage({{
         isStreamlitMessage: true,
         type: 'cellClick',
-        data: {
-            attribute: attr,
-            selected: !isSelected
-        }
-    }, '*');
-}
+        data: {{attribute: attr, selected: sel}}
+    }}, '*');
+}}
+</script>
+
+<div style="padding:10px; background:#f1fbfe; text-align:center;">
+  <button id="reset">Reset Selection</button>
+</div>
+<div style="margin-bottom:10px; padding:10px; background:#dceefc; border:2px solid #61cbf3;">
+  Selected: <span id="sel">None</span>
+</div>
+
+<div style="overflow-x:auto; width:100%; padding:10px;">
+  {table_html}
+</div>
+
+<script>
+const cells = document.querySelectorAll('td[data-attr]');
+cells.forEach(c => c.dataset.originalColor = getComputedStyle(c).backgroundColor);
+cells.forEach(c => c.onclick = () => handleCellClick(c));
+document.getElementById('reset').onclick = () => {{
+  window.location.search = '';  // clears all selections
+}};
 </script>
 """
 
-# ======= HANDLE CELL CLICKS =======
-def handle_cell_click():
-    if st.session_state.get('cell_click'):
-        attr = st.session_state.cell_click['attribute']
-        if st.session_state.cell_click['selected']:
-            st.session_state.selected.add(attr)
-        else:
-            st.session_state.selected.discard(attr)
-        st.experimental_rerun()
-
-# Initialize and handle clicks
-st.session_state.cell_click = None
-handle_cell_click()
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-# ======= USE CASE ANALYSIS =======
-analysis_df = pd.DataFrame({
-
-
-
-   
-    "Use Case": [
-        "AI-infused experiments in R&D",
-        "AI-powered manufacturing planning in smart factories",
-        "AI-driven Human-Machine Collaboration in ideation",
-        "AI-enabled idea generation in the Metaverse",
-        "AI-optimized patent analysis",
-        "AI-powered forecasting of the technology life cycle of EVs (S-Curve)",
-        "AI-enabled bionic digital twin production planning",
-        "AI-infused Human-Robot Collaboration planning",
-        "AI-powered material flow planning",
-        "AI-assisted ideation",
-        "AI-driven interactive collaborative innovation",
-        "AI-based digital twin for lithium-ion battery development",
-        "AI- and Genetic Algorithms-based vehicle design",
-        "AI-augmented visual inspections",
-        "AI-optimized scenario engineering",
-        "AI-driven design process",
-        "AI- and Bio-inspired Design",
-        "AI-assisted quality control of the bumper warpage",
-        "AI-enabled predictive maintenance",
-        "AI-optimized braking system test",
-        "AI-based identification of consumer adoption stage",
-        "AI-powered marketing campaign",
-        "AI-driven relationship marketing",
-        "AI-assisted customer service in after-sales",
-        "AI-enabled battery monitoring",
-        "AI-assisted staff training",
-        "AI-driven predictive quality models for customer defects",
-        "AI-powered customer satisfaction analysis",
-        "AI-driven competition analysis",
-        "AI-driven vehicles sales prediction"
-    ],
-    "Quality/Scope/Knowledge": [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2],
-    "Time Efficiency": [2, 2, 2, 0, 0, 0, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 0, 2, 0, 2, 0, 2, 2, 2, 0, 0],
-    "Cost": [2, 2, 0, 0, 0, 0, 2, 1, 2, 2, 0, 2, 2, 0, 2, 0, 2, 0, 2, 2, 0, 2, 0, 2, 0, 2, 0, 0, 0, 0],
-    "Customer Segments": [0, 0, 0, 2, 0, 1, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 2, 2, 0, 0, 2, 2, 2, 2],
-    "Value Proposition": [2, 0, 0, 2, 0, 2, 2, 2, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 0, 2, 0, 0, 2, 2, 2, 0, 0, 2, 2, 2],
-    "Value Chain": [2, 2, 2, 2, 2, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 0, 0, 2, 2, 2, 2, 2, 0, 0, 0],
-    "Revenue Model": [0, 0, 0, 0, 0, 2, 0, 0, 1, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 2, 0, 2],
-    "Product Innovation": [2, 0, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 0, 2, 2, 2, 2, 0, 2, 2, 2, 2, 1, 0, 0, 2, 0, 0, 2],
-    "Process Innovation": [1, 2, 2, 0, 0, 0, 2, 2, 2, 2, 2, 2, 2, 2, 2, 0, 2, 2, 2, 2, 0, 2, 0, 2, 2, 2, 2, 2, 2, 2],
-    "Business Model Innovation": [0, 0, 1, 0, 0, 2, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 1, 2, 0, 0, 0, 0, 2, 0, 2],
-    "Exploration": [2, 0, 2, 2, 2, 2, 2, 2, 2, 2, 1, 2, 2, 0, 2, 2, 2, 2, 2, 2, 2, 2, 0, 0, 0, 2, 2, 2, 2, 2],
-    "Exploitation": [0, 2, 0, 0, 0, 0, 2, 2, 2, 0, 2, 2, 2, 2, 0, 0, 0, 0, 2, 0, 2, 0, 2, 2, 2, 0, 0, 0, 2, 2],
-    "Automaton": [2, 0, 2, 0, 2, 2, 2, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2],
-    "Helper": [1, 0, 1, 2, 0, 0, 0, 0, 0, 0, 2, 1, 2, 2, 2, 2, 1, 2, 2, 2, 2, 0, 1, 0, 0, 0, 0, 0, 2, 0],
-    "Partner": [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 0, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2],
-    "Machine Learning": [2, 2, 2, 2, 0, 0, 2, 0, 0, 0, 0, 0, 2, 2, 2, 0, 2, 2, 2, 2, 0, 0, 0, 2, 0, 0, 0, 2, 0, 2],
-    "Deep Learning": [2, 0, 2, 0, 0, 0, 2, 0, 0, 0, 0, 0, 2, 2, 2, 0, 2, 2, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    "Artificial Neural Networks": [0, 0, 2, 2, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 0, 0, 0, 2, 0, 2],
-    "Natural Language Processing": [2, 0, 2, 2, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0],
-    "Computer Vision": [0, 0, 2, 0, 0, 0, 2, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    "Robotics": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    "Descriptive": [1, 0, 0, 2, 2, 0, 0, 0, 0, 0, 2, 0, 0, 2, 0, 0, 2, 0, 0, 2, 2, 2, 2, 2, 2, 0, 2, 2, 2, 0],
-    "Diagnostic": [0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 2, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 2, 2, 0, 0, 0, 0, 0],
-    "Predictive": [2, 2, 2, 0, 2, 2, 2, 2, 2, 2, 0, 2, 2, 0, 2, 0, 0, 0, 2, 2, 0, 0, 2, 0, 2, 2, 0, 2, 0, 0],
-    "Prescriptive": [0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 2, 2, 0, 0, 0, 0, 0],
-    "Description/ Summary": [1, 0, 0, 0, 2, 2, 0, 0, 1, 2, 0, 2, 0, 2, 0, 2, 0, 0, 2, 0, 0, 2, 0, 2, 2, 0, 0, 0, 0, 0],
-    "Clustering": [0, 0, 0, 2, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 2, 2, 0, 2, 2, 2, 2],
-    "Classification": [2, 0, 0, 2, 0, 0, 0, 0, 0, 2, 2, 0, 0, 2, 0, 0, 0, 0, 0, 0, 2, 2, 2, 2, 2, 0, 2, 2, 2, 2],
-    "Dependency Analysis": [0, 0, 0, 0, 2, 0, 0, 0, 0, 2, 2, 0, 0, 2, 0, 0, 1, 0, 0, 2, 2, 2, 2, 2, 2, 0, 2, 2, 2, 2],
-    "Regression": [1, 1, 2, 0, 2, 2, 2, 2, 2, 2, 0, 2, 2, 0, 2, 0, 2, 2, 0, 2, 0, 2, 2, 2, 2, 2, 2, 2, 2, 2],
-    "Customer Data": [2, 0, 2, 0, 2, 2, 2, 2, 2, 2, 2, 2, 2, 0, 2, 2, 2, 2, 2, 2, 0, 1, 1, 2, 2, 2, 2, 2, 2, 1],
-    "Machine Data": [0, 1, 2, 2, 0, 0, 0, 0, 0, 2, 0, 2, 2, 0, 0, 0, 0, 0, 0, 0, 2, 0, 2, 0, 2, 0, 0, 2, 0, 1],
-    "Business Data (Internal Data)": [2, 2, 2, 0, 2, 2, 2, 2, 2, 2, 2, 0, 1, 2, 2, 2, 2, 2, 2, 2, 2, 0, 1, 2, 2, 0, 0, 2, 2, 2],
-    "Market Data": [2, 2, 1, 0, 2, 2, 2, 2, 2, 2, 2, 2, 2, 0, 2, 1, 2, 2, 2, 2, 2, 1, 1, 2, 2, 2, 2, 2, 2, 2],
-    "Public & Regulatory Data": [0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 1, 0, 0, 0, 0, 2, 0, 2, 0, 0],
-    "Synthetic Data": [2, 0, 0, 0, 0, 0, 1, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 2, 2, 2, 0, 2, 2, 2, 2],
-    "Front End": [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 0, 1, 1, 1, 2, 2, 2, 2, 2],
-    "Development": [0, 1, 0, 0, 0, 0, 1, 1, 1, 0, 2, 2, 2, 2, 2, 1, 2, 2, 2, 1, 0, 0, 1, 1, 1, 2, 2, 1, 0, 1],
-    "Market Introduction": [0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 2, 2, 2, 0, 2, 2, 2, 1],
-    "R&D": [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 0, 1, 1, 0, 1, 1, 0, 0, 0, 1, 0, 1, 0, 0, 0, 1, 1, 1, 1],
-    "Manufacturing": [0, 1, 0, 0, 0, 0, 1, 1, 1, 0, 2, 2, 2, 2, 2, 1, 2, 2, 2, 2, 0, 0, 1, 0, 1, 0, 2, 2, 0, 1],
-    "Marketing & Sales": [0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 2, 0, 2, 2, 2, 0, 2, 2, 0, 0, 2, 2, 1, 0, 0, 0, 0, 0, 0, 1],
-    "Customer Service": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 1, 2, 2, 2, 2, 2, 2, 2]
-
-
-
-})
-
-
-
-
-
-
-
-
-
-
-
-
-selected_bar_html = """
-<div id="resetButtonContainer" style="padding: 10px; background-color: #f1fbfe; text-align: center;">
-    <button id="resetButton" style="padding: 10px 20px; background-color: #61cbf3; border: none; border-radius: 5px; cursor: pointer; font-weight: bold;">
-        Reset Selection
-    </button>
-</div>
-<div id="selectedBar" style="margin-bottom: 10px; padding: 10px; background-color: #dceefc; border: 2px solid #61cbf3; border-radius: 8px; font-weight: bold;">
-    Selected Attributes: <span id="selectedItems">None</span>
-</div>
-"""
-
-# Wrap the table in a div container to manage zoom and scrolling
-html_code = selected_bar_html + f"""
-<div style="overflow-x: auto; width: 100%; padding: 10px; box-sizing: border-box;">
-    <div class="zoomed-table">
-        {generate_html_table(data, st.session_state.selected)}
-    </div>
-</div>
-""" + interaction_js
-
-# Inject update script
-html_code += """
-<script>
-let selectedItems = new Set();
-
-function updateSelectedBar() {
-    const bar = document.getElementById("selectedItems");
-    bar.innerText = selectedItems.size === 0 ? "None" : Array.from(selectedItems).join(", ");
-}
-
-function handleCellClick(element) {
-    const attr = element.getAttribute('data-attr');
-    const isSelected = element.style.backgroundColor === 'rgb(146, 208, 80)';
-
-    // Toggle visual selection
-    element.style.backgroundColor = isSelected ? element.dataset.originalColor : '#92D050';
-
-    if (!isSelected) {
-        selectedItems.add(attr);
-    } else {
-        selectedItems.delete(attr);
-    }
-
-    updateSelectedBar();
-
-    // Notify Streamlit backend
-    window.parent.postMessage({
-        isStreamlitMessage: true,
-        type: 'cellClick',
-        data: { attribute: attr, selected: !isSelected }
-    }, '*');
-}
-
-document.addEventListener("DOMContentLoaded", function() {
-    // Store original background color of each cell
-    const cells = document.querySelectorAll('td');
-    cells.forEach(cell => {
-        const original = getComputedStyle(cell).backgroundColor;
-        cell.dataset.originalColor = original;
-    });
-
-    document.getElementById('resetButton').addEventListener('click', function() {
-        // Clear selections
-        selectedItems.clear();
-
-        // Restore each cell's original background color
-        cells.forEach(cell => {
-            cell.style.backgroundColor = cell.dataset.originalColor;
-        });
-
-        updateSelectedBar();
-
-        // Optionally notify Streamlit backend
-        window.parent.postMessage({
-            isStreamlitMessage: true,
-            type: 'resetSelection',
-            data: { reset: true }
-        }, '*');
-    });
-
-    updateSelectedBar();
-});
-</script>
-"""
-
-# Apply the zoom effect to the table
-html_code += """
-<style>
-.zoomed-table {
-    transform: scale(0.75); /* Zoom out to 75% */
-    transform-origin: top center;
-    width: 100%;
-}
-</style>
-"""
-
-html(html_code, height=1200)
-
-
-
-
-
-# ======= SHOW MOST RELEVANT AI USE CASE =======
-selected_attributes = list(st.session_state.selected)
-
-if selected_attributes:
-    analysis_table = analysis_df.set_index("Use Case")
-    summed = analysis_table[selected_attributes].sum(axis=1)
-    top_use_case = summed.idxmax()
-
-    # Dictionary of use case descriptions (create this earlier in your app)
-    use_case_descriptions = {
-       
+html(full_html, height=1200)
+
+# --- Data & use-case logic
+analysis_df = pd.DataFrame({ ... your analysis_df data ... })
+use_case_descriptions = {   
         "AI-infused experiments in R&D": "This use case focuses on integrating AI into experimental R&D processes to accelerate discovery and optimize results.",
         "AI-powered manufacturing planning in smart factories": "This use case enables intelligent scheduling, resource allocation, and process optimization using AI in smart factories.",
         "AI-driven Human-Machine Collaboration in ideation": "This use case explores collaboration between AI tools and human designers during early-stage ideation.",
@@ -418,38 +217,20 @@ if selected_attributes:
         "AI-powered Testing Automation": "Speeds up QA by automatically generating and executing test cases.",
         "Autonomous Product Testing": "AI runs independent tests without human involvement.",
         "AI in Materials Discovery": "Uses AI to find and evaluate new materials faster.",
-        "AI-enhanced Collaboration Platforms": "Improves team creativity and efficiency through smart assistance."
-    }
+        "AI-enhanced Collaboration Platforms": "Improves team creativity and efficiency through smart assistance." }
 
-    use_case_info = f"<b>{top_use_case}</b><br>{use_case_descriptions.get(top_use_case, '')}"
-
-    st.markdown(
-        f"""
-        <div style="margin-top: 1em;">
-        <label style="font-weight: 700; color: #000;"> Most relevant AI Use Case </label><br>
-        <div style="
-            background-color: #A8E060;
-            padding: 10px;
-            border-radius: 8px;
-            border: 1px solid #000;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            font-size: 14px;
-            color: #000;
-            white-space: pre-wrap;
-            "> {use_case_info}
+sel = list(st.session_state.selected)
+if sel:
+    summed = analysis_df.set_index("Use Case")[sel].sum(axis=1)
+    top = summed.idxmax()
+    desc = use_case_descriptions.get(top, "")
+    st.markdown(f"""
+      <div style="margin-top:1em;">
+        <label style="font-weight:700;">Most relevant AI Use Case</label><br>
+        <div style="background:#A8E060; padding:10px; border-radius:8px;">
+          <b>{top}</b><br>{desc}
         </div>
-        </div>
-        """,
-        unsafe_allow_html=True
-    )
+      </div>
+    """, unsafe_allow_html=True)
 else:
-    st.info("Please select the attributes above to display relevant information.")
-
-
-
-
-
-
-
-
-
+    st.info("Please select the attributes above…")
