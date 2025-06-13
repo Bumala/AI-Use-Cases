@@ -124,7 +124,7 @@ def generate_html_table(data, selected):
     html += "</table>"
   
 
-    return html_table
+    return html
 
 data = [  
   
