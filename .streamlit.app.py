@@ -387,7 +387,7 @@ if selected_attributes:
     top_use_case = summed.idxmax()
 
     # Dictionary of use case descriptions (create this earlier in your app)
-   use_case_descriptions = {
+    use_case_descriptions = {
        
         "AI-infused experiments in R&D": "This use case focuses on integrating AI into experimental R&D processes to accelerate discovery and optimize results.",
         "AI-powered manufacturing planning in smart factories": "This use case enables intelligent scheduling, resource allocation, and process optimization using AI in smart factories.",
