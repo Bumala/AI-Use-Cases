@@ -419,8 +419,7 @@ if selected_attributes:
         "Autonomous Product Testing": "AI runs independent tests without human involvement.",
         "AI in Materials Discovery": "Uses AI to find and evaluate new materials faster.",
         "AI-enhanced Collaboration Platforms": "Improves team creativity and efficiency through smart assistance."
-
-                            }
+    }
 
     use_case_info = f"<b>{top_use_case}</b><br>{use_case_descriptions.get(top_use_case, '')}"
 
