@@ -1091,7 +1091,7 @@ cluster_details = {
      
    ),
    "Cluster 2: AI-optimized Design and Quality in Automotive": (
-       "Use Cases in Cluster 2:
+       """Use Cases in Cluster 2:
 
        "AI- and Genetic Algorithms-based vehicle design"
        "AI-augmented visual inspections
