@@ -480,7 +480,7 @@ st.markdown("""
     max-width: 350px;
 }
 .details-box-1 {
-    background-color: #E5E5E5;
+    background-color: #dddddd;
     border: 1px solid #ccc;
     border-radius: 10px;
     padding: 10px 15px;
