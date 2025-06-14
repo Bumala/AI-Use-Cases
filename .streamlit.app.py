@@ -1161,7 +1161,7 @@ if top_use_case:
            <label style="font-weight: 700; color: #000;">Cluster details for the most relevant AI use case</label><br>
            <div style="
                width: 100%;
-               background-color: #F5F5F5;
+               background-color: ##ECEFF1;
                color: #000;
                padding: 10px;
                border: 1px solid #000;
