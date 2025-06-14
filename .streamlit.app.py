@@ -480,7 +480,7 @@ st.markdown("""
     max-width: 350px;
 }
 .details-box-1 {
-    background-color: #dddddd;
+    background-color: ##e37852;
     border: 1px solid #ccc;
     border-radius: 10px;
     padding: 10px 15px;
@@ -488,7 +488,7 @@ st.markdown("""
     font-family: sans-serif;
 }
 .details-box-2 {
-    background-color: #EDEDED;
+    background-color: #FFA07A;
     border: 1px solid #ccc;
     border-radius: 10px;
     padding: 10px 15px;
@@ -496,7 +496,7 @@ st.markdown("""
     font-family: sans-serif;
 }
 .details-box-3 {
-    background-color: #F5f5f5;
+    background-color: #FFC4A6;
     border: 1px solid #ccc;
     border-radius: 10px;
     padding: 10px 15px;
@@ -973,7 +973,7 @@ if selected_attributes:
        <div style="margin-top: 1em;">
        <label style="font-weight: 700; color: #000;"> Most relevant AI Use Case </label><br>
        <div style="
-           background-color: ##f5f5f5;
+           background-color: #f5f5f5;
            padding: 10px;
            border-radius: 8px;
            border: 1px solid #000;
