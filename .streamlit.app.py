@@ -480,7 +480,7 @@ st.markdown("""
     max-width: 350px;
 }
 .details-box-1 {
-    background-color: ##e37852;
+    background-color: #e37852;
     border: 1px solid #ccc;
     border-radius: 10px;
     padding: 10px 15px;
@@ -973,7 +973,7 @@ if selected_attributes:
        <div style="margin-top: 1em;">
        <label style="font-weight: 700; color: #000;"> Most relevant AI Use Case </label><br>
        <div style="
-           background-color: #f5f5f5;
+           background-color: #b8e2f4;
            padding: 10px;
            border-radius: 8px;
            border: 1px solid #000;
@@ -1161,7 +1161,7 @@ if top_use_case:
            <label style="font-weight: 700; color: #000;">Cluster details for the most relevant AI use case</label><br>
            <div style="
                width: 100%;
-               background-color: #f5f5f5;
+               background-color: #b8e2f4;
                color: #000;
                padding: 10px;
                border: 1px solid #000;
@@ -1265,7 +1265,7 @@ if selected_attributes:
        <div style="margin-top: 1em;">
            <label style="font-weight: 700; color: #000;"> Other relevant AI Use Cases</label><br>
            <div style="
-               background-color: #f5f5f5;
+               background-color: #b8e2f4;
                padding: 10px;
                border-radius: 8px;
                border: 1px solid #000;
