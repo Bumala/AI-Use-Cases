@@ -1132,11 +1132,11 @@ cluster_details = {
    "Cluster 5: AI in Strategic Forecasting": (
        """Use cases in Cluster 5:
 
-        -AI-infused experiments in R&D
-        -AI-optimized patent analysis
-        -AI-powered forecasting of the technology life cycle of EVs (S-Curve)
-        AI-assisted ideation
-        AI-driven vehicles sales prediction 
+        - AI-infused experiments in R&D
+        - AI-optimized patent analysis
+        - AI-powered forecasting of the technology life cycle of EVs (S-Curve)
+        - AI-assisted ideation
+        - AI-driven vehicles sales prediction 
         
         This cluster represents the strategic brain of the AI use case ecosystem in the automotive industry. It showcases how AI enhances long-term innovation capabilities, facilitates the generation of novel ideas, and enables companies to confidently anticipate future technological developments.
         """       
