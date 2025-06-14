@@ -429,35 +429,37 @@ st.markdown(html_code, unsafe_allow_html=True)
 # Your data
 use_case_descriptions = {
     "AI-infused experiments in R&D": "This use case focuses on integrating AI into experimental R&D processes to accelerate discovery and optimize results.",
-    "AI-powered manufacturing planning in smart factories": "This use case enables intelligent scheduling, resource allocation, and process optimization using AI in smart factories.",
-    "AI-driven Human-Machine Collaboration in ideation": "This use case explores collaboration between AI tools and human designers during early-stage ideation.",
-    "Predictive Maintenance using AI sensors": "Leverages AI and sensor data to predict and prevent equipment failures before they happen.",
-    "AI for Customer Behavior Analysis": "Analyzes large sets of customer interaction data to find actionable insights.",
-    "AI-assisted Prototyping": "Automates parts of the prototyping process using generative AI models.",
-    "Natural Language Processing in Customer Feedback": "Uses NLP to analyze unstructured feedback and identify key themes.",
-    "AI for Market Trend Forecasting": "Predicts future market directions using large-scale data and AI models.",
-    "Generative Design for Engineering": "Uses AI to generate thousands of design options based on constraints.",
-    "AI-enhanced Risk Management": "Automates risk detection and mitigation strategies using predictive analytics.",
-    "AI for Supply Chain Optimization": "Improves logistics and supply chain operations through intelligent forecasting.",
-    "AI in Quality Control": "Detects defects in real-time through computer vision systems.",
-    "Conversational AI for Support": "Implements AI chatbots to assist customers and employees efficiently.",
-    "AI-powered Personalization Engines": "Delivers hyper-personalized product recommendations using AI.",
-    "AI in Product Lifecycle Management": "Optimizes every stage of a product’s life using AI analytics.",
-    "AI for Competitive Intelligence": "Monitors competitor behavior and market shifts automatically.",
-    "AI-based Design Validation": "Simulates and tests design concepts using machine learning.",
-    "AI in Inventory Management": "Reduces overstock and stockouts with smarter predictions.",
-    "Smart Energy Management with AI": "Optimizes factory energy use based on AI models.",
-    "AI-driven Regulatory Compliance": "Helps ensure products meet legal and safety standards via automation.",
-    "AI in User Behavior Modeling": "Understands how users interact with products using behavioral models.",
-    "Voice-Activated Interfaces": "Enables control of systems using natural language commands.",
-    "AI-assisted UX Design": "Provides data-driven recommendations to improve user experience.",
-    "AI in Product Customization": "Automatically configures products to customer preferences.",
-    "AI-driven Feature Prioritization": "Ranks feature development priorities based on predicted impact.",
-    "Digital Twin with AI": "Creates a real-time digital replica of a product or system.",
-    "AI-powered Testing Automation": "Speeds up QA by automatically generating and executing test cases.",
-    "Autonomous Product Testing": "AI runs independent tests without human involvement.",
-    "AI in Materials Discovery": "Uses AI to find and evaluate new materials faster.",
-    "AI-enhanced Collaboration Platforms": "Improves team creativity and efficiency through smart assistance."
+ 
+    "AI-infused experiments in R&D": "Madanchian and Taherdoost (2024) analyze how AI-infused experiments unlock new possibilities for enhancing strategic decision-making, cost reduction, and the acceleration of R&D processes. Furthermore, the authors underscore how AI provides researchers with creative ways to enhance operational efficiency and facilitate real-time data analysis and decision-making under uncertainty, enabling companies to adapt to market changes. Companies can improve their organizational performance and innovation capacity by harnessing Machine Learning in R&D, for instance, to convert spoken words into text and integrate implicit and explicit knowledge. Machine Learning models assess R&D product readiness and predict costs, thereby improving commercialization efficiency. An AI-powered decision support system can categorize projects and rank responsible scientists or reviewers using natural language processing and machine learning models. These models enhance reviewer assignment and project evaluation, thus improving the accuracy and efficiency of the review process and R&D project evaluation (Madanchian & Taherdoost, 2024).",
+    "AI-powered manufacturing planning in smart factories":"In this use case, the advantages of a virtual smart factory are examined. The virtual smart factory enables companies to identify opportunities for cost reduction in the physical smart factory based on key insights that minimize waste of raw materials, save time, and improve products. Sjödin et al. (2018) highlight the importance for factories to create simulation systems that accurately represent reality to test and enhance the digital factory. Virtual factories significantly impact cost reduction by providing insights that minimize raw material waste, save time, and improve products. Companies can develop methods for leveraging data analytics and visualization to facilitate real-time decision-making. Visual representations of the work in the manufacturing plant can assist decision-makers in making improvements to the manufacturing planning. Proactive processes to predict and plan future production can enhance the efficiency of the manufacturing plant (Sjödin et al., 2018).",
+    "AI-driven Human-Machine Collaboration in ideation":"Madanchian and Taherdoost (2024) emphasize the advantages of AI in research for generating new knowledge more rapidly. The assistance of AI systems enables automotive companies to concentrate more on creative tasks. AI significantly boosts creativity and efficiency, thereby aiding in the resolution of complex problems. Moreover, AI can personalize the user experience during the idea generation process and enhance decision-making. The authors highlight the crucial impact of AI on R&D by leveraging automation and refining experimental processes. For instance, labs can be outfitted with robots and AI-enhanced automation systems that manage the experimentation environment. This enables scientists to complete experiments more quickly and generate new ideas at an early stage, giving them adequate time to focus on strategic and other creative tasks (Madanchian & Taherdoost, 2024).",
+    "AI-enabled idea generation in the Metaverse":"Lin et al. (2024) explore the possibilities that the AI-powered metaverse offers by enhancing how information is extracted and shared between customers and automotive companies to inspire new ideas. The metaverse is a digital world that facilitates communication and collaboration among different users. It can break down barriers to accessing and transforming customer data from various online platforms by broadening the methods through which information can be gathered. Furthermore, the metaverse can elevate these experiences by transforming the current Internet’s 2D visual experience into a 3D experience filled with limitless opportunities for collaboration and interpretation. Users can engage in physical interactions that resemble those in the real world, creating new avenues to exchange valuable information. AI empowers the metaverse to incorporate real-time images, thoughts, and actions, enabling innovative methods of information sharing. This environment also fosters more efficient collaboration among departments to generate new ideas (Lin et al., 2024).",
+    "AI-optimized patent analysis":"In this use case, AI is used to identify patent infringement risks and mitigate them. Previous research in risk analysis relies on experts manually examining patent documents to assess and forecast risk levels. However, machine learning algorithms enable objective, quantitative approaches that enhance the validity of patent evaluations (Yang & Yu, 2020)",
+    "AI-powered forecasting of the technology life cycle of EVs (S-Curve)":"Chen & Cho (2024) utilize AI-augmented patent analysis to assess the global trend in Electric Vehicle (EV) technology development. They employ this analysis to track EV growth over time according to the technology life cycle known as the S-Curve. The technology life cycle forecasts the progress of technologies and industries, defining its initial stage as the emergence phase and concluding with the decline phase. The technology life cycle is represented as an S-curve, predicting the trajectory and pace of technological advancement (Chen & Cho, 2024). ",
+    "AI-enabled bionic digital twin production planning":"The authors employ bionics to enhance AI-driven digital twins in this use case, featuring characteristics of intelligent living beings, such as the intelligence and self-evolution of individual elements and groups of entities. A Digital Twin (DT) is defined as a virtual representation of a physical system. It seamlessly integrates product design and manufacturing with simulations and interactions. The authors utilize this model to identify potential concepts and ideas for upgrading the old welding line of an automotive company, allowing for the simultaneous production of two different vehicle models and brands on a single production line (Li et al., 2021).",
+    "AI-infused Human-Robot Collaboration planning":" The authors of this study leverage AI-infused digital twins to generate promising concepts for virtual process flows that integrate human-robot collaboration and ensure efficient automobile manufacturing. These concepts are then used for planning the real manufacturing process (Kousi et al., 2021). ",
+    "AI-powered material flow planning":"In this use case, ML is harnessed to identify new, efficient ways of material transportation within the manufacturing plant. Building on this foundation, these insights are implemented to develop effective material flows. The planning of the production process in this case is based on selecting the most promising concepts to enable efficient manufacturing processes (Flores-García et al., 2024).",
+    "AI-assisted ideation":"Generative Artificial Intelligence (GAI) is utilized in this use case to enhance creativity and innovation. GAI enables companies to identify key ideas within large volumes of data to kickstart the design of more environmentally friendly cars (Akhtar et al., 2024).",
+    "AI-driven interactive collaborative innovation":"This use case focuses on AI-powered collaborative interaction within the omniverse, a virtual platform created by NVIDIA, between various departments of an automotive company and even with customers to co-create a vehicle that meets the demands of all stakeholders involved. NVIDIA Omniverse is an open cloud platform that enables virtual collaboration and real-time simulations, allowing creators and engineers to work together from anywhere in the world, in real time (Lin et al., 2024).",
+    "AI-based digital twin for lithium-ion battery development":"In this use case, the authors harness an AI-infused digital twin in the development of lithium-ion batteries to simulate production scenarios, digitally test the batteries, and analyze their quality before ultimately producing them as a physical product (Naseri et al., 2023). ",
+    "AI- and Genetic Algorithms-based vehicle design":"This use case examines the application of AI-augmented Genetic Algorithms that allow automotive manufacturers to harness the principles of genetic variation, selection, and reproduction to design and produce vehicles efficiently. Genetic algorithms (GAs) are grounded in the principles of natural selection and evolution, mimicking the processes of genetic variation, selection, and reproduction to incrementally generate and refine potential solutions (Han & Sun, 2024).",
+    "AI-augmented visual inspections":"In this use case, an automotive company disassembles used car clutches, breaks them apart, and reuses suitable parts to create products for vehicles. AI-augmented visual inspections of the used clutches assess the quality of reusable components, contributing to the remanufacturing of 95% of used materials (Süße et al., 2023).",
+    "AI-optimized scenario engineering":"In this study, the authors analyze the development and training of vehicle software to adapt to various scenarios in a virtual environment using AI models. Li et al. (2023) introduce the framework of scenario engineering for developing accessible and reliable foundation models in the metaverse, defined as scenario engineering enabled foundation models in metaverse (SEEFMM). For instance, ChatGPT-3 and DALL-E are foundation models transforming the applications of artificial intelligence. Foundation models in AI are algorithms trained on vast amounts of data, allowing them to be utilized in numerous applications (Li et al., 2023).",
+    "AI-driven design process":"The authors extend their examination of GAI application in the front to the development stage, where GAI enhances the creation of functional car prototypes while reducing costs in the prototype development phase (Akhtar et al., 2024).",
+    "AI- and Bio-inspired Design":"The authors harness AI-infused Bionic design to create a vehicle that leverages biological forms to achieve design that fulfills the desirable engineering requirements of the automotive industry (Deng et al., 2023).",
+    "AI-assisted quality control of the bumper warpage":"Chang et al. (2022) examine the use of AI in the injection molding of bumper warpage, making the molding production more intelligent and automated. AI-driven injection molding addresses the challenges of monitoring molding parameters such as temperature, pressure, and speed during the manufacturing process to produce high-quality vehicles that meet stringent safety standards (Chang et al., 2022).",
+    "AI-enabled predictive maintenance":"Oh and Kim (2024) achieve their aim in this study of reducing the costs associated with aging machines and conventional maintenance techniques by harnessing an AI-based machine failure management system that performs predictive maintenance. Predictive Maintenance (PdM) systems forecast replacement cycles, thereby improving productivity (Oh & Kim, 2024).",
+    "AI-optimized braking system test":"In this study, the authors harness AI to assess the braking system in a virtual environment, predicting the interdependencies among the various subsystems and deriving the performance parameters of the entire system (Aleksendric & Duboka, 2008).",
+    "AI-based identification of consumer adoption stage":"This study analyzes the fundamental drivers of EV interest and aims to identify the potential next wave of EV customers using ML models. It investigates the upcoming mainstream EV market by harnessing a machine learning method to uncover demographic and socio-economic attributes, as well as car and mobility preferences, in five Nordic countries: Denmark, Finland, Iceland, Norway, and Sweden, based on a dataset of 5067 survey participants. The research reveals six consumer clusters based on demographic and socio-economic attributes, mobility, vehicle preferences, and interests in EVs and vehicle-to-grid technologies (Zarazua De Rubens, 2019).",
+    "AI-powered marketing campaign":"This use case employs AI to analyze customer data and online platforms for creating marketing campaigns tailored to customers’ preferences. Toyota has harnessed AI to develop a marketing campaign for the launch of a new vehicle model. Initially, potential customers were asked to submit data regarding their preferences. This data provided by the target group has been analyzed. The AI system was then trained with texts and videos from the video platform YouTube to identify the preferred styles of target customers that matched the data they provided. As a result, the company has created thousands of creative advertisements customized for the different profiles of ad recipients. The final text is confirmed by the supervising team (Jarek & Mazurek, 2019).",
+    "AI-driven relationship marketing":"This study analyzes how organizations can harness AI to adapt to a dynamic market characterized by constantly changing customer needs and to build strong customer relationships. The authors examine how AI improves customer relationships throughout the entire customer journey (Roy et al., 2025).",
+    "AI-assisted customer service in after-sales":"Sliż (2024) uncovers the potential of the large language model ChatGPT to streamline automotive after-sales. The study reveals that ChatGPT can enhance the efficiency of service reception, check-out, and repair and maintenance, making them more customer-centric and efficient. GPT’s tools may transform traditional customer service in the automobile industry by enabling quick and precise responses to customer requests and leveraging intelligent chatbots (Sliż, 2024) .",
+    "AI-enabled battery monitoring":"In this use case, the AI-powered Digital Twin is utilized to create a link between a virtual lithium-ion battery of an electric vehicle (EV) and the real, physical battery, enabling the monitoring of its condition and performance throughout its entire lifetime. This capability allows automotive companies to analyze the battery’s performance in customer use and identify areas for improvement (Naseri et al., 2023).",
+    "AI-assisted staff training":"Li et al. (2023) focus on the implementation of AI-assisted staff training for customer services in the metaverse. The metaverse provides a multisensory learning experience in an immersive environment. The automotive industry can leverage the AI-powered metaverse to create virtual-real environments for staff training, allowing employees to practice essential skills for their profession (Li et al., 2023).",
+    "AI-driven predictive quality models for customer defects":"The goal of this study is to explore automotive customer complaint data and the standardized procedures for handling customer data, generating real-time insights, and leveraging AI to predict quality errors, customer defects, and maintenance needs. The study examines the integration of AI to enhance operational performance and address the high costs and complexity associated with quality complaint analysis (Silva et al., 2024).",
+    "AI-powered customer satisfaction analysis":"Liang et al. (2024) harness AI in this study to understand how customers receive a newly released vehicle, gaining deeper insights into customer satisfaction during the post-purchase phase.  ",
+    "AI-driven competition analysis":"AI-driven competition analysis enables companies to strategically position themselves in a given market and identify where they could or wish to be in the future. Liu et al. (2020) employ machine learning models on favorite data to analyze the asymmetric competitive market.",
+    "AI-driven vehicles sales prediction":"Zhang et al. (2022) leverage deep learning to develop a sales prediction model for the automotive industry based on online opinions and the online search index. The authors discover that deep learning-driven vehicle sales predictions are significantly more accurate than traditional vehicle sales forecasting methods."
 }
 
 # Heading
@@ -1042,13 +1044,13 @@ use_case_to_cluster = {
    "AI-enabled predictive maintenance": "Cluster 1: Ideation and Intelligent Planning in Automotive",
    "AI-driven predictive quality models for customer defects": "Cluster 1: Ideation and Intelligent Planning in Automotive",
    
-   "AI- and Genetic Algorithms-based vehicle design": "Cluster 2: AI-optimized design and quality in Automotive",
-   "AI-augmented visual inspections": "Cluster 2: AI-optimized design and quality in Automotive",
-   "AI-optimized scenario engineering": "Cluster 2: AI-optimized design and quality in Automotive",
-   "AI-driven design process": "Cluster 2: AI-optimized design and quality in Automotive",
-   "AI- and Bio-inspired Design": "Cluster 2: AI-optimized design and quality in Automotive",
-   "AI-assisted quality control of the bumper warpage": "Cluster 2: AI-optimized design and quality in Automotive",
-   "AI-optimized braking system test": "Cluster 2: AI-optimized design and quality in Automotive",
+   "AI- and Genetic Algorithms-based vehicle design": "Cluster 2: AI-optimized Design and Quality in Automotive",
+   "AI-augmented visual inspections": "Cluster 2: AI-optimized Design and Quality in Automotive",
+   "AI-optimized scenario engineering": "Cluster 2: AI-optimized Design and Quality in Automotive",
+   "AI-driven design process": "Cluster 2: AI-optimized Design and Quality in Automotive",
+   "AI- and Bio-inspired Design": "Cluster 2: AI-optimized Design and Quality in Automotive",
+   "AI-assisted quality control of the bumper warpage": "Cluster 2: AI-optimized Design and Quality in Automotive",
+   "AI-optimized braking system test": "Cluster 2: AI-optimized Design and Quality in Automotive",
    
    "AI-enabled idea generation in the Metaverse": "Cluster 3: AI-driven Customer-Centric Innovation in Automotive",
    "AI-driven interactive collaborative innovation": "Cluster 3: AI-driven Customer-Centric Innovation in Automotive",
@@ -1073,24 +1075,69 @@ use_case_to_cluster = {
 #---------------- Dictionary mapping clusters to detailed information -------------------------------------
 cluster_details = {
    "Cluster 1: Ideation and Intelligent Planning in Automotive": (
-       "Focuses on using AI for ideation and intelligent planning in the automotive industry. "
-       "This includes material flow planning, predictive maintenance, and more innovative approaches."
+       "Use Cases in Cluster 1:
+
+       AI-powered manufacturing planning in smart factories  
+       AI-driven Human-Machine Collaboration in ideation 
+       AI-enabled bionic digital twin production planning
+       AI-infused Human-Robot Collaboration planning 
+       AI-powered material flow planning  
+       AI-based digital twin for lithium-ion battery development 
+       AI-enabled predictive maintenance
+       AI-driven predictive quality models for customer defects 
+       
+       This cluster encapsulates the application of AI in ideation and planning, simulation, and optimization of automotive manufacturing and maintenance systems. These use cases reflect a forward-looking shift towards digitized, intelligent, and resilient production environments, where AI serves as a partner in ideation and continuous innovation. 
+        "
+     
    ),
-   "Cluster 2: AI-optimized design and quality in Automotive": (
-       "Centers on leveraging AI to optimize design processes and ensure quality. "
-       "Examples include visual inspections, bio-inspired designs, and scenario engineering."
+   "Cluster 2: AI-optimized Design and Quality in Automotive": (
+       "Use Cases in Cluster 2:
+
+       AI- and Genetic Algorithms-based vehicle design 
+       AI-augmented visual inspections
+       AI-optimized scenario engineering 
+       AI-driven design process  
+       AI- and Bio-inspired Design 
+       AI-assisted quality control of the bumper warpage 
+       AI-optimized braking system test
+
+       This cluster depicts the unification of AI-driven creativity with engineering rigor. The use cases illustrate how AI can enhance design intelligence, minimize waste through quality control, and simulate complex systems, all of which are essential for innovation in a competitive and sustainability-driven automotive market. "
+       
    ),
    "Cluster 3: AI-driven Customer-Centric Innovation in Automotive": (
-       "Aims at driving customer-centric innovations in the automotive sector using AI. Applications include marketing campaigns, customer satisfaction analysis, and competition analysis "
-       "Applications include marketing campaigns, customer satisfaction analysis, and competition analysis."
+       "Use cases in Cluster 3:
+
+        AI-enabled idea generation in the Metaverse 
+        AI-driven interactive collaborative innovation 
+        AI-based identification of consumer adoption stage 
+        AI-powered marketing campaign 
+        AI-driven relationship marketing
+        AI-powered customer satisfaction analysis 
+        AI-driven competition analysis
+        
+        This cluster comprises AI applications that aim to enhance customer-centricity, thereby establishing a strong and long-term relationship with customers that is strategically beneficial. The cluster illustrates how AI fosters deeper engagement with consumers, transforms marketing and ideation processes, and supports strategic innovation tailored to customer expectations. "
+               
    ),
    "Cluster 4: AI in Automotive Customer Service": (
-       "Focuses on enhancing customer service in automotive with AI tools. "
-       "This includes battery monitoring, staff training, and after-sales service improvements."
+       "Use cases in Cluster 4:
+
+        AI-assisted customer service in after-sales 
+        AI-enabled battery monitoring 
+        AI-assisted staff training
+        
+        This cluster demonstrates how AI can enhance internal operations by supporting service quality, improving battery longevity, and transforming training methodologies. These cases highlight the strategically crucial roles AI plays in the post-purchase stage, supporting the workforce and sustaining product value and service excellence over time."
    ),
    "Cluster 5: AI in Strategic Forecasting": (
-       "Involves AI applications in strategic forecasting and planning. "
-       "Examples include patent analysis, technology lifecycle forecasting, and sales prediction."
+       "Use cases in Cluster 5:
+
+        AI-infused experiments in R&D
+        AI-optimized patent analysis
+        AI-powered forecasting of the technology life cycle of EVs (S-Curve)
+        AI-assisted ideation
+        AI-driven vehicles sales prediction 
+        
+        This cluster represents the strategic brain of the AI use case ecosystem in the automotive industry. It showcases how AI enhances long-term innovation capabilities, facilitates the generation of novel ideas, and enables companies to confidently anticipate future technological developments."
+               
    )
 }
  
