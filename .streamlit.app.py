@@ -1132,10 +1132,9 @@ cluster_details = {
    "Cluster 5: AI in Strategic Forecasting": (
        """Use cases in Cluster 5:
 
-        AI-infused experiments in R&D
-        
-        AI-optimized patent analysis
-        AI-powered forecasting of the technology life cycle of EVs (S-Curve)
+        -AI-infused experiments in R&D
+        -AI-optimized patent analysis
+        -AI-powered forecasting of the technology life cycle of EVs (S-Curve)
         AI-assisted ideation
         AI-driven vehicles sales prediction 
         
