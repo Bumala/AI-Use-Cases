@@ -1133,6 +1133,7 @@ cluster_details = {
        """Use cases in Cluster 5:
 
         AI-infused experiments in R&D
+        
         AI-optimized patent analysis
         AI-powered forecasting of the technology life cycle of EVs (S-Curve)
         AI-assisted ideation
