@@ -1077,66 +1077,66 @@ cluster_details = {
    "Cluster 1: Ideation and Intelligent Planning in Automotive": (
        "Use Cases in Cluster 1:"
 
-       AI-powered manufacturing planning in smart factories  
-       AI-driven Human-Machine Collaboration in ideation 
-       AI-enabled bionic digital twin production planning
-       AI-infused Human-Robot Collaboration planning 
-       AI-powered material flow planning  
-       AI-based digital twin for lithium-ion battery development 
-       AI-enabled predictive maintenance
-       AI-driven predictive quality models for customer defects 
+       "AI-powered manufacturing planning in smart factories"  
+       "AI-driven Human-Machine Collaboration in ideation "
+       "AI-enabled bionic digital twin production planning"
+       "AI-infused Human-Robot Collaboration planning "
+       "AI-powered material flow planning"  
+       "AI-based digital twin for lithium-ion battery development" 
+       "AI-enabled predictive maintenance"
+       "AI-driven predictive quality models for customer defects" 
        
-       This cluster encapsulates the application of AI in ideation and planning, simulation, and optimization of automotive manufacturing and maintenance systems. These use cases reflect a forward-looking shift towards digitized, intelligent, and resilient production environments, where AI serves as a partner in ideation and continuous innovation. 
+       "This cluster encapsulates the application of AI in ideation and planning, simulation, and optimization of automotive manufacturing and maintenance systems. These use cases reflect a forward-looking shift towards digitized, intelligent, and resilient production environments, where AI serves as a partner in ideation and continuous innovation. 
         "
      
    ),
    "Cluster 2: AI-optimized Design and Quality in Automotive": (
-       "Use Cases in Cluster 2:
+       "Use Cases in Cluster 2:"
 
-       AI- and Genetic Algorithms-based vehicle design 
-       AI-augmented visual inspections
-       AI-optimized scenario engineering 
-       AI-driven design process  
-       AI- and Bio-inspired Design 
-       AI-assisted quality control of the bumper warpage 
-       AI-optimized braking system test
+       "AI- and Genetic Algorithms-based vehicle design" 
+       "AI-augmented visual inspections"
+       "AI-optimized scenario engineering "
+       "AI-driven design process"  
+       "AI- and Bio-inspired Design "
+       "AI-assisted quality control of the bumper warpage" 
+       "AI-optimized braking system test"
 
-       This cluster depicts the unification of AI-driven creativity with engineering rigor. The use cases illustrate how AI can enhance design intelligence, minimize waste through quality control, and simulate complex systems, all of which are essential for innovation in a competitive and sustainability-driven automotive market. "
+       "This cluster depicts the unification of AI-driven creativity with engineering rigor. The use cases illustrate how AI can enhance design intelligence, minimize waste through quality control, and simulate complex systems, all of which are essential for innovation in a competitive and sustainability-driven automotive market. "
        
    ),
    "Cluster 3: AI-driven Customer-Centric Innovation in Automotive": (
-       "Use cases in Cluster 3:
+       "Use cases in Cluster 3:"
 
-        AI-enabled idea generation in the Metaverse 
-        AI-driven interactive collaborative innovation 
-        AI-based identification of consumer adoption stage 
-        AI-powered marketing campaign 
-        AI-driven relationship marketing
-        AI-powered customer satisfaction analysis 
-        AI-driven competition analysis
+        "AI-enabled idea generation in the Metaverse" 
+        "AI-driven interactive collaborative innovation "
+        "AI-based identification of consumer adoption stage "
+        "AI-powered marketing campaign "
+        "AI-driven relationship marketing"
+        "AI-powered customer satisfaction analysis "
+        "AI-driven competition analysis"
         
-        This cluster comprises AI applications that aim to enhance customer-centricity, thereby establishing a strong and long-term relationship with customers that is strategically beneficial. The cluster illustrates how AI fosters deeper engagement with consumers, transforms marketing and ideation processes, and supports strategic innovation tailored to customer expectations. "
+        "This cluster comprises AI applications that aim to enhance customer-centricity, thereby establishing a strong and long-term relationship with customers that is strategically beneficial. The cluster illustrates how AI fosters deeper engagement with consumers, transforms marketing and ideation processes, and supports strategic innovation tailored to customer expectations. "
                
    ),
    "Cluster 4: AI in Automotive Customer Service": (
-       "Use cases in Cluster 4:
+       "Use cases in Cluster 4:"
 
-        AI-assisted customer service in after-sales 
-        AI-enabled battery monitoring 
-        AI-assisted staff training
+        "AI-assisted customer service in after-sales" 
+        "AI-enabled battery monitoring "
+        "AI-assisted staff training"
         
-        This cluster demonstrates how AI can enhance internal operations by supporting service quality, improving battery longevity, and transforming training methodologies. These cases highlight the strategically crucial roles AI plays in the post-purchase stage, supporting the workforce and sustaining product value and service excellence over time."
+        "This cluster demonstrates how AI can enhance internal operations by supporting service quality, improving battery longevity, and transforming training methodologies. These cases highlight the strategically crucial roles AI plays in the post-purchase stage, supporting the workforce and sustaining product value and service excellence over time."
    ),
    "Cluster 5: AI in Strategic Forecasting": (
-       "Use cases in Cluster 5:
+       "Use cases in Cluster 5:"
 
-        AI-infused experiments in R&D
-        AI-optimized patent analysis
-        AI-powered forecasting of the technology life cycle of EVs (S-Curve)
-        AI-assisted ideation
-        AI-driven vehicles sales prediction 
+        "AI-infused experiments in R&D"
+        "AI-optimized patent analysis"
+        "AI-powered forecasting of the technology life cycle of EVs (S-Curve)"
+        "AI-assisted ideation"
+        "AI-driven vehicles sales prediction" 
         
-        This cluster represents the strategic brain of the AI use case ecosystem in the automotive industry. It showcases how AI enhances long-term innovation capabilities, facilitates the generation of novel ideas, and enables companies to confidently anticipate future technological developments."
+        "This cluster represents the strategic brain of the AI use case ecosystem in the automotive industry. It showcases how AI enhances long-term innovation capabilities, facilitates the generation of novel ideas, and enables companies to confidently anticipate future technological developments."
                
    )
 }
