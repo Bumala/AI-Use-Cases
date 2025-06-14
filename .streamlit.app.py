@@ -1265,7 +1265,7 @@ if selected_attributes:
        <div style="margin-top: 1em;">
            <label style="font-weight: 700; color: #000;"> Other relevant AI Use Cases</label><br>
            <div style="
-               background-color: #FFC4A6;
+               background-color: #9dc6d8;
                padding: 10px;
                border-radius: 8px;
                border: 1px solid #000;
