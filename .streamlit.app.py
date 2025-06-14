@@ -1075,7 +1075,7 @@ use_case_to_cluster = {
 #---------------- Dictionary mapping clusters to detailed information -------------------------------------
 cluster_details = {
    "Cluster 1: Ideation and Intelligent Planning in Automotive": (
-       "Use Cases in Cluster 1:
+       "Use Cases in Cluster 1:"
 
        AI-powered manufacturing planning in smart factories  
        AI-driven Human-Machine Collaboration in ideation 
