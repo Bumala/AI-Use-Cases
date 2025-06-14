@@ -680,39 +680,45 @@ selected_attributes = list(st.session_state.selected)
  
  
 #---------------------------------------------------------------------------------------------------------- First drop down list for selectable attributes -------------------------------------------------------------------------------------
+
+if "attr_multiselect" not in st.session_state:
+    st.session_state.attr_multiselect = []
+if "selected" not in st.session_state:
+    st.session_state.selected = set()
+
+
+
 attribute_columns = list(analysis_table.columns)
- 
- 
+
+# Initialize session state
+if "attr_multiselect" not in st.session_state:
+    st.session_state.attr_multiselect = []
+if "selected" not in st.session_state:
+    st.session_state.selected = set()
+
 # Create container for the multiselect
 multiselect_container = st.container()
- 
- 
- 
-# Display the first drop down list with current selections
+
 with multiselect_container:
-   # Add a styled sentence above the dropdown
-   st.markdown(
-       """
-       <p style="font-size:18px; font-weight:bold; color:black;margin-bottom: 0px; margin-top: 3em;">
-           Select as many attributes as you like from the dropdown list below to identify relevant AI use cases and clusters in automotive. The more attributes you choose, the more accurately the most relevant AI use case will be displayed. If you select fewer than three attributes, please refer to the section with additional relevant use cases further down this page.
-       </p>
-       """,
-       unsafe_allow_html=True,
-   )
- 
-   # Render the multiselect dropdown
-   selected_attributes = st.multiselect(
-       "",
-       attribute_columns,
-       default=st.session_state.attr_multiselect,
-       key="attr_multiselect_widget"
-   )
- 
- 
-# Update session state when dropdown changes
+    st.markdown(
+        """
+        <p style="font-size:18px; font-weight:bold; color:black;margin-bottom: 0px; margin-top: 3em;">
+            Select as many attributes as you like from the dropdown list below to identify relevant AI use cases and clusters in automotive. The more attributes you choose, the more accurately the most relevant AI use case will be displayed. If you select fewer than three attributes, please refer to the section with additional relevant use cases further down this page.
+        </p>
+        """,
+        unsafe_allow_html=True,
+    )
+
+    selected_attributes = st.multiselect(
+        "",
+        attribute_columns,
+        default=st.session_state.attr_multiselect,
+        key="attr_multiselect"
+    )
+
+# Only update st.session_state.selected if it changed
 if set(selected_attributes) != st.session_state.selected:
- st.session_state.selected = set(selected_attributes)
- st.session_state.attr_multiselect = selected_attributes
+    st.session_state.selected = set(selected_attributes)
  
  
 #--------------------------------------------------------------------------------------------------------- Table layout ------------------------------------------------------------------------------------------------------------------------
