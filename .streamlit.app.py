@@ -12,13 +12,12 @@ st.set_page_config(layout="wide")
  
 #-------------------------------------------------------------------------------------------------------Bachgroung pictures----------------------------------------------------------------------------------------------------------------------
 
-import streamlit as st
 
 # List all your image filenames in the images directory
 image_files = [
     "hand.png",
-    #"car.png",
-    #"laptop.png",
+    "images.car.png",
+    "laptop.png",
     #"SUV.png",
     #"chip.png"
     # Add more as needed
