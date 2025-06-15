@@ -1034,7 +1034,7 @@ if top_use_case:
 )
    fig.update_layout(
    margin=dict(t=0, b=40),
-   height=500
+   
 )
    st.plotly_chart(fig, use_container_width=True)
   
