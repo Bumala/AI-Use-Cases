@@ -16,7 +16,7 @@ import random
 
 # Use the raw GitHub URL for the image
 image_url = "https://raw.githubusercontent.com/Bumala/AI-Use-Cases/main/laptop.png
-"image_url = "https://raw.githubusercontent.com/Bumala/AI-Use-Cases/main/hand.png"
+image_url = "https://raw.githubusercontent.com/Bumala/AI-Use-Cases/main/hand.png
 
 # Generate a random position (in percentage)
 left = random.randint(0, 80)   # stay within viewport
