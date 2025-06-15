@@ -12,71 +12,30 @@ st.set_page_config(layout="wide")
  
 #-------------------------------------------------------------------------------------------------------Bachgroung pictures----------------------------------------------------------------------------------------------------------------------
 
-# List all your images in the main directory
-image_files = [
-    "SUV.png",
-    "car.png",
-    "vehicle.png",
-    "tire.png",
-    "wh.png",
-    "hand.png",
-    "pc.png",
-    "laptop.png",
-     "chip.png"
-    
-]
+import random
 
-js_image_list = "[" + ",".join([f"'{img}'" for img in image_files]) + "]"
+# Use the raw GitHub URL for the image
+image_url = "https://raw.githubusercontent.com/Bumala/AI-Use-Cases/main/laptop.png"
+
+# Generate a random position (in percentage)
+left = random.randint(0, 80)   # stay within viewport
+top = random.randint(0, 80)
 
 st.markdown(
     f"""
     <style>
-    body, .stApp {{
-        position: relative;
-        min-height: 100vh;
-        z-index: 0;
-    }}
-    .bg-image-random {{
+    .random-bg-img {{
         position: fixed;
-        top: 0;
-        left: 0;
-        width: 100vw;
-        height: 100vh;
-        pointer-events: none;
+        left: {left}vw;
+        top: {top}vh;
+        width: 120px;
+        opacity: 0.25;
         z-index: 0;
-    }}
-    .bg-image-random img {{
-        position: absolute;
-        width: 120px; /* Adjust size as needed */
-        opacity: 0.25; /* Adjust transparency as needed */
         pointer-events: none;
         user-select: none;
     }}
     </style>
-    <div class="bg-image-random"></div>
-    <script>
-    const imageFiles = {js_image_list};
-    function randomInt(max) {{
-        return Math.floor(Math.random() * max);
-    }}
-    function scatterImages() {{
-        const container = document.querySelector('.bg-image-random');
-        container.innerHTML = '';
-        const numImages = 12; // Total number of images to scatter
-        const vw = window.innerWidth;
-        const vh = window.innerHeight;
-        for (let i = 0; i < numImages; i++) {{
-            const img = document.createElement('img');
-            const imageIndex = randomInt(imageFiles.length);
-            img.src = imageFiles[imageIndex];
-            img.style.left = randomInt(vw-120) + 'px';
-            img.style.top = randomInt(vh-120) + 'px';
-            container.appendChild(img);
-        }}
-    }}
-    window.addEventListener('DOMContentLoaded', scatterImages);
-    window.addEventListener('resize', scatterImages);
-    </script>
+    <img class="random-bg-img" src="{image_url}" />
     """,
     unsafe_allow_html=True
 )
