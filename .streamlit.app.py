@@ -16,12 +16,12 @@ st.set_page_config(layout="wide")
 image_files = [
     "SUV.png",
     "car.png",
-    "vehicle.png"
-    "tire.png"
-    "wh.png"
-    "hand.png"
-    "pc.png"
-    "laptop.png"
+    "vehicle.png",
+    "tire.png",
+    "wh.png",
+    "hand.png",
+    "pc.png",
+    "laptop.png",
      "chip.png"
     
 ]
