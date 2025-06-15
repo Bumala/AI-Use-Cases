@@ -12,9 +12,6 @@ st.set_page_config(layout="wide")
  
 #-------------------------------------------------------------------------------------------------------Bachgroung pictures----------------------------------------------------------------------------------------------------------------------
 
-
-import streamlit as st
-
 # List all your images in the main directory
 image_files = [
     "SUV.png",
@@ -31,35 +28,14 @@ image_files = [
 
 js_image_list = "[" + ",".join([f"'{img}'" for img in image_files]) + "]"
 
-# --- TOP SECTION (COVER) ---
-# This will visually "hide" the scatter for the top 400px (adjust as needed)
-st.markdown(
-    """
-    <style>
-    .top-cover {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100vw;
-        height: 400px; /* Change height as needed */
-        background: white; /* Use your app's background color */
-        z-index: 1;
-        pointer-events: none;
-    }
-    </style>
-    <div class="top-cover"></div>
-    """,
-    unsafe_allow_html=True
-)
-
-# --- YOUR "TOP" CONTENT ---
-st.title("My App Title")
-st.write("This is the top section of your app. The background images won't be visible here.")
-
-# --- SCATTERED BACKGROUND EFFECT ---
 st.markdown(
     f"""
     <style>
+    body, .stApp {{
+        position: relative;
+        min-height: 100vh;
+        z-index: 0;
+    }}
     .bg-image-random {{
         position: fixed;
         top: 0;
@@ -71,8 +47,8 @@ st.markdown(
     }}
     .bg-image-random img {{
         position: absolute;
-        width: 120px;
-        opacity: 0.25;
+        width: 120px; /* Adjust size as needed */
+        opacity: 0.25; /* Adjust transparency as needed */
         pointer-events: none;
         user-select: none;
     }}
@@ -86,16 +62,15 @@ st.markdown(
     function scatterImages() {{
         const container = document.querySelector('.bg-image-random');
         container.innerHTML = '';
-        const numImages = 12;
+        const numImages = 12; // Total number of images to scatter
         const vw = window.innerWidth;
         const vh = window.innerHeight;
         for (let i = 0; i < numImages; i++) {{
             const img = document.createElement('img');
             const imageIndex = randomInt(imageFiles.length);
             img.src = imageFiles[imageIndex];
-            // Only scatter images BELOW the cover (e.g., y > 400px)
             img.style.left = randomInt(vw-120) + 'px';
-            img.style.top = (400 + randomInt(vh-400-120)) + 'px';
+            img.style.top = randomInt(vh-120) + 'px';
             container.appendChild(img);
         }}
     }}
@@ -105,9 +80,6 @@ st.markdown(
     """,
     unsafe_allow_html=True
 )
-
-# --- REST OF YOUR APP ---
-st.write("Now the scattered background images begin appearing behind the content below this section.")
 
 #------------------------------------------------------------------------------------------------------------- Funnel image -------------------------------------------------------------------------------------------------------------------
  
