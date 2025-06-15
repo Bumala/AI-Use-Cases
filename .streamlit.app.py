@@ -12,35 +12,70 @@ st.set_page_config(layout="wide")
  
 #-------------------------------------------------------------------------------------------------------Bachgroung pictures----------------------------------------------------------------------------------------------------------------------
 
-import random
+import streamlit as st
 
-# Use the raw GitHub URL for the image
-image_url = "https://raw.githubusercontent.com/Bumala/AI-Use-Cases/main/laptop.png
-image_url = "https://raw.githubusercontent.com/Bumala/AI-Use-Cases/main/hand.png
+# List all your image filenames in the images directory
+image_files = [
+    "hand.png",
+    #"car.png",
+    #"laptop.png",
+    #"SUV.png",
+    #"chip.png"
+    # Add more as needed
+]
 
-# Generate a random position (in percentage)
-left = random.randint(0, 80)   # stay within viewport
-top = random.randint(0, 80)
+# Create the raw GitHub URLs for each image
+base_url = "https://raw.githubusercontent.com/Bumala/AI-Use-Cases/main/images/"
+image_urls = [base_url + img for img in image_files]
+js_image_list = "[" + ",".join([f"'{url}'" for url in image_urls]) + "]"
 
 st.markdown(
     f"""
     <style>
-    .random-bg-img {{
+    .bg-image-random {{
         position: fixed;
-        left: {left}vw;
-        top: {top}vh;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        pointer-events: none;
+        z-index: 0;
+    }}
+    .bg-image-random img {{
+        position: absolute;
         width: 120px;
         opacity: 0.25;
-        z-index: 0;
         pointer-events: none;
         user-select: none;
     }}
     </style>
-    <img class="random-bg-img" src="{image_url}" />
+    <div class="bg-image-random"></div>
+    <script>
+    const imageFiles = {js_image_list};
+    function randomInt(max) {{
+        return Math.floor(Math.random() * max);
+    }}
+    function scatterImages() {{
+        const container = document.querySelector('.bg-image-random');
+        container.innerHTML = '';
+        const numImages = 12; // Total number of images to scatter
+        const vw = window.innerWidth;
+        const vh = window.innerHeight;
+        for (let i = 0; i < numImages; i++) {{
+            const img = document.createElement('img');
+            const imageIndex = randomInt(imageFiles.length);
+            img.src = imageFiles[imageIndex];
+            img.style.left = randomInt(vw-120) + 'px';
+            img.style.top = randomInt(vh-120) + 'px';
+            container.appendChild(img);
+        }}
+    }}
+    window.addEventListener('DOMContentLoaded', scatterImages);
+    window.addEventListener('resize', scatterImages);
+    </script>
     """,
     unsafe_allow_html=True
 )
-
 #------------------------------------------------------------------------------------------------------------- Funnel image -------------------------------------------------------------------------------------------------------------------
  
 html_code = """
