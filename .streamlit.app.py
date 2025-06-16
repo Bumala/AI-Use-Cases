@@ -10,21 +10,11 @@ import streamlit.components.v1 as components
 # Set Streamlit page layout
 st.set_page_config(layout="wide")
  
-
-
-
 #------------------------------------------------------------------------------------------------------------- Funnel image -------------------------------------------------------------------------------------------------------------------
-<div style="width:100vw; text-align:center;">
-  <canvas id="funnelCanvas" width="1000" height="450" style="width: 1000px; height: 450px; background: white; display: inline-block;"></canvas>
-</div>
-
-
-
-
-
 
 html_code = """
-<canvas id="funnelCanvas" width="1000" height="450" style="width: 100%; height: auto; background: white;"></canvas>
+<canvas id="funnelCanvas" width="1000" height="450" style="width: 1000px; height: 450px; background: white;"></canvas>
+
 
 <script>
 const canvas = document.getElementById('funnelCanvas');
@@ -371,9 +361,7 @@ function animate() {
 initDots();
 animate();
 
-window.addEventListener('resize', function() {
-  canvas.width = canvas.offsetWidth;
-});
+
 </script>
 
 
