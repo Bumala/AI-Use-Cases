@@ -13,7 +13,10 @@ st.set_page_config(layout="wide")
 #------------------------------------------------------------------------------------------------------------- Funnel image -------------------------------------------------------------------------------------------------------------------
 
 html_code = """
-<canvas id="funnelCanvas" width="1000" height="450" style="width: 1300px; height: 450px; background: white;"></canvas>
+<div style="display: flex; justify-content: center; width: 100%;">
+  <canvas id="funnelCanvas" width="1000" height="450" style="width: 1300px; height: 450px; background: white;"></canvas>
+</div>
+
 
 
 <script>
