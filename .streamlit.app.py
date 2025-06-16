@@ -292,7 +292,7 @@ function moveSectionDots() {
   sectionDots = sectionDots.flatMap(dot => {
     dot.move();
 
-    // At x ≈ 300: simulate a filter gate
+    
     if (dot.bounds === sectionBounds[0] && dot.x > sectionBounds[0].xMax - 5) {
       if (Math.random() < 0.5) {
         // Let dot proceed to next section
@@ -308,7 +308,7 @@ function moveSectionDots() {
       }
     }
 
-    // At x ≈ 900: another filter gate
+    
     if (dot.bounds === sectionBounds[1] && dot.x > sectionBounds[1].xMax - 5) {
       if (Math.random() < 0.5) {
         // Let it continue beyond 900 (into fading or external region)
@@ -324,7 +324,7 @@ function moveSectionDots() {
       }
     }
 
-    // At x > 1000: loop back to start of section 0
+    
     if (dot.x > 1000) {
       dot.bounds = sectionBounds[0];
       dot.x = sectionBounds[0].xMin + 10;
@@ -904,7 +904,7 @@ handle_js_messages()
 #--------------------------- JavaScript to handle Streamlit communication--------
 streamlit_js = """
 <script>
-// Function to handle messages from Streamlit
+// Function for handling messages from Streamlit
 function handleStreamlitMessage(event) {
  if (event.data.isStreamlitMessage) {
      if (event.data.type === 'updateSelections') {
@@ -922,7 +922,7 @@ window.addEventListener('message', handleStreamlitMessage);
 </script>
 """
  
-# Generate the full HTML
+# Generating the full HTML
  
 html_code = f"""
 <div style="overflow-x: auto; width: 100%; padding: 10px; box-sizing: border-box;">
@@ -966,7 +966,7 @@ if selected_attributes:
    # Combine the title and the paragraph with spacing
    use_case_info = f"<b>{top_use_case}</b><br>{use_case_descriptions.get(top_use_case, '')}"
  
-   # Display top use case inside a styled box
+   # Display top use case inside a box
    st.markdown(
        f"""
        <div style="margin-top: 1em;">
@@ -1181,26 +1181,26 @@ else:
  #----------------------------------------------------------------------------------------------- Graph of top use case cluster ---------------------------------------------------------------------------------------------------------------
 
 if top_use_case:
-    # Step 1: Find the cluster for the selected top use case
+    # Finding the cluster for the selected top use case
     cluster_name = use_case_to_cluster.get(top_use_case)
 
     if cluster_name:
-        # Step 2: Get all use cases in that cluster
+        # Getting all applications in that cluster
         cluster_use_cases = [
             use_case for use_case, cluster in use_case_to_cluster.items()
             if cluster == cluster_name
         ]
 
-        # Step 3: Filter the analysis table to include only those use cases
+        # Filtering the analysis table to include only those use cases
         cluster_df = analysis_table.loc[
             analysis_table.index.intersection(cluster_use_cases)
         ]
 
         if not cluster_df.empty:
-            # Step 4: Calculate average values for each attribute
+            # Calculating average values for each attribute
             avg_values = cluster_df.mean()
 
-            # Step 5: Create the bar chart
+            # Creating the bar chart
             fig = go.Figure(data=[
                 go.Bar(
                     x=avg_values.index,
@@ -1212,7 +1212,7 @@ if top_use_case:
                 )
             ])
 
-            # Step 6: Format the chart
+            # Chart format
             fig.update_yaxes(
                 tickvals=[0, 1, 2],
                 ticktext=["Low", "Moderate", "High"],
@@ -1237,7 +1237,7 @@ if top_use_case:
                 height=500
             )
 
-            # Step 7: Show chart
+            # Displaying chart
             st.plotly_chart(fig, use_container_width=True)
         else:
             st.warning("No data found for the cluster's use cases.")
@@ -1249,13 +1249,13 @@ if selected_attributes:
    summed = analysis_table[selected_attributes].sum(axis=1)
    top_6_use_cases = summed.nlargest(6).index[1:]  # Get indices of top 6 use cases
  
-   # single string for all use cases, separated by <br><br>
+   # string is separated by <br><br>
    use_cases_info = ""
    for use_case in top_6_use_cases:
        description = use_case_descriptions.get(use_case, "")
        use_cases_info += f"<b>{use_case}</b><br>{description}<br><br>"
  
-   # Strip the trailing <br><br> for a clean finish
+   # using <br><br> for a clean finish
    use_cases_info = use_cases_info.rstrip("<br><br>")
  
    st.markdown("---")
