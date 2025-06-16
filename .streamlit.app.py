@@ -381,7 +381,7 @@ st.markdown("<p style='font-weight: 700; font-size:20px; margin-bottom:10; text-
 
 # Settings
 font_size = 30
-stretch_y = 4  # Stretch factor
+stretch_y = 3  # Stretch factor
 
 # HTML and CSS
 html_code = f"""
